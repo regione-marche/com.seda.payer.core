@@ -1,0 +1,59 @@
+/**
+ * 
+ */
+package com.seda.payer.core.messages;
+
+import java.text.MessageFormat;
+import java.util.ResourceBundle;
+/**
+ * @author mmontisano
+ *
+ */
+public enum Messages {
+	ILL_ARG_ERR_CODE,
+	HELPER_ERR_CODE,
+	PAYER_REQUEST,
+	PADDING_EXCEEDED, 
+	PADDING_SHORT,
+	ARGUMENT_NULL, 
+	ARGUMENT_LENGTH,
+	CONDITION_REFERRED_NULL, 
+	CONDITION_ABEND_NEQ, 
+	CONDITION_REFERRED_NOTNULL, 
+	CONDITION_CODE_INVALID, 
+	CONDITION_CODE_NOT_NUMERIC, 
+	CONDITION_CODE_NULL, 
+	CONDITION_OPERATOR_NULL, 
+	CONDITION_INVALID_COMBINATION, 
+	CONNECTION_CLOSED,
+	CONDITION_REFERBACK_SAME, 
+	CONDITION_REFERBACK_INVALID,	
+	SCHEMA_LENGTH, 
+	NOT_IMPLEMENTED, 
+	DUPLICATE_STEP_NAME, 
+	RESTART_STEP_NOT_FOUND, 
+	DUPLICATE_DD_NAME, 
+	STORED_NOT_DEFINED, 
+	ENTRY_CONFIG_NULL, 
+	INVALID_PARAMETER, 
+	UNIQUE_CONSTRAINT_VIOLATION,
+	UNIQUE_CONSTRAINT_VIOLATION_SIMPLE,
+	PYUSER_INS_ERR_BEAN_NULL,
+	PYUSER_INS_ERR_USERNAME_PROFILE_NULL,
+	PYUSER_APPLS_INS_ERR_NULL_PARAMETERS,
+	PYUSER_UPD_ERR_BEAN_NULL,
+	PYUSER_UPD_ERR_USERNAME_NULL,
+	DELETE_ERR_CODE,
+	DELETE_ERR_MESSAGE
+    ;
+
+    private static ResourceBundle rb;
+
+    public String format( Object... args ) {
+        synchronized(Messages.class) {
+            if(rb==null)
+                rb = ResourceBundle.getBundle(Messages.class.getName());
+            return MessageFormat.format(rb.getString(name()),args);
+        }
+    }
+}
