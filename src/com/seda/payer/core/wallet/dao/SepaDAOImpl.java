@@ -418,7 +418,11 @@ public class SepaDAOImpl  extends  BaseDaoHandler  implements SepaDAO  {
 				
 				return callableStatement.getInt(48);
 
-			} catch (SQLException | IllegalArgumentException | HelperException e) {
+			} catch (SQLException e)  {
+				throw new DaoException(e);
+			} catch (IllegalArgumentException e)  {
+				throw new DaoException(e);
+			} catch (HelperException e)  {
 				throw new DaoException(e);
 			} finally {
 				if (callableStatement != null) {
@@ -470,7 +474,11 @@ public class SepaDAOImpl  extends  BaseDaoHandler  implements SepaDAO  {
 				if (returnCode == -803) {
 					throw new DaoException(new Throwable("AnagrafeSoggetto (SDDASTB) con chiave duplicata"));
 				}
-			} catch (SQLException | IllegalArgumentException | HelperException e) {
+			} catch (SQLException e) {
+				throw new DaoException(e);
+			} catch (IllegalArgumentException e) {
+				throw new DaoException(e);
+			} catch (HelperException e) {
 				throw new DaoException(e);
 			} finally {
 				if (callableStatement != null) {
