@@ -102,8 +102,8 @@ public class ConfigUtenteTipoServizioEnte extends Lifecycle implements Serializa
         	bol.setTipoBolletino(data.getString("CFE_TBOLTBOL"));
         }
         
-        numCc = data.getString("CFE_NCFENCCP");
         intestatarioCc = data.getString("CFE_DCFEDINT");
+        numCc = data.getString("CFE_NCFENCCP");
         tipoDoc = data.getString("CFE_TCFETDOC");
         flagConRange = data.getString("CFE_FCFEFCTR");
         emailDest = data.getString("CFE_ECFEEDES");
@@ -644,7 +644,19 @@ public class ConfigUtenteTipoServizioEnte extends Lifecycle implements Serializa
 			else
 				arg.setNull(40, Types.VARCHAR);
 			//fine SB PG210170
+		
+		arg.setString(41, this.strutturaEnte); //PAGONET-434
+		arg.setString(42, this.nomeEnte); //PAGONET-434
+		arg.setString(43, this.cognomeEnte); //PAGONET-434
+		arg.setString(44, this.telefonoEnte); //PAGONET-434
+		arg.setString(45, this.mailEnte); //PAGONET-434
+		arg.setString(46, this.strutturaEnteFornitore); //PAGONET-434
+		arg.setString(47, this.nomeFornitore); //PAGONET-434
+		arg.setString(48, this.cognomeFornitore); //PAGONET-434
+		arg.setString(49, this.telefonoFornitore); //PAGONET-434
+		arg.setString(50, this.mailFornitore); //PAGONET-434
 	}
+		
 	
 	@Override
 	public void onUpdate(CallableStatement arg) throws SQLException {
@@ -715,6 +727,17 @@ public class ConfigUtenteTipoServizioEnte extends Lifecycle implements Serializa
 		else
 			arg.setNull(35, Types.VARCHAR);
 	    //fine LP PG200360
+		
+		arg.setString(36, this.strutturaEnte); //PAGONET-434
+		arg.setString(37, this.nomeEnte); //PAGONET-434
+		arg.setString(38, this.cognomeEnte); //PAGONET-434
+		arg.setString(39, this.telefonoEnte); //PAGONET-434
+		arg.setString(40, this.mailEnte); //PAGONET-434
+		arg.setString(41, this.strutturaEnteFornitore); //PAGONET-434
+		arg.setString(42, this.nomeFornitore); //PAGONET-434
+		arg.setString(43, this.cognomeFornitore); //PAGONET-434
+		arg.setString(44, this.telefonoFornitore); //PAGONET-434
+		arg.setString(45, this.mailFornitore); //PAGONET-434
 	}
 	
 	@Override
