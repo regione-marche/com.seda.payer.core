@@ -728,16 +728,43 @@ public class ConfigUtenteTipoServizioEnte extends Lifecycle implements Serializa
 			arg.setNull(35, Types.VARCHAR);
 	    //fine LP PG200360
 		
-		arg.setString(36, this.strutturaEnte); //PAGONET-434
-		arg.setString(37, this.nomeEnte); //PAGONET-434
-		arg.setString(38, this.cognomeEnte); //PAGONET-434
-		arg.setString(39, this.telefonoEnte); //PAGONET-434
-		arg.setString(40, this.mailEnte); //PAGONET-434
-		arg.setString(41, this.strutturaEnteFornitore); //PAGONET-434
-		arg.setString(42, this.nomeFornitore); //PAGONET-434
-		arg.setString(43, this.cognomeFornitore); //PAGONET-434
-		arg.setString(44, this.telefonoFornitore); //PAGONET-434
-		arg.setString(45, this.mailFornitore); //PAGONET-434
+		
+		//inizio SB PG2100140
+		if(articolo != null)
+			arg.setString(36, articolo);
+		else
+			arg.setNull(36, Types.VARCHAR);
+		if(codiceContabilita != null)
+			arg.setString(37, codiceContabilita);
+		else
+			arg.setNull(37, Types.VARCHAR);
+		if(capitolo != null)
+			arg.setString(38, capitolo);
+		else
+			arg.setNull(38, Types.VARCHAR);
+		if(annoCompetenza != null)
+			arg.setString(39, annoCompetenza);
+		else
+			arg.setNull(39, Types.VARCHAR);
+	//fine SB PG2100140
+		//inizio SB PG210170
+		if(dataDicituraPagamento != null)
+			arg.setString(40, dataDicituraPagamento);
+		else
+			arg.setNull(40, Types.VARCHAR);
+		//fine SB PG210170
+		
+		
+		arg.setString(41, this.strutturaEnte); //PAGONET-434
+		arg.setString(42, this.nomeEnte); //PAGONET-434
+		arg.setString(43, this.cognomeEnte); //PAGONET-434
+		arg.setString(44, this.telefonoEnte); //PAGONET-434
+		arg.setString(45, this.mailEnte); //PAGONET-434
+		arg.setString(46, this.strutturaEnteFornitore); //PAGONET-434
+		arg.setString(47, this.nomeFornitore); //PAGONET-434
+		arg.setString(48, this.cognomeFornitore); //PAGONET-434
+		arg.setString(49, this.telefonoFornitore); //PAGONET-434
+		arg.setString(50, this.mailFornitore); //PAGONET-434
 	}
 	
 	@Override
