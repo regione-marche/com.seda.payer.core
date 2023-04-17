@@ -1309,6 +1309,25 @@ public class EstrattoContoDao extends BaseDaoHandler {
 					}
 					outRes[0] = callableStatement.getString(5).trim();
 					outRes[1] = callableStatement.getString(6).trim();
+				}else if(tipoIntegrazione.equals("P")){
+					
+					callableStatement = prepareCall(Routines.PYTDTSP_LST_ENT.routine());
+					callableStatement.setString(1, codiceUtente);
+					callableStatement.setString(2, codiceFiscale);
+					
+//					callableStatement.registerOutParameter(5, Types.VARCHAR);
+//					callableStatement.registerOutParameter(6, Types.VARCHAR);
+					
+					
+					if (callableStatement.execute()) 
+					{
+						this.loadWebRowSets(callableStatement);
+					}
+//					outRes[0] = callableStatement.getString(5).trim();
+//					outRes[1] = callableStatement.getString(6).trim();
+					outRes[0] = "";
+					outRes[1] = "";
+
 				}
 				
 				return outRes;
