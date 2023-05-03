@@ -338,19 +338,19 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			callableStatement.setString(24, esitoInvioConservazione == null ? "" : esitoInvioConservazione);
 			callableStatement.setString(25, chiaveTransazione == null ? "" : chiaveTransazione);	//PGNTCORE-3
 			
-			callableStatement.registerOutParameter(25, Types.VARCHAR);
-			callableStatement.registerOutParameter(26, Types.INTEGER);
+			callableStatement.registerOutParameter(26, Types.VARCHAR);
 			callableStatement.registerOutParameter(27, Types.INTEGER);
 			callableStatement.registerOutParameter(28, Types.INTEGER);
-			callableStatement.registerOutParameter(29, Types.SMALLINT);
+			callableStatement.registerOutParameter(29, Types.INTEGER);
+			callableStatement.registerOutParameter(30, Types.SMALLINT);
 			if(callableStatement.execute())	{
 				pageInfo = new PageInfo();
 				pageInfo.setPageNumber(pageNumber);
 				pageInfo.setRowsPerPage(rowsPerPage);
-				pageInfo.setFirstRow(callableStatement.getInt(26));
-				pageInfo.setLastRow(callableStatement.getInt(27));
-				pageInfo.setNumRows(callableStatement.getInt(28));
-				pageInfo.setNumPages(callableStatement.getInt(29));
+				pageInfo.setFirstRow(callableStatement.getInt(27));
+				pageInfo.setLastRow(callableStatement.getInt(28));
+				pageInfo.setNumRows(callableStatement.getInt(29));
+				pageInfo.setNumPages(callableStatement.getInt(30));
 
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
