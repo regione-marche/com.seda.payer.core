@@ -815,6 +815,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 		   				   String noteTributo, char stato, String codiceCapitolo, String accertamento
 		   				   , String articolo, String idDominio, String ibanBancario, String ibanPostale
 		   				   , String codiceTipologiaServizio //LP PG22XX05
+		   				   , String metadatiPagoPATariTefaKey, String metadatiPagoPATariTefaValue //SB PGNTCORE-4
 		   				  ) throws DaoException {
 						   //fine LP PG210130
 		CallableStatement callableStatement = null;
@@ -856,7 +857,16 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 				callableStatement.setString(25, codiceTipologiaServizio);
 			else
 				callableStatement.setString(25, "");
-			callableStatement.registerOutParameter(26, Types.INTEGER);
+			//inizio SB PGNTCORE-4
+			if(metadatiPagoPATariTefaKey == null) metadatiPagoPATariTefaKey = "";
+			callableStatement.setString(26, metadatiPagoPATariTefaKey);
+			
+			if(metadatiPagoPATariTefaValue == null) metadatiPagoPATariTefaValue = "";
+			callableStatement.setString(27, metadatiPagoPATariTefaValue);
+			//fine SB PGNTCORE-4
+			
+			
+			callableStatement.registerOutParameter(28, Types.INTEGER);
 			//fine LP PG22XX05
 			//fine LP PG210130
 			callableStatement.execute();
@@ -864,7 +874,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			//int i = callableStatement.getInt(21);
 			//inizio LP PG22XX05
 			//int i = callableStatement.getInt(25);
-			int i = callableStatement.getInt(26);
+			int i = callableStatement.getInt(28);
 			//fine LP PG22XX05
 			//fine LP PG210130
 			return i;

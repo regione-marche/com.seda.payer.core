@@ -58,6 +58,27 @@ public class ConfigUtenteTipoServizioEnte extends Lifecycle implements Serializa
     private String annoCompetenza;
     //fine SB PG210140
     private String dataDicituraPagamento; //SB PG210170
+    // inizio PAGONET-434
+    private java.lang.String strutturaEnte; 
+    
+	private java.lang.String strutturaEnteFornitore;
+    
+    private java.lang.String nomeEnte;
+    
+    private java.lang.String nomeFornitore;
+    
+    private java.lang.String cognomeEnte;
+    
+    private java.lang.String cognomeFornitore;
+    
+    private java.lang.String telefonoEnte;
+    
+    private java.lang.String telefonoFornitore;
+    
+    private java.lang.String mailEnte;
+    
+    private java.lang.String mailFornitore;
+    // fine PAGONET-434
     
     public ConfigUtenteTipoServizioEnte() { 
     	ente = new Ente();
@@ -81,8 +102,8 @@ public class ConfigUtenteTipoServizioEnte extends Lifecycle implements Serializa
         	bol.setTipoBolletino(data.getString("CFE_TBOLTBOL"));
         }
         
-        numCc = data.getString("CFE_NCFENCCP");
         intestatarioCc = data.getString("CFE_DCFEDINT");
+        numCc = data.getString("CFE_NCFENCCP");
         tipoDoc = data.getString("CFE_TCFETDOC");
         flagConRange = data.getString("CFE_FCFEFCTR");
         emailDest = data.getString("CFE_ECFEEDES");
@@ -103,6 +124,21 @@ public class ConfigUtenteTipoServizioEnte extends Lifecycle implements Serializa
         flagNotificaPagamento = data.getString("CFE_FCFENOTI"); //PG170150 CT
         urlServizioWebNotificaPagamento = data.getString("CFE_DCFEUNOT"); //PG170150 CT
         flagPagoPA = data.getString("CFE_FCFEFPPA");
+        // inizio PAGONET-434
+        strutturaEnte = data.getString("CFE_DCFEENSE");
+        strutturaEnteFornitore = data.getString("CFE_DCFEFNSE");
+        nomeEnte = data.getString("CFE_DCFEENOM");
+        nomeFornitore = data.getString("CFE_DCFEFNOM");
+        cognomeEnte = data.getString("CFE_DCFEECOG");
+        cognomeFornitore = data.getString("CFE_DCFEFCOG");
+        telefonoEnte = data.getString("CFE_DCFEETEL");
+        telefonoFornitore = data.getString("CFE_DCFEFTEL");
+        mailEnte = data.getString("CFE_DCFEEMAI");
+        mailFornitore = data.getString("CFE_DCFEFMAI");
+        // fine PAGONET-434
+        
+        
+        
         //inizio LP PG180290
         if(data.getString("CFE_CCFEMYTD") != null)
         	tipoDovuto = data.getString("CFE_CCFEMYTD").trim();
@@ -128,7 +164,86 @@ public class ConfigUtenteTipoServizioEnte extends Lifecycle implements Serializa
         try { dataDicituraPagamento = data.getString("CFE_DCFESCAP"); }catch (Exception e) {dataDicituraPagamento = "";} //SB PG210170
     }
     
-    
+    public java.lang.String getStrutturaEnte() {
+		return strutturaEnte;
+	}
+
+	public void setStrutturaEnte(java.lang.String strutturaEnte) {
+		this.strutturaEnte = strutturaEnte;
+	}
+
+	public java.lang.String getStrutturaEnteFornitore() {
+		return strutturaEnteFornitore;
+	}
+
+	public void setStrutturaEnteFornitore(java.lang.String strutturaEnteFornitore) {
+		this.strutturaEnteFornitore = strutturaEnteFornitore;
+	}
+
+	public java.lang.String getNomeEnte() {
+		return nomeEnte;
+	}
+
+	public void setNomeEnte(java.lang.String nomeEnte) {
+		this.nomeEnte = nomeEnte;
+	}
+
+	public java.lang.String getNomeFornitore() {
+		return nomeFornitore;
+	}
+
+	public void setNomeFornitore(java.lang.String nomeFornitore) {
+		this.nomeFornitore = nomeFornitore;
+	}
+
+	public java.lang.String getCognomeEnte() {
+		return cognomeEnte;
+	}
+
+	public void setCognomeEnte(java.lang.String cognomeEnte) {
+		this.cognomeEnte = cognomeEnte;
+	}
+
+	public java.lang.String getCognomeFornitore() {
+		return cognomeFornitore;
+	}
+
+	public void setCognomeFornitore(java.lang.String cognomeFornitore) {
+		this.cognomeFornitore = cognomeFornitore;
+	}
+
+	public java.lang.String getTelefonoEnte() {
+		return telefonoEnte;
+	}
+
+	public void setTelefonoEnte(java.lang.String telefonoEnte) {
+		this.telefonoEnte = telefonoEnte;
+	}
+
+	public java.lang.String getTelefonoFornitore() {
+		return telefonoFornitore;
+	}
+
+	public void setTelefonoFornitore(java.lang.String telefonoFornitore) {
+		this.telefonoFornitore = telefonoFornitore;
+	}
+
+	public java.lang.String getMailEnte() {
+		return mailEnte;
+	}
+
+	public void setMailEnte(java.lang.String mailEnte) {
+		this.mailEnte = mailEnte;
+	}
+
+	public java.lang.String getMailFornitore() {
+		return mailFornitore;
+	}
+
+	public void setMailFornitore(java.lang.String mailFornitore) {
+		this.mailFornitore = mailFornitore;
+	}
+	
 	public String getFlagTipoPag() {
 		return flagTipoPag;
 	}
@@ -529,7 +644,19 @@ public class ConfigUtenteTipoServizioEnte extends Lifecycle implements Serializa
 			else
 				arg.setNull(40, Types.VARCHAR);
 			//fine SB PG210170
+		
+		arg.setString(41, this.strutturaEnte); //PAGONET-434
+		arg.setString(42, this.nomeEnte); //PAGONET-434
+		arg.setString(43, this.cognomeEnte); //PAGONET-434
+		arg.setString(44, this.telefonoEnte); //PAGONET-434
+		arg.setString(45, this.mailEnte); //PAGONET-434
+		arg.setString(46, this.strutturaEnteFornitore); //PAGONET-434
+		arg.setString(47, this.nomeFornitore); //PAGONET-434
+		arg.setString(48, this.cognomeFornitore); //PAGONET-434
+		arg.setString(49, this.telefonoFornitore); //PAGONET-434
+		arg.setString(50, this.mailFornitore); //PAGONET-434
 	}
+		
 	
 	@Override
 	public void onUpdate(CallableStatement arg) throws SQLException {
@@ -600,6 +727,44 @@ public class ConfigUtenteTipoServizioEnte extends Lifecycle implements Serializa
 		else
 			arg.setNull(35, Types.VARCHAR);
 	    //fine LP PG200360
+		
+		
+		//inizio SB PG2100140
+		if(articolo != null)
+			arg.setString(36, articolo);
+		else
+			arg.setNull(36, Types.VARCHAR);
+		if(codiceContabilita != null)
+			arg.setString(37, codiceContabilita);
+		else
+			arg.setNull(37, Types.VARCHAR);
+		if(capitolo != null)
+			arg.setString(38, capitolo);
+		else
+			arg.setNull(38, Types.VARCHAR);
+		if(annoCompetenza != null)
+			arg.setString(39, annoCompetenza);
+		else
+			arg.setNull(39, Types.VARCHAR);
+	//fine SB PG2100140
+		//inizio SB PG210170
+		if(dataDicituraPagamento != null)
+			arg.setString(40, dataDicituraPagamento);
+		else
+			arg.setNull(40, Types.VARCHAR);
+		//fine SB PG210170
+		
+		
+		arg.setString(41, this.strutturaEnte); //PAGONET-434
+		arg.setString(42, this.nomeEnte); //PAGONET-434
+		arg.setString(43, this.cognomeEnte); //PAGONET-434
+		arg.setString(44, this.telefonoEnte); //PAGONET-434
+		arg.setString(45, this.mailEnte); //PAGONET-434
+		arg.setString(46, this.strutturaEnteFornitore); //PAGONET-434
+		arg.setString(47, this.nomeFornitore); //PAGONET-434
+		arg.setString(48, this.cognomeFornitore); //PAGONET-434
+		arg.setString(49, this.telefonoFornitore); //PAGONET-434
+		arg.setString(50, this.mailFornitore); //PAGONET-434
 	}
 	
 	@Override
