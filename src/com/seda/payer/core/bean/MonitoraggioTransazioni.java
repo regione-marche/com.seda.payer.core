@@ -18,6 +18,8 @@ public class MonitoraggioTransazioni extends Lifecycle implements Serializable {
     private java.lang.String codiceUfficio;
     private java.lang.String numeroDocumento;
     private java.lang.String numeroBollettinoPagoPA;
+    
+    
 	public java.lang.String getCodiceSocieta() {
 		return codiceSocieta;
 	}
