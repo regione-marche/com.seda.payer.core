@@ -251,19 +251,7 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		}
 		return scritture;
 	}
-	public List<RiepilogoMovimentiCBI> getListaMovimentiGroupedXmlNodo(
-						String idFlusso, Timestamp dtflusso, String idUnivocoRegol,
-			java.util.Date dtregol, String tipoIdUnivocoMitt,
-			String codIdUnivocoMitt, String denomMitt,
-			String tipoIdUnivocoRice, String codIdUnivocoRice,
-			String denomRice, long numTotPagamenti, BigDecimal impTotPagamenti,
-			String codiceIUV, String codiceRIS, BigDecimal impPagamento,
-			String esitoPagam, java.util.Date dtEsitoPagam,
-			String siglaProvincia, BigDecimal impPagamentoDa,
-			BigDecimal impPagamentoA, String dtflussoDa, String dtflussoA) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 	public String getListaMovimentiXmlNodo(long keyQuadratura, String codSocieta,
 			String codUtente, String keyGateway, String nomeFileTxt,
 			String dtInizioRend, String dtFineRend, long numTransazioni,
@@ -283,6 +271,7 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			String impPagamentoA, String dtflussoDa, String dtflussoA
 			, String dtMakeFlussoDa, String dtMakeFlussoA
 			, String tipologiaFlusso, String scartateFlusso, String recuperateFlusso, String esitoInvioWs, String esitoInvioConservazione
+			, String chiaveTransazione	//PGNTCORE-3
 			) throws DaoException {
 		    //fine LP PG200200
 		CallableStatement callableStatement = null;
@@ -346,22 +335,22 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			callableStatement.setString(21, scartateFlusso == null ? "" : scartateFlusso);
 			callableStatement.setString(22, recuperateFlusso == null ? "" : recuperateFlusso);
 			callableStatement.setString(23, esitoInvioWs == null ? "" : esitoInvioWs);
-			
 			callableStatement.setString(24, esitoInvioConservazione == null ? "" : esitoInvioConservazione);
+			callableStatement.setString(25, chiaveTransazione == null ? "" : chiaveTransazione);	//PGNTCORE-3
 			
-			callableStatement.registerOutParameter(25, Types.VARCHAR);
-			callableStatement.registerOutParameter(26, Types.INTEGER);
+			callableStatement.registerOutParameter(26, Types.VARCHAR);
 			callableStatement.registerOutParameter(27, Types.INTEGER);
 			callableStatement.registerOutParameter(28, Types.INTEGER);
-			callableStatement.registerOutParameter(29, Types.SMALLINT);
+			callableStatement.registerOutParameter(29, Types.INTEGER);
+			callableStatement.registerOutParameter(30, Types.SMALLINT);
 			if(callableStatement.execute())	{
 				pageInfo = new PageInfo();
 				pageInfo.setPageNumber(pageNumber);
 				pageInfo.setRowsPerPage(rowsPerPage);
-				pageInfo.setFirstRow(callableStatement.getInt(26));
-				pageInfo.setLastRow(callableStatement.getInt(27));
-				pageInfo.setNumRows(callableStatement.getInt(28));
-				pageInfo.setNumPages(callableStatement.getInt(29));
+				pageInfo.setFirstRow(callableStatement.getInt(27));
+				pageInfo.setLastRow(callableStatement.getInt(28));
+				pageInfo.setNumRows(callableStatement.getInt(29));
+				pageInfo.setNumPages(callableStatement.getInt(30));
 
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
@@ -412,7 +401,8 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			//String impPagamentoA, String dtflussoDa, String dtflussoA) throws DaoException {
 			String impPagamentoA, String dtflussoDa, String dtflussoA
 			, String dtMakeFlussoDa, String dtMakeFlussoA
-			, String tipologiaFlusso, String scartateFlusso, String recuperateFlusso, String esitoInvioWs
+			, String tipologiaFlusso, String scartateFlusso, String recuperateFlusso, String esitoInvioWs, String esitoInvioConservazione
+			, String chiaveTransazione	//PGNTCORE-3
 			) throws DaoException {
 		    //fine LP PG200200
 		CallableStatement callableStatement = null;
@@ -451,6 +441,8 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			callableStatement.setString(19, recuperateFlusso == null ? "" : recuperateFlusso);
 		    //fine LP PG200200
 			callableStatement.setString(20, esitoInvioWs == null ? "" : esitoInvioWs);
+			callableStatement.setString(21, esitoInvioConservazione == null ? "" : esitoInvioConservazione);
+			callableStatement.setString(22, chiaveTransazione == null ? "" : chiaveTransazione);	//PGNTCORE-3
 			List<RiepilogoMovimentiCBI> list = new ArrayList<RiepilogoMovimentiCBI>();
 			if(callableStatement.execute()) {
 				data = callableStatement.getResultSet();
