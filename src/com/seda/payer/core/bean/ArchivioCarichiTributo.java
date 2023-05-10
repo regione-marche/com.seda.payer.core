@@ -35,7 +35,11 @@ public class ArchivioCarichiTributo {
     //inizio LP PG22XX05
     private String codiceTipologiaServizio;
     //fine LP PG22XX05
-
+    
+    //inizio SB PAGONET-537
+    private String metadatiPagoPATariTefaKey;
+    private String metadatiPagoPATariTefaValue;
+    //fine SB PAGONET-537	
     public ArchivioCarichiTributo() {
     }
 
@@ -294,4 +298,20 @@ public class ArchivioCarichiTributo {
 		this.codiceTipologiaServizio = codiceTipologiaServizio;
 	}
     //fine LP PG22XX05
+
+	public String getMetadatiPagoPATariTefaKey() {
+		return metadatiPagoPATariTefaKey;
+	}
+
+	public String getMetadatiPagoPATariTefaValue() {
+		return metadatiPagoPATariTefaValue;
+	}
+
+	public void setMetadatiPagoPATariTefaKey(String metadatiPagoPATariTefaKey) {
+		this.metadatiPagoPATariTefaKey = metadatiPagoPATariTefaKey;
+	}
+
+	public void setMetadatiPagoPATariTefaValue(String metadatiPagoPATariTefaValue) {
+		this.metadatiPagoPATariTefaValue = metadatiPagoPATariTefaValue;
+	}
 }

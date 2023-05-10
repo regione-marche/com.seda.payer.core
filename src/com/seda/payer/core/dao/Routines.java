@@ -1276,6 +1276,9 @@ public enum Routines {
 	// YLM PG22XX08 INI
 	, PGPAPSP_OPE_DDL
 	// YLM PG22XX08 FINE
+	//PGNTCORE-1 SB INIZIO
+	, PYTDTSP_LST_ENT
+	//PGNTCORE-1 SB FINE
 	;
 	
     private static ResourceBundle rb;
