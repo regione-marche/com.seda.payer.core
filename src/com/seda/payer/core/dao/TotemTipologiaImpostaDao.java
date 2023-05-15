@@ -22,15 +22,15 @@ public class TotemTipologiaImpostaDao extends BaseDaoHandler {
 	public void doSave(TotemTipologiaImposta totem,String codOp) throws DaoException {
 		CallableStatement callableStatement = null;
 		try	{
-			if (checkNotNullNotEmpty(totem.getCodiceEnte())) {
+			if (checkNullOrEmpty(totem.getCodiceEnte())) {
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("codice ente"));
 			}
 			
-			if (checkNotNullNotEmpty(totem.getImpostaServizio())) {
+			if (checkNullOrEmpty(totem.getImpostaServizio())) {
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("imposta servizio"));
 			}
 			
-			if (checkNotNullNotEmpty(totem.getTipologiaImposta())) {
+			if (checkNullOrEmpty(totem.getTipologiaImposta())) {
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("tipologia imposta"));
 			}
 			
@@ -39,9 +39,11 @@ public class TotemTipologiaImpostaDao extends BaseDaoHandler {
 			
 			if (data != null){
 				callableStatement = prepareCall(Routines.TIT_DOUPDATE.routine());
-			} else callableStatement = prepareCall(Routines.TIT_DOINSERT.routine()); 
-
-			totem.save(callableStatement);
+				totem.update(callableStatement);
+			} else {
+				callableStatement = prepareCall(Routines.TIT_DOINSERT.routine());
+				totem.save(callableStatement);
+			}			
 			callableStatement.execute();
 		} catch (SQLException e) { 
 			throw new DaoException(e);
@@ -64,11 +66,11 @@ public class TotemTipologiaImpostaDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		try	{
 			callableStatement = prepareCall(Routines.TIT_DODELETE.routine());
-			if (checkNotNullNotEmpty(totem.getCodiceEnte())) { 
+			if (checkNullOrEmpty(totem.getCodiceEnte())) { 
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("codice ente")); 
 			}
 			
-			if (checkNotNullNotEmpty(totem.getImpostaServizio())) { 
+			if (checkNullOrEmpty(totem.getImpostaServizio())) { 
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("imposta servizio")); 
 			}
 			
@@ -179,8 +181,8 @@ public class TotemTipologiaImpostaDao extends BaseDaoHandler {
 		}
 	}
 
-	private boolean checkNotNullNotEmpty(String str) {
-		return str != null && str.length() != 0;
+	private boolean checkNullOrEmpty(String str) {
+		return str == null || str.length() == 0;
 	}
 
 }
