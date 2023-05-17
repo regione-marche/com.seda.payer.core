@@ -503,11 +503,16 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			   String codEnte, String tipoUff, String codUfficio, String codImposta, String numDoc, 
 			   String bollettino, String idDominio, double importo, String ibanBancario, String ibanPostale,  
 			   String codiceTipologiaServizio, //LP PG22XX05
-			   char stato) throws DaoException
+			   char stato,
+			   //inizio SB PGNTCORE-4
+			   String metadatiPagoPATariTefaKey,
+			   String metadatiPagoPATariTefaValue
+			   //fine SB PGNTCORE-4
+			   ) throws DaoException
 	{
 		CallableStatement callableStatement = null;	
 		try {
-			callableStatement = prepareCall("PYEHDSP_INS");	
+			callableStatement = prepareCall(Routines.EHD_DOINSERT.routine());	
 			callableStatement.setString(1, tipoRecord);
 			callableStatement.setString(2, codiceUtente);
 			callableStatement.setDate(3, dataFlusso);
@@ -536,9 +541,19 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 				callableStatement.setString(17, codiceTipologiaServizio);
 			else
 				callableStatement.setString(17, "");
-			callableStatement.registerOutParameter(18, Types.INTEGER);
+			//inizio SB PGNTCORE-4
+			if(metadatiPagoPATariTefaKey != null)
+				callableStatement.setString(18, metadatiPagoPATariTefaKey);
+			else
+				callableStatement.setString(18, "");
+			if(metadatiPagoPATariTefaValue != null)
+				callableStatement.setString(19, metadatiPagoPATariTefaValue);
+			else
+				callableStatement.setString(19, "");
+			//fine SB PGNTCORE-4
+			callableStatement.registerOutParameter(20, Types.INTEGER);
 			callableStatement.execute();
-			int i = callableStatement.getInt(18);
+			int i = callableStatement.getInt(20);
 			//fine LP PG22XX05
 			return i;
 		} catch (SQLException x) {
