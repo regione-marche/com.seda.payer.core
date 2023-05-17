@@ -51,7 +51,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			String tx_strumento, String tx_tipo_carta, String tx_id_bollettino, String tx_servizio,
 			String tx_stato_rendicontazione, String tx_stato_riconciliazione, String tx_importo_da, 
 			String tx_importo_a, String tx_data_da,String tx_data_a, int chiaveQuadratura, String tx_id_Terminale_Atm, String tx_id_Transazione_Atm,
-			String tx_chiave_rendicontazione, int tx_gg_storno, String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a,String tx_codice_IUV, String idFlussoQuadratura, String tx_recuperate ) throws DaoException {
+			String tx_chiave_rendicontazione, int tx_gg_storno, String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a,String tx_codice_IUV, String idFlussoQuadratura, String tx_recuperate, String tx_codice_fiscale ) throws DaoException {
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		try {
@@ -62,7 +62,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 					tx_strumento, tx_tipo_carta, tx_id_bollettino, tx_servizio, tx_stato_rendicontazione, 
 					tx_stato_riconciliazione, tx_importo_da, tx_importo_a, tx_data_da, tx_data_a, 
 					chiaveQuadratura, tx_id_Terminale_Atm, tx_id_Transazione_Atm, 
-					tx_chiave_rendicontazione, tx_gg_storno, tx_id_terminale_pos_fisico, tx_data_accr_da, tx_data_accr_a, tx_codice_IUV, idFlussoQuadratura, tx_recuperate);
+					tx_chiave_rendicontazione, tx_gg_storno, tx_id_terminale_pos_fisico, tx_data_accr_da, tx_data_accr_a, tx_codice_IUV, idFlussoQuadratura, tx_recuperate,tx_codice_fiscale);
 			if (data != null) {
 				loadWebRowSet(data);
 				System.out.println("[CORE - ManagerTransazioniDao - getListaTransazioni()] FINE CHIAMATA e FINE LOADWEBROWSET");
@@ -129,7 +129,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			String tx_stato_rendicontazione, String tx_stato_riconciliazione, String tx_importo_da, 
 			String tx_importo_a, String tx_data_da,String tx_data_a, int chiaveQuadratura,
 			String tx_id_Terminale_Atm, String tx_id_transazione_Atm, String chiaveRendicontazione, 
-			String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a, String tx_codice_IUV, String idFlussoQuadratura, String cuteCute) throws DaoException	{	
+			String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a, String tx_codice_IUV, String idFlussoQuadratura, String cuteCute,String codice_fiscale) throws DaoException	{	
 
 		CallableStatement callableStatement = null;
 		ResultSet rsDati = null;
@@ -174,6 +174,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(28,tx_codice_IUV == null ? "" :  tx_codice_IUV);			//27032015 GG
 			callableStatement.setString(29,idFlussoQuadratura == null ? "" :  idFlussoQuadratura);	//15022017 GG
 			callableStatement.setString(30, cuteCute); //PG190120_001
+			callableStatement.setString(31, codice_fiscale);
 			
 			StringBuffer sb = new StringBuffer();
 			boolean resultsAvailable = callableStatement.execute();
@@ -235,7 +236,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			String tx_strumento, String tx_tipo_carta, String tx_id_bollettino, String tx_servizio,
 			String tx_stato_rendicontazione, String tx_stato_riconciliazione,String tx_importo_da, 
 			String tx_importo_a, String tx_data_da,String tx_data_a, int chiaveQuadratura, String tx_id_Terminale_Atm,String tx_id_Transazione_Atm, 
-			String tx_chiave_rendicontazione, int tx_gg_storno, String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a, String tx_codice_IUV, String idFlussoQuadratura, String tx_recuperate) throws SQLException, IllegalArgumentException, HelperException {
+			String tx_chiave_rendicontazione, int tx_gg_storno, String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a, String tx_codice_IUV, String idFlussoQuadratura, String tx_recuperate, String tx_codice_fiscale) throws SQLException, IllegalArgumentException, HelperException {
 	   
 		BigDecimal tx_importo_da_bd = new BigDecimal("0");
 	    BigDecimal tx_importo_a_bd = new BigDecimal("0");
@@ -276,20 +277,26 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 		callableStatement.setString(32,tx_codice_IUV == null ? "" : tx_codice_IUV);
 		callableStatement.setString(33,idFlussoQuadratura == null ? "" : idFlussoQuadratura);
 		callableStatement.setString(34, tx_recuperate == null ? "" : tx_recuperate);   //PG200050_001 SB
+		callableStatement.setString(35, tx_codice_fiscale == null ? "" : tx_codice_fiscale); // PAGONET-437
 		
-		callableStatement.registerOutParameter(35, Types.VARCHAR);
-		callableStatement.registerOutParameter(36, Types.INTEGER);
+		
+		
+		callableStatement.registerOutParameter(36, Types.VARCHAR);
 		callableStatement.registerOutParameter(37, Types.INTEGER);
 		callableStatement.registerOutParameter(38, Types.INTEGER);
-		callableStatement.registerOutParameter(39, Types.SMALLINT);
+		callableStatement.registerOutParameter(39, Types.INTEGER);
+		callableStatement.registerOutParameter(40, Types.SMALLINT);
+		
+		callableStatement.toString();
+		
 		if(callableStatement.execute())	{
 			pageInfo = new PageInfo();
 			pageInfo.setPageNumber(pageNumber);
 			pageInfo.setRowsPerPage(rowsPerPage);
-			pageInfo.setFirstRow(callableStatement.getInt(36));
-			pageInfo.setLastRow(callableStatement.getInt(37));
-			pageInfo.setNumRows(callableStatement.getInt(38));
-			pageInfo.setNumPages(callableStatement.getInt(39));
+			pageInfo.setFirstRow(callableStatement.getInt(37));
+			pageInfo.setLastRow(callableStatement.getInt(38));
+			pageInfo.setNumRows(callableStatement.getInt(39));
+			pageInfo.setNumPages(callableStatement.getInt(40));
 
 			ResultSet data = callableStatement.getResultSet();
 			return data;
@@ -304,11 +311,12 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			String tx_strumento, String tx_tipo_carta, String tx_id_bollettino, String tx_servizio,
 			String tx_stato_rendicontazione, String tx_stato_riconciliazione,String tx_importo_da, 
 			String tx_importo_a, String tx_data_da,String tx_data_a, int chiaveQuadratura, String tx_id_Terminale_Atm, String tx_id_Transazione_Atm,
-			String chiaveRendicontazione, String tx_mostra, String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a, String tx_codice_IUV, String idFlussoQuadratura, String tx_recuperate) throws DaoException {
-	    BigDecimal tx_importo_da_bd = new BigDecimal("0");
-	    BigDecimal tx_importo_a_bd = new BigDecimal("0");
-		CallableStatement callableStatement = null;
-		ResultSet data = null;
+			String chiaveRendicontazione, String tx_mostra, String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a, String tx_codice_IUV, String idFlussoQuadratura, String tx_recuperate,String tx_codice_fiscale) throws DaoException {
+		    BigDecimal tx_importo_da_bd = new BigDecimal("0");
+		    BigDecimal tx_importo_a_bd = new BigDecimal("0");
+			CallableStatement callableStatement = null;
+			ResultSet data = null;
+			
 		try {
 			if((tx_importo_da != null)&&(!tx_importo_da.equals("")))tx_importo_da_bd = new BigDecimal(tx_importo_da);
 		    if((tx_importo_a != null)&&(!tx_importo_a.equals("")))tx_importo_a_bd = new BigDecimal(tx_importo_a);
@@ -342,16 +350,15 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(27,tx_codice_IUV == null ? "" :  tx_codice_IUV);			//17032015 GG
 			callableStatement.setString(28,idFlussoQuadratura == null ? "" :  idFlussoQuadratura);	//15022017 GG
 			callableStatement.setString(29,tx_recuperate==null ? "" : tx_recuperate);
+			callableStatement.setString(30,tx_mostra == null ? "" : tx_mostra);
+			callableStatement.setString(31, tx_codice_fiscale == null ? "" : tx_codice_fiscale); // PAGONET-437
 			
-			callableStatement.registerOutParameter(30, Types.DECIMAL);
-			callableStatement.registerOutParameter(31, Types.DECIMAL);
 			callableStatement.registerOutParameter(32, Types.DECIMAL);
 			callableStatement.registerOutParameter(33, Types.DECIMAL);
 			callableStatement.registerOutParameter(34, Types.DECIMAL);
-			 
 			callableStatement.registerOutParameter(35, Types.DECIMAL);
-
-			callableStatement.setString(36,tx_mostra == null ? "" : tx_mostra);
+			callableStatement.registerOutParameter(36, Types.DECIMAL);
+			callableStatement.registerOutParameter(37, Types.DECIMAL);
 
 			if(callableStatement.execute()) {
 				BigDecimal totale = callableStatement.getBigDecimal(35);
@@ -402,7 +409,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			String tx_stato_rendicontazione, String tx_stato_riconciliazione,String tx_importo_da, 
 			String tx_importo_a, String tx_data_da,String tx_data_a, int chiaveQuadratura,String tx_id_Terminale_Atm, String tx_id_Transazione_Atm,
 			String chiaveRendicontazione,
-			String tx_mostra, String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a, String tx_codice_IUV, String idFlussoQuadratura, String tx_recuperate) throws DaoException
+			String tx_mostra, String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a, String tx_codice_IUV, String idFlussoQuadratura, String tx_recuperate,String tx_codice_fiscale) throws DaoException
 	{
 	    BigDecimal tx_importo_da_bd = new BigDecimal("0");
 	    BigDecimal tx_importo_a_bd = new BigDecimal("0");
@@ -441,15 +448,16 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(27,tx_codice_IUV == null ? "" :  tx_codice_IUV);			//17032015 GG
 			callableStatement.setString(28,idFlussoQuadratura == null ? "" :  idFlussoQuadratura);	//15022017 GG
 			callableStatement.setString(29,tx_recuperate == null ? "" :  tx_recuperate);	//PG200050_001
+			callableStatement.setString(30, tx_codice_fiscale == null ? "" : tx_codice_fiscale); // PAGONET-437
 			
-			callableStatement.registerOutParameter(30, Types.DECIMAL);
 			callableStatement.registerOutParameter(31, Types.DECIMAL);
 			callableStatement.registerOutParameter(32, Types.DECIMAL);
 			callableStatement.registerOutParameter(33, Types.DECIMAL);
 			callableStatement.registerOutParameter(34, Types.DECIMAL);
- 
 			callableStatement.registerOutParameter(35, Types.DECIMAL);
-			callableStatement.setString(36,tx_mostra == null ? "" : tx_mostra);
+ 
+			callableStatement.registerOutParameter(36, Types.DECIMAL);
+			callableStatement.setString(37,tx_mostra == null ? "" : tx_mostra);
 
 			if(callableStatement.execute()) {
 				BigDecimal totale = callableStatement.getBigDecimal(35);
@@ -1881,7 +1889,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			String tx_strumento, String tx_tipo_carta, String tx_id_bollettino, String tx_servizio,
 			String tx_stato_rendicontazione, String tx_stato_riconciliazione,String tx_importo_da, 
 			String tx_importo_a, String tx_data_da,String tx_data_a, int chiaveQuadratura, String tx_id_Terminale_Atm, String tx_id_Transazione_Atm,
-			String chiaveRendicontazione, String tx_mostra, String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a, String tx_codice_IUV, String idFlussoQuadratura, String tx_recuperate) throws DaoException {
+			String chiaveRendicontazione, String tx_mostra, String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a, String tx_codice_IUV, String idFlussoQuadratura, String tx_recuperate, String tx_codice_fiscale) throws DaoException {
 	   
 		BigDecimal tx_importo_da_bd = new BigDecimal("0");
 	    BigDecimal tx_importo_a_bd = new BigDecimal("0");
@@ -1922,10 +1930,11 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(28,tx_codice_IUV == null ? "" :  tx_codice_IUV);			//17032015 GG
 			callableStatement.setString(29,idFlussoQuadratura == null ? "" :  idFlussoQuadratura);	//15022017 GG
 			callableStatement.setString(30, tx_recuperate==null ? "" : tx_recuperate);		//PG200050_001 SB
+			callableStatement.setString(31, tx_codice_fiscale==null ? "" : tx_codice_fiscale);
 			
-			callableStatement.registerOutParameter(31, Types.DECIMAL);
 			callableStatement.registerOutParameter(32, Types.DECIMAL);
 			callableStatement.registerOutParameter(33, Types.DECIMAL);
+			callableStatement.registerOutParameter(34, Types.DECIMAL);
 			
 			if(callableStatement.execute()) {
 				List<ModuloIntegrazionePagamentiOneri> list = new ArrayList<ModuloIntegrazionePagamentiOneri>();
