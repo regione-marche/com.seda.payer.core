@@ -1279,6 +1279,7 @@ public enum Routines {
 	//PGNTCORE-1 SB INIZIO
 	, PYTDTSP_LST_ENT
 	//PGNTCORE-1 SB FINE
+	, EHD_DOINSERT
 	;
 	
     private static ResourceBundle rb;
