@@ -47,8 +47,8 @@ public class TotemTipologiaImpostaDao extends BaseDaoHandler {
 			callableStatement.execute();
 		} catch (SQLException e) { 
 			throw new DaoException(e);
-		} catch (IllegalArgumentException e) {
-			throw new DaoException(e);
+		} catch (IllegalArgumentException x) {
+			throw new DaoException(Integer.parseInt(Messages.ILL_ARG_ERR_CODE.format()),x.getMessage(),x);
 		} catch (HelperException e) {
 			throw new DaoException(e);
 		}   finally {	
@@ -183,6 +183,44 @@ public class TotemTipologiaImpostaDao extends BaseDaoHandler {
 
 	private boolean checkNullOrEmpty(String str) {
 		return str == null || str.length() == 0;
+	}
+
+	public TotemTipologiaImposta doTipologiaImpostaSelect(String codiceEnte, String impostaServizio) throws DaoException {
+		CallableStatement callableStatement = null;
+		ResultSet data = null;
+
+		try	{
+			callableStatement = prepareCall(Routines.TIT_DOSELECT2.routine());
+			callableStatement.setString(1, codiceEnte);
+			callableStatement.setString(2, impostaServizio);
+			
+			if (callableStatement.execute()) {
+				data = callableStatement.getResultSet();				
+				if (data.next())
+					return new TotemTipologiaImposta(data);
+			} return null;
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		} catch (IllegalArgumentException e) {
+			throw new DaoException(e);
+		} catch (HelperException e) {
+			throw new DaoException(e);
+		} finally {	
+			if(data != null) {
+				try {
+					data.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if(callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 
 }
