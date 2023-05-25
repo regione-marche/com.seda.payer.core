@@ -5,6 +5,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.util.Calendar;
 
 import com.seda.data.helper.HelperException;
 import com.seda.payer.commons.bean.TypeRequest;
@@ -185,20 +186,17 @@ public class TotemTipologiaImpostaDao extends BaseDaoHandler {
 		return str == null || str.length() == 0;
 	}
 
-	public TotemTipologiaImposta doTipologiaImpostaSelect(String codiceEnte, String impostaServizio) throws DaoException {
+	public TotemTipologiaImposta recuperaTipologiaImposta(String codiceEnte, String impostaServizio) throws DaoException {
 		CallableStatement callableStatement = null;
-		ResultSet data = null;
 
 		try	{
 			callableStatement = prepareCall(Routines.TIT_DOSELECT2.routine());
 			callableStatement.setString(1, codiceEnte);
 			callableStatement.setString(2, impostaServizio);
-			
-			if (callableStatement.execute()) {
-				data = callableStatement.getResultSet();				
-				if (data.next())
-					return new TotemTipologiaImposta(data);
-			} return null;
+			callableStatement.registerOutParameter(3, Types.INTEGER);
+
+			callableStatement.execute();
+			return new TotemTipologiaImposta("", "", callableStatement.getString(3), Calendar.getInstance(), "");
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
@@ -206,13 +204,6 @@ public class TotemTipologiaImpostaDao extends BaseDaoHandler {
 		} catch (HelperException e) {
 			throw new DaoException(e);
 		} finally {	
-			if(data != null) {
-				try {
-					data.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
 			if(callableStatement != null) {
 				try {
 					callableStatement.close();
