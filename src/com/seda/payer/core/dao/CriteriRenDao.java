@@ -70,7 +70,8 @@ public class CriteriRenDao extends BaseDaoHandler{
 						                               data.getDate("REE_GREEGAGG"), data.getString("REE_CREECOPE"),data.getString("REE_FREETREN"),
 						                               data.getString("REE_FREECARI"),data.getString("REE_CREEENTE"),data.getString("REE_CREEIMPS"),
 						                               data.getString("REE_FREECONT"),data.getString("REE_CREECTRB"), data.getString("REE_CREEAWBS"),
-						                               data.getString("REE_CREEUWBS"), data.getString("REE_CREEUTWS"), data.getString("REE_CREEPWWS"));
+						                               data.getString("REE_CREEUWBS"), data.getString("REE_CREEUTWS"), data.getString("REE_CREEPWWS"),
+						                               "");
 				            return null;
 			 
 				}
@@ -91,7 +92,8 @@ public class CriteriRenDao extends BaseDaoHandler{
                                               data2.getDate("RES_GRESGAGG"), data2.getString("RES_CRESCOPE"), data2.getString("RES_FRESTREN"),
                                               data2.getString("RES_FRESCARI"),data2.getString("RES_CRESENTE"),data2.getString("RES_CRESIMPS"),
 				                              data2.getString("RES_FRESCONT"),data2.getString("RES_CRESCTRB"), data2.getString("RES_CRESAWBS"),
-				                              data2.getString("RES_CRESUWBS"), data2.getString("RES_CRESUTWS"), data2.getString("RES_CRESPWWS"));
+				                              data2.getString("RES_CRESUWBS"), data2.getString("RES_CRESUTWS"), data2.getString("RES_CRESPWWS"),
+				                              "");
 					return null;
 			}
 		   }

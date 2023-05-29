@@ -35,6 +35,7 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_CREEENTE" IS 'CODICE ENTE'!
 COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_CREEIMPS" IS 'CODICE IMPOSTA SERVIZIO'!
 COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_FREECONT" IS 'FLAG NUMERO DOCUMENTO = CODICE CONTRIBUENTE'!
 COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_CREECTRB" IS 'CODICE TRIBUTO'!
+COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_TRAQTRCN" IS 'TRACCIATO SEDA 400'!
  */
 	private String codiceSocieta;
 	private String codiceUtente;
@@ -69,6 +70,7 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_CREECTRB" IS 'CODICE TRIBUTO'!
 	//inizio LP PG200060
 	private String passwordZip;
 	private String flagTracciatoComandiPolizia;
+	private String tracciatoQuattrocento = "";
 	
 	public ConfRendUtenteServizioEnte(String codiceSocieta,
 			String codiceUtente, String chiaveEnte, String tipologiaServizio,
@@ -79,7 +81,7 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_CREECTRB" IS 'CODICE TRIBUTO'!
 			String flagAbilitazioneInvioFtp, int maxAttachSizeKb,
 			Calendar dataUltimoAggiornamento,
 			String operatoreUltimoAggiornamento,
-			String flagTipoRendicontazione, String passwordZip) {
+			String flagTipoRendicontazione, String passwordZip,String tracciatoQuattrocento) {
 		this.codiceSocieta = codiceSocieta;
 		this.codiceUtente = codiceUtente;
 		this.chiaveEnte = chiaveEnte;
@@ -103,13 +105,14 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_CREECTRB" IS 'CODICE TRIBUTO'!
 		this.impServizio = ""; 
 		this.flagCodContrib = ""; 
 		this.codTributo = "";
-		this.formatoFileRend = "TXT";
+		this.formatoFileRend = "";
 		this.flagAbilitazioneInvioWebService = "";
 		this.urlWebServiceEnte = "";
 		this.utenteWebServiceEnte = "";
 		this.passwordWebServiceEnte = "";
 		this.passwordZip = passwordZip;
 		this.flagTracciatoComandiPolizia = "";
+		this.tracciatoQuattrocento = tracciatoQuattrocento;
 	}
 	//fine LP PG200060
 
@@ -126,8 +129,8 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_CREECTRB" IS 'CODICE TRIBUTO'!
 			String ente,String impServizio,String flagCodContrib
 			,String codTributo	//PG180260 GG 04122018
 			,String formatoFileRend, String flagAbilitazioneInvioWebService,//PG180010 
-			String urlWebServiceEnte, String utenteWebServiceEnte, String passwordWebServiceEnte//PG180010 
-		) {
+			String urlWebServiceEnte, String utenteWebServiceEnte, String passwordWebServiceEnte //PG180010 
+		,String tracciatoQuattrocento) {
 		this.codiceSocieta = codiceSocieta;
 		this.codiceUtente = codiceUtente;
 		this.chiaveEnte = chiaveEnte;
@@ -162,6 +165,7 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_CREECTRB" IS 'CODICE TRIBUTO'!
 		this.passwordZip = "";
 		//fine LP PG200060
 		this.flagTracciatoComandiPolizia = "";
+		this.tracciatoQuattrocento = tracciatoQuattrocento;
 	}
     
     //PG200280 GG - inizio
@@ -179,7 +183,7 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_CREECTRB" IS 'CODICE TRIBUTO'!
 			,String codTributo	//PG180260 GG 04122018
 			,String formatoFileRend, String flagAbilitazioneInvioWebService,//PG180010 
 			String urlWebServiceEnte, String utenteWebServiceEnte, String passwordWebServiceEnte//PG180010 
-			, String flagTracciatoComandiPolizia	//PG200280
+			, String flagTracciatoComandiPolizia,String tracciatoQuattrocento	//PG200280
 		) {
 		this.codiceSocieta = codiceSocieta;
 		this.codiceUtente = codiceUtente;
@@ -215,6 +219,7 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_CREECTRB" IS 'CODICE TRIBUTO'!
 		this.passwordZip = "";
 		//fine LP PG200060
 		this.flagTracciatoComandiPolizia = flagTracciatoComandiPolizia;
+		this.tracciatoQuattrocento = tracciatoQuattrocento;
 	}
     //PG200280 GG - fine
 
@@ -249,14 +254,23 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_CREECTRB" IS 'CODICE TRIBUTO'!
 		codTributo= data.getString("REE_CREECTRB");		//PG180260 GG 04122018 
 	    //PG180010 inizio
 		formatoFileRend = data.getString("REE_CREEFFRE");
-		flagAbilitazioneInvioWebService = data.getString("REE_CREEAWBS");;
-		urlWebServiceEnte = data.getString("REE_CREEUWBS");;
-		utenteWebServiceEnte = data.getString("REE_CREEUTWS");;
-		passwordWebServiceEnte = data.getString("REE_CREEPWWS");;
+		flagAbilitazioneInvioWebService = data.getString("REE_CREEAWBS");
+		urlWebServiceEnte = data.getString("REE_CREEUWBS");
+		utenteWebServiceEnte = data.getString("REE_CREEUTWS");
+		passwordWebServiceEnte = data.getString("REE_CREEPWWS");
 		//inizio LP PG200060
 		passwordZip = data.getString("REE_DREEPZIP");
 		//fine LP PG200060
  		flagTracciatoComandiPolizia= data.getString("REE_FREETRCP");	//PG200280 GG
+ 		/*
+ 		if(data.getString("REE_TRAQTRCN") == null || data.getString("REE_TRAQTRCN").equals("")) {
+ 			tracciatoQuattrocento = "N";
+ 		}
+ 		else {
+ 			tracciatoQuattrocento = "";
+ 		}
+ 		*/
+ 		
 	}
 	@Override
 	public void onDelete(CallableStatement arg) throws SQLException {
@@ -313,6 +327,7 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_CREECTRB" IS 'CODICE TRIBUTO'!
 		arg.setString(28, this.passwordZip); 
 		//fine LP PG200060
 		arg.setString(29, this.flagTracciatoComandiPolizia != null ? this.flagTracciatoComandiPolizia : ""); 	//PG200280
+		//arg.setString(30,this.tracciatoQuattrocento != null ? this.tracciatoQuattrocento : "");
 	}
 
 	@Override
@@ -361,9 +376,19 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_CREECTRB" IS 'CODICE TRIBUTO'!
 		arg.setString(27, this.passwordWebServiceEnte != null ? this.passwordWebServiceEnte : "");
 		arg.setString(28, this.passwordZip); 
 		//fine LP PG200060
-		arg.setString(29, this.flagTracciatoComandiPolizia != null ? this.flagTracciatoComandiPolizia : ""); 
+		arg.setString(29, this.flagTracciatoComandiPolizia != null ? this.flagTracciatoComandiPolizia : "");
+		//arg.setString(30,this.tracciatoQuattrocento != null ? this.tracciatoQuattrocento : "");
 	}
 
+	
+	public String gettracciatoQuattrocento() {
+		return this.tracciatoQuattrocento;
+	}
+
+	public void settracciatoQuattrocento(String tracciatoQuattrocento) {
+		this.tracciatoQuattrocento = tracciatoQuattrocento;
+	}
+	
 	public String getCodiceSocieta() {
 		return codiceSocieta;
 	}
