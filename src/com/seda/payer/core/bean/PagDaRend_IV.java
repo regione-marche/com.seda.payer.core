@@ -108,7 +108,19 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
 	private java.lang.String flagGdc;
 	//PG200280 GG - fine
 	
+	private java.lang.String rendQuattrocento;
 	
+	
+	public PagDaRend_IV() {}
+	
+	
+	public java.lang.String getrendQuattrocento() {
+		return rendQuattrocento;
+	}
+
+	public void setrendQuattrocento(java.lang.String rendQuattrocento) {
+		this.rendQuattrocento = rendQuattrocento;
+	}
 	
 	//PG170070_002 GG - inizio
 	public java.lang.String getIdFlussoQuadratura() {
@@ -127,8 +139,6 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
 	public void setCodiceIUV(java.lang.String codiceIUV) {
 		this.codiceIUV = codiceIUV;
 	}
-
-	public PagDaRend_IV() {}
 
 	public java.lang.String getChiaveTransazioneDettaglio() {
 		return chiaveTransazioneDettaglio;
@@ -845,6 +855,8 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
 	    bean.causaleGdc = data.getString("MDC_CMDCCAUS");
 	    bean.flagGdc = data.getString("ENT_FENTFGDC");
 	    //PG200280 GG - fine
+	    
+	    bean.rendQuattrocento = "";
 	    
 	    return bean;
 		

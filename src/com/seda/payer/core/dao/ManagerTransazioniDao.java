@@ -409,7 +409,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			String tx_stato_rendicontazione, String tx_stato_riconciliazione,String tx_importo_da, 
 			String tx_importo_a, String tx_data_da,String tx_data_a, int chiaveQuadratura,String tx_id_Terminale_Atm, String tx_id_Transazione_Atm,
 			String chiaveRendicontazione,
-			String tx_mostra, String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a, String tx_codice_IUV, String idFlussoQuadratura, String tx_recuperate,String tx_codice_fiscale) throws DaoException
+			String tx_mostra, String tx_id_terminale_pos_fisico, String tx_data_accr_da, String tx_data_accr_a, String tx_codice_IUV, String idFlussoQuadratura, String tx_recuperate,String dbSchemaCodSocieta,String tx_codice_fiscale) throws DaoException
 	{
 	    BigDecimal tx_importo_da_bd = new BigDecimal("0");
 	    BigDecimal tx_importo_a_bd = new BigDecimal("0");
