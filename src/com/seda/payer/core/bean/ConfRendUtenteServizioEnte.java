@@ -70,7 +70,7 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_TRAQTRCN" IS 'TRACCIATO SEDA 400'!
 	//inizio LP PG200060
 	private String passwordZip;
 	private String flagTracciatoComandiPolizia;
-	private String tracciatoQuattrocento = "";
+	private String tracciatoQuattrocento;
 	
 	public ConfRendUtenteServizioEnte(String codiceSocieta,
 			String codiceUtente, String chiaveEnte, String tipologiaServizio,
@@ -262,14 +262,14 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_TRAQTRCN" IS 'TRACCIATO SEDA 400'!
 		passwordZip = data.getString("REE_DREEPZIP");
 		//fine LP PG200060
  		flagTracciatoComandiPolizia= data.getString("REE_FREETRCP");	//PG200280 GG
- 		/*
- 		if(data.getString("REE_TRAQTRCN") == null || data.getString("REE_TRAQTRCN").equals("")) {
+ 		
+ 		if(data.getString("REE_TREETRCN") == null || data.getString("REE_TREETRCN").equals("")) {
  			tracciatoQuattrocento = "N";
  		}
  		else {
- 			tracciatoQuattrocento = "";
+ 			this.tracciatoQuattrocento = data.getString("REE_TREETRCN");
  		}
- 		*/
+ 		
  		
 	}
 	@Override
@@ -327,7 +327,7 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_TRAQTRCN" IS 'TRACCIATO SEDA 400'!
 		arg.setString(28, this.passwordZip); 
 		//fine LP PG200060
 		arg.setString(29, this.flagTracciatoComandiPolizia != null ? this.flagTracciatoComandiPolizia : ""); 	//PG200280
-		//arg.setString(30,this.tracciatoQuattrocento != null ? this.tracciatoQuattrocento : "");
+		arg.setString(30,this.tracciatoQuattrocento != null ? this.tracciatoQuattrocento : "");
 	}
 
 	@Override
@@ -377,7 +377,7 @@ COMMENT ON COLUMN "SE000SV"."PYREETB"."REE_TRAQTRCN" IS 'TRACCIATO SEDA 400'!
 		arg.setString(28, this.passwordZip); 
 		//fine LP PG200060
 		arg.setString(29, this.flagTracciatoComandiPolizia != null ? this.flagTracciatoComandiPolizia : "");
-		//arg.setString(30,this.tracciatoQuattrocento != null ? this.tracciatoQuattrocento : "");
+		arg.setString(30,this.tracciatoQuattrocento != null ? this.tracciatoQuattrocento : "");
 	}
 
 	

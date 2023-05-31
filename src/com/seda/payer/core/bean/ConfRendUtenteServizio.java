@@ -260,13 +260,13 @@ COMMENT ON COLUMN "SE000SV"."PYRESTB"."RES_CRESCTRB" IS 'CODICE TRIBUTO'!
 		passwordWebServiceEnte = data.getString("RES_CRESPWWS");
 		flagTracciatoComandiPolizia = data.getString("RES_FRESTRCP");	//PG200280
 		
-		/*
- 		if(data.getString("RES_TRAQTRCN") == null || data.getString("RES_TRAQTRCN").equals("")) {
+		
+ 		if(data.getString("RES_TRESTRCN") == null || data.getString("RES_TRESTRCN").equals("")) {
  			tracciatoQuattrocento = "N";
  		}
  		else {
- 			tracciatoQuattrocento = "";
- 		}*/
+ 			tracciatoQuattrocento = data.getString("RES_TRESTRCN");
+ 		}
  		
 	}
 
@@ -308,7 +308,7 @@ COMMENT ON COLUMN "SE000SV"."PYRESTB"."RES_CRESCTRB" IS 'CODICE TRIBUTO'!
 		arg.setString(26, this.passwordWebServiceEnte != null ? this.passwordWebServiceEnte : "");
 		//fine LP PG200060
 		arg.setString(27, this.flagTracciatoComandiPolizia != null ? this.flagTracciatoComandiPolizia : "");//PG200280
-		//arg.setString(28, this.tracciatoQuattrocento != null ? this.tracciatoQuattrocento : ""); 
+		arg.setString(28, this.tracciatoQuattrocento != null ? this.tracciatoQuattrocento : ""); 
 	}
 
 	@Override
@@ -341,7 +341,7 @@ COMMENT ON COLUMN "SE000SV"."PYRESTB"."RES_CRESCTRB" IS 'CODICE TRIBUTO'!
 		arg.setString(26, this.passwordWebServiceEnte != null ? this.passwordWebServiceEnte : "");
 		//fine LP PG200060
 		arg.setString(27, this.flagTracciatoComandiPolizia != null ? this.flagTracciatoComandiPolizia : "");
-		//arg.setString(28, this.tracciatoQuattrocento != null ? this.tracciatoQuattrocento : "");
+		arg.setString(28, this.tracciatoQuattrocento != null ? this.tracciatoQuattrocento : "");
 	}
 
 	
