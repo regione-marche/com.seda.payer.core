@@ -260,5 +260,31 @@ public class TxTransazioniIVDao   extends BaseDaoHandler {
 		}
 	}
 //PG170300 - 30/1/2018 - FINE
+	
+	//PGNTCORE-6 GG - inizio
+		public void updateTransazioneIVChiaveEnteCor(TransazioneIV transazione) throws DaoException, SQLException {
+			CallableStatement callableStatement = null;
+			try
+			{
+				callableStatement = prepareCall(Routines.PYTDTSP_UPD_KENC.routine());
+				callableStatement.setString(1, transazione.getChiaveTransazioneGenerale());
+				callableStatement.setString(2, transazione.getChiaveEnteCor());
+				callableStatement.registerOutParameter(3, Types.INTEGER);	
+				callableStatement.execute();
+			} catch (IllegalArgumentException x) {
+				throw new DaoException(x);
+			} catch (HelperException x) {
+				throw new DaoException(x);
+			} finally {
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	//PGNTCORE-6 GG - fine
 
 }
