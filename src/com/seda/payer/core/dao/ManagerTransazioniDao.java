@@ -62,9 +62,45 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 					tx_strumento, tx_tipo_carta, tx_id_bollettino, tx_servizio, tx_stato_rendicontazione, 
 					tx_stato_riconciliazione, tx_importo_da, tx_importo_a, tx_data_da, tx_data_a, 
 					chiaveQuadratura, tx_id_Terminale_Atm, tx_id_Transazione_Atm, 
-					tx_chiave_rendicontazione, tx_gg_storno, tx_id_terminale_pos_fisico, tx_data_accr_da, tx_data_accr_a, tx_codice_IUV, idFlussoQuadratura, tx_recuperate,tx_codice_fiscale);
+					tx_chiave_rendicontazione, tx_gg_storno, tx_id_terminale_pos_fisico, tx_data_accr_da, 
+					tx_data_accr_a, tx_codice_IUV, idFlussoQuadratura, tx_recuperate,tx_codice_fiscale);
 			if (data != null) {
 				loadWebRowSet(data);
+				
+				System.out.println("PARAMETRI PER CHIAMARE LA SP: " + 
+				 "CALL `PAY00DB0_SE000SV`.`PYTRASP_LST_MG_CSV`( " + 
+				  "'"+tx_societa+"' ,"+
+				  "'"+tx_provincia+"' ,"+
+				  "'"+tx_provincia+"' ,"+
+				  "'"+tx_utente+"' ,"+
+				  "'"+tx_ente+"' ,"+ // 5
+				  "'"+tx_mostra+"' ,"+
+				  "'"+tx_codice_transazione+"' ,"+
+				  "'"+tx_indirizzo_ip+"' ,"+
+				  "'"+tx_user_email+"' ,"+
+				  "'"+tx_user_sms+"' ,"+ // 10
+				  "'"+tx_canale_pagamento+"' ,"+
+				  "'"+tx_strumento+"' ,"+ 
+				  "'"+tx_tipo_carta+"' ,"+
+				  "'"+tx_id_bollettino+"' ,"+ 
+				  "'"+tx_servizio+"' ,"+ // 15
+				  "'"+tx_stato_rendicontazione+"' ,"+
+				  "'"+tx_importo_da+"' ,"+
+				  "'"+tx_importo_a+"' ,"+
+				  "'"+tx_data_da+"' ,"+ // 20
+				  "'"+tx_data_a+"' ,"+
+				  "'"+chiaveQuadratura+"' ,"+
+				  "'"+tx_id_Terminale_Atm+"' ,"+
+				  "'"+tx_id_Transazione_Atm+"' ,"+
+				  "'"+tx_chiave_rendicontazione+"' ,"+ // 25
+				  "'"+tx_gg_storno+"' ,"+
+				  "'"+tx_id_terminale_pos_fisico+"' ,"+
+				  "'"+tx_data_accr_da+"' ,"+
+				  "'"+tx_codice_IUV+"' ,"+
+				  "'"+idFlussoQuadratura+"' ,"+ // 30
+				  "'"+tx_recuperate+"' ,"+
+				  "'"+tx_codice_fiscale+"'"+");" );
+				
 				System.out.println("[CORE - ManagerTransazioniDao - getListaTransazioni()] FINE CHIAMATA e FINE LOADWEBROWSET");
 				return getWebRowSetXml();
 			}
@@ -175,6 +211,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(29,idFlussoQuadratura == null ? "" :  idFlussoQuadratura);	//15022017 GG
 			callableStatement.setString(30, cuteCute); //PG190120_001
 			callableStatement.setString(31, codice_fiscale);
+			
 			
 			StringBuffer sb = new StringBuffer();
 			boolean resultsAvailable = callableStatement.execute();
