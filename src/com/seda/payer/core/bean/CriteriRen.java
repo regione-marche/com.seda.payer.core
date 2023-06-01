@@ -48,6 +48,7 @@ public class CriteriRen  extends Lifecycle implements Serializable {
 	private java.lang.String urlWs;
 	private java.lang.String utenteWs;
 	private java.lang.String passwordWs;
+	private java.lang.String rendQuattrocento;
 
 	public CriteriRen() {}
 	
@@ -78,7 +79,8 @@ public class CriteriRen  extends Lifecycle implements Serializable {
 			 String abilitazioneWs,
 			 String urlWs,
 			 String utenteWs,
-			 String passwordWs
+			 String passwordWs,
+			 String rendQuattrocento
 	)
 	{
 		this.codiceSocieta=codiceSocieta;
@@ -108,8 +110,16 @@ public class CriteriRen  extends Lifecycle implements Serializable {
 		this.urlWs = urlWs;
 		this.utenteWs = utenteWs;
 		this.passwordWs = passwordWs;
+		this.rendQuattrocento = rendQuattrocento;
 	}
 
+	public java.lang.String getrendQuattrocento() {
+		return rendQuattrocento;
+	}
+
+	public void setrendQuattrocento(java.lang.String rendQuattrocento) {
+		this.rendQuattrocento = rendQuattrocento;
+	}
 
 	public java.lang.String getCodiceSocieta() {
 		return codiceSocieta;
