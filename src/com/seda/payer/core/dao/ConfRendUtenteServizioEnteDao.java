@@ -202,23 +202,23 @@ public class ConfRendUtenteServizioEnteDao  extends BaseDaoHandler{
 			callableStatement.setString(5, descrizioneUtente);
 			callableStatement.setString(6, descrizioneEnte);
 			callableStatement.setString(7, descrizioneTipologiaServizio);
-			//callableStatement.setString(8, codiceTipologiaServizio);
+			callableStatement.setString(8, codiceTipologiaServizio);
 			/*
 			 * 	OUT O_ROWINI INT
 			 */
-			callableStatement.registerOutParameter(8, Types.INTEGER);
+			callableStatement.registerOutParameter(9, Types.INTEGER);
 			/*
 			 * 	OUT O_ROWEND INT
 			 */
-			callableStatement.registerOutParameter(9, Types.INTEGER);
+			callableStatement.registerOutParameter(10, Types.INTEGER);
 			/*
 			 * 	OUT O_TOTROWS INT
 			 */
-			callableStatement.registerOutParameter(10, Types.INTEGER);
+			callableStatement.registerOutParameter(11, Types.INTEGER);
 			/*
 			 * 	OUT O_TOTPAGES INT
 			 */
-			callableStatement.registerOutParameter(11, Types.SMALLINT);
+			callableStatement.registerOutParameter(12, Types.SMALLINT);
 			if (callableStatement.execute())
 			{
 				this.loadWebRowSet(callableStatement);
