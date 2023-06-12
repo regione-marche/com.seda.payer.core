@@ -27,6 +27,10 @@ public class ArchivioCarichiDettaglioPagamento {
     //inizio LP PG22XX05
     "EHD_CEHDTCSE" CHAR(3) NOT NULL
     //fine LP PG22XX05
+    //inizio SB PGNTCORE-4
+    "EHD_CEHDCTTK" VARCHAR(15) NOT NULL
+    "EHD_CEHDCTTV" VARCHAR(15) NOT NULL
+    //fine SB PGNTCORE-4
 	*/
 	private Long progressivoFlusso;
 	private String tipoRecord;
@@ -48,6 +52,10 @@ public class ArchivioCarichiDettaglioPagamento {
     //inizio LP PG22XX05
     private String codiceTipologiaServizio;
     //fine LP PG22XX05
+    //inizio SB PGNTCORE-4
+    private String metadatiPagoPATariTefaKey;
+    private String metadatiPagoPATariTefaValue;
+    //fine SB PGNTCORE-4
 
     public ArchivioCarichiDettaglioPagamento() {
     }
@@ -245,4 +253,20 @@ public class ArchivioCarichiDettaglioPagamento {
 		this.codiceTipologiaServizio = codiceTipologiaServizio;
 	}
     //fine LP PG22XX05
+
+	public String getMetadatiPagoPATariTefaKey() {
+		return metadatiPagoPATariTefaKey;
+	}
+
+	public String getMetadatiPagoPATariTefaValue() {
+		return metadatiPagoPATariTefaValue;
+	}
+
+	public void setMetadatiPagoPATariTefaKey(String metadatiPagoPATariTefaKey) {
+		this.metadatiPagoPATariTefaKey = metadatiPagoPATariTefaKey;
+	}
+
+	public void setMetadatiPagoPATariTefaValue(String metadatiPagoPATariTefaValue) {
+		this.metadatiPagoPATariTefaValue = metadatiPagoPATariTefaValue;
+	}
 }

@@ -1327,7 +1327,6 @@ public class EstrattoContoDao extends BaseDaoHandler {
 //					outRes[1] = callableStatement.getString(6).trim();
 					outRes[0] = "";
 					outRes[1] = "";
-
 				}
 				
 				return outRes;

@@ -39,7 +39,7 @@ public class ConfRendUtenteServizioDao  extends BaseDaoHandler{
 			if (tipologiaServizio == null || tipologiaServizio.equals(""))
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ConfRendUtenteServizioEnte.tipologiaServizio"));
 
-			callableStatement = prepareCall(Routines.RES_DODETAIL.routine());
+			callableStatement = prepareCall("PYRESSP_SEL");
 			callableStatement.setString(1, codiceSocieta);
 			callableStatement.setString(2, codiceUtente);
 			callableStatement.setString(3, tipologiaServizio);
@@ -96,8 +96,8 @@ public class ConfRendUtenteServizioDao  extends BaseDaoHandler{
 			ConfRendUtenteServizio data = doDetail(bean.getCodiceSocieta(), bean.getCodiceUtente(),   bean.getTipologiaServizio());
 			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.UNIQUE_CONSTRAINT_VIOLATION_SIMPLE.format());
 			if (data != null)	
-			    callableStatement = prepareCall(Routines.RES_DOUPDATE.routine());
-			else callableStatement = prepareCall(Routines.RES_DOINSERT.routine());
+			    callableStatement = prepareCall(Routines.RES_DOUPDATE.routine()); //prepareCall("PYRESSP_UPD");
+			else callableStatement = prepareCall(Routines.RES_DOINSERT.routine()); 
 			bean.save(callableStatement);
 			callableStatement.executeUpdate();
 		} catch (IllegalArgumentException e) {
@@ -183,7 +183,7 @@ public class ConfRendUtenteServizioDao  extends BaseDaoHandler{
 	{
 		CallableStatement callableStatement = null;
 		try {
-			callableStatement = prepareCall(Routines.RES_DOLIST.routine());
+			callableStatement = prepareCall("PYRESSP_LST");
 			callableStatement.setInt(1, pageNumber);
 			callableStatement.setInt(2, rowsPerPage);
 			callableStatement.setString(3, order);
