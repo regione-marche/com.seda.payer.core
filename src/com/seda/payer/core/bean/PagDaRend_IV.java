@@ -856,7 +856,11 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
 	    bean.flagGdc = data.getString("ENT_FENTFGDC");
 	    //PG200280 GG - fine
 	    
-	    bean.rendQuattrocento = data.getString("REN_QTRCNTO");
+	    try {
+	    	bean.rendQuattrocento = data.getString("REN_QTRCNTO");
+	    } catch (Exception ex) {
+	    	bean.rendQuattrocento = "";
+	    }
 	    
 	    return bean;
 		
