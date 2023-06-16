@@ -497,7 +497,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(37,tx_mostra == null ? "" : tx_mostra);
 
 			if(callableStatement.execute()) {
-				BigDecimal totale = callableStatement.getBigDecimal(35);
+				BigDecimal totale = callableStatement.getBigDecimal(36);
 				List<TransazioniGroupedSuccess> list = new ArrayList<TransazioniGroupedSuccess>();
 				data = callableStatement.getResultSet();
 				while(data.next()) {
