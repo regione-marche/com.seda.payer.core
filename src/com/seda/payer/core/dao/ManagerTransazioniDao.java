@@ -487,14 +487,14 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(29,tx_recuperate == null ? "" :  tx_recuperate);	//PG200050_001
 			callableStatement.setString(30, tx_codice_fiscale == null ? "" : tx_codice_fiscale); // PAGONET-437
 			
+			callableStatement.registerOutParameter(31, Types.DECIMAL);
 			callableStatement.registerOutParameter(32, Types.DECIMAL);
 			callableStatement.registerOutParameter(33, Types.DECIMAL);
 			callableStatement.registerOutParameter(34, Types.DECIMAL);
 			callableStatement.registerOutParameter(35, Types.DECIMAL);
-			callableStatement.registerOutParameter(36, Types.DECIMAL);
  
-			callableStatement.registerOutParameter(37, Types.DECIMAL);
-			callableStatement.setString(38,tx_mostra == null ? "" : tx_mostra);
+			callableStatement.registerOutParameter(36, Types.DECIMAL);
+			callableStatement.setString(37,tx_mostra == null ? "" : tx_mostra);
 
 			if(callableStatement.execute()) {
 				BigDecimal totale = callableStatement.getBigDecimal(36);
