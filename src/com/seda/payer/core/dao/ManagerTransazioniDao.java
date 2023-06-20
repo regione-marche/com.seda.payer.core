@@ -209,8 +209,8 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(27,tx_data_accr_a == null ? "" : tx_data_accr_a);
 			callableStatement.setString(28,tx_codice_IUV == null ? "" :  tx_codice_IUV);			//27032015 GG
 			callableStatement.setString(29,idFlussoQuadratura == null ? "" :  idFlussoQuadratura);	//15022017 GG
-			callableStatement.setString(30, cuteCute); //PG190120_001
-			callableStatement.setString(31, codice_fiscale);
+			callableStatement.setString(30, cuteCute == null ? "" : cuteCute); //PG190120_001
+			callableStatement.setString(31, codice_fiscale == null ? "" : codice_fiscale);
 			
 			
 			StringBuffer sb = new StringBuffer();
