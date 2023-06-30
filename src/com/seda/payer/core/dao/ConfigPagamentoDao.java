@@ -192,5 +192,54 @@ public class ConfigPagamentoDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
+	
+	//PAGONET-537 SB - inizio
+	public ConfigPagamento doDetailIdDominio(String idDominio, String canalePagamento, String codiceTipologiaServizio) throws DaoException {
+		CallableStatement callableStatement = null;
+		ResultSet data = null;
+		ConfigPagamento conf = null;
+		try	{
+			callableStatement = prepareCall("PYCESSP_SEL_IDDOMINIO");
+			callableStatement.setString(1, idDominio);
+			callableStatement.setString(2, canalePagamento);
+			callableStatement.setString(3, codiceTipologiaServizio);
+			
+			if (callableStatement.execute()) 
+			{
+				data = callableStatement.getResultSet();
+				
+				if (data.next())
+					conf = new ConfigPagamento(data);
+				
+				return conf;
+			}	
+			return null;
+		} catch (SQLException x) {
+			throw new DaoException(x);
+		} catch (IllegalArgumentException x) {
+			throw new DaoException(x);
+		} catch (HelperException x) {
+			throw new DaoException(x);
+		}
+		finally {
+			
+			if (data != null) {
+				try {
+					data.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	//PAGONET-537 SB - fine
+	
 
 }
