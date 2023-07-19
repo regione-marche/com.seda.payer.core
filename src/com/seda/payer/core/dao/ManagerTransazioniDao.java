@@ -225,9 +225,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 					while(rsDati.next()) {
 						
 						sb.append(rsDati.getString("RECORD"));
-						sb.append("\r\n");
-		
-							
+						sb.append("\r\n");	
 					}
 					
 					resultsAvailable = callableStatement.getMoreResults();
@@ -387,21 +385,20 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(27,tx_codice_IUV == null ? "" :  tx_codice_IUV);			//17032015 GG
 			callableStatement.setString(28,idFlussoQuadratura == null ? "" :  idFlussoQuadratura);	//15022017 GG
 			callableStatement.setString(29,tx_recuperate==null ? "" : tx_recuperate);
-			callableStatement.setString(30, tx_codice_fiscale == null ? "" : tx_codice_fiscale); // PAGONET-437
+			callableStatement.setString(30,tx_mostra == null ? "" : tx_mostra);
+			callableStatement.setString(31, tx_codice_fiscale == null ? "" : tx_codice_fiscale); // PAGONET-437
 			
-			callableStatement.registerOutParameter(31, Types.DECIMAL);
 			callableStatement.registerOutParameter(32, Types.DECIMAL);
 			callableStatement.registerOutParameter(33, Types.DECIMAL);
 			callableStatement.registerOutParameter(34, Types.DECIMAL);
 			callableStatement.registerOutParameter(35, Types.DECIMAL);
-			 
 			callableStatement.registerOutParameter(36, Types.DECIMAL);
-
-			callableStatement.setString(37,tx_mostra == null ? "" : tx_mostra);
+			 
+			callableStatement.registerOutParameter(37, Types.DECIMAL);
 
 
 			if(callableStatement.execute()) {
-				BigDecimal totale = callableStatement.getBigDecimal(36);
+				BigDecimal totale = callableStatement.getBigDecimal(37);
 				List<TransazioniGrouped> list = new ArrayList<TransazioniGrouped>();
 				data = callableStatement.getResultSet();
 				while(data.next()) {
