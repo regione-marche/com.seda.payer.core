@@ -209,8 +209,8 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(27,tx_data_accr_a == null ? "" : tx_data_accr_a);
 			callableStatement.setString(28,tx_codice_IUV == null ? "" :  tx_codice_IUV);			//27032015 GG
 			callableStatement.setString(29,idFlussoQuadratura == null ? "" :  idFlussoQuadratura);	//15022017 GG
-			callableStatement.setString(30, cuteCute); //PG190120_001
-			callableStatement.setString(31, codice_fiscale);
+			callableStatement.setString(30, cuteCute == null ? "" : cuteCute); //PG190120_001
+			callableStatement.setString(31, codice_fiscale == null ? "" : codice_fiscale);
 			
 			
 			StringBuffer sb = new StringBuffer();
@@ -225,9 +225,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 					while(rsDati.next()) {
 						
 						sb.append(rsDati.getString("RECORD"));
-						sb.append("\r\n");
-		
-							
+						sb.append("\r\n");	
 					}
 					
 					resultsAvailable = callableStatement.getMoreResults();
@@ -395,10 +393,12 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.registerOutParameter(34, Types.DECIMAL);
 			callableStatement.registerOutParameter(35, Types.DECIMAL);
 			callableStatement.registerOutParameter(36, Types.DECIMAL);
+			 
 			callableStatement.registerOutParameter(37, Types.DECIMAL);
 
+
 			if(callableStatement.execute()) {
-				BigDecimal totale = callableStatement.getBigDecimal(35);
+				BigDecimal totale = callableStatement.getBigDecimal(37);
 				List<TransazioniGrouped> list = new ArrayList<TransazioniGrouped>();
 				data = callableStatement.getResultSet();
 				while(data.next()) {
@@ -497,7 +497,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(37,tx_mostra == null ? "" : tx_mostra);
 
 			if(callableStatement.execute()) {
-				BigDecimal totale = callableStatement.getBigDecimal(35);
+				BigDecimal totale = callableStatement.getBigDecimal(36);
 				List<TransazioniGroupedSuccess> list = new ArrayList<TransazioniGroupedSuccess>();
 				data = callableStatement.getResultSet();
 				while(data.next()) {
