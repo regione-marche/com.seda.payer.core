@@ -984,5 +984,43 @@ public class PagDaRendDao extends BaseDaoHandler{
 		}
 	}
 	//fine LP 20180713
+	
+	//PGNTCORE-6 GG - inizio
+	public Boolean getFlagDaRendicontare (String chiaveEnte, String numeroAvviso, String flagRendQuad) throws DaoException
+	{
+		CallableStatement callableStatement = null;
+		Boolean flagDaRendicontare = false;
+		try
+		{
+			callableStatement = prepareCall(Routines.TDT_REND_COR.routine());
+			callableStatement.setString(1, chiaveEnte);
+			callableStatement.setString(2, numeroAvviso);
+			callableStatement.setString(3, flagRendQuad);
+			callableStatement.registerOutParameter(4, Types.CHAR);
+			callableStatement.execute();
+			String res = callableStatement.getString(4);
+			if (res!=null && res.trim().equals("Y")) {
+				flagDaRendicontare = true;
+			}
+		}
+		catch (IllegalArgumentException e) {
+			throw new DaoException(e);
+		} catch (SQLException e) {
+			throw new DaoException(e);
+		} catch (HelperException e) {
+			throw new DaoException(e);
+		}
+		finally {
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return flagDaRendicontare;
+	}
+	//PGNTCORE-6 GG - fine
 
 }

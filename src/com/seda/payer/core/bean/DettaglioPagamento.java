@@ -30,6 +30,11 @@ public class DettaglioPagamento  implements java.io.Serializable {
     //inizio LP PG22XX05
     private String codiceTipologiaServizio;
     //fine LP PG22XX05
+    
+    //inizio GG PGNTCORE-6
+    private String chiaveTari;
+    private String valoreTari;
+    //fine GG PGNTCORE-6
 
     public DettaglioPagamento() {
     }
@@ -38,16 +43,18 @@ public class DettaglioPagamento  implements java.io.Serializable {
            String identificativoDominio,
            BigDecimal importo,
            String IBANBancario,
-           //inizio LP PG22XX05
-           //String IBANPostale) {
            String IBANPostale
            , String codiceTipologiaServizio
+           , String chiaveTari
+           , String valoreTari
            ) {
            this.identificativoDominio = identificativoDominio;
            this.importo = importo;
            this.IBANBancario = IBANBancario;
            this.IBANPostale = IBANPostale;
-           this.codiceTipologiaServizio = codiceTipologiaServizio; //LP PG22XX05           
+           this.codiceTipologiaServizio = codiceTipologiaServizio; //LP PG22XX05  
+           this.chiaveTari = chiaveTari;	//PGNTCORE-6
+           this.valoreTari = valoreTari; 	//PGNTCORE-6
     }
 
 	public DettaglioPagamento(ResultSet data) throws SQLException {
@@ -66,6 +73,20 @@ public class DettaglioPagamento  implements java.io.Serializable {
 			setCodiceTipologiaServizio("");
 		}
 		//fine LP PG22XX05 
+		//inizio GG PGNTCORE-6
+		try {
+			String appo = data.getString(6);
+			setChiaveTari(appo != null ? appo : "");   
+		} catch (Exception e) {
+			setChiaveTari("");
+		}
+		try {
+			String appo = data.getString(7);
+			setValoreTari(appo != null ? appo : "");   
+		} catch (Exception e) {
+			setValoreTari("");
+		}
+		//fine GG PGNTCORE-6
 	}
 
     public int getNumeroRata() {
@@ -172,7 +193,25 @@ public class DettaglioPagamento  implements java.io.Serializable {
 		this.codiceTipologiaServizio = codiceTipologiaServizio;
 	}
     //fine LP PG22XX05
+	
+	//inizio GG PGNTCORE-6
+	public String getChiaveTari() {
+		return chiaveTari;
+	}
 
+	public void setChiaveTari(String chiaveTari) {
+		this.chiaveTari = chiaveTari;
+	}
+
+	public String getValoreTari() {
+		return valoreTari;
+	}
+
+	public void setValoreTari(String valoreTari) {
+		this.valoreTari = valoreTari;
+	}
+	//fine GG PGNTCORE-6
+	
 	public String toString() {
     	return "DettaglioPagamento ["
     			+ "identificativoDominio="  + identificativoDominio
@@ -180,6 +219,8 @@ public class DettaglioPagamento  implements java.io.Serializable {
     			+ "IBANBancario="  + IBANBancario
     			+ "IBANPostale="  + IBANPostale
     			+ "codiceTipologiaServizio=" + codiceTipologiaServizio //LP PG22XX05 
+    			+ "chiaveTari=" + chiaveTari //PGNTCORE-6
+    			+ "valoreTari=" + valoreTari //PGNTCORE-6
     			+ "]";    	
     }
     

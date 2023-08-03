@@ -110,6 +110,8 @@ public class TransazioneIV extends Lifecycle implements Serializable, Transforme
     //inizio LP EP22405X
 	private java.lang.String causalePreavvisiBRAV;
 	//fine LP EP22405X
+	private java.lang.String chiaveEnteCor;	//GG PAGONET-541
+	
     public TransazioneIV() {		
 	}
 
@@ -152,6 +154,7 @@ public class TransazioneIV extends Lifecycle implements Serializable, Transforme
 			, String tassonomia //LP PG200360
 			, String dettaglioContabile //LP PG210130
 			, String causalePreavvisiBRAV //LP EP22405X
+			, String chiaveEnteCor	//GG PAGONET-541
 			)
 	{
 		super();
@@ -247,6 +250,7 @@ public class TransazioneIV extends Lifecycle implements Serializable, Transforme
 		this.dettaglioContabile = dettaglioContabile; 
 		//fine LP PG210130
 		this.causalePreavvisiBRAV = causalePreavvisiBRAV; //LP EP22405X
+		this.chiaveEnteCor = chiaveEnteCor;	//GG PAGONET-541
 	}
 	
 
@@ -942,6 +946,17 @@ public class TransazioneIV extends Lifecycle implements Serializable, Transforme
 		this.causalePreavvisiBRAV = causalePreavvisiBRAV;
 	}
     //fine LP EP22405X
+	
+	//GG PAGONET-541 - inizio
+	public java.lang.String getChiaveEnteCor() {
+		return chiaveEnteCor;
+	}
+
+
+	public void setChiaveEnteCor(java.lang.String chiaveEnteCor) {
+		this.chiaveEnteCor = chiaveEnteCor;
+	}
+	//GG PAGONET-541 - fine
 
 	/* (non-Javadoc)
 	 * @see com.seda.payer.commons.transform.TransformersIf#beanToBean(java.lang.Object)
@@ -950,7 +965,6 @@ public class TransazioneIV extends Lifecycle implements Serializable, Transforme
 		return this;
 	} 
 	
-
 	public int getProgBollettino() {
 		return progBollettino;
 	}
@@ -1163,6 +1177,15 @@ public class TransazioneIV extends Lifecycle implements Serializable, Transforme
 			bean.causalePreavvisiBRAV = "";
 		}
 		//fine LP EP22405X
+		//inizio GG PAGONET-541 il try/catch qui deve rimanere non tutte le sp ritrovano la colonna.
+		bean.chiaveEnteCor = "";
+		try {
+			if(data.getString("TDT_KANEKENT_COR") != null)
+				bean.chiaveEnteCor = data.getString("TDT_KANEKENT_COR");
+		} catch(Exception e){
+			bean.chiaveEnteCor = "";
+		}
+		//fine GG PAGONET-541
 		return bean;
 	}
 
@@ -1333,7 +1356,15 @@ public class TransazioneIV extends Lifecycle implements Serializable, Transforme
 		} else {
 			arg.setString(61, this.causalePreavvisiBRAV);
 		}
-		arg.registerOutParameter(62, Types.INTEGER);
+		//inizio GG PAGONET-541
+		//arg.registerOutParameter(62, Types.INTEGER);
+		if (this.chiaveEnteCor == null) {
+			arg.setString(62, "");
+		} else {
+			arg.setString(62, this.chiaveEnteCor);
+		}
+		arg.registerOutParameter(63, Types.INTEGER);
+		//fine GG PAGONET-541
 		//fine LP EP22405X
 		//fine LP PG210130
 		//fine LP PG200360
