@@ -6,12 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import com.seda.data.helper.HelperException;
 import com.seda.payer.commons.bean.TypeRequest;
 import com.seda.payer.core.bean.Ente;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.messages.Messages;
-import com.seda.data.helper.HelperException;
 
 
 public class EnteDao extends BaseDaoHandler {
@@ -379,4 +379,40 @@ public class EnteDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
+	
+	// inizio SR PGNTCORE-11
+	public String getCodiceIpa(String cutecute, String codiceEnte) throws Exception {
+		CallableStatement callableStatement = null;
+		ResultSet res = null;
+		String codiceIpa = "";
+		
+		try { 			
+			callableStatement = prepareCall(Routines.PYENTSP_SEL_INFO_CIPA.routine()); 	
+			callableStatement.setString(1, cutecute); // I_ENT_CUTECUTE  "00003"
+			callableStatement.setString(2, codiceEnte); // I_ANE_CANECENT "61501"
+			callableStatement.execute();
+			
+			res = callableStatement.getResultSet();		
+			if (res.next()){
+				codiceIpa = res.getString("ENT_CENTMYCO");							
+			}
+			return codiceIpa;
+		} catch (SQLException e) {
+				throw new Exception(e);
+		 } catch (IllegalArgumentException e) {
+			throw new Exception(e);
+		 } catch (HelperException e) {
+			throw new Exception(e);
+		 } finally {
+			 if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}	
+		 }
+	}
+	// fine SR PGNTCORE-11
+
 }

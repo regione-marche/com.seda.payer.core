@@ -42,6 +42,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		super(connection, schema);
 	}
 
+	@Override
 	public ConfigurazioneBlackBox select(ConfigurazioneBlackBox blackbox) throws DaoException {
 		CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
@@ -134,6 +135,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		return blackbox;
 	}
 
+	@Override
 	public Integer update(ConfigurazioneBlackBox configurazioneBlackBox) throws DaoException {
 		CallableStatement callableStatement = null;
 		Connection connection = null;
@@ -212,6 +214,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		return ret;
 	}
 
+	@Override
 	public EsitoRisposte delete(ConfigurazioneBlackBox configurazioneBlackBox) throws DaoException {
 		CallableStatement callableStatement = null;
 		Connection connection = null;
@@ -260,6 +263,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		return esitoRisposte;
 	}
 
+	@Override
 	public EsitoRisposte insert(ConfigurazioneBlackBox configurazioneBlackBox) throws DaoException {
 		CallableStatement callableStatement = null;
 		Connection connection = null;
@@ -320,6 +324,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		return esitoRisposte;
 	}
 
+	@Override
 	public BlackBoxPagelist blackboxList(ConfigurazioneBlackBox blackbox, int rowsPerPage, int pageNumber,
 			String OrderBy) throws DaoException {
 		CallableStatement callableStatement = null;
@@ -424,6 +429,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 	}
 
 	// PG200120
+	@Override
 	public BlackBoxPosPagelist blackboxposList(ConfigurazioneBlackBoxPos blackboxpos, int rowsPerPage, int pageNumber,
 			String OrderBy) throws DaoException {
 		// TODO Auto-generated method stub
@@ -523,6 +529,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		// return null;
 	}
 
+	@Override
 	public EsitoRisposte delete(ConfigurazioneBlackBoxPos configurazioneBlackBoxpos) throws DaoException {
 		// TODO Auto-generated method stub
 		CallableStatement callableStatement = null;
@@ -571,6 +578,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		// return null;
 	}
 
+	@Override
 	public ConfigurazioneBlackBoxPos select(ConfigurazioneBlackBoxPos blackboxpos) throws DaoException {
 
 		CallableStatement callableStatement = null;
@@ -627,6 +635,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		// return null;
 	}
 
+	@Override
 	public Integer update(ConfigurazioneBlackBoxPos blackboxpos) throws DaoException {
 		CallableStatement callableStatement = null;
 		Connection connection = null;
@@ -646,7 +655,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(8, blackboxpos.getNumeroRata());
 			callableStatement.setDate(9, new java.sql.Date(blackboxpos.getDataScadenza().getTimeInMillis()));
 			callableStatement.setString(10, blackboxpos.getCodiceFiscale());
-			callableStatement.setDouble(11, (Double) blackboxpos.getImporto());
+			callableStatement.setDouble(11, blackboxpos.getImporto());
 			callableStatement.setString(12, blackboxpos.getDenominazioneDebitore());
 			callableStatement.setString(13, blackboxpos.getIndirizzoContribuente());
 			callableStatement.setString(14, blackboxpos.getLocalitaContribuente());
@@ -703,6 +712,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		return ret;
 	}
 
+	@Override
 	public void updatePagPos(ConfigurazioneBlackBoxPos blackboxpos) throws DaoException {
 		CallableStatement callableStatement = null;
 		Connection connection = null;
@@ -765,6 +775,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		}
 	}
 
+	@Override
 	public BlackBoxPosLogPagelist blackboxposlogList(BlackBoxPosLog blackboxpos, int rowsPerPage, int pageNumber,
 			String OrderBy) throws DaoException {
 		// TODO Auto-generated method stub
@@ -857,6 +868,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		// return null;
 	}
 
+	@Override
 	public EsitoRisposte delete(BlackBoxPosLog configurazioneBlackBoxPosLog) throws DaoException {
 		// TODO Auto-generated method stub
 		CallableStatement callableStatement = null;
@@ -903,6 +915,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		// return null;
 	}
 
+	@Override
 	public Integer insert(BlackBoxPosLog configurazioneBlackBoxpos) throws DaoException {
 		CallableStatement callableStatement = null;
 		Connection connection = null;
@@ -1153,5 +1166,44 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 
 		return ret;
 	}
+	
+	// inizio SR PAGONET-11
+	public void aggiornaFlagInviaDovuto(String codiceIdentificativoDominio, String numeroAvviso) throws Exception {
+		CallableStatement callableStatement = null;
+		Connection connection = null;
+		
+		try {
+			connection = getConnection();
+			callableStatement = Helper.prepareCall(connection, getSchema(),  Routines.CNDOCSP_UPD_INV.routine());		
+			callableStatement.setString(1, codiceIdentificativoDominio.trim());
+			callableStatement.setString(2, numeroAvviso.trim());
+			callableStatement.setString(3, "Y");
+			
+			callableStatement.execute();
+		} catch (SQLException x) {
+			throw new Exception(x);
+		} catch (IllegalArgumentException x) {
+			throw new Exception(x);
+		} catch (HelperException x) {
+			throw new Exception(x);
+		} finally {
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	// fine SR PAGONET-11
 	
 }
