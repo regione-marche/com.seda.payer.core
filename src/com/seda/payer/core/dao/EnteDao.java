@@ -381,15 +381,15 @@ public class EnteDao extends BaseDaoHandler {
 		}
 	
 	// inizio SR PGNTCORE-11
-	public String getCodiceIpa(String cutecute, String codiceEnte) throws Exception {
+	public String getCodiceIpa(String codiceFiscale, String codiceEnte) throws Exception {
 		CallableStatement callableStatement = null;
 		ResultSet res = null;
 		String codiceIpa = "";
 		
 		try { 			
 			callableStatement = prepareCall(Routines.PYENTSP_SEL_INFO_CIPA.routine()); 	
-			callableStatement.setString(1, cutecute); // I_ENT_CUTECUTE  "00003"
-			callableStatement.setString(2, codiceEnte); // I_ANE_CANECENT "61501"
+			callableStatement.setString(1, codiceFiscale); // ENT_CENTCFIS  
+			callableStatement.setString(2, codiceEnte); // ANE_CANECENT 
 			callableStatement.execute();
 			
 			res = callableStatement.getResultSet();		
