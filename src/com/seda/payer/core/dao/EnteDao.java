@@ -381,37 +381,46 @@ public class EnteDao extends BaseDaoHandler {
 		}
 	
 	// inizio SR PGNTCORE-11
-	public String getCodiceIpa(String codiceFiscale, String codiceEnte) throws Exception {
+	public String getCodiceIpa(String primoArg, String codiceEnte) throws Exception {
 		CallableStatement callableStatement = null;
 		ResultSet res = null;
 		String codiceIpa = "";
-		
-		try { 			
-			callableStatement = prepareCall(Routines.PYENTSP_SEL_INFO_CIPA.routine()); 	
-			callableStatement.setString(1, codiceFiscale); // ENT_CENTCFIS  
-			callableStatement.setString(2, codiceEnte); // ANE_CANECENT 
-			callableStatement.execute();
-			
-			res = callableStatement.getResultSet();		
-			if (res.next()){
-				codiceIpa = res.getString("ENT_CENTMYCO");							
+
+		try {
+			if (primoArg.length() <= 5) {
+				// è un codice utente
+				callableStatement = prepareCall(Routines.PYENTSP_SEL_INFO_CIPA2.routine());
+				callableStatement.setString(1, primoArg); // ENT_CUTECUTE
+				callableStatement.setString(2, codiceEnte); // ANE_CANECENT
+				callableStatement.execute();
+
+			} else {
+				// è un codice fiscale
+				callableStatement = prepareCall(Routines.PYENTSP_SEL_INFO_CIPA.routine());
+				callableStatement.setString(1, primoArg); // ENT_CENTCFIS  
+				callableStatement.setString(2, codiceEnte); // ANE_CANECENT 
+				callableStatement.execute();
+			}
+			res = callableStatement.getResultSet();
+			if (res.next()) {
+				codiceIpa = res.getString("ENT_CENTMYCO");
 			}
 			return codiceIpa;
 		} catch (SQLException e) {
-				throw new Exception(e);
-		 } catch (IllegalArgumentException e) {
 			throw new Exception(e);
-		 } catch (HelperException e) {
+		} catch (IllegalArgumentException e) {
 			throw new Exception(e);
-		 } finally {
-			 if (callableStatement != null) {
+		} catch (HelperException e) {
+			throw new Exception(e);
+		} finally {
+			if (callableStatement != null) {
 				try {
 					callableStatement.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
-			}	
-		 }
+			}
+		}
 	}
 	// fine SR PGNTCORE-11
 
