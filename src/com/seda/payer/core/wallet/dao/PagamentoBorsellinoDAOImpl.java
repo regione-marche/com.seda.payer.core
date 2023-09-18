@@ -17,19 +17,20 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.PgHost;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.handler.BaseDaoHandler;
+import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
 import com.seda.payer.core.wallet.bean.PagamentoBorsellino;
 import com.seda.payer.core.wallet.bean.Servizio;
 import com.seda.payer.core.wallet.bean.Wallet;
 
 
-public class PagamentoBorsellinoDAOImpl   extends BaseDaoHandler  implements PagamentoBorsellinoDAO  { 
+public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements PagamentoBorsellinoDAO {
+	
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
 	//inizio LP PG21XX04 Leak
 	@Deprecated
@@ -40,6 +41,10 @@ public class PagamentoBorsellinoDAOImpl   extends BaseDaoHandler  implements Pag
 
 	public PagamentoBorsellinoDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
+	}
+	
+	public PagamentoBorsellinoDAOImpl(Connection connection, String schema, boolean isRest, String baseUrl) {
+		super(connection, schema, isRest, baseUrl);
 	}
 
 	public ArrayList <PagamentoBorsellino> listPagamenti(PagamentoBorsellino pagamento) throws DaoException {
