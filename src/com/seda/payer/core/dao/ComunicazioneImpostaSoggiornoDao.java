@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.ArrayList;
 
 //inizio LP PG21XX04 Leak
 //import com.seda.data.dao.DAOHelper;
@@ -637,6 +636,12 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 	{
 		CallableStatement callableStatement = null;
 		try	{
+			
+    		System.out.println("DATA-IN-CODUTEN: " + codiceUtente);
+    		System.out.println("DATA-IN-CODENTE: " + codiceEnteGestionaleEntrate);
+    		System.out.println("DATA-IN-CODIMSE: " + impostaServizioGestionaleEntrate);
+    		System.out.println("DATA-IN-CONTRIB: " + codiceContribuente);
+			
 			callableStatement = prepareCall(Routines.IS_RID_DODETAIL.routine());
 			callableStatement.setString(1, codiceUtente);
 			callableStatement.setString(2, codiceEnteGestionaleEntrate);
@@ -1031,11 +1036,11 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 		DatiBollettino res = new DatiBollettino();
 		CallableStatement callableStatement = null;
 		
-		System.out.println("cutecute: " + cutecute);
-		System.out.println("nBollettino: " + nBollettino);	
-		System.out.println("flagZero: " + flagZero);
-		try	
-		{
+		try	{
+			System.out.println("DATA-IN-CODUTEN: " + cutecute);
+			System.out.println("DATA-IN-NUMERAV: " + nBollettino);	
+			System.out.println("DATA-IN-FLAG-ZERO: " + flagZero);
+			
 			callableStatement = prepareCall(Routines.DO_DATI_BOLLETTINO.routine());	
 			callableStatement.setString(1, cutecute);
 			callableStatement.setBigDecimal(2, new BigDecimal(nBollettino));
@@ -1120,6 +1125,10 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 		System.out.println("listaDocumentiStruttureCorrelate: " + listaDocumentiStruttureCorrelate);
 		try	
 		{
+    		System.out.println("DATA-IN-CODUTEN: " + cutecute);
+    		System.out.println("DATA-IN-NUMERAV: " + (idBollettinoCumulativoDaAggiornare == null || idBollettinoCumulativoDaAggiornare.equals("") ? new BigDecimal(0) : new BigDecimal(idBollettinoCumulativoDaAggiornare)));
+    		System.out.println("DATA-IN-LISDOCU: " + listaDocumentiStruttureCorrelate);
+
 			callableStatement = prepareCall(Routines.DO_BOLLETTINO_CUMULATIVO.routine());	
 			callableStatement.setString(1, cutecute);
 			callableStatement.setBigDecimal(2, (idBollettinoCumulativoDaAggiornare == null || idBollettinoCumulativoDaAggiornare.equals("") ? new BigDecimal(0) : new BigDecimal(idBollettinoCumulativoDaAggiornare)) );
