@@ -242,10 +242,12 @@ public class ConfigurazioneImpostaSoggiornoDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		try	{
 			
-			System.out.println("DATA-IN-CODUTEN: " + codUtente);
-			System.out.println("DATA-IN-CODENTE: " + configImposta.getCodiceEnteGestionaleEntrate());
-			System.out.println("DATA-IN-CODIMSE: " + configImposta.getImpostaServizioGestionaleEntrate());
-			System.out.println("DATA-IN-CODTRIB: " + configImposta.getCodiceTributoGestionaleEntrate());
+			if(configImposta != null) {
+				System.out.println("DATA-IN-CODUTEN: " + codUtente);
+				System.out.println("DATA-IN-CODENTE: " + configImposta.getCodiceEnteGestionaleEntrate());
+				System.out.println("DATA-IN-CODIMSE: " + configImposta.getImpostaServizioGestionaleEntrate());
+				System.out.println("DATA-IN-CODTRIB: " + configImposta.getCodiceTributoGestionaleEntrate());
+			}
 			
 			callableStatement = prepareCall(Routines.IS_IMPSOGG_DOSAVE.routine());
 			callableStatement.setString(1, codUtente);
