@@ -112,9 +112,28 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
 	
 	private java.lang.String chiaveEnteCor;	//PAGONET-541
 	
+	private java.lang.String iban;
+	private java.lang.String ibanPostale;
+	 
+	
 	
 	public PagDaRend_IV() {}
 	
+	public java.lang.String getiban() {
+		return iban;
+	}
+
+	public void setiban(java.lang.String iban) {
+		this.iban = iban;
+	}
+	
+	public java.lang.String getibanPostale() {
+		return ibanPostale;
+	}
+
+	public void setibanPostale(java.lang.String ibanPostale) {
+		this.ibanPostale = ibanPostale;
+	}
 	
 	public java.lang.String getrendQuattrocento() {
 		return rendQuattrocento;
@@ -879,6 +898,10 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
 	    } catch (Exception ex) {
 	    	bean.chiaveEnteCor = "";
 	    }
+	    
+	    bean.iban = data.getString("TDT_CTDTIBAN");
+	    
+	    bean.ibanPostale = data.getString("TDT_CTDTIBAN2");
 
 	    return bean;
 		
