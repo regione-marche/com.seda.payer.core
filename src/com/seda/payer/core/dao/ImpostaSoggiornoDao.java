@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -12,22 +11,16 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
-
-import com.seda.payer.commons.bean.TypeRequest;
-import com.seda.payer.core.bean.ImpostaServizio;
-import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.handler.BaseDaoHandler;
-import com.seda.payer.core.messages.Messages;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
-
-import com.seda.payer.core.bean.ConfigurazioneImpostaSoggiorno;
 import java.util.ArrayList;
-import java.util.Calendar;
+
 import org.apache.log4j.Logger;
 
+import com.seda.data.helper.Helper;
+import com.seda.data.helper.HelperException;
+import com.seda.payer.core.bean.ConfigurazioneImpostaSoggiorno;
 import com.seda.payer.core.bean.TestataComunicazioneImpostaSoggiorno;
+import com.seda.payer.core.exception.DaoException;
+import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class ImpostaSoggiornoDao extends BaseDaoHandler {
 	
@@ -157,6 +150,13 @@ public class ImpostaSoggiornoDao extends BaseDaoHandler {
 				e.printStackTrace();
 			}
 			*/
+			System.out.println("DATA-IN-CODUTEN: " + codUtente);
+			System.out.println("DATA-IN-CODENTE: " + codEnteHost);
+			System.out.println("DATA-IN-CODIMSE: " + codISHost);
+			System.out.println("DATA-IN-CODFUNZ: " + "GET");
+			System.out.println("DATA-IO-DATINIZ: " + "");
+			System.out.println("DATA-IO-DATFINE: " + "");
+			
 			callableStatement = prepareCall(Routines.SELECT_PAG_HOST_ENTEIS.routine());
 			callableStatement.setString(1, codUtente);
 			callableStatement.setString(2, codEnteHost);
@@ -405,6 +405,14 @@ public class ImpostaSoggiornoDao extends BaseDaoHandler {
 		String code = "";
 		String message = "";
 		try	{ 
+			
+			System.out.println("DATA-IN-CODUTEN: " + codUtente);
+			System.out.println("DATA-IN-CODENTE: " + codEnteHost);
+			System.out.println("DATA-IN-CODIMSE: " + codISHost);
+			System.out.println("DATA-IN-CODFUNZ: " + "REG");
+			System.out.println("DATA-IO-DATINIZ: " + dataIni);
+			System.out.println("DATA-IO-DATFINE: " + dataFin);
+			
 			callableStatement = prepareCall(Routines.SELECT_PAG_HOST_ENTEIS.routine());
 			callableStatement.setString(1, codUtente);
 			callableStatement.setString(2, codEnteHost);
