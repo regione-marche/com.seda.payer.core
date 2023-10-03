@@ -1217,7 +1217,24 @@ public class RestCallableStatement implements CallableStatement {
 			
 			for (Entry<Integer, String> entry : restRoutine.getInParameterMap().entrySet()) {
 				
-				map.put(entry.getValue(), inputDataMap.get(entry.getKey()));
+				String key = entry.getValue();
+				Object value = null;
+				
+				if (key.contains(".")) {
+					
+					String[] keyArray = key.split("\\.");
+					
+					Map<String, Object> map2 = new HashMap<String, Object>();
+					map2.put(keyArray[1], inputDataMap.get(entry.getKey()));
+					
+					key = keyArray[0];
+					value = map2;
+					
+				} else {
+					value = inputDataMap.get(entry.getKey());
+				}
+				
+				map.put(key, value);
 			}
 			
 			return map;
