@@ -70,7 +70,7 @@ public class SPEPSTCE extends ARestRoutine {
 		outParameterMap.put(p++, "data_ou_importo_out");
 		outParameterMap.put(p++, "data_ou_datscad_out");
 		outParameterMap.put(p++, "data_ou_retcode_out");
-		outParameterMap.put(p++, "data_ou_message_out.filler1_out");
+		outParameterMap.put(p++, "data_ou_message_out");
 		
 		return outParameterMap;
 	}

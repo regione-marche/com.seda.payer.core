@@ -48,7 +48,7 @@ public class SPEPSTC3 extends ARestRoutine {
 		outParameterMap.put(p++, "data_in_f_pcoocoob_out");
 		outParameterMap.put(p++, "data_in_pcoocoob_out");
 		outParameterMap.put(p++, "data_ou_retcode_out");
-		outParameterMap.put(p++, "data_ou_message_out.filler1_out");
+		outParameterMap.put(p++, "data_ou_message_out");
 		
 		return outParameterMap;
 	}

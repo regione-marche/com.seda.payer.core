@@ -46,7 +46,7 @@ public class SPEPSTC8 extends ARestRoutine {
 		outParameterMap.put(p++, "data_in_datfine_out");
 		outParameterMap.put(p++, "data_in_filtri_out");
 		outParameterMap.put(p++, "data_ou_retcode_out");
-		outParameterMap.put(p++, "data_ou_message_out.filler1_out");
+		outParameterMap.put(p++, "data_ou_message_out");
 		
 		return outParameterMap;
 	}

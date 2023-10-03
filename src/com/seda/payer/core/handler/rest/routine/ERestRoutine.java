@@ -6,20 +6,18 @@ public enum ERestRoutine {
 	
 	EC_DOLIST(new SPEPSTC1()), //OK
 	ECS_DOLIST(new SPEPSTC2()), //OK
-	ECM_DOLIST(new SPEPSTC3()), //OK, problema MESSAGE_OUT
+	ECM_DOLIST(new SPEPSTC3()), //OK
 	EC_DETBOL(new SPEPSTC4()), //OK
-	EC_CODFISC(new SPEPSTC6()), //OK, problema MESSAGE_OUT
-	EC_ATTICONT_DOLIST(new SPEPSTC7()), //OK, problema MESSAGE_OUT
-	EC_PAG_DOLIST(new SPEPSTC8()), //KO, ResultSet 55 e problema MESSAGE_OUT
-	
+	EC_CODFISC(new SPEPSTC6()), //OK
+	EC_ATTICONT_DOLIST(new SPEPSTC7()), //OK
+	EC_PAG_DOLIST(new SPEPSTC8()), //OK
 	BOL_DODETAIL(new SPEPBOLL()), // manca ResultSet 1 e 2
-	
 	CDS_DODETAIL(new SPEPWCDS()), //OK
-	PGBHOST(new SPEPSPB1()), //KO
+	PGBHOST(new SPEPSPB1()), //OK
 	SPEPIT01(new SPEPIT01()), //OK
-	
-	ALL_ANA_CONTATTO(new SPEPSTCE()), //OK, problema MESSAGE_OUT
-	SPEPSTE1(new SPEPSTE1()), //OK, problema MESSAGE_OUT
+	ALL_ANA_CONTATTO(new SPEPSTCE()), //OK
+	SPEPSTE1(new SPEPSTE1()), //OK
+	SPEPWCAN(new SPEPWCAN()), //OK
 	;
 	
 	private final IRestRoutine restRoutine;
