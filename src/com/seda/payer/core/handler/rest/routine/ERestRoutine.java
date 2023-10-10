@@ -17,7 +17,9 @@ public enum ERestRoutine {
 	SPEPIT01(new SPEPIT01()), //OK
 	ALL_ANA_CONTATTO(new SPEPSTCE()), //OK
 	SPEPSTE1(new SPEPSTE1()), //OK
+	SPEPWCAR(null), //in attesa di specifiche
 	SPEPWCAN(new SPEPWCAN()), //OK
+	SPEPWSTA(new SPEPWSTA()), //OK
 	;
 	
 	private final IRestRoutine restRoutine;
