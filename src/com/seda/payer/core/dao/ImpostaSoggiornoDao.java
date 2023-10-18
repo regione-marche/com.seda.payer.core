@@ -13,8 +13,6 @@ import java.sql.Types;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
-import org.apache.log4j.Logger;
-
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.ConfigurazioneImpostaSoggiorno;
@@ -25,7 +23,6 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 public class ImpostaSoggiornoDao extends BaseDaoHandler {
 	
 	static SimpleDateFormat sdfIso = new SimpleDateFormat("yyyy-MM-dd");
-	private static Logger logger;
 	
 	protected CallableStatement callableStatementUPDISBATCH = null;
 	

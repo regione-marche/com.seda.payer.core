@@ -16,8 +16,8 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import org.apache.log4j.Logger;
-
+import com.seda.commons.logger.CustomLoggerManager;
+import com.seda.commons.logger.LoggerWrapper;
 import com.seda.data.dao.DAOHelper;
 
 import com.seda.data.helper.Helper;
@@ -40,7 +40,8 @@ public class CruscottoDAOImpl   extends BaseDaoHandler  implements CruscottoDAO 
 	BufferedWriter fileSolleciti;
 	BufferedWriter fileConsumiForfettari;
 	BufferedWriter fileConsumiGiornalieri;
-	private static Logger logger;
+	
+	private static final LoggerWrapper logger =  CustomLoggerManager.get(CruscottoDAOImpl.class);
 	
 	protected CallableStatement callableStatement512 = null;
 
