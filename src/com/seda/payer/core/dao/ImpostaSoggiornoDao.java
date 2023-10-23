@@ -4,7 +4,6 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -13,25 +12,21 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 
-import com.seda.payer.commons.bean.TypeRequest;
-import com.seda.payer.core.bean.ImpostaServizio;
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.handler.BaseDaoHandler;
-import com.seda.payer.core.messages.Messages;
-import com.seda.data.dao.DAOHelper;
+import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 
 import com.seda.payer.core.bean.ConfigurazioneImpostaSoggiorno;
 import java.util.ArrayList;
-import java.util.Calendar;
 import org.apache.log4j.Logger;
 
 import com.seda.payer.core.bean.TestataComunicazioneImpostaSoggiorno;
 
-public class ImpostaSoggiornoDao extends BaseDaoHandler {
+public class ImpostaSoggiornoDao extends RestBaseDaoHandler {
 	
 	static SimpleDateFormat sdfIso = new SimpleDateFormat("yyyy-MM-dd");
+	@SuppressWarnings("unused")
 	private static Logger logger;
 	
 	protected CallableStatement callableStatementUPDISBATCH = null;
@@ -53,6 +48,10 @@ public class ImpostaSoggiornoDao extends BaseDaoHandler {
 
 //	SRG_ALL_ENTIIS=PYSRGSP_LST_ALL_EIS
 		
+	public ImpostaSoggiornoDao(Connection connection, String schema, boolean isRest, String baseUrl) {
+		super(connection, schema, isRest, baseUrl);
+	}
+
 	public ArrayList<ConfigurazioneImpostaSoggiorno> getAllEntiIS() throws DaoException
 	{
 		CallableStatement callableStatement = null;
@@ -120,6 +119,7 @@ public class ImpostaSoggiornoDao extends BaseDaoHandler {
 	
 //	SELECT_PAG_HOST_ENTEIS=SPISOGG4  GET
 
+	@SuppressWarnings("unused")
 	private BufferedWriter getFilePath(String nomeFilePath) throws FileNotFoundException  {
 		// TODO[AA]
 		return  new BufferedWriter( new OutputStreamWriter( new FileOutputStream( new File(nomeFilePath) , false) )  );   // il true finale indica che siamo in append
@@ -350,7 +350,8 @@ public class ImpostaSoggiornoDao extends BaseDaoHandler {
 	
 	//	SCT_UPDATE_DOC=PYSCTTB_UPD_DOC
 	public int updateDocFromHOST(TestataComunicazioneImpostaSoggiorno testata, String operatore) throws DaoException {
-	    CallableStatement callableStatement=null;		
+	    @SuppressWarnings("unused")
+		CallableStatement callableStatement=null;		
 	    int retCode = 1;
 	    
 	    try	{

@@ -7,8 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.ArrayList;
-
 //inizio LP PG21XX04 Leak
 //import com.seda.data.dao.DAOHelper;
 //fine LP PG21XX04 Leak
@@ -23,10 +21,11 @@ import com.seda.payer.core.bean.TariffaImpostaSoggiorno;
 import com.seda.payer.core.bean.TestataComunicazioneImpostaSoggiorno;
 import com.seda.payer.core.bean.TipologiaStrutturaRicettiva;
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.handler.BaseDaoHandler;
+import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
 import com.sun.rowset.WebRowSetImpl;
 
-public class ComunicazioneImpostaSoggiornoDao extends BaseDaoHandler {
+@SuppressWarnings("restriction")
+public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 
 	public ComunicazioneImpostaSoggiornoDao(Connection connection, String schema) {
 		super(connection, schema);
@@ -40,6 +39,10 @@ public class ComunicazioneImpostaSoggiornoDao extends BaseDaoHandler {
 	//}
 	//fine LP PG21XX04 Leak
 	
+	public ComunicazioneImpostaSoggiornoDao(Connection connection, String schema, boolean isRest, String baseUrl) {
+		super(connection, schema, isRest, baseUrl);
+	}
+
 	public void doInsertTestataComunicazione(TestataComunicazioneImpostaSoggiorno testataComunicazione) throws DaoException, SQLException {
 		CallableStatement callableStatement = null;
 		try	{
