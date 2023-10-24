@@ -113,27 +113,21 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
 	private java.lang.String chiaveEnteCor;	//PAGONET-541
 	
 	private java.lang.String iban;
+	
 	private java.lang.String ibanPostale;
-	 
+	
+	
+	public java.lang.String getIban() {
+		return iban;
+	}
+	
+	public java.lang.String getIbanPostale() {
+		return ibanPostale;
+	}
 	
 	
 	public PagDaRend_IV() {}
 	
-	public java.lang.String getiban() {
-		return iban;
-	}
-
-	public void setiban(java.lang.String iban) {
-		this.iban = iban;
-	}
-	
-	public java.lang.String getibanPostale() {
-		return ibanPostale;
-	}
-
-	public void setibanPostale(java.lang.String ibanPostale) {
-		this.ibanPostale = ibanPostale;
-	}
 	
 	public java.lang.String getrendQuattrocento() {
 		return rendQuattrocento;
@@ -899,9 +893,18 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
 	    	bean.chiaveEnteCor = "";
 	    }
 	    
-	    bean.iban = data.getString("TDT_CTDTIBAN");
+	    try {
+	    	bean.iban = data.getString("TDT_CTDTIBAN");
+	    } catch (Exception ex) {
+	    	bean.iban = "";
+	    }
 	    
-	    bean.ibanPostale = data.getString("TDT_CTDTIBAN2");
+	    try {
+	    	bean.ibanPostale = data.getString("TDT_CTDTIBAN2");
+	    } catch (Exception ex) {
+	    	bean.ibanPostale = "";
+	    }
+	    
 
 	    return bean;
 		
@@ -921,6 +924,18 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
     	bean.importoCostoTransazione = data.getBigDecimal("TRA_ITRACOTR");
     	bean.numeroOperazioneCUP = data.getString("MIP_KMIPOPER");
     	bean.paymentRequestCUP = data.getString("MIP_CMIPPREQ");
+    	
+	    try {
+	    	bean.iban = data.getString("TDT_CTDTIBAN");
+	    } catch (Exception ex) {
+	    	bean.iban = "";
+	    }
+	    
+	    try {
+	    	bean.ibanPostale = data.getString("TDT_CTDTIBAN2");
+	    } catch (Exception ex) {
+	    	bean.ibanPostale = "";
+	    }
 	   
 	    return bean;
 		
