@@ -905,7 +905,6 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
 	    	bean.ibanPostale = "";
 	    }
 	    
-
 	    return bean;
 		
 	}
