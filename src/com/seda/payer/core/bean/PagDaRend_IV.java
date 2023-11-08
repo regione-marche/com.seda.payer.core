@@ -110,6 +110,21 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
 	
 	private java.lang.String rendQuattrocento;
 	
+	private java.lang.String chiaveEnteCor;	//PAGONET-541
+	
+	private java.lang.String iban;
+	
+	private java.lang.String ibanPostale;
+	
+	
+	public java.lang.String getIban() {
+		return iban;
+	}
+	
+	public java.lang.String getIbanPostale() {
+		return ibanPostale;
+	}
+	
 	
 	public PagDaRend_IV() {}
 	
@@ -764,6 +779,16 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
 	}
 	//PG200280 GG - fine
 
+	//PAGONET-541 - inizio
+	public java.lang.String getChiaveEnteCor() {
+		return chiaveEnteCor;
+	}
+
+	public void setChiaveEnteCor(java.lang.String chiaveEnteCor) {
+		this.chiaveEnteCor = chiaveEnteCor;
+	}
+	//PAGONET-541 - fine
+
 	
 	public static PagDaRend_IV getBean(ResultSet data)throws SQLException
 	{
@@ -862,6 +887,24 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
 	    	bean.rendQuattrocento = "";
 	    }
 	    
+	    try {
+	    	bean.chiaveEnteCor = data.getString("TDT_KANEKENT_COR");
+	    } catch (Exception ex) {
+	    	bean.chiaveEnteCor = "";
+	    }
+	    
+	    try {
+	    	bean.iban = data.getString("TDT_CTDTIBAN");
+	    } catch (Exception ex) {
+	    	bean.iban = "";
+	    }
+	    
+	    try {
+	    	bean.ibanPostale = data.getString("TDT_CTDTIBAN2");
+	    } catch (Exception ex) {
+	    	bean.ibanPostale = "";
+	    }
+	    
 	    return bean;
 		
 	}
@@ -880,6 +923,18 @@ public class PagDaRend_IV implements Serializable, TransformersIf{
     	bean.importoCostoTransazione = data.getBigDecimal("TRA_ITRACOTR");
     	bean.numeroOperazioneCUP = data.getString("MIP_KMIPOPER");
     	bean.paymentRequestCUP = data.getString("MIP_CMIPPREQ");
+    	
+	    try {
+	    	bean.iban = data.getString("TDT_CTDTIBAN");
+	    } catch (Exception ex) {
+	    	bean.iban = "";
+	    }
+	    
+	    try {
+	    	bean.ibanPostale = data.getString("TDT_CTDTIBAN2");
+	    } catch (Exception ex) {
+	    	bean.ibanPostale = "";
+	    }
 	   
 	    return bean;
 		
