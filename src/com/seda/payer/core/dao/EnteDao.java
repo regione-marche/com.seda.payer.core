@@ -422,6 +422,75 @@ public class EnteDao extends BaseDaoHandler {
 			}
 		}
 	}
+	
+	
+	public String selezionaFlussoDocumento(String codiceBollettino) throws Exception {
+		CallableStatement callableStatement = null;
+		ResultSet res = null;
+		String progressivoFlusso = "";
+		
+		try {
+			callableStatement = prepareCall(Routines.PYEH1SP_SEL_FLU.routine());		
+			callableStatement.setString(1, codiceBollettino.trim()); // EH1_CEH1CBOL
+			callableStatement.execute();
+			res = callableStatement.getResultSet();
+			if (res.next()) {
+				progressivoFlusso = res.getString("EH1_PEH1FLUS");
+			}
+			return progressivoFlusso;
+			
+		} catch (SQLException e) {
+			throw new Exception(e);
+		} catch (IllegalArgumentException e) {
+			throw new Exception(e);
+		} catch (HelperException e) {
+			throw new Exception(e);
+		} finally {
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public void aggiornaFlagInviaDovuto(String progressivoFlusso, String flagInviaDovuto) throws Exception {
+		CallableStatement callableStatement = null;
+		Connection connection = null;
+		
+		try {
+			connection = getConnection();
+			callableStatement = prepareCall(Routines.PYEH0SP_UPD_INV.routine());		
+			callableStatement.setString(1, progressivoFlusso.trim());
+			callableStatement.setString(2, flagInviaDovuto);
+			
+			callableStatement.execute();
+		} catch (SQLException x) {
+			throw new Exception(x);
+		} catch (IllegalArgumentException x) {
+			throw new Exception(x);
+		} catch (HelperException x) {
+			throw new Exception(x);
+		} finally {
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
 	// fine SR PGNTCORE-11
 
 }

@@ -590,7 +590,8 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_SEL.routine());
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
-			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
+//			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
+			callableStatement.setString(3, blackboxpos.getCodiceIuv());
 			callableStatement.execute();
 			resultSet = callableStatement.getResultSet();
 			if (resultSet.next()) {
@@ -1178,42 +1179,6 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(1, codiceIdentificativoDominio.trim());
 			callableStatement.setString(2, numeroAvviso.trim());
 			callableStatement.setString(3, flagInviaDovuto);
-			
-			callableStatement.execute();
-		} catch (SQLException x) {
-			throw new Exception(x);
-		} catch (IllegalArgumentException x) {
-			throw new Exception(x);
-		} catch (HelperException x) {
-			throw new Exception(x);
-		} finally {
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-			
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}
-	}
-	
-	public void aggiornaFlagInviaDovuto(String progressivoFlusso, String flagInviaDovuto) throws Exception {
-		CallableStatement callableStatement = null;
-		Connection connection = null;
-		
-		try {
-			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYEH0SP_UPD_INV.routine());		
-			callableStatement.setString(1, progressivoFlusso.trim());
-			callableStatement.setString(2, flagInviaDovuto);
 			
 			callableStatement.execute();
 		} catch (SQLException x) {

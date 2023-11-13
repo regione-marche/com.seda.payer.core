@@ -1293,6 +1293,7 @@ public enum Routines {
 	, PYENTSP_SEL_INFO_CIPA2
 	, CNDOCSP_UPD_INV
 	, PYEH0SP_UPD_INV
+	, PYEH1SP_SEL_FLU
 	// fine SR PGNTCORE-11
 	;
 	
