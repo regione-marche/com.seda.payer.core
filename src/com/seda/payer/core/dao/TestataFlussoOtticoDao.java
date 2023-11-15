@@ -7,10 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import org.apache.log4j.Logger;
-
+import com.seda.commons.logger.CustomLoggerManager;
+import com.seda.commons.logger.LoggerWrapper;
 import com.seda.commons.security.TokenGenerator;
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.TestataFlussoOttico;
 import com.seda.payer.core.exception.DaoException;
@@ -20,7 +19,7 @@ import com.seda.payer.core.handler.BaseDaoHandler;
  */
 public class TestataFlussoOtticoDao extends  BaseDaoHandler{
 	
-	private Logger log = Logger.getLogger(TestataFlussoOtticoDao.class);
+	private static final LoggerWrapper log =  CustomLoggerManager.get(TestataFlussoOtticoDao.class);
 	/**
 	 * Default constructor
 	 * @param connection

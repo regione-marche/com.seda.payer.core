@@ -5,7 +5,9 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.apache.log4j.Logger;
+
+import com.seda.commons.logger.CustomLoggerManager;
+import com.seda.commons.logger.LoggerWrapper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.Gruppo;
 import com.seda.payer.core.exception.DaoException;
@@ -13,7 +15,7 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class GruppoDao extends BaseDaoHandler {
 
-	private Logger log = Logger.getLogger(GruppoDao.class);
+	private static final LoggerWrapper log =  CustomLoggerManager.get(GruppoDao.class);
 
 	/**
 	 * Default constructor
@@ -98,7 +100,7 @@ public class GruppoDao extends BaseDaoHandler {
 			callableStatement = prepareCall(Routines.PYGRPSP_SEL.routine());
 			Gruppo bean = new Gruppo();
 			bean.setCodiceGruppo(codiceGruppo);
-			log.info(bean);
+			log.info(bean.toString());
 			System.out.println(bean);
 			// we invoke method load
 			bean.load(callableStatement, Gruppo.OVERLAY_SCOPE);
