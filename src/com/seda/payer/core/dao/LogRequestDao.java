@@ -10,7 +10,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import org.apache.log4j.Logger;
+import com.seda.commons.logger.CustomLoggerManager;
+import com.seda.commons.logger.LoggerWrapper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.LogRequest;
 import com.seda.payer.core.exception.DaoException;
@@ -18,7 +19,7 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class LogRequestDao extends BaseDaoHandler {
 
-	private Logger log = Logger.getLogger(LogRequestDao.class);
+	private static final LoggerWrapper log =  CustomLoggerManager.get(LogRequestDao.class);
 
 	/**
 	 * Default constructor
@@ -241,16 +242,16 @@ public class LogRequestDao extends BaseDaoHandler {
 	}
 	
 	/*
-	//1° version crea solo se lunedi
+	//1ï¿½ version crea solo se lunedi
 	public void makeTabBackup() throws DaoException {
 		CallbleStatement callableStatement = null;
 		log.debug("LogRequestDao: \n\tOP: makeTabBackup");
 		Calendar cal = Calendar.getInstance(TimeZone.getTimeZone("Europe/Rome"));
-		if(cal.get(Calendar.DAY_OF_WEEK) == 2) { //se è lunedì
+		if(cal.get(Calendar.DAY_OF_WEEK) == 2) { //se ï¿½ lunedï¿½
 			try {
 				cal.add(Calendar.DAY_OF_YEAR, -1); //imposto al giorno precedente ==> domenica
 				String datafineBackup = formatDate(cal, "yyyyMMdd"); //tag della data finale
-				cal.add(Calendar.DAY_OF_YEAR, -6); //imposto al lunedì precedente
+				cal.add(Calendar.DAY_OF_YEAR, -6); //imposto al lunedï¿½ precedente
 				String datainizioBackup = formatDate(cal, "yyyyMMdd"); //tag della data iniziale
 				String tagBackup = datainizioBackup + "_" + datafineBackup;
 				String tabBackup = "PGREQTB_" +  tagBackup;
@@ -288,7 +289,7 @@ public class LogRequestDao extends BaseDaoHandler {
 	}  
 	*/
 	/*
-	//2° versione verifica ed eventualmente crea backup se non gia' presente
+	//2ï¿½ versione verifica ed eventualmente crea backup se non gia' presente
 	private void makeTabBackup(String tagBackup) throws DaoException {
 		CallableStatement callableStatement = null;
 		log.debug("LogRequestDao: \n\tOP: makeTabBackup(" + tagBackup + ")");
@@ -334,7 +335,7 @@ public class LogRequestDao extends BaseDaoHandler {
 		int fine = -1;
 		int inizio = -6;
 		if(cheGiornoE != 2) {
-			//se non è lunedì
+			//se non ï¿½ lunedï¿½
 			if(cheGiornoE > 2)
 				fine = 1 - cheGiornoE;
 			else
@@ -343,7 +344,7 @@ public class LogRequestDao extends BaseDaoHandler {
 		try {
 			cal.add(Calendar.DAY_OF_YEAR, fine); //imposto alla domenica della settimana precedente
 			String datafineBackup = formatDate(cal, "yyyyMMdd"); //tag della data finale
-			cal.add(Calendar.DAY_OF_YEAR, inizio); //imposto al lunedì della settimana precedente
+			cal.add(Calendar.DAY_OF_YEAR, inizio); //imposto al lunedï¿½ della settimana precedente
 			String datainizioBackup = formatDate(cal, "yyyyMMdd"); //tag della data iniziale
 			String tagBackup = datainizioBackup + "_" + datafineBackup;
 			log.debug("LogRequestDao tagBackup: " + tagBackup);
@@ -353,7 +354,7 @@ public class LogRequestDao extends BaseDaoHandler {
 		}
 	}  
 	*/
-	//3° versione verifica ed eventualmente crea backup se non è gia' presente
+	//3ï¿½ versione verifica ed eventualmente crea backup se non ï¿½ gia' presente
 	//aggiorna il dizionario per consentire query su storico (per adesso non gestite)
 	private void makeTabBackup(
 			String dataInizioBackup, String dataFineBackup,
@@ -424,7 +425,7 @@ public class LogRequestDao extends BaseDaoHandler {
 		}
 	}  
 	//	IN CASO DI RECUPERO DEL CODICE CORRENTE RICORDARSI DI INSERIRE LA TABELLA DI BACKUP NEI PARAMETRI DI INPUT
-	//3° versione con le operazioni sul dizionario nel codice java 
+	//3ï¿½ versione con le operazioni sul dizionario nel codice java 
 	/*
 	private void makeTabBackup(
 			String dataInizioBackup, String dataFineBackup,
@@ -551,7 +552,7 @@ public class LogRequestDao extends BaseDaoHandler {
 		int fine = -1;
 		int inizio = -6;
 		if(cheGiornoE != 2) {
-			//se non è lunedì
+			//se non ï¿½ lunedï¿½
 			if(cheGiornoE > 2)
 				fine = 1 - cheGiornoE;
 			else
@@ -561,11 +562,11 @@ public class LogRequestDao extends BaseDaoHandler {
 			//LP PG22XX02 - 20220223 log.debug("LogRequestDao oggi data: " + formatDate(cal, "yyyyMMdd"));
 			cal.add(Calendar.DAY_OF_YEAR, fine); //imposto alla domenica di una settimana prima
 			String dataFine = formatDate(cal, "yyyyMMdd"); //tag della data finale
-			cal.add(Calendar.DAY_OF_YEAR, inizio); //imposto al lunedì di una settimana prima
+			cal.add(Calendar.DAY_OF_YEAR, inizio); //imposto al lunedï¿½ di una settimana prima
 			String dataInizio = formatDate(cal, "yyyyMMdd"); //tag della data iniziale
 			cal.add(Calendar.DAY_OF_YEAR, -1); //imposto alla domenica di due settimane prima
 			String dataFineBackup = formatDate(cal, "yyyyMMdd"); //tag della data finale
-			cal.add(Calendar.DAY_OF_YEAR, -6); //imposto al lunedì di due settimane prima
+			cal.add(Calendar.DAY_OF_YEAR, -6); //imposto al lunedï¿½ di due settimane prima
 			String dataInizioBackup = formatDate(cal, "yyyyMMdd"); //tag della data finale
 			//LP PG22XX02 - 20220223 log.debug("LogRequestDao settimana precedente dataInizio: " + dataInizio + " dataFine: " + dataFine);
 			//LP PG22XX02 - 20220223 log.debug("LogRequestDao settimana in storico dataInizio: " + dataInizioBackup + " dataFine: " + dataFineBackup);
@@ -579,7 +580,7 @@ public class LogRequestDao extends BaseDaoHandler {
 					inizio = 2 - cheGiornoE;
 				else
 					inizio = -6;
-				cal0.add(Calendar.DAY_OF_YEAR, inizio); //imposto al lunedì della settimana corrente
+				cal0.add(Calendar.DAY_OF_YEAR, inizio); //imposto al lunedï¿½ della settimana corrente
 				dataInizioCorrente = formatDate(cal0, "yyyyMMdd"); //tag della data di inizio della settimana corrente
 			}
 			cal0.add(Calendar.DAY_OF_YEAR, 6); //imposto alla domenica della settimana corrente
