@@ -245,6 +245,14 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 	public ResponseData doSaveHost(ConfigurazioneImpostaSoggiorno configImposta, String codUtente) throws DaoException {
 		CallableStatement callableStatement = null;
 		try	{
+			
+			if(configImposta != null) {
+				System.out.println("DATA-IN-CODUTEN: " + codUtente);
+				System.out.println("DATA-IN-CODENTE: " + configImposta.getCodiceEnteGestionaleEntrate());
+				System.out.println("DATA-IN-CODIMSE: " + configImposta.getImpostaServizioGestionaleEntrate());
+				System.out.println("DATA-IN-CODTRIB: " + configImposta.getCodiceTributoGestionaleEntrate());
+			}
+			
 			callableStatement = prepareCall(Routines.IS_IMPSOGG_DOSAVE.routine());
 			callableStatement.setString(1, codUtente);
 			callableStatement.setString(2, configImposta.getCodiceEnteGestionaleEntrate());

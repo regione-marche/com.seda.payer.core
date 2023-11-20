@@ -12,8 +12,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
+import com.seda.commons.logger.CustomLoggerManager;
+import com.seda.commons.logger.LoggerWrapper;
 import com.seda.commons.security.TokenGenerator;
 //inizio LP PG21XX04 Leak
 //import com.seda.data.dao.DAOHelper;
@@ -26,7 +26,7 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class DettaglioFlussoOtticoDao extends BaseDaoHandler {
 
-	private Logger log = Logger.getLogger(DettaglioFlussoOtticoDao.class);
+	private static final LoggerWrapper log =  CustomLoggerManager.get(DettaglioFlussoOtticoDao.class);
 	
 	/**
 	 * Default constructor

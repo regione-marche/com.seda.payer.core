@@ -11,23 +11,17 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
-
+import java.util.ArrayList;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
-
 import com.seda.payer.core.bean.ConfigurazioneImpostaSoggiorno;
-import java.util.ArrayList;
-import org.apache.log4j.Logger;
-
 import com.seda.payer.core.bean.TestataComunicazioneImpostaSoggiorno;
 
 public class ImpostaSoggiornoDao extends RestBaseDaoHandler {
 	
 	static SimpleDateFormat sdfIso = new SimpleDateFormat("yyyy-MM-dd");
-	@SuppressWarnings("unused")
-	private static Logger logger;
 	
 	protected CallableStatement callableStatementUPDISBATCH = null;
 	

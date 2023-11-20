@@ -237,6 +237,26 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 	public ResponseData doSaveHost(AnagraficaStrutturaRicettiva anagStruttura, String tipoRichiesta, String descrizioneComune, String siglaProvincia) throws DaoException {
 		CallableStatement callableStatement = null;
 		try	{
+			if(anagStruttura != null) {
+				System.out.println("DATA-IN-CODUTEN: " + anagStruttura.getCodiceUtente());
+				System.out.println("DATA-IN-CENTENTE: " + anagStruttura.getCodiceEnteGestionaleEntrate());
+				System.out.println("DATA-IN-CODIMSE: " + anagStruttura.getImpostaServizioGestionaleEntrate());
+				System.out.println("DATA-IN-REQUEST: " + tipoRichiesta);
+				System.out.println("DATA-IN-OPERATO: " + "WISMANAGER");
+				System.out.println("DATA-IN-CODBELF: " + anagStruttura.getCodiceBelfiore());
+				System.out.println("DATA-IN-IDAUTHO: " + anagStruttura.getCodiceAutorizzazione());
+				System.out.println("DATA-IN-COFPIVA: " + anagStruttura.getPartitaIVAStruttura());
+				System.out.println("DATA-IN-RAGSOCS: " + anagStruttura.getRagioneSocialeStruttura());
+				System.out.println("DATA-IN-INDIRIZ: " + anagStruttura.getIndirizzoStruttura());
+				System.out.println("DATA-IO-DCOMUNE: " + descrizioneComune);
+				System.out.println("DATA-IN-CODPROV: " + siglaProvincia);			
+				System.out.println("DATA-IN-CODICAP: " + anagStruttura.getCapStruttura());
+				System.out.println("DATA-IN-CONTRIB: " + (tipoRichiesta.equals("VARI") ? anagStruttura.getCodiceContribuenteGestionaleEntrate() : " "));
+				System.out.println("DATA-IN-INSEGNA: " + anagStruttura.getInsegnaStruttura());
+				System.out.println("DATA-IN-TITOLAR: " + anagStruttura.getAnagraficaTitolare());
+				System.out.println("DATA-IN-COFITIT: " + anagStruttura.getCodFiscaleTitolare());				
+			}
+
 			callableStatement = prepareCall(Routines.IS_ANAG_DOSAVE.routine());
 			callableStatement.setString(1, anagStruttura.getCodiceUtente());
 			callableStatement.setString(2, anagStruttura.getCodiceEnteGestionaleEntrate());
