@@ -116,12 +116,13 @@ public class PosizioniIuvDAOImpl   extends BaseDaoHandler  implements PosizioniI
 					String numeroVerbale = data.getString(32);
 					String numeroBollettinoCDS = data.getString(33);
 					//fine SB PG210170
+					String flagPoste = data.getString(34); //SB PGNTCORE-14
 					posizioneIuv = new PosizioneIuv(identificativoDominio,codiceEnte,codiceIuv,identificativoFlusso,dataCreazione,
 							tipoRecord,identificativoDocumento,numeroRata,dataScadenza,codiceFiscale,importo,
 							denominazioneDebitore,indirizzoContribuente,localitaContribuente,provinciaContribuente,
 							flagAnnullamento,dataAggiornamento,codiceIban,codiceIuv_Iuv,flagPagato,codiceIban2,causale,
 							cespite,annoRif,codiceUtente, codiceSocieta, chiaveEnte, tipologiaServizio,
-							tassonomia, targa, dataScadenzaVerbale, numeroVerbale, numeroBollettinoCDS
+							tassonomia, targa, dataScadenzaVerbale, numeroVerbale, numeroBollettinoCDS, flagPoste
 							);
 					//fine LP PG200370
 				}
