@@ -4,15 +4,15 @@ import java.util.Map;
 
 public enum ERestRoutine {
 	
-	EC_DOLIST(new SPEPSTC1()), // manca esempio per Resultset 1 e 2
-	ECS_DOLIST(new SPEPSTC2()), // manca esempio per Resultset 1 e 2
+//	EC_DOLIST(new SPEPSTC1()), // manca esempio per Resultset 1 e 2
+//	ECS_DOLIST(new SPEPSTC2()), // manca esempio per Resultset 1 e 2
 	ECM_DOLIST(new SPEPSTC3()), //OK
 	EC_DETBOL(new SPEPSTC4()), //OK
 	// SPEPSTC5 non viene più usata
 	EC_CODFISC(new SPEPSTC6()), //OK
 	EC_ATTICONT_DOLIST(new SPEPSTC7()), //OK
 	EC_PAG_DOLIST(new SPEPSTC8()), //OK
-	BOL_DODETAIL(new SPEPBOLL()), // manca esempio per ResultSet 1 e 2
+//	BOL_DODETAIL(new SPEPBOLL()), // manca esempio per ResultSet 1 e 2
 	CDS_DODETAIL(new SPEPWCDS()), //OK
 	
 	PGBHOST(new SPEPSPB1()), //OK
@@ -20,14 +20,14 @@ public enum ERestRoutine {
 	ALL_ANA_CONTATTO(new SPEPSTCE()), //OK
 	SPEPSTE1(new SPEPSTE1()), //OK
 	// SPEPIT02 non esiste su entrate quindi non dovremmo chiamarla da pagonet
-	SPEPWCAR(null), // in attesa di specifiche
+//	SPEPWCAR(null), // in attesa di specifiche
 	SPEPWCAN(new SPEPWCAN()), //OK
 	SPEPWSTA(new SPEPWSTA()), //OK
 	IS_ANAG_DOSAVE(new SPISOGG1()), //OK
 	IS_COMUNICAZIONE_DOSAVE(new SPISOGG2()), //OK
 	
 	IS_IMPSOGG_DOSAVE(new SPISOGG3()), //OK
-	SELECT_PAG_HOST_ENTEIS(new SPISOGG4()), // TODO: manca esempio GET per il ResultSet
+//	SELECT_PAG_HOST_ENTEIS(new SPISOGG4()), // TODO: manca esempio GET per il ResultSet
 	IS_RID_DODETAIL(new SPISOGG5()), //OK
 	DO_BOLLETTINO_CUMULATIVO(new SPISOGG6()), //OK
 	DO_DATI_BOLLETTINO(new SPISOGG7()), //OK
