@@ -5,7 +5,9 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import org.apache.log4j.Logger;
+
+import com.seda.commons.logger.CustomLoggerManager;
+import com.seda.commons.logger.LoggerWrapper;
 import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.Tassonomia;
@@ -14,7 +16,7 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class TassonomiaDao extends BaseDaoHandler {
 
-	private Logger log = Logger.getLogger(TassonomiaDao.class);
+	private static final LoggerWrapper log =  CustomLoggerManager.get(TassonomiaDao.class);
 
 	/**
 	 * Default constructor
@@ -117,7 +119,7 @@ public class TassonomiaDao extends BaseDaoHandler {
 			bean.setProgressivoMacroAreaPerEnteCreditore(progressivoMacroAreaPerEnteCreditore);
 			bean.setCodiceTipologiaServizio(codiceTipologiaServizio);
 			bean.setMotivoGiuridicoDellaRiscossione(motivoGiuridicoDellaRiscossione);
-			log.info(bean);
+			log.info(bean.toString());
 			System.out.println(bean);
 			// we invoke method load
 			bean.load(callableStatement, Tassonomia.OVERLAY_SCOPE);

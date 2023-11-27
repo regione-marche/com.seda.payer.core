@@ -6,15 +6,12 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.Log1;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class Log1Dao extends BaseDaoHandler {
-
-	private Logger log = Logger.getLogger(Log1Dao.class);
 
 	/**
 	 * Default constructor
@@ -40,7 +37,7 @@ public class Log1Dao extends BaseDaoHandler {
 //                  + "\n\tPARAM: idRequest:" + key);
 		try {
 			// we prepare callableStatement
-			//TODO: non è stata implementata la SP PGLG1SP_SEL
+			//TODO: non ï¿½ stata implementata la SP PGLG1SP_SEL
 			callableStatement = prepareCall("PYLG1SP_SEL");
 			Log1 bean = new Log1();
 			bean.setChiaveLog(key);
@@ -96,7 +93,7 @@ public class Log1Dao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		try	{
 //			log.debug("Log1Dao: OP: doWebRowSets\n\tOBJ: " + bean.toString());
-			//TODO: non è stata implementata la SP PYLG1SP_LST
+			//TODO: non ï¿½ stata implementata la SP PYLG1SP_LST
 			callableStatement = prepareCall("PYLG1SP_LST");
 			bean.load(callableStatement, rowsPerPage, pageNumber, order);
 			/* we execute procedure */

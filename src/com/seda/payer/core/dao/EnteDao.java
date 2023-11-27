@@ -6,12 +6,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import com.seda.data.helper.HelperException;
 import com.seda.payer.commons.bean.TypeRequest;
 import com.seda.payer.core.bean.Ente;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.messages.Messages;
-import com.seda.data.helper.HelperException;
 
 
 public class EnteDao extends BaseDaoHandler {
@@ -379,4 +379,118 @@ public class EnteDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
+	
+	// inizio SR PGNTCORE-11
+	public String getCodiceIpa(String primoArg, String codiceEnte) throws Exception {
+		CallableStatement callableStatement = null;
+		ResultSet res = null;
+		String codiceIpa = "";
+
+		try {
+			if (primoArg.length() <= 5) {
+				// è un codice utente
+				callableStatement = prepareCall(Routines.PYENTSP_SEL_INFO_CIPA2.routine());
+				callableStatement.setString(1, primoArg); // ENT_CUTECUTE
+				callableStatement.setString(2, codiceEnte); // ANE_CANECENT
+				callableStatement.execute();
+
+			} else {
+				// è un codice fiscale
+				callableStatement = prepareCall(Routines.PYENTSP_SEL_INFO_CIPA.routine());
+				callableStatement.setString(1, primoArg); // ENT_CENTCFIS  
+				callableStatement.setString(2, codiceEnte); // ANE_CANECENT 
+				callableStatement.execute();
+			}
+			res = callableStatement.getResultSet();
+			if (res.next()) {
+				codiceIpa = res.getString("ENT_CENTMYCO");
+			}
+			return codiceIpa;
+		} catch (SQLException e) {
+			throw new Exception(e);
+		} catch (IllegalArgumentException e) {
+			throw new Exception(e);
+		} catch (HelperException e) {
+			throw new Exception(e);
+		} finally {
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	
+	public String selezionaFlussoDocumento(String codiceBollettino) throws Exception {
+		CallableStatement callableStatement = null;
+		ResultSet res = null;
+		String progressivoFlusso = "";
+		
+		try {
+			callableStatement = prepareCall(Routines.PYEH1SP_SEL_FLU.routine());		
+			callableStatement.setString(1, codiceBollettino.trim()); // EH1_CEH1CBOL
+			callableStatement.execute();
+			res = callableStatement.getResultSet();
+			if (res.next()) {
+				progressivoFlusso = res.getString("EH1_PEH1FLUS");
+			}
+			return progressivoFlusso;
+			
+		} catch (SQLException e) {
+			throw new Exception(e);
+		} catch (IllegalArgumentException e) {
+			throw new Exception(e);
+		} catch (HelperException e) {
+			throw new Exception(e);
+		} finally {
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	
+	public void aggiornaFlagInviaDovuto(String progressivoFlusso, String flagInviaDovuto) throws Exception {
+		CallableStatement callableStatement = null;
+		Connection connection = null;
+		
+		try {
+			connection = getConnection();
+			callableStatement = prepareCall(Routines.PYEH0SP_UPD_INV.routine());		
+			callableStatement.setString(1, progressivoFlusso.trim());
+			callableStatement.setString(2, flagInviaDovuto);
+			
+			callableStatement.execute();
+		} catch (SQLException x) {
+			throw new Exception(x);
+		} catch (IllegalArgumentException x) {
+			throw new Exception(x);
+		} catch (HelperException x) {
+			throw new Exception(x);
+		} finally {
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+	// fine SR PGNTCORE-11
+
 }

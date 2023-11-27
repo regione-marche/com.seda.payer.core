@@ -1,15 +1,9 @@
 package com.seda.payer.core.dao;
 
-import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import org.apache.log4j.Logger;
-
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.HelperException;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 
@@ -20,7 +14,7 @@ public class RisconetIciImuDao extends BaseDaoHandler {
 	}
 
 	//inizio LP PG21XX04 Leak
-	//Nota. La connection è chiusa dal chiamante.
+	//Nota. La connection ï¿½ chiusa dal chiamante.
 	//fine LP PG21XX04 Leak
 	public void recuperaPagamentiIciImu(String codiceProvinciaComune, String codiceFiscaleContribuente, String dbName, String codiceConcessione) throws DaoException
 	{

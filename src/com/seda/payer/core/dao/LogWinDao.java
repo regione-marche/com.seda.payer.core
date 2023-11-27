@@ -10,8 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.TimeZone;
 
-import org.apache.log4j.Logger;
-
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.LogWin;
 import com.seda.payer.core.exception.DaoException;
@@ -199,7 +197,7 @@ public class LogWinDao extends BaseDaoHandler {
 		int fine = -1;
 		int inizio = -6;
 		if(cheGiornoE != 2) {
-			//se non è lunedì
+			//se non ï¿½ lunedï¿½
 			if(cheGiornoE > 2)
 				fine = 1 - cheGiornoE;
 			else
@@ -209,11 +207,11 @@ public class LogWinDao extends BaseDaoHandler {
 //			log.debug("LogWinDao oggi data: " + formatDate(cal, "yyyyMMdd"));
 			cal.add(Calendar.DAY_OF_YEAR, fine); //imposto alla domenica di una settimana prima
 			String dataFine = formatDate(cal, "yyyyMMdd"); //tag della data finale
-			cal.add(Calendar.DAY_OF_YEAR, inizio); //imposto al lunedì di una settimana prima
+			cal.add(Calendar.DAY_OF_YEAR, inizio); //imposto al lunedï¿½ di una settimana prima
 			String dataInizio = formatDate(cal, "yyyyMMdd"); //tag della data iniziale
 			cal.add(Calendar.DAY_OF_YEAR, -1); //imposto alla domenica di due settimane prima
 			String dataFineBackup = formatDate(cal, "yyyyMMdd"); //tag della data finale
-			cal.add(Calendar.DAY_OF_YEAR, -6); //imposto al lunedì di due settimane prima
+			cal.add(Calendar.DAY_OF_YEAR, -6); //imposto al lunedï¿½ di due settimane prima
 			String dataInizioBackup = formatDate(cal, "yyyyMMdd"); //tag della data finale
 //			log.debug("LogWinDao settimana precedente dataInizio: " + dataInizio + " dataFine: " + dataFine);
 //			log.debug("LogWinDao settimana in storico dataInizio: " + dataInizioBackup + " dataFine: " + dataFineBackup);
@@ -227,7 +225,7 @@ public class LogWinDao extends BaseDaoHandler {
 					inizio = 2 - cheGiornoE;
 				else
 					inizio = -6;
-				cal0.add(Calendar.DAY_OF_YEAR, inizio); //imposto al lunedì della settimana corrente
+				cal0.add(Calendar.DAY_OF_YEAR, inizio); //imposto al lunedï¿½ della settimana corrente
 				dataInizioCorrente = formatDate(cal0, "yyyyMMdd"); //tag della data di inizio della settimana corrente
 			}
 			cal0.add(Calendar.DAY_OF_YEAR, 6); //imposto alla domenica della settimana corrente
