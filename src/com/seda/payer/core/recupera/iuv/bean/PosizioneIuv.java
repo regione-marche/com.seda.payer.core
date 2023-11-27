@@ -50,7 +50,9 @@ public class PosizioneIuv extends ModelAttributes implements Serializable{
 	private String numeroVerbale;
 	private String numeroBollettinoCDS;
 	//fine SB PG210170
-	
+	private String flagPoste; //SB PGNTCORE-14
+
+
 	public PosizioneIuv(){
 	}
 	
@@ -97,7 +99,7 @@ public class PosizioneIuv extends ModelAttributes implements Serializable{
 		//inizio LP PG200370
 			//String codiceIban2, String causale, String cespite, String annoRif, String codiceUtente, String codiceSocieta, String chiaveEnte, String tipologiaServizio) {
 			String codiceIban2, String causale, String cespite, String annoRif, String codiceUtente, String codiceSocieta, String chiaveEnte, String tipologiaServizio
-			, String tassonomia, String targa, String dataScadenzaVerbale, String numeroVerbale, String numeroBollettinoCDS
+			, String tassonomia, String targa, String dataScadenzaVerbale, String numeroVerbale, String numeroBollettinoCDS, String flagPoste
 		) {
 		//fine LP PG200370
 		super();
@@ -139,6 +141,7 @@ public class PosizioneIuv extends ModelAttributes implements Serializable{
 		this.numeroBollettinoCDS = numeroBollettinoCDS;
 		this.numeroVerbale = numeroVerbale;
 		//fine SB PG210170
+		this.flagPoste = flagPoste; //SB PGNTPCORE-14
 	}
 
 	public String getIdentificativoDominio() {
@@ -427,5 +430,13 @@ public class PosizioneIuv extends ModelAttributes implements Serializable{
 
 	public void setNumeroBollettinoCDS(String numeroBollettinoCDS) {
 		this.numeroBollettinoCDS = numeroBollettinoCDS;
+	}
+	
+	public String getFlagPoste() {
+		return flagPoste;
+	}
+
+	public void setFlagPoste(String flagPoste) {
+		this.flagPoste = flagPoste;
 	}
 }
