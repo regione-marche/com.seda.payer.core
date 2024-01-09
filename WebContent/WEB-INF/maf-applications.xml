@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<applications-mapping xmlns="http://application.core.maf.j2ee5.seda.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://application.core.maf.j2ee5.seda.com xsd/maf-applications.xsd">
+
+	<default>
+		<config-path>/WEB-INF/applications</config-path>
+		<applid>sample</applid>
+		<ignored-ext>.css .js</ignored-ext>
+		<ignored-subcontext>/myservlet /pippoServlet</ignored-subcontext>
+	</default>
+
+	<security>
+		<login-page>login.screen</login-page>
+		<security-error-page>security_error.screen</security-error-page>
+		<signon-class>com.seda.j2ee.maf.SignOnSupport</signon-class>
+		<sso-class>com.seda.j2ee.maf.SSOSupport</sso-class>
+		<after-login></after-login>
+		<login-ruleset>
+			<username-regex>^[a-zA-Z0-9].{4,10}$</username-regex>
+			<password-regex>^[a-zA-Z0-9].{4,10}$</password-regex>
+			<login-attempts>3</login-attempts> 
+			<login-locked-timeout>10</login-locked-timeout>
+		</login-ruleset>
+
+	</security>
+ 
+ 	<menu-collection>
+ 		<menu template="default">
+			<link text="Sample" applid="sample"/> 		
+ 		</menu>
+ 	</menu-collection> 
+ 
+	<application name="sample" protected="true" activate="true">
+		<profile-collection>
+			<profile></profile>
+		</profile-collection>
+		<description></description>	
+		<remember-protected-url></remember-protected-url>		
+		<config-path>/WEB-INF/applications</config-path>
+		<template-collection>
+			<template name="">pippo</template>
+		</template-collection>
+		<subcontext>/sample</subcontext>
+		<welcome>welcome.do</welcome>
+		<starter-class></starter-class>
+		<controller-servlet></controller-servlet>
+		<binder-class></binder-class>
+		<session-class></session-class>	
+		<captcha>
+			<captcha-url></captcha-url>
+			<captcha-class></captcha-class>
+		</captcha>
+	</application>
+	
+</applications-mapping>   

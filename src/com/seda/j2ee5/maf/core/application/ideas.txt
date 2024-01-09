@@ -1,0 +1,6 @@
+L'applications data deve diventare un managed bean 
+per esporre metodi di start e stop delle aplpicazioni, 
+configurazioni a runtime etcc...
+
+questi metodi vanno eliminati perchè sono deboli per la sicurezza
+application.setActive(true); 

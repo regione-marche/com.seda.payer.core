@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<templates xmlns="http://template.core.maf.j2ee5.seda.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://template.core.maf.j2ee5.seda.com xsd/maf-templates.xsd">
+
+  <default>template.jsp</default>
+
+  <bundle>template.jsp</bundle>
+
+  <template name="tryit">
+      <url>tryit_template.jsp</url>
+  </template>
+
+  <screen name="tryit">
+    <parameter key="title" value="ola.ola.ola" direct="true"/>
+    <parameter key="banner" value="/banner.jsp" />
+    <parameter key="sidebar" value="/sidebar.jsp" />
+    <parameter key="body" value="/body.jsp" />
+    <parameter key="footer" value="/footer.jsp" />
+   </screen>
+   
+  <screen name="tryit_error">
+    <parameter key="title" value="/title.jsp" direct="true"/>
+    <parameter key="banner" value="/banner.jsp" />
+    <parameter key="sidebar" value="/sidebar.jsp" />
+    <parameter key="body" value="/error.jsp" />
+    <parameter key="footer" value="/footer.jsp" />
+  </screen>   
+
+
+	<screen name="joblist">
+    <parameter key="title" value="/title.jsp" direct="true"/>
+    <parameter key="banner" value="/banner.jsp" />
+    <parameter key="sidebar" value="/sidebar.jsp" />
+    <parameter key="body" value="/joblist.jsp" />
+    <parameter key="footer" value="/footer.jsp" />
+   </screen>
+
+</templates>
