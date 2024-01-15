@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<security-mapping xmlns="http://security.core.maf.j2ee5.seda.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://security.core.maf.j2ee5.seda.com xsd/maf-security.xsd">
+
+	<!-- A Protected Resource-->
+ 	<constraint>
+   		<resource-collection>
+	   		<resource name="Customer Screen" url="customer.screen"/>
+   		</resource-collection>
+ 	</constraint>
+
+ 	<!-- A Protected Resource-->
+ 	<constraint>
+   		<resource-collection>
+	 	   <resource name="Customer Action" url="customer.do"/>
+		</resource-collection>
+ 	</constraint>
+	
+	<!-- A Protected Resource-->
+ 	<constraint>
+ 		<role-collection>
+ 			<role>admin</role>
+			<role>customer</role> 			
+ 		</role-collection> 		
+   		<resource-collection>
+	 	   <resource name="Cart List Items" url="cartlist.do"/>
+		</resource-collection>
+ 	</constraint>
+</security-mapping>
