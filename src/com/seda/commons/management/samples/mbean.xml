@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE application SYSTEM "mbean.dtd">
+
+<!-- Root element: application -->
+<application>
+
+<!--========================-->
+<!-- Queue MBean definition -->
+<!--========================-->
+
+<mbean className="com.seda.commons.management.samples.Hello">
+<description>
+This MBean is a managed Hello class
+</description>
+
+<!-- ********** -->
+<!-- Attributes -->
+<!-- ********** -->
+<attribute name="Name">
+The name of this cache
+</attribute>
+
+<attribute name="CacheSize">
+The size of this cache
+</attribute>
+
+<!-- ********** -->
+<!-- Operations -->
+<!-- ********** -->
+<operation name="sayHello" description="This bean say hello"/>
+
+<operation name="add" description="This bean sum two integer and gives the result">
+	<parameters>
+		<parameter name="left" description="The left value"/>
+		<parameter name="right" description="The right value"/>
+	</parameters>
+</operation>
+
+</mbean>
+
+</application>

@@ -5,7 +5,9 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
-import org.apache.log4j.Logger;
+
+import com.seda.commons.logger.CustomLoggerManager;
+import com.seda.commons.logger.LoggerWrapper;
 import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.TemplateDocumento;
@@ -16,7 +18,7 @@ import com.seda.payer.core.handler.BaseDaoHandler;
  */
 public class TemplateDocumentoDao extends BaseDaoHandler {
 
-	private Logger log = Logger.getLogger(TemplateDocumentoDao.class);
+	private static final LoggerWrapper log =  CustomLoggerManager.get(TemplateDocumentoDao.class);
 	/**
 	 * Default constructor
 	 * @param connection
@@ -151,7 +153,7 @@ public class TemplateDocumentoDao extends BaseDaoHandler {
 				bean.setDataFine(dataFine);
 				bean.setChiaveTemplate(chiaveTemplate);
 			}
-			log.info(bean);
+			log.info(bean.toString());
 			System.out.println(bean);
 			// we invoke method load
 			bean.load(callableStatement, TemplateDocumento.OVERLAY_SCOPE);

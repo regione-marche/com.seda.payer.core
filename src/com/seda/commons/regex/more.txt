@@ -1,0 +1,12 @@
+# Cross site scripting simple attack
+css_simple=((\\%3C)|<)((\\%2F)|\\/)*[a-z0-9\\%]+((\\%3E)|>)
+# Cross site scripting img attack
+css_img=((\\%3C)|<)((\\%69)|i|(\\%49))((\\%6D)|m|(\\%4D))((\\%67)|g|(\\%47))[^\n]+((\\%3E)|>)
+# Cross site scripting img attack paranoid
+css_paranoid=((\\%3C)|<)[^\\n]+((\\%3E)|>)
+# Modified detection of SQL meta-characters
+sql_meta_character=((\\%3D)|(=))[^\\n]*((\\%27)|(\\')|(\\-\\-)|(\\%3B)|(;))
+# or SQL Injection attack
+sql_or=\\w*((\\%27)|(\\'))((\\%6F)|o|(\\%4F))((\\%72)|r|(\\%52))
+# UNION SQL Injection attack
+sql_union=((\\%27)|(\\'))union

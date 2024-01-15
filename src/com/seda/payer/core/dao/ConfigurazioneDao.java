@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.apache.log4j.Logger;
-
+import com.seda.commons.logger.CustomLoggerManager;
+import com.seda.commons.logger.LoggerWrapper;
 //inizio LP PG21XX04 Leak
 //import com.seda.data.dao.DAOHelper;
 //fine LP PG21XX04 Leak
@@ -21,7 +21,7 @@ import com.seda.payer.core.handler.BaseDaoHandler;
  */
 public class ConfigurazioneDao extends BaseDaoHandler {
 
-	private Logger log = Logger.getLogger(ConfigurazioneDao.class);
+	private static final LoggerWrapper log =  CustomLoggerManager.get(ConfigurazioneDao.class);
 	/**
 	 * Default constructor
 	 * @param connection

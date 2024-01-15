@@ -4,11 +4,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import org.apache.log4j.Logger;
+import com.seda.commons.logger.CustomLoggerManager;
+import com.seda.commons.logger.LoggerWrapper;
 
 public class DaoUtil {
 
-	static final private Logger log = Logger.getLogger(DaoUtil.class);
+	private static final LoggerWrapper log =  CustomLoggerManager.get(DaoUtil.class);
 
 	public static void closeConnection(final Connection con) {
 		if (con != null) {
@@ -16,7 +17,7 @@ public class DaoUtil {
 				 con.close();
 			 }
 			 catch (SQLException ex) {
-				log.error(con, ex);
+				log.error(ex);
 			 }
 		}
 	}
@@ -26,7 +27,7 @@ public class DaoUtil {
 					stmt.close();
 				 }
 				 catch (SQLException ex) {
-					log.error(stmt, ex);
+					log.error(ex);
 				 }
 			}
 		}
@@ -37,7 +38,7 @@ public class DaoUtil {
 					rs.close();
 				 }
 				 catch (SQLException ex) {
-					log.error(rs, ex);
+					log.error(ex);
 				 }
 			}
 		}

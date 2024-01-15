@@ -1,9 +1,9 @@
 package com.seda.payer.core.bean;
 
 import java.io.Serializable;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Date;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
@@ -53,6 +53,8 @@ private static final long serialVersionUID = 1L;
 	private String dataVerbale;
 	private String numeroVerbale;
 	private String numBollettinoCDS;
+
+	private String flagJppa;
 	//fine SB PG210170
 	
 	public ConfigurazioneBlackBoxPos() {}
@@ -92,6 +94,9 @@ private static final long serialVersionUID = 1L;
     	//inizio LP PG200370
     	setTassonomia(data.getString("DOC_CDOCTASS"));
     	//fine LP PG200370
+    	// SR PGNTCORE-11 inizio
+    	setFlagJppa(data.getString("DOC_FDOCJPPA"));
+    	// SR PGNTCORE-11 fine
     }
 	
 	
@@ -215,6 +220,7 @@ private static final long serialVersionUID = 1L;
 		this.codiceSocieta=codiceSocieta;
 		this.chiaveEnte=chiaveEnte;
 		this.tassonomia = tassonomia; //LP PG200370
+		this.flagJppa = "N"; // SR PGNTCORE-11 
 	}
 	
 	//inizio SB PG210170
@@ -556,5 +562,15 @@ private static final long serialVersionUID = 1L;
 	public void setNumBollettinoCDS(String numBollettinoCDS) {
 		this.numBollettinoCDS = numBollettinoCDS;
 	}
+
+	// SR PGNTCORE-11 inizio
+	public void setFlagJppa(String flagJppa) {
+		this.flagJppa = flagJppa;
+	}
+	
+	public String getFlagJppa() {
+		return this.flagJppa;
+	}
+	// fine
 
 }
