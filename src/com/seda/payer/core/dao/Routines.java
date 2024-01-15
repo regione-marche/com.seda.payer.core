@@ -1295,6 +1295,7 @@ public enum Routines {
 	, PYEH0SP_UPD_INV
 	, PYEH1SP_SEL_FLU
 	// fine SR PGNTCORE-11
+	, PYELGSP_DEL // SR PGNTCORE-17
 	;
 	
     private static ResourceBundle rb;
