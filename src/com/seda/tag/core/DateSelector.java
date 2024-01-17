@@ -10,6 +10,7 @@ import com.seda.tag.i18n.Strings;
 
  
 public class DateSelector implements TagRenderInterface {
+	
 	protected String sHtml="";
 	protected String locale = Strings.DEFAULTLOCALE.format();
 	protected String prefix = Strings.DEFAULTPREFIX.format();
@@ -66,6 +67,9 @@ public class DateSelector implements TagRenderInterface {
 		sValidator = validator;
 	}
 	
+	public boolean getDisabled() {
+		return disabled;
+	}
 	
 	public void setDisabled(Boolean disabled) {
 		this.disabled = disabled;
@@ -205,7 +209,6 @@ public class DateSelector implements TagRenderInterface {
 		this.prefix = prefix;
 	}
 	
-
 	public void setCalendar(Calendar calendar) {
 		this.calendar = calendar;
 		if (this.calendar!=null)
@@ -216,7 +219,7 @@ public class DateSelector implements TagRenderInterface {
 		}
 	}
 	
-	private String getDisabled(){
+	protected String getStrDisabled(){
 		String disabled="";
 		if (this.disabled)
 			disabled="disabled=\"disabled\"";
@@ -319,7 +322,7 @@ public class DateSelector implements TagRenderInterface {
 	protected String createSelect(String name, int start, int count,
 			int selectedIndex, String id) {
 		String selectTag;
-		selectTag = "<select name=\"" + name + "\" id=\"" + id + "\" " + getDisabled() + ">";
+		selectTag = "<select name=\"" + name + "\" id=\"" + id + "\" " + getStrDisabled() + ">";
 		
 		selectTag += "<option selected value=\"\"></option>";
 		
@@ -374,7 +377,6 @@ public class DateSelector implements TagRenderInterface {
 		locale = "en_US";
 		prefix = "date";
 		calendar = null;
-		
 	}
 
 	public void render(JspWriter writer) throws IOException {

@@ -4,8 +4,15 @@ import com.seda.commons.validator.ValidationMessage;
 
 public class FormAgid extends Form {
 	
-
+	protected String language = "";
 	
+	public String getLanguage() {
+		return (language);
+	}
+	
+	public void setLanguage(String value) {
+		language = value;
+	}
 	
 	@Override
 	public String render() {
@@ -44,9 +51,13 @@ public class FormAgid extends Form {
 								+ "</span>"
 								+ "<span style=\""
 									+ "position: relative;"
-									+ "top: -0.18rem;\">"
-										+ "Errore di validazione"
-								+ "</span>"
+									+ "top: -0.18rem;\">";
+				if (language != null && language.equals("de_DE")) {
+					sHtml += "Autorisierungsfehler";
+				} else {
+					sHtml += "Errore di validazione";
+				}
+				sHtml += "</span>"
 							+ "</div>"
 							+ validatorMessageHtml 
 						+ "</div>";
