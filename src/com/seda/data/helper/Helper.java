@@ -13,6 +13,9 @@ import java.util.Properties;
 import com.seda.commons.logger.LoggerWrapper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.helper.SpParamCache;
+import com.seda.data.procedure.reflection.DriverType;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.dao.ConnectionProxyInstance;
 
 /**
  * @author SEDA Lab
@@ -40,7 +43,7 @@ public final class Helper {
         		throw new HelperException(Messages.PARAMETER_COUNT_ERROR.format(helperParameterSetMetaData.getParameterCount(), parameterCountExpected, schemaPattern, procedureNamePattern));        		
         	}
         }
-        
+        // return MetaProcedure.prepareCall(connection, helperParameterSetMetaData.getParameterSet());
         return connection.prepareCall(helperParameterSetMetaData.getParameterSet());
 	}
 	/**
@@ -75,6 +78,12 @@ public final class Helper {
 		else 
 			connection = DriverManager.getConnection( url, creds );			
         connection.setAutoCommit(autoCommit);			
+
+		if (DriverType.getDriverType(connection)==2) {
+			ConnectionProxyInstance connProxy=new ConnectionProxyInstance(connection);
+			connection = connProxy.getConenction();
+		}
+
 		return connection;
 	}
 	public synchronized static final DriverInfo getDriverInfo(Connection connection) throws SQLException, HelperException {

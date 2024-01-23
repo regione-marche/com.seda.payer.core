@@ -4,6 +4,7 @@
 package com.seda.data.dao;
 
 import java.sql.Connection;
+import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,6 +16,7 @@ import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.WebRowSet;
 
 import com.seda.commons.resource.ResourceManager;
+import com.seda.data.procedure.reflection.DriverType;
 import com.sun.rowset.CachedRowSetImpl;
 import com.sun.rowset.WebRowSetImpl;
 
@@ -65,6 +67,10 @@ public class DAOHelper {
 		Connection connection=null;
 		try {
 			connection = dataSource.getConnection();	
+			if (DriverType.getDriverType(connection)==2) {
+				ConnectionProxyInstance connProxy=new ConnectionProxyInstance(connection);
+				connection = connProxy.getConenction();
+			}
 			connection.setAutoCommit(autoCommit);
 		} catch (SQLException se) {
 			throw new DAOSysException("SQL Exception while getting "

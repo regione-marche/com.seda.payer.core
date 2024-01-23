@@ -6,10 +6,14 @@ package com.seda.data.procedure.reflection;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.List;
 
+import com.seda.data.dao.ConnectionProxyInstance;
 import com.seda.data.procedure.transaction.Transaction;
 import com.seda.data.procedure.wrapper.oracle.CallableStatementWrapper;
 
@@ -22,10 +26,20 @@ public class MetaProcedure {
 	private ProcedureReflector procedureReflector; 
 	
 	private MetaProcedure(Connection connection, String catalog, String schema, String procedure){
-		this.procedureReflector=ProcedureReflector.forProcedure(connection, 
-				catalog!=null?catalog.toUpperCase():null,
-						schema!=null?schema.toUpperCase():null,
-								procedure!=null?procedure.toUpperCase():null);
+		//RTC: Dalla connessione prendo il nome del driver,
+		//se e' postgres faccio la lower
+		if (DriverType.getDriverType(connection)==2) {
+			this.procedureReflector=ProcedureReflector.forProcedure(connection, 
+					catalog!=null?catalog.toLowerCase():null,
+							schema!=null?schema.toLowerCase():null,
+									procedure!=null?procedure.toLowerCase():null);
+		}
+		else {
+			this.procedureReflector=ProcedureReflector.forProcedure(connection, 
+					catalog!=null?catalog.toUpperCase():null,
+							schema!=null?schema.toUpperCase():null,
+									procedure!=null?procedure.toUpperCase():null);
+		}						
 	}
 	
 	public static MetaProcedure forProcedure(Connection connection, String procedure){
@@ -72,6 +86,11 @@ public class MetaProcedure {
 		MetaProcedure metaProcedure = new MetaProcedure(connection, catalog, schema, procedure);
 		CallableStatement callableStatement=null;
 		try {
+			//RTC se postgresql passo il numero di refcursor
+			if (DriverType.getDriverType(connection) == 2) {
+				ConnectionProxyInstance.setRefCursorNumber(metaProcedure.getPgRefCursorNumber());
+				ConnectionProxyInstance.setDataTypeInOut(metaProcedure.getDataTypeInOut());
+			}
 			callableStatement=connection.prepareCall(metaProcedure.getSQLCall());
 			if (metaProcedure.hasParameterCursor()) {
 				// parameters cursor are always auto registered 
@@ -141,5 +160,13 @@ public class MetaProcedure {
 	public List<ProcedureParameter> getParameterList() {
 		return procedureReflector.getParameterList();
 	}		
+
+	public int getPgRefCursorNumber() {
+		return procedureReflector.getPgRefCursorNumber();
+	}
+
+	public ArrayList<Integer> getDataTypeInOut() {
+		return procedureReflector.getDataTypeInOut();
+	}
 
 }

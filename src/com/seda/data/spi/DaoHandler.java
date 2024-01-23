@@ -21,6 +21,7 @@ import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.helper.Messages;
+import com.seda.data.procedure.reflection.MetaProcedure;
 import com.sun.rowset.CachedRowSetImpl;
 import com.sun.rowset.WebRowSetImpl;
 /**
@@ -114,7 +115,8 @@ public abstract class DaoHandler {
 	 * @throws HelperException in case of unpaired number of parameters
 	 */
 	protected final CallableStatement prepareCall(String routine, int parameterCountExpected) throws IllegalArgumentException, SQLException, HelperException {
-		return Helper.prepareCall(getConnection(), getSchema(), routine, parameterCountExpected);
+		return MetaProcedure.prepareCall(connection, getSchema(), routine);
+		// return Helper.prepareCall(getConnection(), getSchema(), routine, parameterCountExpected);
 	}	
 	/**
 	 * Constructor of DAO object

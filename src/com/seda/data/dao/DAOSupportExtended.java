@@ -5,6 +5,8 @@ package com.seda.data.dao;
 
 import java.lang.reflect.Method;
 import java.sql.Connection;
+import java.sql.Driver;
+import java.sql.DriverManager;
 import java.util.Properties;
 
 import javax.sql.DataSource;
@@ -14,11 +16,8 @@ import com.seda.commons.logger.LoggerWrapper;
 import com.seda.data.dao.params.DAOSupportParams;
 import com.seda.data.datasource.DataSourceException;
 import com.seda.data.datasource.DataSourceFactoryImpl;
-import com.seda.data.event.ConnectionOpenEvent;
-import com.seda.data.event.DAOEventHandler;
 import com.seda.data.event.DAOEventProxy;
-import com.seda.data.event.servlet.DAOEventContext;
-import com.seda.data.event.servlet.DAOEventLocal;
+import com.seda.data.procedure.reflection.DriverType;
 
 /**
  * Extended DAO support
@@ -58,6 +57,11 @@ public class DAOSupportExtended {
 		
 		try {
 			connection=dataSource.getConnection();
+			//RTC: Per PostgreSQL la connessione � diversa
+			if (DriverType.getDriverType(connection)==2) {
+				ConnectionProxyInstance connProxy=new ConnectionProxyInstance(connection);
+				connection = connProxy.getConenction();
+			}
 			if (autoCommit != connection.getAutoCommit()) {
 				connection.setAutoCommit(autoCommit);
 			}
