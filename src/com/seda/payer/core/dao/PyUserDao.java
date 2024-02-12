@@ -580,10 +580,15 @@ public class PyUserDao extends BaseDaoHandler{
 
 			//RE180181_001 SB - fine
 
-			callableStatement.registerOutParameter(33, Types.INTEGER);
+			// SR PGNTCORE-23 inizio
+			if(pyUser.getFlagPrenotazioneFatturazione()==null) callableStatement.setNull(33, Types.VARCHAR);
+			else callableStatement.setString(33, pyUser.getFlagPrenotazioneFatturazione());
+			// SR PGNTCORE-23 fine
+
+			callableStatement.registerOutParameter(34, Types.INTEGER);
 			
 			callableStatement.executeUpdate();
-			if (callableStatement.getInt(33) == 1 ) return true;
+			if (callableStatement.getInt(34) == 1 ) return true;
 			else return false;
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);

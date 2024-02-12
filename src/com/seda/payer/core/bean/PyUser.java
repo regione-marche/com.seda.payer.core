@@ -95,8 +95,10 @@ public class PyUser implements Serializable{
 	//RE180181_001 SB - fine
 	//USR_FUSRRMAI CHAR(1) 'FLAG ABILITAZIONE INVIO MAIL FILE RENDICONTAZIONE (Y/N)'!
 	private String invioFlussiRendicontazioneViaWs = null;
-	
-	
+
+	// USR_FUSRPRFT CHAR(1) FLAG ABILITAZIONE DATI FATTURAZIONE (Y/N)'
+	private String flagPrenotazioneFatturazione = null;
+
 	public PyUser() {
 		super();
 	}
@@ -125,7 +127,8 @@ public class PyUser implements Serializable{
 			String pinCodePec,
 			String flagValidazioneMail,
 			String flagValidazionePec,   //RE180181_001 SB - fine
-			String invioFlussiRendicontazioneViaWs
+			String invioFlussiRendicontazioneViaWs,
+			String flagPrenotazioneFatturazione // SR PGNTCORE-23
 			) 
 	{
 		super();
@@ -163,7 +166,71 @@ public class PyUser implements Serializable{
 		this.flagValidazionePec = flagValidazionePec;
 		//RE180181_001 SB - fine
 		this.invioFlussiRendicontazioneViaWs = invioFlussiRendicontazioneViaWs;
+		this.flagPrenotazioneFatturazione = flagPrenotazioneFatturazione; // SR PGNTCORE-23
  	}
+
+	public PyUser(Long chiaveUtente, String userName, String userProfile, String flagAttivazione,
+				  String codiceSocieta, String codiceUtente,
+				  String chiaveEnteConsorzio, String chiaveEnteConsorziato,
+				  String downloadFlussiRendicontazione,
+				  String invioFlussiRendicontazioneViaFtp,
+				  String invioFlussiRendicontazioneViaEmail,
+				  String azioniPerTransazioniOK, String azioniPerTransazioniKO,
+				  String azioniPerRiconciliazioneManuale,
+				  String attivazioneEstrattoContoManager,
+				  String abilitazioneProfiloRiversamento,
+				  String associazioniProvvisorieRiconciliazionemt,
+				  String associazioniDefinitiveRiconciliazionemt,
+				  String abilitazioneMultiUtente,
+				  Timestamp dataUltimoAggiornamento, String operatoreUltimoAggiornamento,
+				  String listaTipologieServizio,
+				  String mailContoGestione, String entePertinenza,
+				  String gruppoAgenzia,   //RE180181_001 SB - inizio
+				  String mail,
+				  String mailPec,
+				  String pinCodeMail,
+				  String pinCodePec,
+				  String flagValidazioneMail,
+				  String flagValidazionePec,   //RE180181_001 SB - fine
+				  String invioFlussiRendicontazioneViaWs
+	)
+	{
+		super();
+		this.chiaveUtente = chiaveUtente;
+		this.userName = userName;
+		this.userProfile = userProfile;
+		this.flagAttivazione = flagAttivazione;
+		this.codiceSocieta = codiceSocieta;
+		this.codiceUtente = codiceUtente;
+		this.chiaveEnteConsorzio = chiaveEnteConsorzio;
+		this.chiaveEnteConsorziato = chiaveEnteConsorziato;
+		this.downloadFlussiRendicontazione = downloadFlussiRendicontazione;
+		this.invioFlussiRendicontazioneViaFtp = invioFlussiRendicontazioneViaFtp;
+		this.invioFlussiRendicontazioneViaEmail = invioFlussiRendicontazioneViaEmail;
+		this.azioniPerTransazioniOK = azioniPerTransazioniOK;
+		this.azioniPerTransazioniKO = azioniPerTransazioniKO;
+		this.azioniPerRiconciliazioneManuale = azioniPerRiconciliazioneManuale;
+		this.attivazioneEstrattoContoManager = attivazioneEstrattoContoManager;
+		this.abilitazioneProfiloRiversamento = abilitazioneProfiloRiversamento;
+		this.abilitazioneMultiUtente = abilitazioneMultiUtente;
+		this.dataUltimoAggiornamento = dataUltimoAggiornamento;
+		this.operatoreUltimoAggiornamento = operatoreUltimoAggiornamento;
+		this.listaTipologieServizio = listaTipologieServizio;
+		this.mailContoGestione = mailContoGestione;
+		this.entePertinenza = entePertinenza; 	//EP160510_001 GG 03112016
+		this.associazioniProvvisorieRiconciliazionemt = associazioniProvvisorieRiconciliazionemt;
+		this.associazioniDefinitiveRiconciliazionemt = associazioniDefinitiveRiconciliazionemt;
+		//RE180181_001 SB - inizio
+		this.gruppoAgenzia = gruppoAgenzia;
+		this.mail = mail;
+		this.mailPec = mailPec;
+		this.pinCodeMail = pinCodeMail;
+		this.pinCodePec = pinCodePec;
+		this.flagValidazioneMail = flagValidazioneMail;
+		this.flagValidazionePec = flagValidazionePec;
+		//RE180181_001 SB - fine
+		this.invioFlussiRendicontazioneViaWs = invioFlussiRendicontazioneViaWs;
+	}
 
 	public static PyUser getBean(ResultSet data, boolean bGetDescr) throws SQLException 
 	{
@@ -219,6 +286,7 @@ public class PyUser implements Serializable{
 		bean.flagValidazionePec = data.getString("USR_FUSRVPPN");
 		//RE180181_001 SB - fine
 		bean.invioFlussiRendicontazioneViaWs = data.getString("USR_FUSRRWS");
+		bean.flagPrenotazioneFatturazione = data.getString("USR_FUSRPRFT");
 		return bean;
 	}
 	
@@ -491,6 +559,10 @@ public class PyUser implements Serializable{
 		this.invioFlussiRendicontazioneViaWs = invioFlussiRendicontazioneViaWs;
 	}
 
-
-
+	public String getFlagPrenotazioneFatturazione() {
+		return flagPrenotazioneFatturazione;
+	}
+	public void setFlagPrenotazioneFatturazione(String flagPrenotazioneFatturazione) {
+		this.flagPrenotazioneFatturazione = flagPrenotazioneFatturazione;
+	}
 }
