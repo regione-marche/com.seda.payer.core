@@ -188,6 +188,10 @@ public class DAOHelper {
 	public static void closeIgnoringException(Connection connection) {
         try {
             if (connection != null && !connection.isClosed()) {
+            	//Se ho dei cursori faccio anche la commit (quando ci sono cursori l'autocommit e' a false)
+            	if (ConnectionProxyInstance.getRefCursorNumber()>0 && !connection.getAutoCommit()) {
+            		connection.commit();
+            	}
                 connection.close();
             }
         } catch (Exception x) {
