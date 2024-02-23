@@ -99,6 +99,9 @@ public class PyUser implements Serializable{
 	// USR_FUSRPRFT CHAR(1) FLAG ABILITAZIONE DATI FATTURAZIONE (Y/N)'
 	private String flagPrenotazioneFatturazione = null;
 
+	// USR_FUSRAREL CHAR(1) 'FLAG ATTIVAZIONE RICHIESTE ELABORAZIONI (Y/N)'!
+	private String flagRichiesteElaborazioni = null;
+
 	public PyUser() {
 		super();
 	}
@@ -128,8 +131,9 @@ public class PyUser implements Serializable{
 			String flagValidazioneMail,
 			String flagValidazionePec,   //RE180181_001 SB - fine
 			String invioFlussiRendicontazioneViaWs,
-			String flagPrenotazioneFatturazione // SR PGNTCORE-23
-			) 
+			String flagPrenotazioneFatturazione, // SR PGNTCORE-23
+			String flagRichiesteElaborazioni // SR PGNTCORE-23
+			)
 	{
 		super();
 		this.chiaveUtente = chiaveUtente;
@@ -167,6 +171,7 @@ public class PyUser implements Serializable{
 		//RE180181_001 SB - fine
 		this.invioFlussiRendicontazioneViaWs = invioFlussiRendicontazioneViaWs;
 		this.flagPrenotazioneFatturazione = flagPrenotazioneFatturazione; // SR PGNTCORE-23
+		this.flagRichiesteElaborazioni = flagRichiesteElaborazioni; // SR PGNTCORE-23
  	}
 
 	public static PyUser getBean(ResultSet data, boolean bGetDescr) throws SQLException 
@@ -224,6 +229,7 @@ public class PyUser implements Serializable{
 		//RE180181_001 SB - fine
 		bean.invioFlussiRendicontazioneViaWs = data.getString("USR_FUSRRWS");
 		bean.flagPrenotazioneFatturazione = data.getString("USR_FUSRPRFT");
+		bean.flagRichiesteElaborazioni = data.getString("USR_FUSRAREL");
 		return bean;
 	}
 	
@@ -496,10 +502,21 @@ public class PyUser implements Serializable{
 		this.invioFlussiRendicontazioneViaWs = invioFlussiRendicontazioneViaWs;
 	}
 
+	// inizio SR PGNTCORE-23
 	public String getFlagPrenotazioneFatturazione() {
 		return flagPrenotazioneFatturazione;
 	}
+
 	public void setFlagPrenotazioneFatturazione(String flagPrenotazioneFatturazione) {
 		this.flagPrenotazioneFatturazione = flagPrenotazioneFatturazione;
 	}
+
+	public String getFlagRichiesteElaborazioni() {
+		return flagRichiesteElaborazioni;
+	}
+
+	public void setFlagRichiesteElaborazioni(String flagRichiesteElaborazioni) {
+		this.flagRichiesteElaborazioni = flagRichiesteElaborazioni;
+	}
+	// fine SR PGNTCORE-23
 }
