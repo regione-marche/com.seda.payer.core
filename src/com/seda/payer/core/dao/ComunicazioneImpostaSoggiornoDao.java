@@ -22,10 +22,11 @@ import com.seda.payer.core.bean.TariffaImpostaSoggiorno;
 import com.seda.payer.core.bean.TestataComunicazioneImpostaSoggiorno;
 import com.seda.payer.core.bean.TipologiaStrutturaRicettiva;
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.handler.BaseDaoHandler;
+import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
 import com.sun.rowset.WebRowSetImpl;
 
-public class ComunicazioneImpostaSoggiornoDao extends BaseDaoHandler {
+@SuppressWarnings("restriction")
+public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 
 	public ComunicazioneImpostaSoggiornoDao(Connection connection, String schema) {
 		super(connection, schema);
@@ -39,6 +40,10 @@ public class ComunicazioneImpostaSoggiornoDao extends BaseDaoHandler {
 	//}
 	//fine LP PG21XX04 Leak
 	
+	public ComunicazioneImpostaSoggiornoDao(Connection connection, String schema, boolean isRest, String baseUrl) {
+		super(connection, schema, isRest, baseUrl);
+	}
+
 	public void doInsertTestataComunicazione(TestataComunicazioneImpostaSoggiorno testataComunicazione) throws DaoException, SQLException {
 		CallableStatement callableStatement = null;
 		try	{
@@ -150,7 +155,7 @@ public class ComunicazioneImpostaSoggiornoDao extends BaseDaoHandler {
 			callableStatement.setString(20, testataComunicazione.getUsernameUtenteUltimoAggiornamento());
 			callableStatement.setString(21, testataComunicazione.getOperatoreUltimoAggiornamento());
 			//PG190300 - inizio
-			//callableStatement.setString(22, testataComunicazione.getDataConfermaComunicazione()==null?null:"Y");//nella SP nn passo la data ma solo un flag se è valorizzata perchè provengo dall'invio della comunicazione
+			//callableStatement.setString(22, testataComunicazione.getDataConfermaComunicazione()==null?null:"Y");//nella SP nn passo la data ma solo un flag se ï¿½ valorizzata perchï¿½ provengo dall'invio della comunicazione
 			if (testataComunicazione.getDataConfermaComunicazione() != null)
 				callableStatement.setTimestamp(22, new Timestamp(testataComunicazione.getDataConfermaComunicazione().getTimeInMillis()));
 			else
@@ -660,8 +665,8 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			ResponseData res = new ResponseData();
 			res.setRetCode(callableStatement.getString(8));
 			res.setRetMessage(callableStatement.getString(9));
-			res.setInfo1(callableStatement.getString(5)); //SI/NO: indica se per l'ente è attiva la procedura RID
-			res.setInfo2(callableStatement.getString(6)); //SI/NO: indica se il codice RID contribuente è autorizzato
+			res.setInfo1(callableStatement.getString(5)); //SI/NO: indica se per l'ente ï¿½ attiva la procedura RID
+			res.setInfo2(callableStatement.getString(6)); //SI/NO: indica se il codice RID contribuente ï¿½ autorizzato
 			res.setInfo3(callableStatement.getString(7).trim()); //codice RID contribuente
 			
 			return res;
