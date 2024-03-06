@@ -4,15 +4,15 @@ import java.util.Map;
 
 public enum ERestRoutine {
 	
-//	EC_DOLIST(new SPEPSTC1()), // manca esempio per Resultset 1 e 2
-//	ECS_DOLIST(new SPEPSTC2()), // manca esempio per Resultset 1 e 2
+	EC_DOLIST(new SPEPSTC1()), // manca esempio per Resultset 1 e 2
+	ECS_DOLIST(new SPEPSTC2()), // manca esempio per Resultset 1 e 2
 	ECM_DOLIST(new SPEPSTC3()), //OK
 	EC_DETBOL(new SPEPSTC4()), //OK
-	// SPEPSTC5 non viene più usata
+	// SPEPSTC5 non viene piï¿½ usata
 	EC_CODFISC(new SPEPSTC6()), //OK
 	EC_ATTICONT_DOLIST(new SPEPSTC7()), //OK
 	EC_PAG_DOLIST(new SPEPSTC8()), //OK
-//	BOL_DODETAIL(new SPEPBOLL()), // manca esempio per ResultSet 1 e 2
+	BOL_DODETAIL(new SPEPBOLL()), // manca esempio per ResultSet 1 e 2
 	CDS_DODETAIL(new SPEPWCDS()), //OK
 	
 	PGBHOST(new SPEPSPB1()), //OK
