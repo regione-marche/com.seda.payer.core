@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+
 //inizio LP PG21XX04 Leak
 //import com.seda.data.dao.DAOHelper;
 //fine LP PG21XX04 Leak
@@ -154,7 +155,7 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			callableStatement.setString(20, testataComunicazione.getUsernameUtenteUltimoAggiornamento());
 			callableStatement.setString(21, testataComunicazione.getOperatoreUltimoAggiornamento());
 			//PG190300 - inizio
-			//callableStatement.setString(22, testataComunicazione.getDataConfermaComunicazione()==null?null:"Y");//nella SP nn passo la data ma solo un flag se è valorizzata perchè provengo dall'invio della comunicazione
+			//callableStatement.setString(22, testataComunicazione.getDataConfermaComunicazione()==null?null:"Y");//nella SP nn passo la data ma solo un flag se ï¿½ valorizzata perchï¿½ provengo dall'invio della comunicazione
 			if (testataComunicazione.getDataConfermaComunicazione() != null)
 				callableStatement.setTimestamp(22, new Timestamp(testataComunicazione.getDataConfermaComunicazione().getTimeInMillis()));
 			else
@@ -640,6 +641,12 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 	{
 		CallableStatement callableStatement = null;
 		try	{
+			
+    		System.out.println("DATA-IN-CODUTEN: " + codiceUtente);
+    		System.out.println("DATA-IN-CODENTE: " + codiceEnteGestionaleEntrate);
+    		System.out.println("DATA-IN-CODIMSE: " + impostaServizioGestionaleEntrate);
+    		System.out.println("DATA-IN-CONTRIB: " + codiceContribuente);
+			
 			callableStatement = prepareCall(Routines.IS_RID_DODETAIL.routine());
 			callableStatement.setString(1, codiceUtente);
 			callableStatement.setString(2, codiceEnteGestionaleEntrate);
@@ -658,8 +665,8 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			ResponseData res = new ResponseData();
 			res.setRetCode(callableStatement.getString(8));
 			res.setRetMessage(callableStatement.getString(9));
-			res.setInfo1(callableStatement.getString(5)); //SI/NO: indica se per l'ente è attiva la procedura RID
-			res.setInfo2(callableStatement.getString(6)); //SI/NO: indica se il codice RID contribuente è autorizzato
+			res.setInfo1(callableStatement.getString(5)); //SI/NO: indica se per l'ente ï¿½ attiva la procedura RID
+			res.setInfo2(callableStatement.getString(6)); //SI/NO: indica se il codice RID contribuente ï¿½ autorizzato
 			res.setInfo3(callableStatement.getString(7).trim()); //codice RID contribuente
 			
 			return res;
@@ -792,36 +799,37 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			) throws DaoException
 	{
 		CallableStatement callableStatement = null;
-		try	{
+		try	{			
+			if(anagStruttura != null) {
+				System.out.println("anagStruttura.getCodiceUtente(): <"+anagStruttura.getCodiceUtente()+">");
+				System.out.println("anagStruttura.getCodiceEnteGestionaleEntrate(): <"+anagStruttura.getCodiceEnteGestionaleEntrate()+">");
+				System.out.println("anagStruttura.getImpostaServizioGestionaleEntrate(): <"+anagStruttura.getImpostaServizioGestionaleEntrate()+">");
+				System.out.println("anagStruttura.getCodiceContribuenteGestionaleEntrate(): <"+anagStruttura.getCodiceContribuenteGestionaleEntrate()+">");
+				System.out.println("annoTributo: <"+annoTributo+">");
+				System.out.println("codiceTributoGestionaleEntrate: <"+codiceTributoGestionaleEntrate+">");
+				System.out.println("anagStruttura.getInsegnaStruttura(): <"+anagStruttura.getInsegnaStruttura().toUpperCase()+">");
+				System.out.println("anagStruttura.getRagioneSocialeStruttura(): <"+anagStruttura.getRagioneSocialeStruttura().toUpperCase()+">");
+				System.out.println("anagStruttura.getIndirizzoStruttura(): <"+anagStruttura.getIndirizzoStruttura().toUpperCase()+">");
+				System.out.println("descrizioneComune: <"+descrizioneComune.toUpperCase()+">");
+				System.out.println("siglaProvincia: <"+siglaProvincia.toUpperCase()+">");
+				System.out.println("anagStruttura.getCapStruttura(): <"+anagStruttura.getCapStruttura()+">");
+				System.out.println("importoTotaleComunicazione: <"+importoTotaleComunicazione+">");
+				System.out.println("dataScadenza: <"+dataScadenza+">");
+				System.out.println("operatore: <WISMANAGER>");
+				System.out.println("anagStruttura.getCodiceBelfiore(): <"+anagStruttura.getCodiceBelfiore()+">");
+				System.out.println("anagStruttura.getCodiceAutorizzazione(): <"+anagStruttura.getCodiceAutorizzazione()+">");
+				System.out.println("anagStruttura.getPartitaIVAStruttura(): <"+anagStruttura.getPartitaIVAStruttura()+">");
+				System.out.println("anagStruttura.getChiaveStrutturaRicettiva(): <"+anagStruttura.getChiaveStrutturaRicettiva()+">");
+				System.out.println("chiaveTestataComunicazione: <"+chiaveTestataComunicazione+">");
+				System.out.println("progressivoPeriodo: <"+progressivoPeriodo+">");
+				System.out.println("tipologiaComunicazione: <"+tipologiaComunicazione+">");
+				System.out.println("notaTributo: <"+notaTributo+">");
+				System.out.println("notaDocumento: <"+notaDocumento+">");
+				System.out.println("annoDocumentoGestionaleEntrate: <"+annoDocumentoGestionaleEntrate+">");
+				System.out.println("dataConferma: <"+dataConferma+">");
+				System.out.println("dataLimite: <"+dataLimite+">");
+			}
 			
-			System.out.println("anagStruttura.getCodiceUtente(): <"+anagStruttura.getCodiceUtente()+">");
-			System.out.println("anagStruttura.getCodiceEnteGestionaleEntrate(): <"+anagStruttura.getCodiceEnteGestionaleEntrate()+">");
-			System.out.println("anagStruttura.getImpostaServizioGestionaleEntrate(): <"+anagStruttura.getImpostaServizioGestionaleEntrate()+">");
-			System.out.println("anagStruttura.getCodiceContribuenteGestionaleEntrate(): <"+anagStruttura.getCodiceContribuenteGestionaleEntrate()+">");
-			System.out.println("annoTributo: <"+annoTributo+">");
-			System.out.println("codiceTributoGestionaleEntrate: <"+codiceTributoGestionaleEntrate+">");
-			System.out.println("anagStruttura.getInsegnaStruttura(): <"+anagStruttura.getInsegnaStruttura().toUpperCase()+">");
-			System.out.println("anagStruttura.getRagioneSocialeStruttura(): <"+anagStruttura.getRagioneSocialeStruttura().toUpperCase()+">");
-			System.out.println("anagStruttura.getIndirizzoStruttura(): <"+anagStruttura.getIndirizzoStruttura().toUpperCase()+">");
-			System.out.println("descrizioneComune: <"+descrizioneComune.toUpperCase()+">");
-			System.out.println("siglaProvincia: <"+siglaProvincia.toUpperCase()+">");
-			System.out.println("anagStruttura.getCapStruttura(): <"+anagStruttura.getCapStruttura()+">");
-			System.out.println("importoTotaleComunicazione: <"+importoTotaleComunicazione+">");
-			System.out.println("dataScadenza: <"+dataScadenza+">");
-			System.out.println("operatore: <WISMANAGER>");
-			System.out.println("anagStruttura.getCodiceBelfiore(): <"+anagStruttura.getCodiceBelfiore()+">");
-			System.out.println("anagStruttura.getCodiceAutorizzazione(): <"+anagStruttura.getCodiceAutorizzazione()+">");
-			System.out.println("anagStruttura.getPartitaIVAStruttura(): <"+anagStruttura.getPartitaIVAStruttura()+">");
-			System.out.println("anagStruttura.getChiaveStrutturaRicettiva(): <"+anagStruttura.getChiaveStrutturaRicettiva()+">");
-			System.out.println("chiaveTestataComunicazione: <"+chiaveTestataComunicazione+">");
-			System.out.println("progressivoPeriodo: <"+progressivoPeriodo+">");
-			System.out.println("tipologiaComunicazione: <"+tipologiaComunicazione+">");
-			System.out.println("notaTributo: <"+notaTributo+">");
-			System.out.println("notaDocumento: <"+notaDocumento+">");
-			System.out.println("annoDocumentoGestionaleEntrate: <"+annoDocumentoGestionaleEntrate+">");
-			System.out.println("dataConferma: <"+dataConferma+">");
-			System.out.println("dataLimite: <"+dataLimite+">");
-						
 			callableStatement = prepareCall(Routines.IS_COMUNICAZIONE_DOSAVE.routine());
 			callableStatement.setString(1, anagStruttura.getCodiceUtente());
 			callableStatement.setString(2, anagStruttura.getCodiceEnteGestionaleEntrate());
@@ -1034,11 +1042,11 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 		DatiBollettino res = new DatiBollettino();
 		CallableStatement callableStatement = null;
 		
-		System.out.println("cutecute: " + cutecute);
-		System.out.println("nBollettino: " + nBollettino);	
-		System.out.println("flagZero: " + flagZero);
-		try	
-		{
+		try	{
+			System.out.println("DATA-IN-CODUTEN: " + cutecute);
+			System.out.println("DATA-IN-NUMERAV: " + nBollettino);	
+			System.out.println("DATA-IN-FLAG-ZERO: " + flagZero);
+			
 			callableStatement = prepareCall(Routines.DO_DATI_BOLLETTINO.routine());	
 			callableStatement.setString(1, cutecute);
 			callableStatement.setBigDecimal(2, new BigDecimal(nBollettino));
@@ -1123,6 +1131,10 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 		System.out.println("listaDocumentiStruttureCorrelate: " + listaDocumentiStruttureCorrelate);
 		try	
 		{
+    		System.out.println("DATA-IN-CODUTEN: " + cutecute);
+    		System.out.println("DATA-IN-NUMERAV: " + (idBollettinoCumulativoDaAggiornare == null || idBollettinoCumulativoDaAggiornare.equals("") ? new BigDecimal(0) : new BigDecimal(idBollettinoCumulativoDaAggiornare)));
+    		System.out.println("DATA-IN-LISDOCU: " + listaDocumentiStruttureCorrelate);
+
 			callableStatement = prepareCall(Routines.DO_BOLLETTINO_CUMULATIVO.routine());	
 			callableStatement.setString(1, cutecute);
 			callableStatement.setBigDecimal(2, (idBollettinoCumulativoDaAggiornare == null || idBollettinoCumulativoDaAggiornare.equals("") ? new BigDecimal(0) : new BigDecimal(idBollettinoCumulativoDaAggiornare)) );

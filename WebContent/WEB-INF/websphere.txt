@@ -1,0 +1,20 @@
+Per caricamento dinamico delle classi in websphere,
+andare nel pannello dell'applicazione installata.
+Class loading and update detection 
+	WAR class loader policy
+		Single class loader for application
+
+Per usare i filtri, impostare una variabile di personalizzazione a livello
+di server delle applicazioni.
+Application servers
+	server1(il nome del server)
+		Container Settings 
+		Web Container Settings 
+		Web container
+			Additional Properties 
+			Custom Properties 
+				
+inserire nuovo
+name=com.ibm.ws.webcontainer.invokefilterscompatibility
+value=true
+description=Rich Faces, Spring Security

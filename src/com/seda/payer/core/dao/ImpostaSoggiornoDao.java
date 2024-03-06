@@ -14,10 +14,13 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
+
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.ConfigurazioneImpostaSoggiorno;
 import com.seda.payer.core.bean.TestataComunicazioneImpostaSoggiorno;
+import com.seda.payer.core.exception.DaoException;
+import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class ImpostaSoggiornoDao extends RestBaseDaoHandler {
 	
@@ -151,6 +154,13 @@ public class ImpostaSoggiornoDao extends RestBaseDaoHandler {
 				e.printStackTrace();
 			}
 			*/
+			System.out.println("DATA-IN-CODUTEN: " + codUtente);
+			System.out.println("DATA-IN-CODENTE: " + codEnteHost);
+			System.out.println("DATA-IN-CODIMSE: " + codISHost);
+			System.out.println("DATA-IN-CODFUNZ: " + "GET");
+			System.out.println("DATA-IO-DATINIZ: " + "");
+			System.out.println("DATA-IO-DATFINE: " + "");
+			
 			callableStatement = prepareCall(Routines.SELECT_PAG_HOST_ENTEIS.routine());
 			callableStatement.setString(1, codUtente);
 			callableStatement.setString(2, codEnteHost);
@@ -400,6 +410,14 @@ public class ImpostaSoggiornoDao extends RestBaseDaoHandler {
 		String code = "";
 		String message = "";
 		try	{ 
+			
+			System.out.println("DATA-IN-CODUTEN: " + codUtente);
+			System.out.println("DATA-IN-CODENTE: " + codEnteHost);
+			System.out.println("DATA-IN-CODIMSE: " + codISHost);
+			System.out.println("DATA-IN-CODFUNZ: " + "REG");
+			System.out.println("DATA-IO-DATINIZ: " + dataIni);
+			System.out.println("DATA-IO-DATFINE: " + dataFin);
+			
 			callableStatement = prepareCall(Routines.SELECT_PAG_HOST_ENTEIS.routine());
 			callableStatement.setString(1, codUtente);
 			callableStatement.setString(2, codEnteHost);

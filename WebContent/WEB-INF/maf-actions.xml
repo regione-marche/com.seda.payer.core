@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<actions-mapping xmlns="http://action.core.maf.j2ee5.seda.com"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://action.core.maf.j2ee5.seda.com xsd/maf-actions.xsd">
+
+	<menu>
+		<link text="Tryit" actionurl="tryit.do"/>
+		<link text="Tryit" actionurl="tryit.do"/>
+		<link text="Tryit" actionurl="tryit.do"/>
+		<link text="Tryit" actionurl="tryit.do"/>
+ 	</menu>
+   
+	<complex-actions>
+		<complex-target value="prova.che.prova.do" actionurl="tryit.do"/>
+	</complex-actions>
+ 
+ 	<global-ruleset>
+ 		<regexset>
+ 			<regex name="name">
+ 				<pattern>^[a-zA-Z]+(([\'\,\.\- ][a-zA-Z ])?[a-zA-Z]*)*$</pattern>
+ 				<description>person name</description>
+ 			</regex>
+ 			<regex name="floatingIT">
+ 				<pattern>^[-+]?[0-9]+[,]?[0-9]*([eE][-+]?[0-9]+)?$</pattern>
+ 				<description>floating point, decimal point is comma</description>
+ 			</regex> 			
+			<regex name="digits">
+ 				<pattern>^\\d+$</pattern>
+ 				<description>digits</description>
+ 			</regex> 			
+ 		</regexset>
+ 		<ruleset>
+ 			<rule name="pageNumber" regex="digits">
+ 				<missing severity="continue"/>
+ 				<malformed severity="continue">
+ 					<rule-action class="org.donald.duck.Encode"/>
+ 				</malformed>
+ 			</rule>
+ 		</ruleset>
+ 	</global-ruleset>
+ 
+	<action url="tryit.do" screen="tryit.screen" flow="true" >
+		<role-collection>
+			<role></role>
+		</role-collection>		
+        <action-class>org.web.actions.TryIt</action-class>
+        <flow class="org.web.flow.TryItManager">
+            <result value="bad" screen="tryit_bad.screen"/>        
+			<result value="good" screen="tryit_good.screen"/>
+        </flow>
+        <ruleset>
+        	<rule name="param1">
+        	 	<missing severity="continue"/>
+        	 	<malformed severity="continue">
+        	 		<rule-action class="org.donald.duck.Default">
+        	 			<parameter name="p" value="v"/>
+        	 		</rule-action>
+        	 	</malformed>
+        	</rule>
+        </ruleset>
+    </action>
+    
+    <action url="tryall.do" flow="true" >
+        <action-class>org.web.actions.TryIt</action-class>
+        <flow class="org.web.flow.TryItManager">
+            <result value="bad" screen="tryit_bad.screen"/>        
+			<result value="down" writer="downId" content-type="application/txt" inScope="false" attach="downAttach"/>
+			<result value="target" redirect="downId"/>			
+        </flow>
+    </action>
+
+	<action url="download.do" writer="true" >
+        <action-class>org.web.actions.DownloadIt</action-class>
+        <writer id="" content-type=""/>
+    </action>
+    
+	<action url="redirect.do" redirect="true" >
+        <action-class>org.web.actions.RedirectIt</action-class>
+        <redirect url="http://www.google.it"/>
+    </action>            
+   
+</actions-mapping>   

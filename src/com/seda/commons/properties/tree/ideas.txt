@@ -1,0 +1,7 @@
+Evoluzione da fare
+Creare un PropertiesServer con HashMap
+La chiave dell'hasmap è il singolo path su disco
+Il dato dell'HashMap è il properties di riferimento del path fisico
+Quando si crea un nuovo figlio esterno si prende il puntatore dal PropertiesServer e lo si usa per definire il figlio
+
+In questa maniera si riducono il numero di oggetti in memoria ed il numero di accessi al disco costruendo ideologicamente un grafo
