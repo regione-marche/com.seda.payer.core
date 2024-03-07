@@ -721,7 +721,10 @@ public class RestCallableStatement implements CallableStatement {
 				
 				if (simpleClassName.equals(Integer.class.getSimpleName())) {
 					return new BigDecimal((Integer) obj);
-				} else {
+				}if (simpleClassName.equals(String.class.getSimpleName())) {
+					return new BigDecimal((Integer) obj);
+				}  
+				else {
 					throw new RestSQLException(simpleClassName + " non gestita");
 				}
 			}
