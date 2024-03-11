@@ -16,8 +16,12 @@ public class TimeShortRule extends RuleHandler {
 	 */
 	@Override
 	public boolean apply() throws ValidationException {
-		if (RegexManager.time_short.doesntMatch(getValue()))
-			throw new ValidationException(RulesNames.TIME_SHORT,Messages.TIME_SHORT.format());
+		if (RegexManager.time_short.doesntMatch(getValue())) {
+			if(getLocale().getCountry().equals("IT")) {
+				throw new ValidationException(RulesNames.TIME_SHORT,Messages.TIME_SHORTIT.format());
+			}
+			    throw new ValidationException(RulesNames.TIME_SHORT,Messages.TIME_SHORT.format());
+		}
 		return true;
 	}
 

@@ -25,8 +25,13 @@ public class MaxIntRule extends RuleOptionsHandler {
 		} catch (NumberFormatException x) {
 			error=true;
 		}
-		if ((value > option) || error) 
-			throw new ValidationException(RulesNames.MAX_INT,Messages.MAXINT.format(getOptions()[0]));
+		if ((value > option) || error) {
+			if(getLocale().getCountry().equals("IT")) {
+			  throw new ValidationException(RulesNames.MAX_INT,Messages.MAXINTIT.format(getOptions()[0]));
+			}else {
+			  throw new ValidationException(RulesNames.MAX_INT,Messages.MAXINT.format(getOptions()[0]));
+			}
+		}
 		
 		return true;		
 	}
