@@ -15,8 +15,13 @@ public class UrlRule extends RuleHandler {
 	 */
 	@Override
 	public boolean apply() throws ValidationException {
-		if (RegexManager.url.doesntMatch(getValue()))
-			throw new ValidationException(RulesNames.URL, Messages.URL.format());;
+		if (RegexManager.url.doesntMatch(getValue())) {
+			if(getLocale().getCountry().equals("IT")) {
+				throw new ValidationException(RulesNames.URL, Messages.URLIT.format());
+			}else {
+			    throw new ValidationException(RulesNames.URL, Messages.URL.format());
+			}
+		}
 			
 		return true;			
 	}

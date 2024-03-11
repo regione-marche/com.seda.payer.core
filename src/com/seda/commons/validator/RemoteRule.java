@@ -15,7 +15,11 @@ public class RemoteRule extends RuleOptionsHandler {
 	@Override
 	public boolean apply() throws ValidationException {
 		//checkOptionsExpected();
-		throw new ValidationException(RulesNames.REMOTE,Messages.notSupported.format());
+		if(getLocale().getCountry().equals("IT")) {
+			throw new ValidationException(RulesNames.REMOTE,Messages.notSupportedIT.format());
+		}else {
+		   throw new ValidationException(RulesNames.REMOTE,Messages.notSupported.format());
+		}
 		//return true;		
 	}
 

@@ -186,7 +186,7 @@ private Locale locale;	//04082016 GG
 			//04082016 GG - fine
 			checkBool(key, options);
 			if (Boolean.parseBoolean(options)) {
-				ruleHandler.apply(getValue());
+				ruleHandler.apply(getValue(),locale);
 			}
 			ruleHandler=null;
 		}
