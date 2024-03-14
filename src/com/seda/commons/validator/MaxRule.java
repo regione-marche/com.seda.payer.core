@@ -16,10 +16,19 @@ public class MaxRule extends RuleOptionsHandler {
 	@Override
 	public boolean apply() throws ValidationException {
 		checkOptionsExpected();
-		if (getValue().compareTo(getOptions()[0]) > 0) 
-			throw new ValidationException(RulesNames.MAX, Messages.MAX.format(getOptions()[0]));
-		
-		return true;		
+		if (getValue().compareTo(getOptions()[0]) > 0) {
+			if(getLocale().getCountry().equals("DE")) {
+				throw new ValidationException(RulesNames.MIN,Messages.MINLENGTHDE.format(getOptions()[0]));
+			}else {
+				if(getLocale().getCountry().equals("IT")) {
+					throw new ValidationException(RulesNames.MAX, Messages.MAXIT.format(getOptions()[0]));
+				}else {
+			        throw new ValidationException(RulesNames.MAX, Messages.MAX.format(getOptions()[0]));
+				}
+			}
+		}else {
+		  return true;
+		}
 	}
 
 	/* (non-Javadoc)
