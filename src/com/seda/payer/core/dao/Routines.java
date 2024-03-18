@@ -1296,7 +1296,8 @@ public enum Routines {
 	, PYEH1SP_SEL_FLU
 	// fine SR PGNTCORE-11
 	, PYELGSP_DEL // SR PGNTCORE-17
-	, FAT_DOSAVE
+	, PRE_DOSAVE  // SR PGNTCORE-23
+	, PRE_DOLIST  // SR PGNTCORE-23
 	;
 	
     private static ResourceBundle rb;
