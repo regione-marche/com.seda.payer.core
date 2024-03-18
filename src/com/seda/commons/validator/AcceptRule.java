@@ -20,8 +20,12 @@ public class AcceptRule extends RuleOptionsHandler {
 		checkOptionsExpected();
 		if (getValue().matches(getOptions()[0]))
 			return true;
-		
-		throw new ValidationException(RulesNames.ACCEPT,Messages.ACCEPT.format());
+		if(getLocale().getCountry().equals("IT")) {
+		   throw new ValidationException(RulesNames.ACCEPT,Messages.ACCEPTIT.format());
+		}
+		else {
+		   throw new ValidationException(RulesNames.ACCEPT,Messages.ACCEPT.format());
+		}
 	}
 	/* (non-Javadoc)
 	 * @see com.seda.commons.validator.RuleBoundaryHandler#getBoundariesExpected()
