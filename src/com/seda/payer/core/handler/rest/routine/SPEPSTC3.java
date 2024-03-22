@@ -79,6 +79,7 @@ public class SPEPSTC3 extends ARestRoutine {
 		resultSetMap1.put(p++, "STC3_DIPENDEN");
 		resultSetMap1.put(p++, "STC3_CFOPERAZ");
 		resultSetMap1.put(p++, "STC3_DEOPERAZ");
+		resultSetMap1.put(p++, "STC3_DCAUMOV");
 		
 		Map<Integer, Map<Integer,String>> resultSetsMap = new HashMap<Integer, Map<Integer,String>>();
 		resultSetsMap.put(0, resultSetMap1);
