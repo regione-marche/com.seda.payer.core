@@ -8,11 +8,13 @@ import com.seda.data.spi.DaoHandler;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.PrenotazioneFatturazione;
 import com.seda.payer.core.bean.PrenotazioneFatturazionePagelist;
+import com.seda.payer.core.bean.RegolaFatturazione;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.wallet.bean.EsitoRisposte;
 
-import javax.servlet.http.HttpServletRequest;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class PrenotazioneFatturazioneDao extends DaoHandler {
 
@@ -107,5 +109,62 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
         }
 
         return esitoRisposte;
+    }
+
+    public List<PrenotazioneFatturazione> getPrenotazioni() throws DaoException {
+        List<PrenotazioneFatturazione> list = new ArrayList<>();
+
+        try {
+            Connection connection = getConnection();
+            CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOSELECT_REQ.routine());
+            if (callableStatement.execute()) {
+                ResultSet data = callableStatement.getResultSet();
+                while (data.next()){
+                    list.add(new PrenotazioneFatturazione(callableStatement.getResultSet()));
+                }
+            }
+            return list;
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        } catch (HelperException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public boolean aggiornaPrenotazione(String chiavePrenotazione, String flagElaborazione, String nomeFile) throws DaoException {
+        Connection connection = getConnection();
+        try {
+            CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOUPDATE.routine());
+            callableStatement.setString(1, chiavePrenotazione);
+            callableStatement.setString(2, flagElaborazione);
+            callableStatement.setString(3, nomeFile);
+            callableStatement.registerOutParameter(4, Types.INTEGER);
+            callableStatement.execute();
+            return true;
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        } catch (HelperException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public RegolaFatturazione getRegolaFatturazione(Date dataInizioValidita) throws DaoException {
+        try {
+            Connection connection = getConnection();
+            CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.REG_DOSELECT.routine());
+            callableStatement.setDate(1, dataInizioValidita);
+
+            if (callableStatement.execute()) {
+                ResultSet data = callableStatement.getResultSet();
+                if (data.next()){
+                    return new RegolaFatturazione(callableStatement.getResultSet());
+                }
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
+        } catch (HelperException e) {
+            throw new RuntimeException(e);
+        }
+        return null;
     }
 }

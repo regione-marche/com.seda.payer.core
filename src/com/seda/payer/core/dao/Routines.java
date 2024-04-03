@@ -1298,6 +1298,9 @@ public enum Routines {
 	, PYELGSP_DEL // SR PGNTCORE-17
 	, PRE_DOSAVE  // SR PGNTCORE-23
 	, PRE_DOLIST  // SR PGNTCORE-23
+	, PRE_DOSELECT_REQ  // SR PGNTCORE-23
+	, PRE_DOUPDATE  // SR PGNTCORE-23
+	, REG_DOSELECT  // SR PGNTCORE-23
 	;
 	
     private static ResourceBundle rb;
