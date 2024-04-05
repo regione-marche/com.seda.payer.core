@@ -20,6 +20,7 @@ public class PrenotazioneFatturazione implements Serializable {
 
     // dati per elaborazione fatturazione
     private String chiavePrenotazione;
+    private String nomeFile;
     private String dataRichiesta;
     ;
 
@@ -144,6 +145,14 @@ public class PrenotazioneFatturazione implements Serializable {
 
     public void setChiavePrenotazione(String chiavePrenotazione) {
         this.chiavePrenotazione = chiavePrenotazione;
+    }
+
+    public String getNomeFile() {
+        return nomeFile;
+    }
+
+    public void setNomeFile(String nomeFile) {
+        this.nomeFile = nomeFile;
     }
 
     @Override
