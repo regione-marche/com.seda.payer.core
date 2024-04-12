@@ -31,6 +31,8 @@ public enum ERestRoutine {
 	IS_RID_DODETAIL(new SPISOGG5()), //OK
 	DO_BOLLETTINO_CUMULATIVO(new SPISOGG6()), //OK
 	DO_DATI_BOLLETTINO(new SPISOGG7()), //OK
+
+	SDDAUSP_SEL_BRS(new SDDAUSP_SEL_BRS()),
 	;
 	
 	private final IRestRoutine restRoutine;

@@ -18,9 +18,10 @@ import com.seda.payer.core.bean.Autorizzazione;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
+import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
 import com.seda.payer.core.wallet.bean.Wallet;
 
-public class SepaDAOImpl  extends  BaseDaoHandler  implements SepaDAO  {
+public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 	private static final long serialVersionUID = 1L;
 	protected CallableStatement callableStatementRID = null;
 	protected CallableStatement callableStatementRIDSEL = null;
