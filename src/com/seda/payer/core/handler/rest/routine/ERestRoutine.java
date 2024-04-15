@@ -33,6 +33,14 @@ public enum ERestRoutine {
 	DO_DATI_BOLLETTINO(new SPISOGG7()), //OK
 
 	SDDAUSP_SEL_BRS(new SDDAUSP_SEL_BRS()),
+
+	SDDDESP_INS_BRS(new SDDDESP_INS_BRS()),
+
+	SDDASSP_INS(new SDDASSP_INS()),
+
+	SDDAUSP_INS(new SDDAUSP_INS()),
+
+	SDDAUSP_SEL(new SDDAUSP_SEL()),
 	;
 	
 	private final IRestRoutine restRoutine;
