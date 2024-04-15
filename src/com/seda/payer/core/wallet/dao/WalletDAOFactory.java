@@ -728,6 +728,19 @@ public class WalletDAOFactory {
 		}
 		return sepaDAO;
 	}
+
+	// Connection connection, String schema, boolean isRest, String baseUrl
+	public static SepaDAO getSepaDAORest(Connection connection, String schema, boolean isRest, String baseUrl) throws DaoException {
+		SepaDAO sepaDAO = null;
+		try {
+			Class<SepaDAO> clazz = (Class<SepaDAO>)Class.forName(SEPA_CLASS);
+			Constructor<SepaDAO> constructor = clazz.getConstructor(new Class[] {java.sql.Connection.class, java.lang.String.class, boolean.class, java.lang.String.class});
+			sepaDAO = constructor.newInstance(connection,schema,isRest,baseUrl);
+		} catch (Exception x) {
+			throw new DaoException(x);
+		}
+		return sepaDAO;
+	}
 	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")

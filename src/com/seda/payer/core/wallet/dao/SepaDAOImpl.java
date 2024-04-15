@@ -31,6 +31,10 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 	public SepaDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
+	public SepaDAOImpl(Connection connection, String schema, boolean isRest, String baseUrl){
+		super(connection, schema, isRest, baseUrl);
+	}
 	public SepaDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
