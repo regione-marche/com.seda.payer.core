@@ -135,6 +135,11 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 		return wallet;
 	}
 
+
+	public Wallet selectSepaV2(Wallet wallet) throws DaoException {
+			return null;
+	}
+
 	//inizio LP PG21XX04 Leak
 	public Wallet selectSepaWeb(Wallet wallet) throws DaoException {
 		CallableStatement callableStatement = null;
