@@ -48,7 +48,7 @@ public class RestCallableStatement implements CallableStatement {
 	
 	private final String baseUrl;
 	@SuppressWarnings("unused")
-	private final String schema; // non necessario perchï¿½ c'ï¿½ un baseUrl per ogni schema
+	private final String schema; // non necessario perche ce un baseUrl per ogni schema
 	private final ERestRoutine restRoutine;
 	
 	private final Map<Integer, Object> inputDataMap;
