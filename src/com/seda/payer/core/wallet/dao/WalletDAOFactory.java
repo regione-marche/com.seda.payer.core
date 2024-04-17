@@ -44,6 +44,18 @@ public class WalletDAOFactory {
 	}
 	//fine LP PG21XX04 Leak
 
+	public static WalletDAO getWalletDAO(Connection connection, String schema, boolean isRest, String baseUrl) throws DaoException {
+		WalletDAO walletDAO = null;
+		try {
+			Class<WalletDAO> clazz = (Class<WalletDAO>)Class.forName(WALLET_CLASS);
+			Constructor<WalletDAO> constructor = clazz.getConstructor(new Class[] {java.sql.Connection.class, java.lang.String.class,java.lang.Boolean.class,java.lang.String.class});
+			walletDAO = constructor.newInstance(connection, schema,isRest,baseUrl);
+		} catch (Exception x) {
+			throw new DaoException(x);
+		}
+		return walletDAO;
+	}
+
 	private static String ANAGRAFICA_GENITORE_MENSE_CLASS;
 
 
