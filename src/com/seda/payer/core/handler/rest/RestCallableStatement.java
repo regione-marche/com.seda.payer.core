@@ -136,7 +136,8 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public void setDate(int parameterIndex, Date x) throws SQLException {
-		throw new RestSQLException("metodo non implementato");
+
+		inputDataMap.put(parameterIndex, x);
 	}
 
 	@Override

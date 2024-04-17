@@ -76,7 +76,8 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 		try {
 			//			connection = getConnection();
 			if (callableStatementRIDSEL==null) {
-				callableStatementRIDSEL = Helper.prepareCall(getConnection(), getSchema(), Routines.SDDAUSP_SEL_BRS.routine());
+			//	callableStatementRIDSEL = Helper.prepareCall(getConnection(), getSchema(), Routines.SDDAUSP_SEL_BRS.routine());
+                callableStatementRIDSEL = prepareCall(Routines.SDDAUSP_SEL_BRS.routine());
 			}
 			callableStatementRIDSEL.setString(1, wallet.getCuteCute());
 			callableStatementRIDSEL.setString(2, wallet.getCodiceRid().substring(0,5));
@@ -142,7 +143,8 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 		Connection connection = null; 
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDAUSP_SEL_BRS.routine());
+		//	callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDAUSP_SEL_BRS.routine());
+            callableStatement = prepareCall(Routines.SDDAUSP_SEL_BRS.routine());
 			callableStatement.setString(1, wallet.getCuteCute());
 			callableStatement.setString(2, wallet.getCodiceRid().substring(0,5));
 			callableStatement.setString(3, wallet.getCodiceRid().substring(5,6));
@@ -205,7 +207,8 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 		try {
 			connection = getConnection();
 
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDAUSP_SEL_BRS.routine());
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDAUSP_SEL_BRS.routine());
+            callableStatement = prepareCall(Routines.SDDAUSP_SEL_BRS.routine());
 
 			callableStatement.setString(1, cuteCute);
 			callableStatement.setString(2, rid.substring(0,5));
@@ -332,7 +335,8 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 		try {
 			//			connection = getConnection();
 			if (callableStatementRID==null) {
-				callableStatementRID = Helper.prepareCall(getConnection(), getSchema(), Routines.SDDDESP_INS_BRS.routine());
+				//callableStatementRID = Helper.prepareCall(getConnection(), getSchema(), Routines.SDDDESP_INS_BRS.routine());
+				callableStatementRID = prepareCall(Routines.SDDDESP_INS_BRS.routine());
 			}
 
 
@@ -369,7 +373,8 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 			Connection connection = null; 
 			try {
 				connection = getConnection();
-				callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDAUSP_INS.routine());
+				//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDAUSP_INS.routine());
+                callableStatement = prepareCall(Routines.SDDAUSP_INS.routine());
 				callableStatement.setString(1, autorizzazione.getCodiceUtente());
 				callableStatement.setString(2, autorizzazione.getCodiceSia());
 				callableStatement.setString(3, autorizzazione.getTipoAutorizzazione());
@@ -456,7 +461,8 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 			int returnCode = -1;
 			try {
 				connection = getConnection();
-				callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDASSP_INS.routine());
+				//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDASSP_INS.routine());
+				callableStatement = prepareCall(Routines.SDDASSP_INS.routine());
 				callableStatement.setString(1, anagrafica.getCodiceUtente());
 				callableStatement.setString(2, anagrafica.getCodiceFiscale());
 				callableStatement.setString(3, anagrafica.getStato());
@@ -515,7 +521,8 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 			try {
 				connection = getConnection();
 
-				callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDAUSP_SEL.routine());
+				//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDAUSP_SEL.routine());
+				callableStatement = prepareCall(Routines.SDDAUSP_SEL.routine());
 
 				callableStatement.setString(1, cuteCute);
 				callableStatement.setString(2, rid.substring(0,5));
