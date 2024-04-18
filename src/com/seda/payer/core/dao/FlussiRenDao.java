@@ -899,6 +899,7 @@ public class FlussiRenDao extends BaseDaoHandler{
 		CallableStatement callableStatement = null;
 		int numrighe= -1;
 
+
 		try{
 			callableStatement = prepareCall(Routines.PYRENSP_UPD_ST_REN_ALL.routine());
 			callableStatement.registerOutParameter(1, Types.INTEGER);
