@@ -10,6 +10,7 @@ import java.util.ResourceBundle;
 public enum Messages {
 	// Messages from rule's apply method
 	REQUIRED,
+	REQUIREDDE,
 	REMOTE,
 	EMAIL,
 	URL,
@@ -24,6 +25,7 @@ public enum Messages {
 	ACCEPT,
 	MAXLENGTH,
 	MINLENGTH,
+	MINLENGTHDE,
 	RANGELENGTH,
 	RANGE,
 	MAX,
@@ -33,6 +35,31 @@ public enum Messages {
 	MININT,	
 	TIME,
 	TIME_SHORT,
+	// IT
+	REQUIREDIT,
+	REMOTEIT,
+	EMAILIT,
+	URLIT,
+	DATEIT,
+	DATEISOIT,
+	DATEEURIT,
+	TIMEIT,
+	TIME_SHORTIT,
+	NUMBERITA,
+	NUMBERITVAL,
+	DIGITSIT,
+	CREDITCARDIT,
+	EQUALTOIT,
+	ACCEPTIT,
+	MAXLENGTHIT,
+	MINLENGTHIT,
+	RANGELENGTHIT,
+	RANGEIT,
+	MAXIT,
+	MINIT,
+	RANGEINTIT,
+	MAXINTIT,
+	MININTIT,
 	// Error messages
 	notSupported,
 	unExpectedOptions, 
@@ -43,7 +70,18 @@ public enum Messages {
 	unExpectedOptionsRule, 
 	notBoolean, 
 	badOptionsFormat,
-	integerExpected
+	integerExpected,
+	//IT
+	notSupportedIT,
+	unExpectedOptionsIT,
+	unExpectedOptionsRuleIT,
+	notSupportedRuleIT,
+	exclusivesRulesIT,
+	internalUnMatchedCodeIT,
+	notNumericIT,
+	notBooleanIT,
+	badOptionsFormatIT,
+	integerExpectedIT
     ;
 
     private static ResourceBundle rb;

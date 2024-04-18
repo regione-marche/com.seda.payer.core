@@ -2,6 +2,7 @@ package com.seda.payer.core.handler.rest.routine;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class SPEPSTC2 extends ARestRoutine {
 
@@ -58,47 +59,69 @@ public class SPEPSTC2 extends ARestRoutine {
 	@Override
 	protected Map<Integer, Map<Integer, String>> resultSetsMap() {
 		
-		int p = 1;
+		return Optional.of(new HashMap<Integer, Map<Integer,String>>())
+			.map(rsm -> {
+				int p = 1;
+				Map<Integer,String> resultSetMap = new HashMap<Integer, String>();
+
+				resultSetMap.put(p++, "STC2_CUTECUTE");
+				resultSetMap.put(p++, "STC2_CODIENTE");
+				resultSetMap.put(p++, "STC2_CODIFISC");
+				resultSetMap.put(p++, "STC2_TIPOSERV");
+				resultSetMap.put(p++, "STC2_TIPORICH");
+				resultSetMap.put(p++, "STC2_IDDOCUME");
+				resultSetMap.put(p++, "STC2_PROGRATA");
+				resultSetMap.put(p++, "STC2_DATASCAD");
+				resultSetMap.put(p++, "STC2_NUMERAVV");
+				resultSetMap.put(p++, "STC2_IRATINIZ");
+				resultSetMap.put(p++, "STC2_IRATRESI");
+				resultSetMap.put(p++, "STC2_INOTRESI");
+				resultSetMap.put(p++, "STC2_ICMPRESI");
+				resultSetMap.put(p++, "STC2_IMORRESI");
+				resultSetMap.put(p++, "STC2_ISPERESI");
+				resultSetMap.put(p++, "STC2_ITOTRESI");
+				resultSetMap.put(p++, "STC2_TIPORATA");
+				resultSetMap.put(p++, "STC2_FLAGEPGF");
+				resultSetMap.put(p++, "STC2_FLAGSANZ");
+				resultSetMap.put(p++, "STC2_BOLLFREC");
+				resultSetMap.put(p++, "STC2_CTIPODOC");
+				resultSetMap.put(p++, "STC2_TIPODATO");
+				resultSetMap.put(p++, "STC2_PROGOPZP");
+				resultSetMap.put(p++, "STC2_DESCOPZP");
+				resultSetMap.put(p++, "STC2_MAXPROPZ");
+				resultSetMap.put(p++, "STC2_NUMERATE");
+				resultSetMap.put(p++, "STC2_FRATUNIC");
+				resultSetMap.put(p++, "STC2_DSTATRAT");
+				resultSetMap.put(p++, "STC2_FRATTARD");
+				resultSetMap.put(p++, "STC2_FRATPAGA");
+				resultSetMap.put(p++, "STC2_IRATPAGA");
+				resultSetMap.put(p++, "STC2_ITOTCARI");
+				resultSetMap.put(p++, "STC2_IDDOCMUL");
 		
-		Map<Integer,String> resultSetMap1 = new HashMap<Integer, String>();
-		
-		resultSetMap1.put(p++, "STC2_CUTECUTE");
-		resultSetMap1.put(p++, "STC2_CODIENTE");
-		resultSetMap1.put(p++, "STC2_CODIFISC");
-		resultSetMap1.put(p++, "STC2_TIPOSERV");
-		resultSetMap1.put(p++, "STC2_TIPORICH");
-		resultSetMap1.put(p++, "STC2_IDDOCUME");
-		resultSetMap1.put(p++, "STC2_PROGRATA");
-		resultSetMap1.put(p++, "STC2_DATASCAD");
-		resultSetMap1.put(p++, "STC2_NUMERAVV");
-		resultSetMap1.put(p++, "STC2_IRATINIZ");
-		resultSetMap1.put(p++, "STC2_IRATRESI");
-		resultSetMap1.put(p++, "STC2_INOTRESI");
-		resultSetMap1.put(p++, "STC2_ICMPRESI");
-		resultSetMap1.put(p++, "STC2_IMORRESI");
-		resultSetMap1.put(p++, "STC2_ISPERESI");
-		resultSetMap1.put(p++, "STC2_ITOTRESI");
-		resultSetMap1.put(p++, "STC2_TIPORATA");
-		resultSetMap1.put(p++, "STC2_FLAGEPGF");
-		resultSetMap1.put(p++, "STC2_FLAGSANZ");
-		resultSetMap1.put(p++, "STC2_BOLLFREC");
-		resultSetMap1.put(p++, "STC2_CTIPODOC");
-		resultSetMap1.put(p++, "STC2_TIPODATO");
-		resultSetMap1.put(p++, "STC2_PROGOPZP");
-		resultSetMap1.put(p++, "STC2_DESCOPZP");
-		resultSetMap1.put(p++, "STC2_MAXPROPZ");
-		resultSetMap1.put(p++, "STC2_NUMERATE");
-		resultSetMap1.put(p++, "STC2_FRATUNIC");
-		resultSetMap1.put(p++, "STC2_DSTATRAT");
-		resultSetMap1.put(p++, "STC2_FRATTARD");
-		resultSetMap1.put(p++, "STC2_FRATPAGA");
-		resultSetMap1.put(p++, "STC2_IRATPAGA");
-		resultSetMap1.put(p++, "STC2_ITOTCARI");
-		
-		Map<Integer, Map<Integer,String>> resultSetsMap = new HashMap<Integer, Map<Integer,String>>();
-		resultSetsMap.put(0, resultSetMap1);
-		
-		return resultSetsMap;
+				rsm.put(0, resultSetMap);
+				return rsm;						
+			})
+			.map(rsm -> {
+				int p = 1;
+				Map<Integer,String> resultSetMap = new HashMap<Integer, String>();
+
+				resultSetMap.put(p++, "BEN_CUTECUTE");
+				resultSetMap.put(p++, "BEN_CENTENTE");
+				resultSetMap.put(p++, "BEN_TENTUFFI");
+				resultSetMap.put(p++, "BEN_CENTUFFI");
+				resultSetMap.put(p++, "BEN_CTIPOSER");
+				resultSetMap.put(p++, "BEN_SETTORE");
+				resultSetMap.put(p++, "BEN_NUMEDOCU");
+				resultSetMap.put(p++, "BEN_NUMERAV");
+				resultSetMap.put(p++, "BEN_IDDOMINIO");
+				resultSetMap.put(p++, "BEN_IMPORTO");
+				resultSetMap.put(p++, "BEN_IBANBANC");
+				resultSetMap.put(p++, "BEN_IBANPOST");
+				resultSetMap.put(p++, "BEN_TIPOSERV");
+
+				rsm.put(1, resultSetMap);
+				return rsm;						
+			}).get();
 	}
 
 }

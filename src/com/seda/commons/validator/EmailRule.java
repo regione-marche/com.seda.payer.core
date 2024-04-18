@@ -15,9 +15,15 @@ public class EmailRule extends RuleHandler {
 	 */
 	@Override
 	public boolean apply() throws ValidationException {
-		if (RegexManager.email.doesntMatch(getValue()))
-			throw new ValidationException(RulesNames.EMAIL,Messages.EMAIL.format());
-		return true;
+		if (RegexManager.email.doesntMatch(getValue())) {
+			if(getLocale().getCountry().equals("IT")) {
+			   throw new ValidationException(RulesNames.EMAIL,Messages.EMAILIT.format());
+			}else {
+				throw new ValidationException(RulesNames.EMAIL,Messages.EMAIL.format());
+			}
+		}else {
+		  return true;
+		}
 	}
 	
 	public EmailRule() {}	
