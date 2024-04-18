@@ -137,9 +137,15 @@ public class SPEPBOLL extends ARestRoutine {
 		p = 1;
 		
 		Map<Integer,String> resultSetMap2 = new HashMap<Integer, String>();
-		
-		// TODO
-		
+
+		resultSetMap2.put(p++, "BEN_IDDOMINIO");
+		resultSetMap2.put(p++, "BEN_IMPORTO");
+		resultSetMap2.put(p++, "BEN_IBANBANC");
+		resultSetMap2.put(p++, "BEN_IBANPOST");
+		resultSetMap2.put(p++, "BEN_TIPOSERV");
+		resultSetMap2.put(p++, "BEN_KEYTRIBU");
+		resultSetMap2.put(p++, "BEN_VALTRIBU");
+
 		p = 1;
 		
 		Map<Integer,String> resultSetMap3 = new HashMap<Integer, String>();

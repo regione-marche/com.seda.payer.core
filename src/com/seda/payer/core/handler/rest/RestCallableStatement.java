@@ -22,19 +22,24 @@ import java.sql.SQLXML;
 import java.sql.Time;
 import java.sql.Timestamp;
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Optional;
+
 import javax.ws.rs.client.Client;
 import javax.ws.rs.client.ClientBuilder;
 import javax.ws.rs.client.Entity;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seda.commons.logger.CustomLoggerManager;
+import com.seda.commons.logger.LoggerWrapper;
 import com.seda.payer.core.handler.rest.routine.ERestRoutine;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 public class RestCallableStatement implements CallableStatement {
 
@@ -43,7 +48,7 @@ public class RestCallableStatement implements CallableStatement {
 	
 	private final String baseUrl;
 	@SuppressWarnings("unused")
-	private final String schema; // non necessario perché c'è un baseUrl per ogni schema
+	private final String schema; // non necessario perchè c'è un baseUrl per ogni schema
 	private final ERestRoutine restRoutine;
 	
 	private final Map<Integer, Object> inputDataMap;
@@ -52,6 +57,8 @@ public class RestCallableStatement implements CallableStatement {
 	private List<Map<String, Object>> resultSets;
 	private int currentResultSetIndex = 0;
 	
+	protected LoggerWrapper logger = CustomLoggerManager.get(RestCallableStatement.class);
+
 	public RestCallableStatement(String baseUrl, String schema, ERestRoutine restRoutine) {
 		
 		this.baseUrl = baseUrl;
@@ -174,15 +181,29 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public boolean execute() throws SQLException {
-		
 		Client client = null;
-		
 		try {
 			client = ClientBuilder.newClient();
-			Response response = client.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).post(Entity.entity(getEntity(), MediaType.APPLICATION_JSON));
-			return checkResponse(response);
-		} catch (RestSQLException e) {
-			throw e;
+			return Optional.of(client)
+				.map(c -> {
+					try {
+						Entity<Map<String, Object>> entity = Entity.entity(getEntity(), MediaType.APPLICATION_JSON);
+						try {
+							logger.info(new ObjectMapper().writeValueAsString(entity));
+						} catch (JsonProcessingException e) {}
+						return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).post(entity);
+					} catch (SQLException e) {
+						throw new RuntimeException(e);
+					}
+				})
+				.map(response -> {
+					try {
+						return checkResponse(response);
+					} catch (SQLException e) {
+						throw new RuntimeException(e);
+					}
+				})
+				.get();
 		} catch (Exception e) {
 			throw new RestSQLException("Exception in execute()", e);
 		} finally {
@@ -721,13 +742,13 @@ public class RestCallableStatement implements CallableStatement {
 				
 				if (simpleClassName.equals(Integer.class.getSimpleName())) {
 					return new BigDecimal((Integer) obj);
-				}if (simpleClassName.equals(String.class.getSimpleName())) {
+				} else if (simpleClassName.equals(Long.class.getSimpleName())) {
+					return new BigDecimal((Long) obj);
+				} else if (simpleClassName.equals(String.class.getSimpleName())) {
 					return new BigDecimal((Integer) obj);
-				} 
-				if (simpleClassName.equals(BigDecimal.class.getSimpleName())) {
+				} else if (simpleClassName.equals(BigDecimal.class.getSimpleName())) {
 					return (BigDecimal)obj;
-				} 
-				else {
+				} else {
 					throw new RestSQLException(simpleClassName + " non gestita");
 				}
 			}
@@ -932,8 +953,32 @@ public class RestCallableStatement implements CallableStatement {
 	}
 
 	@Override
-	public String getString(String parameterName) throws SQLException {
-		throw new RestSQLException("metodo non implementato");
+	public String getString(String key) throws SQLException {
+
+		try {
+			
+			String value = null;
+			
+			if (key.contains(".")) {
+				
+				String[] keyArray = key.split("\\.");
+				
+				@SuppressWarnings("unchecked")
+				Map<String, Object> map = (Map<String, Object>) outputDataMap.get(keyArray[0]);
+				
+				value = (String) map.get(keyArray[1]);
+				if (value == null) value = "";
+			} else {
+				
+				value = (String) outputDataMap.get(key);
+			}
+			
+			return value;
+		} catch (Exception e) {
+			throw new RestSQLException("Exception in getString(int parameterIndex)", e);
+		}
+
+
 	}
 
 	@Override
@@ -1257,11 +1302,22 @@ public class RestCallableStatement implements CallableStatement {
 			
 			if (response.getStatus() < 300) {
 				
-				responseEntity = response.readEntity(Map.class);
-				
+				responseEntity = Optional.of(response)
+					.map(r -> response.readEntity(String.class))
+					.map(e -> {
+						try {
+							logger.info(e);
+						} catch (Exception ex) {}
+						try {
+							return new ObjectMapper().readValue(e, HashMap.class);
+						} catch (Exception e1) {
+							throw new RuntimeException(e1);
+						}
+					})
+					.get();
+
 				if (responseEntity.containsKey(RESPONSE_KEY)) {
 					outputDataMap = (Map<String, Object>) responseEntity.get(RESPONSE_KEY);
-					
 					if (outputDataMap.containsKey(RESULT_SETS_KEY)) {
 						resultSets = (List<Map<String, Object>>) outputDataMap.get(RESULT_SETS_KEY);
 					}
