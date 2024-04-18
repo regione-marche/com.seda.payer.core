@@ -902,9 +902,9 @@ public class FlussiRenDao extends BaseDaoHandler{
 		try{
 			callableStatement = prepareCall(Routines.PYRENSP_UPD_ST_REN_ALL.routine());
 			callableStatement.registerOutParameter(1, Types.INTEGER);
-			if (callableStatement.execute()) {
-				numrighe =  callableStatement.getInt(1);
-			}
+			callableStatement.executeUpdate();
+			numrighe =  callableStatement.getInt(1);
+
 			return numrighe;
 		} catch (SQLException x) {
 			throw new DaoException(x);
