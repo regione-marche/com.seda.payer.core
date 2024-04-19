@@ -208,15 +208,11 @@ public class RestCallableStatement implements CallableStatement {
 						try {
 							logger.info(new ObjectMapper().writeValueAsString(entity));
 						} catch (JsonProcessingException e) {}
-//return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).post(entity);
 						if (this.methodRest.equals("POST") ) {
 							return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).post(entity);
-						}
-
-						else if (this.methodRest.equals("PUT") ) {
+						} else if (this.methodRest.equals("PUT") ) {
 							return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).put(entity);
 						}
-
 					} catch (SQLException e) {
 						throw new RuntimeException(e);
 					}
@@ -224,7 +220,12 @@ public class RestCallableStatement implements CallableStatement {
 				})
 				.map(response -> {
 					try {
-						return checkResponse(response);
+						if (restService.equals("CITYMAT"))
+							return checkResponse(response);
+						else if (restService.equals("SEPA"))
+							return checkResponseSEPA(response);
+						else
+							throw new RestSQLException("Servizio non supportato");
 					} catch (SQLException e) {
 						throw new RuntimeException(e);
 					}
@@ -1362,62 +1363,38 @@ public class RestCallableStatement implements CallableStatement {
 	}
 
 
-    private boolean checkResponseSEPA(Response response) throws SQLException {
-
+    @SuppressWarnings("unchecked")
+	private boolean checkResponseSEPA(Response response) throws SQLException {
         try {
-            Map<String, Object> responseEntity = null;
-
             if (response.getStatus() < 300) {
 
-                responseEntity = Optional.of(response)
+                return Optional.of(response)
                         .map(r -> response.readEntity(String.class))
                         .map(e -> {
                             try {
                                 logger.info(e);
                             } catch (Exception ex) {}
                             try {
-                               if (methodRest.equals("POST") ) {
-                                   return new ObjectMapper().readValue(e, HashMap.class);
-                               }
-                               else if (methodRest.equals("PUT") ) {
-                                  //MODIFICARE
-								//  return new ObjectMapper().readValue(e, new TypeReference<List<Map<String, String>>>() {});
-
-                                 //  return new ObjectMapper().readValue(e, ArrayList.class);
-                                   //return new ObjectMapper().readValue(e, HashMap.class);
-                                }
+                               	if (methodRest.equals("POST") ) {
+									//TODO il valore di ritorno è simile a questo oggetto {}
+									new ObjectMapper().readValue(e, HashMap.class);
+									return true;
+								} else if (methodRest.equals("PUT") ) {
+									// il valore di ritorno è simile a questo oggetto [{}]
+									resultSets = new ObjectMapper().readValue(e, new TypeReference<List<Map<String, Object>>>() {});
+									return resultSets != null && !resultSets.isEmpty();
+								}
                             } catch (Exception e1) {
                                 throw new RuntimeException(e1);
                             }
-                            return null;
+                            return false;
                         })
                         .get();
-
-                if (methodRest.equals("POST") ) {
-
-                }
-                else if (methodRest.equals("PUT")) {
-                    // [{asasa:asa,}]
-                    resultSets = (List<Map<String, Object>>) responseEntity;
-                    outputDataMap = (Map<String, Object>) responseEntity.get(RESPONSE_KEY);
-                }
-                /*
-                if (responseEntity.containsKey(RESPONSE_KEY)) {
-                    outputDataMap = (Map<String, Object>) responseEntity.get(RESPONSE_KEY);
-                    if (outputDataMap.containsKey(RESULT_SETS_KEY)) {
-                        resultSets = (List<Map<String, Object>>) outputDataMap.get(RESULT_SETS_KEY);
-                    }
-                */
-
-                /* }else {
-                    throw new RestSQLException("La response non contiene la chiave '" + RESPONSE_KEY + "'");
-                }*/
-
             }
-            return resultSets != null && !resultSets.isEmpty();
         } catch (Exception e) {
             throw new RestSQLException("Exception in checkResponse(Response response)", e);
         }
+		return false;
     }
 
 
