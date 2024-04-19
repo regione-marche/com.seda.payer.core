@@ -717,7 +717,7 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public int getInt(int parameterIndex) throws SQLException {
-		return outputDataMap.get
+		return (int) outputDataMap.get(String.valueOf(parameterIndex - inputDataMap.size()));
 
 	}
 
