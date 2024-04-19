@@ -77,7 +77,7 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 			//			connection = getConnection();
 			if (callableStatementRIDSEL==null) {
 			//	callableStatementRIDSEL = Helper.prepareCall(getConnection(), getSchema(), Routines.SDDAUSP_SEL_BRS.routine());
-                callableStatementRIDSEL = prepareCall(Routines.SDDAUSP_SEL_BRS.routine());
+                callableStatementRIDSEL = prepareCall(Routines.SDDAUSP_SEL_BRS.routine(), "PUT","SEPA");
 			}
 			callableStatementRIDSEL.setString(1, wallet.getCuteCute());
 			callableStatementRIDSEL.setString(2, wallet.getCodiceRid().substring(0,5));
@@ -144,7 +144,7 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 		try {
 			connection = getConnection();
 		//	callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDAUSP_SEL_BRS.routine());
-            callableStatement = prepareCall(Routines.SDDAUSP_SEL_BRS.routine());
+            callableStatement = prepareCall(Routines.SDDAUSP_SEL_BRS.routine(), "PUT","SEPA");
 			callableStatement.setString(1, wallet.getCuteCute());
 			callableStatement.setString(2, wallet.getCodiceRid().substring(0,5));
 			callableStatement.setString(3, wallet.getCodiceRid().substring(5,6));
@@ -208,7 +208,7 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 			connection = getConnection();
 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDAUSP_SEL_BRS.routine());
-            callableStatement = prepareCall(Routines.SDDAUSP_SEL_BRS.routine());
+            callableStatement = prepareCall(Routines.SDDAUSP_SEL_BRS.routine(), "PUT","SEPA");
 
 			callableStatement.setString(1, cuteCute);
 			callableStatement.setString(2, rid.substring(0,5));
@@ -368,9 +368,9 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 	
 	
 	//inizio PG22XX09_SB2
-		public Integer insertSepaWeb(Autorizzazione autorizzazione) throws DaoException {
+		public Integer insertSepaWeb(Autorizzazione autorizzazione ) throws DaoException {
 			CallableStatement callableStatement = null; 
-			Connection connection = null; 
+			Connection connection = null;
 			try {
 				connection = getConnection();
 				//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDAUSP_INS.routine());
@@ -442,13 +442,14 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 						e.printStackTrace();
 					}
 				}
+				/*
 				if (connection != null) {
 					try {
 						connection.close();
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
-				}
+				}*/
 			}
 			
 		}
@@ -522,7 +523,7 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 				connection = getConnection();
 
 				//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDAUSP_SEL.routine());
-				callableStatement = prepareCall(Routines.SDDAUSP_SEL.routine());
+				callableStatement = prepareCall(Routines.SDDAUSP_SEL.routine(), "PUT","SEPA");
 
 				callableStatement.setString(1, cuteCute);
 				callableStatement.setString(2, rid.substring(0,5));

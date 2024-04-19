@@ -16,6 +16,56 @@ public class SDDAUSP_INS extends ARestRoutine {
 
         Map<Integer, String> inParameterMap = new HashMap<Integer, String>();
 
+        inParameterMap.put(p++, "I_DAU_CUTECUTE");                     //DAU_CUTECUTE
+        inParameterMap.put(p++, "I_DAU_CDCSCSIA");                    //DAU_CDCSCSIA
+        inParameterMap.put(p++, "I_DAU_CDAUTPAU");           //DAU_CDAUTPAU
+        inParameterMap.put(p++, "I_DAU_CDAUCOAU");         //DAU_CDAUCOAU
+        inParameterMap.put(p++, "I_DAU_FDAUSTAT");                        //DAU_FDAUSTAT
+        inParameterMap.put(p++, "I_DAU_CDAUCFIS");  //DAU_CDAUCFIS
+        inParameterMap.put(p++, "I_DAU_CDAUCFII");    //DAU_CDAUCFII
+        inParameterMap.put(p++, "I_DAU_CDAUCPCC");       //DAU_CDAUCPCC
+        inParameterMap.put(p++, "I_DAU_CDAUCINT");   //DAU_CDAUCINT
+        inParameterMap.put(p++, "I_DAU_CDAUCABI");         //DAU_CDAUCABI
+        inParameterMap.put(p++, "I_DAU_CDAUCCAB");         //DAU_CDAUCCAB
+        inParameterMap.put(p++, "I_DAU_CDAUCNUM");            //DAU_CDAUCNUM
+        inParameterMap.put(p++, "I_DAU_CDAUCCIN");         //DAU_CDAUCCIN
+        inParameterMap.put(p++, "I_DAU_GDAUPREV");         //DAU_GDAUPREV
+        inParameterMap.put(p++, "I_DAU_CDAUCPRO");            //DAU_CDAUCPRO
+        inParameterMap.put(p++, "I_DAU_CDAUTIPP");              //DAU_CDAUTIPP
+        inParameterMap.put(p++, "I_DAU_CDAUDOCO");           //DAU_CDAUDOCO
+        inParameterMap.put(p++, "I_DAU_GDAUDINV");           //DAU_GDAUDINV
+        inParameterMap.put(p++, "I_DAU_GDAUDFNV");             //DAU_GDAUDFNV
+        inParameterMap.put(p++, "I_DAU_GDAUREVO");                   //DAU_GDAUREVO
+        inParameterMap.put(p++, "I_DAU_CDAUTPAG");                //DAU_CDAUTPAG
+        inParameterMap.put(p++, "I_DAU_CDVIVOCI");            //DAU_CDVIVOCI
+        inParameterMap.put(p++, "I_DAU_CDAUIDEB");                   //DAU_CDAUIDEB
+        inParameterMap.put(p++, "I_DAU_CDVCABIA");      //DAU_CDVCABIA
+        inParameterMap.put(p++, "I_DAU_FDAUSOSP");              //DAU_FDAUSOSP
+        inParameterMap.put(p++, "I_DAU_GDAUSOSP");              //DAU_GDAUSOSP
+        inParameterMap.put(p++, "I_DAU_CDAUOPES");         //DAU_CDAUOPES
+        inParameterMap.put(p++, "I_DAU_GDAUREVS");        //DAU_GDAUREVS
+        inParameterMap.put(p++, "I_DAU_CDAUOPER");   //DAU_CDAUOPER
+        inParameterMap.put(p++, "I_DAU_FDAUFRIM");          //DAU_FDAUFRIM
+        inParameterMap.put(p++, "I_DAU_IDAUIMPP");                //DAU_IDAUIMPP
+        inParameterMap.put(p++, "I_DAU_CDAUCBIC");                    //DAU_CDAUCBIC
+        inParameterMap.put(p++, "I_DAU_FDAUCCON");     //DAU_FDAUCCON
+        inParameterMap.put(p++, "I_DAU_GDAUALLI");          //DAU_GDAUALLI
+        inParameterMap.put(p++, "I_DAU_FDAUFALL");         //DAU_FDAUFALL
+        inParameterMap.put(p++, "I_DAU_GDAUESIC");     //DAU_GDAUESIC
+        inParameterMap.put(p++, "I_DAU_CDAUTPMA");             //DAU_CDAUTPMA
+        inParameterMap.put(p++, "I_DAU_CDAUDTMA");  //DAU_CDAUDTMA
+        inParameterMap.put(p++, "I_DAU_CDAUTPIN");             //DAU_CDAUTPIN
+        inParameterMap.put(p++, "I_DAU_CDAUOPEI");         //DAU_CDAUOPEI
+        inParameterMap.put(p++, "I_DAU_GDAUINSE");              //DAU_GDAUINSE
+        inParameterMap.put(p++, "I_DAU_CDAUOPEV");          //DAU_CDAUOPEV
+        inParameterMap.put(p++, "I_DAU_GDAUVARI");               //DAU_GDAUVARI
+        inParameterMap.put(p++, "I_DAU_GDAUSOTT");           //DAU_GDAUSOTT
+        inParameterMap.put(p++, "I_DAU_CDAUMIGR");                 //DAU_CDAUMIGR
+        inParameterMap.put(p++, "I_DAU_FDAUFVAR");               //DAU_FDAUFVAR
+        inParameterMap.put(p++, "I_DAU_CDAUMAIL");                         //DAU_CDAUMAIL
+        inParameterMap.put(p++, "O_HV_SQLCODE");                    //HV_SQLCODE
+
+        /*
         inParameterMap.put(p++, "data_in_cutecute_in");                     //DAU_CUTECUTE
         inParameterMap.put(p++, "data_in_codicesia_in");                    //DAU_CDCSCSIA
         inParameterMap.put(p++, "data_in_tipoautorizzazione_in");           //DAU_CDAUTPAU
@@ -64,7 +114,7 @@ public class SDDAUSP_INS extends ARestRoutine {
         inParameterMap.put(p++, "data_in_flagVariazione_in");               //DAU_FDAUFVAR
         inParameterMap.put(p++, "data_in_mail_in");                         //DAU_CDAUMAIL
         inParameterMap.put(p++, "data_ou_hvsqlcode_in");                    //HV_SQLCODE
-
+*/
         return inParameterMap;
     }
 
@@ -75,7 +125,10 @@ public class SDDAUSP_INS extends ARestRoutine {
 
         Map<Integer, String> outParameterMap = new HashMap<Integer, String>();
 
-        outParameterMap.put(p++, "data_ou_hvsqlcode_out");                  //HV_SQLCODE
+        /*
+        * outParameterMap.put(p++, "data_ou_hvsqlcode_out");                  //HV_SQLCODE
+        * */
+        outParameterMap.put(p++, "O_HV_SQLCODE");                  //HV_SQLCODE
 
         return outParameterMap;
     }
@@ -84,6 +137,11 @@ public class SDDAUSP_INS extends ARestRoutine {
     protected Map<Integer, Map<Integer, String>> resultSetsMap() {
 
         //NB non restituisce nulla
-        return null;
+
+        //return null;
+
+       // Map<Integer, Map<Integer,String>> resultSetsMap = new HashMap<Integer, Map<Integer,String>>();
+
+        return null; //resultSetsMap;
     }
 }

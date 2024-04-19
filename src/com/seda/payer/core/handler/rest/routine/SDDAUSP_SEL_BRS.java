@@ -16,6 +16,14 @@ public class SDDAUSP_SEL_BRS extends ARestRoutine {
 
         Map<Integer, String> inParameterMap = new HashMap<Integer, String>();
 
+        inParameterMap.put(p++, "I_DAU_CUTECUTE");                  //DAU_CUTECUTE
+        inParameterMap.put(p++, "I_DAU_CDCSCSIA");                 //DAU_CDCSCSIA
+        inParameterMap.put(p++, "I_DAU_CDAUTPAU");        //DAU_CDAUTPAU
+        inParameterMap.put(p++, "I_DAU_CDAUCOAU");      //DAU_CDAUCOAU
+        inParameterMap.put(p++, "O_DVI_CDVIVOCI");         //DVI_CDVIVOCI
+        inParameterMap.put(p++, "O_DCS_CDVCABIA");   //DCS_CDVCABIA
+        inParameterMap.put(p++, "O_MESSAGE");                   //message
+        /*
         inParameterMap.put(p++, "data_in_cutecute_in");                  //DAU_CUTECUTE
         inParameterMap.put(p++, "data_in_codicesia_in");                 //DAU_CDCSCSIA
         inParameterMap.put(p++, "data_in_tipoautorizzazione_in");        //DAU_CDAUTPAU
@@ -23,6 +31,7 @@ public class SDDAUSP_SEL_BRS extends ARestRoutine {
         inParameterMap.put(p++, "data_ou_codiceVoceIncasso_in");         //DVI_CDVIVOCI
         inParameterMap.put(p++, "data_ou_codiceAbiCCAllineamento_in");   //DCS_CDVCABIA
         inParameterMap.put(p++, "data_ou_message_in");                   //message
+*/
 
         return inParameterMap;
     }
@@ -34,9 +43,15 @@ public class SDDAUSP_SEL_BRS extends ARestRoutine {
 
         Map<Integer, String> outParameterMap = new HashMap<Integer, String>();
 
+        outParameterMap.put(p++, "O_DVI_CDVIVOCI");         //O_DVI_CDVIVOCI
+        outParameterMap.put(p++, "O_DCS_CDVCABIA");   //O_DCS_CDVCABIA
+        outParameterMap.put(p++, "O_MESSAGE");                   //message
+
+        /*
         outParameterMap.put(p++, "data_ou_codiceVoceIncasso_out");         //O_DVI_CDVIVOCI
         outParameterMap.put(p++, "data_ou_codiceAbiCCAllineamento_out");   //O_DCS_CDVCABIA
         outParameterMap.put(p++, "data_ou_message_out");                   //message
+*/
 
         return outParameterMap;
     }

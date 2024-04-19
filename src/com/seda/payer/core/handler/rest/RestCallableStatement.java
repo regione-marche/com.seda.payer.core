@@ -36,6 +36,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.logger.LoggerWrapper;
@@ -56,6 +57,10 @@ public class RestCallableStatement implements CallableStatement {
 	private Map<String, Object> outputDataMap;
 	private List<Map<String, Object>> resultSets;
 	private int currentResultSetIndex = 0;
+
+	private String methodRest = "POST";
+
+    private String restService = "CITYMAT";
 	
 	protected LoggerWrapper logger = CustomLoggerManager.get(RestCallableStatement.class);
 
@@ -66,6 +71,16 @@ public class RestCallableStatement implements CallableStatement {
 		this.restRoutine = restRoutine;
 		this.inputDataMap = new HashMap<Integer, Object>();
 	}
+
+	public RestCallableStatement(String baseUrl, String schema, ERestRoutine restRoutine, String methodRest, String restService) {
+        this(baseUrl, schema, restRoutine);
+
+		this.methodRest = methodRest;
+
+        this.restService = restService;
+
+	}
+
 
 	@Override
 	public ResultSet executeQuery() throws SQLException {
@@ -182,6 +197,7 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public boolean execute() throws SQLException {
+		System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
 		Client client = null;
 		try {
 			client = ClientBuilder.newClient();
@@ -192,10 +208,19 @@ public class RestCallableStatement implements CallableStatement {
 						try {
 							logger.info(new ObjectMapper().writeValueAsString(entity));
 						} catch (JsonProcessingException e) {}
-						return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).post(entity);
+//return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).post(entity);
+						if (this.methodRest.equals("POST") ) {
+							return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).post(entity);
+						}
+
+						else if (this.methodRest.equals("PUT") ) {
+							return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).put(entity);
+						}
+
 					} catch (SQLException e) {
 						throw new RuntimeException(e);
 					}
+					return null;
 				})
 				.map(response -> {
 					try {
@@ -684,7 +709,8 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public int getInt(int parameterIndex) throws SQLException {
-		throw new RestSQLException("metodo non implementato");
+		return parameterIndex;
+	//	throw new RestSQLException("metodo non implementato");
 	}
 
 	@Override
@@ -999,7 +1025,9 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public int getInt(String parameterName) throws SQLException {
-		throw new RestSQLException("metodo non implementato");
+		return Integer.parseInt(getString(parameterName));
+
+		//throw new RestSQLException("metodo non implementato");
 	}
 
 	@Override
@@ -1332,5 +1360,66 @@ public class RestCallableStatement implements CallableStatement {
 			throw new RestSQLException("Exception in checkResponse(Response response)", e);
 		}
 	}
+
+
+    private boolean checkResponseSEPA(Response response) throws SQLException {
+
+        try {
+            Map<String, Object> responseEntity = null;
+
+            if (response.getStatus() < 300) {
+
+                responseEntity = Optional.of(response)
+                        .map(r -> response.readEntity(String.class))
+                        .map(e -> {
+                            try {
+                                logger.info(e);
+                            } catch (Exception ex) {}
+                            try {
+                               if (methodRest.equals("POST") ) {
+                                   return new ObjectMapper().readValue(e, HashMap.class);
+                               }
+                               else if (methodRest.equals("PUT") ) {
+                                  //MODIFICARE
+								//  return new ObjectMapper().readValue(e, new TypeReference<List<Map<String, String>>>() {});
+
+                                 //  return new ObjectMapper().readValue(e, ArrayList.class);
+                                   //return new ObjectMapper().readValue(e, HashMap.class);
+                                }
+                            } catch (Exception e1) {
+                                throw new RuntimeException(e1);
+                            }
+                            return null;
+                        })
+                        .get();
+
+                if (methodRest.equals("POST") ) {
+
+                }
+                else if (methodRest.equals("PUT")) {
+                    // [{asasa:asa,}]
+                    resultSets = (List<Map<String, Object>>) responseEntity;
+                    outputDataMap = (Map<String, Object>) responseEntity.get(RESPONSE_KEY);
+                }
+                /*
+                if (responseEntity.containsKey(RESPONSE_KEY)) {
+                    outputDataMap = (Map<String, Object>) responseEntity.get(RESPONSE_KEY);
+                    if (outputDataMap.containsKey(RESULT_SETS_KEY)) {
+                        resultSets = (List<Map<String, Object>>) outputDataMap.get(RESULT_SETS_KEY);
+                    }
+                */
+
+                /* }else {
+                    throw new RestSQLException("La response non contiene la chiave '" + RESPONSE_KEY + "'");
+                }*/
+
+            }
+            return resultSets != null && !resultSets.isEmpty();
+        } catch (Exception e) {
+            throw new RestSQLException("Exception in checkResponse(Response response)", e);
+        }
+    }
+
+
 	
 }
