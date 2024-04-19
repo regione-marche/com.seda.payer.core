@@ -336,7 +336,7 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 			//			connection = getConnection();
 			if (callableStatementRID==null) {
 				//callableStatementRID = Helper.prepareCall(getConnection(), getSchema(), Routines.SDDDESP_INS_BRS.routine());
-				callableStatementRID = prepareCall(Routines.SDDDESP_INS_BRS.routine());
+				callableStatementRID = prepareCall(Routines.SDDDESP_INS_BRS.routine(), "POST","SEPA");
 			}
 
 
@@ -374,7 +374,8 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 			try {
 				connection = getConnection();
 				//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDAUSP_INS.routine());
-                callableStatement = prepareCall(Routines.SDDAUSP_INS.routine());
+                callableStatement = prepareCall(Routines.SDDAUSP_INS.routine(), "POST","SEPA");
+				//callableStatement.setString(1, autorizzazione.getCodice);
 				callableStatement.setString(1, autorizzazione.getCodiceUtente());
 				callableStatement.setString(2, autorizzazione.getCodiceSia());
 				callableStatement.setString(3, autorizzazione.getTipoAutorizzazione());
@@ -442,14 +443,14 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 						e.printStackTrace();
 					}
 				}
-				/*
+
 				if (connection != null) {
 					try {
 						connection.close();
 					} catch (SQLException e) {
 						e.printStackTrace();
 					}
-				}*/
+				}
 			}
 			
 		}
@@ -463,7 +464,7 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 			try {
 				connection = getConnection();
 				//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.SDDASSP_INS.routine());
-				callableStatement = prepareCall(Routines.SDDASSP_INS.routine());
+				callableStatement = prepareCall(Routines.SDDASSP_INS.routine(), "POST","SEPA");
 				callableStatement.setString(1, anagrafica.getCodiceUtente());
 				callableStatement.setString(2, anagrafica.getCodiceFiscale());
 				callableStatement.setString(3, anagrafica.getStato());

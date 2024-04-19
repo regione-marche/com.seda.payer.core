@@ -477,26 +477,33 @@ public class RestCallableStatement implements CallableStatement {
 	public ResultSet getResultSet() throws SQLException {
 		
 		try {
+
 			if (resultSets != null && !resultSets.isEmpty()) {
-				
-				Iterator<Map<String, Object>> iterator = resultSets.iterator();
-				
-				while (iterator.hasNext()) {
-					
-					Map<String, Object> map = (Map<String, Object>) iterator.next();
-					
-					if (map != null && map.containsKey("Resultset " + currentResultSetIndex)) {
-						
-						iterator.remove();
-						@SuppressWarnings("unchecked")
-						List<Map<String, Object>> resultSetRows = (List<Map<String, Object>>) map.get("Resultset " + currentResultSetIndex);
-						RestResultSet restResultSet = new RestResultSet(restRoutine, currentResultSetIndex, resultSetRows);
-						currentResultSetIndex++;
-						return restResultSet;
+				if (restService.equals("CITYMAT")) {
+					Iterator<Map<String, Object>> iterator = resultSets.iterator();
+
+					while (iterator.hasNext()) {
+
+						Map<String, Object> map = (Map<String, Object>) iterator.next();
+
+
+							if (map != null && map.containsKey("Resultset " + currentResultSetIndex)) {
+
+								iterator.remove();
+								@SuppressWarnings("unchecked")
+								List<Map<String, Object>> resultSetRows = (List<Map<String, Object>>) map.get("Resultset " + currentResultSetIndex);
+								RestResultSet restResultSet = new RestResultSet(restRoutine, currentResultSetIndex, resultSetRows);
+								currentResultSetIndex++;
+								return restResultSet;
+							}
+
 					}
+				}else if (restService.equals("SEPA")){
+					return new RestResultSet(restRoutine, currentResultSetIndex, resultSets);
+
 				}
 			}
-			
+
 			return null;
 		} catch (Exception e) {
 			throw new RestSQLException("Exception in getResultSet()", e);
@@ -710,8 +717,8 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public int getInt(int parameterIndex) throws SQLException {
-		return parameterIndex;
-	//	throw new RestSQLException("metodo non implementato");
+		return outputDataMap.get
+
 	}
 
 	@Override
@@ -1377,7 +1384,7 @@ public class RestCallableStatement implements CallableStatement {
                             try {
                                	if (methodRest.equals("POST") ) {
 									//TODO il valore di ritorno è simile a questo oggetto {}
-									new ObjectMapper().readValue(e, HashMap.class);
+									outputDataMap =	new ObjectMapper().readValue(e, HashMap.class);
 									return true;
 								} else if (methodRest.equals("PUT") ) {
 									// il valore di ritorno è simile a questo oggetto [{}]

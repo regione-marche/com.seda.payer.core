@@ -20,9 +20,9 @@ public class SDDAUSP_SEL_BRS extends ARestRoutine {
         inParameterMap.put(p++, "I_DAU_CDCSCSIA");                 //DAU_CDCSCSIA
         inParameterMap.put(p++, "I_DAU_CDAUTPAU");        //DAU_CDAUTPAU
         inParameterMap.put(p++, "I_DAU_CDAUCOAU");      //DAU_CDAUCOAU
-        inParameterMap.put(p++, "O_DVI_CDVIVOCI");         //DVI_CDVIVOCI
-        inParameterMap.put(p++, "O_DCS_CDVCABIA");   //DCS_CDVCABIA
-        inParameterMap.put(p++, "O_MESSAGE");                   //message
+       // inParameterMap.put(p++, "O_DVI_CDVIVOCI");         //DVI_CDVIVOCI
+       // inParameterMap.put(p++, "O_DCS_CDVCABIA");   //DCS_CDVCABIA
+       // inParameterMap.put(p++, "O_MESSAGE");                   //message
         /*
         inParameterMap.put(p++, "data_in_cutecute_in");                  //DAU_CUTECUTE
         inParameterMap.put(p++, "data_in_codicesia_in");                 //DAU_CDCSCSIA

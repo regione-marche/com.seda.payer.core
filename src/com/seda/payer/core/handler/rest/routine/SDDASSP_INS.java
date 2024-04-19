@@ -18,21 +18,21 @@ public class SDDASSP_INS extends ARestRoutine {
 
         Map<Integer, String> inParameterMap = new HashMap<Integer, String>();
 
-        inParameterMap.put(p++, "data_in_cutecute_in");               //I_DAS_CUTECUTE
-        inParameterMap.put(p++, "data_in_codicefiscale_in");          //I_DAS_CDASCFIS
-        inParameterMap.put(p++, "data_in_stato_in");                  //I_DAS_CDASSTAT
-        inParameterMap.put(p++, "data_in_denominazione_in");          //I_DAS_DDASDENO
-        inParameterMap.put(p++, "data_in_indirizzo_in");              //IN I_DAS_DDASINDI
-        inParameterMap.put(p++, "data_in_cap_in");                    //IN I_DAS_CDASCCAP
-        inParameterMap.put(p++, "data_in_localita_in");               //IN I_DAS_DDASLOCA
-        inParameterMap.put(p++, "data_in_siglaProvincia_in");         //I_DAS_CDASPROV
-        inParameterMap.put(p++, "data_in_telefono_in");               //IN I_DAS_CDASNTEL
-        inParameterMap.put(p++, "data_in_email_in");                  //IN I_DAS_CDASMAIL
-        inParameterMap.put(p++, "data_in_operatoreInserimento_in");   //IN I_DAS_CDASOPEI
-        inParameterMap.put(p++, "data_in_dataInserimento_in");        //IN I_DAS_GDASINSE
-        inParameterMap.put(p++, "data_in_operatoreVariazione_in");    //IN I_DAS_CDASOPEV
-        inParameterMap.put(p++, "data_in_dataVariazione_in");         // IN I_DAS_GDASVARI
-        inParameterMap.put(p++, "data_ou_hvsqlcode_in");              //OUT O_HV_SQLCODE
+        inParameterMap.put(p++, "I_DAS_CUTECUTE");
+        inParameterMap.put(p++, "I_DAS_CDASCFIS");
+        inParameterMap.put(p++, "I_DAS_CDASSTAT");
+        inParameterMap.put(p++, "I_DAS_DDASDENO");
+        inParameterMap.put(p++, "I_DAS_DDASINDI");
+        inParameterMap.put(p++, "I_DAS_CDASCCAP");
+        inParameterMap.put(p++, "I_DAS_DDASLOCA");
+        inParameterMap.put(p++, "I_DAS_CDASPROV");
+        inParameterMap.put(p++, "I_DAS_CDASNTEL");
+        inParameterMap.put(p++, "I_DAS_CDASMAIL");
+        inParameterMap.put(p++, "I_DAS_CDASOPEI");
+        inParameterMap.put(p++, "I_DAS_GDASINSE");
+        inParameterMap.put(p++, "I_DAS_CDASOPEV");
+        inParameterMap.put(p++, "I_DAS_GDASVARI");
+       // inParameterMap.put(p++, "O_HV_SQLCODE");
 
         return inParameterMap;
     }
@@ -44,7 +44,7 @@ public class SDDASSP_INS extends ARestRoutine {
 
         Map<Integer, String> outParameterMap = new HashMap<Integer, String>();
 
-        outParameterMap.put(p++, "data_ou_hvsqlcode_out");  //OUT O_HV_SQLCODE
+        outParameterMap.put(p++, "O_HV_SQLCODE");
 
         return outParameterMap;
     }

@@ -16,13 +16,14 @@ public class SDDDESP_INS_BRS  extends ARestRoutine {
 
         Map<Integer, String> inParameterMap = new HashMap<Integer, String>();
 
-        inParameterMap.put(p++, "data_in_cutecute_in");        //IN DDE_CUTECUTE
-        inParameterMap.put(p++, "data_in_ECS_CDCSCODE_in");    // IN ECS_CDCSCODE
-        inParameterMap.put(p++, "data_in_BRS_KBRSKBRS_in");    // IN BRS_KBRSKBRS
-        inParameterMap.put(p++, "data_in_DDE_CDDEOPEI_in");     //IN DDE_CDDEOPEI
-        inParameterMap.put(p++, "data_ou_codicesepa_in");     //OUT O_CODSEPA
-        inParameterMap.put(p++, "data_ou_sqlcode_in");   //OUT O_SQLCODE
-        inParameterMap.put(p++, "data_ou_message_in");   //OUT O_MESSAGE
+        inParameterMap.put(p++, "I_DDE_CUTECUTE");
+        inParameterMap.put(p++, "I_ECS_CDCSCODE");
+        inParameterMap.put(p++, "I_BRS_KBRSKBRS");
+        inParameterMap.put(p++, "I_DDE_CDDEOPEI");
+       // inParameterMap.put(p++, "O_CODSEPA");
+       // inParameterMap.put(p++, "O_SQLCODE");
+       // inParameterMap.put(p++, "O_MESSAGE");
+
 
         return inParameterMap;
     }
@@ -34,13 +35,11 @@ public class SDDDESP_INS_BRS  extends ARestRoutine {
 
         Map<Integer, String> outParameterMap = new HashMap<Integer, String>();
 
-        //non sicuro
+        outParameterMap.put(p++, "O_CODSEPA");
+        outParameterMap.put(p++, "O_SQLCODE");
+        outParameterMap.put(p++, "O_MESSAGE");
 
-        outParameterMap.put(p++, "data_out_codicesepa_out");
-        outParameterMap.put(p++, "data_out_sqlcode_out");
-        outParameterMap.put(p++, "data_out_message_out");
-
-        return null;
+        return outParameterMap;
     }
 
     @Override
