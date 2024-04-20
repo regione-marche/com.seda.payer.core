@@ -47,11 +47,7 @@ public class SDDAUSP_SEL_BRS extends ARestRoutine {
         outParameterMap.put(p++, "O_DCS_CDVCABIA");   //O_DCS_CDVCABIA
         outParameterMap.put(p++, "O_MESSAGE");                   //message
 
-        /*
-        outParameterMap.put(p++, "data_ou_codiceVoceIncasso_out");         //O_DVI_CDVIVOCI
-        outParameterMap.put(p++, "data_ou_codiceAbiCCAllineamento_out");   //O_DCS_CDVCABIA
-        outParameterMap.put(p++, "data_ou_message_out");                   //message
-*/
+
 
         return outParameterMap;
     }

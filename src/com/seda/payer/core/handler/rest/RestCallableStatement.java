@@ -657,8 +657,8 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public void registerOutParameter(int parameterIndex, int sqlType) throws SQLException {
-		
-		// va bene non fare nulla
+		//TODO
+
 	}
 
 	@Override
@@ -717,7 +717,10 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public int getInt(int parameterIndex) throws SQLException {
-		return (int) outputDataMap.get(String.valueOf(parameterIndex - inputDataMap.size()));
+		//outputDataMap.get("O_HV_SQLCODE")
+		return ((Integer) outputDataMap.get(this.restRoutine.getOutParameterMap().get(parameterIndex - inputDataMap.size()))).intValue();
+		//return (int) outputDataMap.get(String.valueOf(parameterIndex - inputDataMap.size()));
+
 
 	}
 
@@ -1388,7 +1391,33 @@ public class RestCallableStatement implements CallableStatement {
 									return true;
 								} else if (methodRest.equals("PUT") ) {
 									// il valore di ritorno è simile a questo oggetto [{}]
-									resultSets = new ObjectMapper().readValue(e, new TypeReference<List<Map<String, Object>>>() {});
+
+									outputDataMap =	new ObjectMapper().readValue(e, HashMap.class);
+									resultSets = (List<Map<String, Object>>) outputDataMap.get("ResultSet");
+
+									outputDataMap.remove("ResultSet");
+								//	outputDataMap.entrySet().removeIf(entry -> entry.getKey().startsWith("I_"));
+
+										/*
+										* {
+										"I_DAU_CUTECUTE": "000TO",
+										"I_DAU_CDCSCSIA": "AASCE",
+										"I_DAU_CDAUTPAU": "4",
+										"I_DAU_CDAUCOAU": "082010G561074222",
+										"O_DVI_CDVIVOCI": "BORSELTO",
+										"O_DCS_CDVCABIA": "02008",
+										"O_MESSAGE": "",
+										"ResultSet": [
+											{
+												"DAU_CDCSCSIA": "AASCE",
+												"DAU_CDAUTPAU": "4",
+												"DAU_CDAUCOAU": "082010G561074222",
+												"DAU_FDAUSTAT": "NON",
+												"DAU_GDAUVARI": ""
+											}
+										]
+										}*/
+
 									return resultSets != null && !resultSets.isEmpty();
 								}
                             } catch (Exception e1) {
@@ -1404,6 +1433,7 @@ public class RestCallableStatement implements CallableStatement {
 		return false;
     }
 
-
-	
+	public String getRestService() {
+		return restService;
+	}
 }
