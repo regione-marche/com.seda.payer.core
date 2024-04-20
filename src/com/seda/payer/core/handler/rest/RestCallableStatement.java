@@ -36,6 +36,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.logger.LoggerWrapper;
@@ -48,7 +49,7 @@ public class RestCallableStatement implements CallableStatement {
 	
 	private final String baseUrl;
 	@SuppressWarnings("unused")
-	private final String schema; // non necessario perchè c'è un baseUrl per ogni schema
+	private final String schema; // non necessario perche ce un baseUrl per ogni schema
 	private final ERestRoutine restRoutine;
 	
 	private final Map<Integer, Object> inputDataMap;
@@ -56,6 +57,10 @@ public class RestCallableStatement implements CallableStatement {
 	private Map<String, Object> outputDataMap;
 	private List<Map<String, Object>> resultSets;
 	private int currentResultSetIndex = 0;
+
+	private String methodRest = "POST";
+
+    private String restService = "CITYMAT";
 	
 	protected LoggerWrapper logger = CustomLoggerManager.get(RestCallableStatement.class);
 
@@ -66,6 +71,16 @@ public class RestCallableStatement implements CallableStatement {
 		this.restRoutine = restRoutine;
 		this.inputDataMap = new HashMap<Integer, Object>();
 	}
+
+	public RestCallableStatement(String baseUrl, String schema, ERestRoutine restRoutine, String methodRest, String restService) {
+        this(baseUrl, schema, restRoutine);
+
+		this.methodRest = methodRest;
+
+        this.restService = restService;
+
+	}
+
 
 	@Override
 	public ResultSet executeQuery() throws SQLException {
@@ -136,7 +151,8 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public void setDate(int parameterIndex, Date x) throws SQLException {
-		throw new RestSQLException("metodo non implementato");
+
+		inputDataMap.put(parameterIndex, x);
 	}
 
 	@Override
@@ -181,6 +197,7 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public boolean execute() throws SQLException {
+		System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
 		Client client = null;
 		try {
 			client = ClientBuilder.newClient();
@@ -191,14 +208,24 @@ public class RestCallableStatement implements CallableStatement {
 						try {
 							logger.info(new ObjectMapper().writeValueAsString(entity));
 						} catch (JsonProcessingException e) {}
-						return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).post(entity);
+						if (this.methodRest.equals("POST") ) {
+							return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).post(entity);
+						} else if (this.methodRest.equals("PUT") ) {
+							return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).put(entity);
+						}
 					} catch (SQLException e) {
 						throw new RuntimeException(e);
 					}
+					return null;
 				})
 				.map(response -> {
 					try {
-						return checkResponse(response);
+						if (restService.equals("CITYMAT"))
+							return checkResponse(response);
+						else if (restService.equals("SEPA"))
+							return checkResponseSEPA(response);
+						else
+							throw new RestSQLException("Servizio non supportato");
 					} catch (SQLException e) {
 						throw new RuntimeException(e);
 					}
@@ -450,26 +477,33 @@ public class RestCallableStatement implements CallableStatement {
 	public ResultSet getResultSet() throws SQLException {
 		
 		try {
+
 			if (resultSets != null && !resultSets.isEmpty()) {
-				
-				Iterator<Map<String, Object>> iterator = resultSets.iterator();
-				
-				while (iterator.hasNext()) {
-					
-					Map<String, Object> map = (Map<String, Object>) iterator.next();
-					
-					if (map != null && map.containsKey("Resultset " + currentResultSetIndex)) {
-						
-						iterator.remove();
-						@SuppressWarnings("unchecked")
-						List<Map<String, Object>> resultSetRows = (List<Map<String, Object>>) map.get("Resultset " + currentResultSetIndex);
-						RestResultSet restResultSet = new RestResultSet(restRoutine, currentResultSetIndex, resultSetRows);
-						currentResultSetIndex++;
-						return restResultSet;
+				if (restService.equals("CITYMAT")) {
+					Iterator<Map<String, Object>> iterator = resultSets.iterator();
+
+					while (iterator.hasNext()) {
+
+						Map<String, Object> map = (Map<String, Object>) iterator.next();
+
+
+							if (map != null && map.containsKey("Resultset " + currentResultSetIndex)) {
+
+								iterator.remove();
+								@SuppressWarnings("unchecked")
+								List<Map<String, Object>> resultSetRows = (List<Map<String, Object>>) map.get("Resultset " + currentResultSetIndex);
+								RestResultSet restResultSet = new RestResultSet(restRoutine, currentResultSetIndex, resultSetRows);
+								currentResultSetIndex++;
+								return restResultSet;
+							}
+
 					}
+				}else if (restService.equals("SEPA")){
+					return new RestResultSet(restRoutine, currentResultSetIndex, resultSets);
+
 				}
 			}
-			
+
 			return null;
 		} catch (Exception e) {
 			throw new RestSQLException("Exception in getResultSet()", e);
@@ -623,8 +657,8 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public void registerOutParameter(int parameterIndex, int sqlType) throws SQLException {
-		
-		// va bene non fare nulla
+		//TODO
+
 	}
 
 	@Override
@@ -683,7 +717,11 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public int getInt(int parameterIndex) throws SQLException {
-		throw new RestSQLException("metodo non implementato");
+		//outputDataMap.get("O_HV_SQLCODE")
+		return ((Integer) outputDataMap.get(this.restRoutine.getOutParameterMap().get(parameterIndex - inputDataMap.size()))).intValue();
+		//return (int) outputDataMap.get(String.valueOf(parameterIndex - inputDataMap.size()));
+
+
 	}
 
 	@Override
@@ -998,7 +1036,9 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public int getInt(String parameterName) throws SQLException {
-		throw new RestSQLException("metodo non implementato");
+		return Integer.parseInt(getString(parameterName));
+
+		//throw new RestSQLException("metodo non implementato");
 	}
 
 	@Override
@@ -1331,5 +1371,69 @@ public class RestCallableStatement implements CallableStatement {
 			throw new RestSQLException("Exception in checkResponse(Response response)", e);
 		}
 	}
-	
+
+
+    @SuppressWarnings("unchecked")
+	private boolean checkResponseSEPA(Response response) throws SQLException {
+        try {
+            if (response.getStatus() < 300) {
+
+                return Optional.of(response)
+                        .map(r -> response.readEntity(String.class))
+                        .map(e -> {
+                            try {
+                                logger.info(e);
+                            } catch (Exception ex) {}
+                            try {
+                               	if (methodRest.equals("POST") ) {
+									//TODO il valore di ritorno è simile a questo oggetto {}
+									outputDataMap =	new ObjectMapper().readValue(e, HashMap.class);
+									return true;
+								} else if (methodRest.equals("PUT") ) {
+									// il valore di ritorno è simile a questo oggetto [{}]
+
+									outputDataMap =	new ObjectMapper().readValue(e, HashMap.class);
+									resultSets = (List<Map<String, Object>>) outputDataMap.get("ResultSet");
+
+									outputDataMap.remove("ResultSet");
+								//	outputDataMap.entrySet().removeIf(entry -> entry.getKey().startsWith("I_"));
+
+										/*
+										* {
+										"I_DAU_CUTECUTE": "000TO",
+										"I_DAU_CDCSCSIA": "AASCE",
+										"I_DAU_CDAUTPAU": "4",
+										"I_DAU_CDAUCOAU": "082010G561074222",
+										"O_DVI_CDVIVOCI": "BORSELTO",
+										"O_DCS_CDVCABIA": "02008",
+										"O_MESSAGE": "",
+										"ResultSet": [
+											{
+												"DAU_CDCSCSIA": "AASCE",
+												"DAU_CDAUTPAU": "4",
+												"DAU_CDAUCOAU": "082010G561074222",
+												"DAU_FDAUSTAT": "NON",
+												"DAU_GDAUVARI": ""
+											}
+										]
+										}*/
+
+									return resultSets != null && !resultSets.isEmpty();
+								}
+                            } catch (Exception e1) {
+                                throw new RuntimeException(e1);
+                            }
+                            return false;
+                        })
+                        .get();
+            }
+        } catch (Exception e) {
+            throw new RestSQLException("Exception in checkResponse(Response response)", e);
+        }
+		return false;
+    }
+
+	public String getRestService() {
+		return restService;
+	}
 }
