@@ -217,6 +217,7 @@ public class RestCallableStatement implements CallableStatement {
 							return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).put(entity);
 						}
 					} catch (SQLException e) {
+						e.printStackTrace();
 						throw new RuntimeException(e);
 					}
 					return null;
