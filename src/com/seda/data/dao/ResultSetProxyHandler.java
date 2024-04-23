@@ -7,10 +7,6 @@ import java.sql.Clob;
 import java.sql.Connection;
 import java.util.ArrayList;
 
-import org.postgresql.core.BaseConnection;
-import org.postgresql.jdbc.PgClob;
-
-
 public class ResultSetProxyHandler implements InvocationHandler{
 	
 
