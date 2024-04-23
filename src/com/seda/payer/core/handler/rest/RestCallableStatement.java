@@ -207,10 +207,13 @@ public class RestCallableStatement implements CallableStatement {
 						Entity<Map<String, Object>> entity = Entity.entity(getEntity(), MediaType.APPLICATION_JSON);
 						try {
 							logger.info(new ObjectMapper().writeValueAsString(entity));
+							System.out.println(new ObjectMapper().writeValueAsString(entity));
 						} catch (JsonProcessingException e) {}
 						if (this.methodRest.equals("POST") ) {
+							System.out.println("Chiamata con metodo POST");
 							return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).post(entity);
 						} else if (this.methodRest.equals("PUT") ) {
+							System.out.println("Chiamata con metodo PUT");
 							return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).put(entity);
 						}
 					} catch (SQLException e) {
@@ -220,10 +223,16 @@ public class RestCallableStatement implements CallableStatement {
 				})
 				.map(response -> {
 					try {
-						if (restService.equals("CITYMAT"))
+						if (restService.equals("CITYMAT")) {
+							System.out.println("Risposta CITYMAT");
+							System.out.println(response.toString());
 							return checkResponse(response);
-						else if (restService.equals("SEPA"))
+						}
+						else if (restService.equals("SEPA")) {
+							System.out.println("Risposta SEPA");
+							System.out.println(response.toString());
 							return checkResponseSEPA(response);
+						}
 						else
 							throw new RestSQLException("Servizio non supportato");
 					} catch (SQLException e) {
