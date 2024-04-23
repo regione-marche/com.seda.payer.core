@@ -30,8 +30,11 @@ public class ResultSetProxyHandler implements InvocationHandler{
 			i++;
 			//provo a vedere se ha risultati nel caso torno true
 			try{
-				callableStatement.getObject(i);
-				return true;
+				//TODO da verificare
+				//callableStatement.getObject(i);
+				//return true;
+				if (callableStatement.getObject(i)==null) return false;
+				else return true;
 			}catch(Exception e) 
 			{
 				return false;
