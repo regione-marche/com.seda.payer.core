@@ -28,10 +28,10 @@ public class CallableStatementLogger extends JdbcLogger implements InvocationHan
 	public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
 		try {
 			if (EXECUTE_METHODS.contains(method.getName())) {
-if (log.isDebugEnabled()) {
-				log.debug("==>  Executing: " + removeExcessiveBlank(sql));
-				log.debug("==> Parameters: " + getParameterValueString());
-}
+				if (log.isDebugEnabled()) {
+					log.debug("==>  Executing: " + removeExcessiveBlank(sql));
+					log.debug("==> Parameters: " + getParameterValueString());
+				}
 				clearColumnInfo();
 				if ("executeQuery".equals(method.getName())) {
 					ResultSet rs = (ResultSet) method.invoke(statement, params);

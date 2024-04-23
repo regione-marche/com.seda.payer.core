@@ -33,13 +33,18 @@ public class MetaProcedure {
 					catalog!=null?catalog.toLowerCase():null,
 							schema!=null?schema.toLowerCase():null,
 									procedure!=null?procedure.toLowerCase():null);
+			//RTC se postgresql passo il numero di refcursor
+			if (DriverType.getDriverType(connection) == 2) {
+				ConnectionProxyInstance.setRefCursorNumber(procedureReflector.getPgRefCursorNumber());
+				ConnectionProxyInstance.setDataTypeInOut(procedureReflector.getDataTypeInOut());
+			}
 		}
 		else {
 			this.procedureReflector=ProcedureReflector.forProcedure(connection, 
 					catalog!=null?catalog.toUpperCase():null,
 							schema!=null?schema.toUpperCase():null,
 									procedure!=null?procedure.toUpperCase():null);
-		}						
+		}
 	}
 	
 	public static MetaProcedure forProcedure(Connection connection, String procedure){
@@ -87,10 +92,10 @@ public class MetaProcedure {
 		CallableStatement callableStatement=null;
 		try {
 			//RTC se postgresql passo il numero di refcursor
-			if (DriverType.getDriverType(connection) == 2) {
+			/*if (DriverType.getDriverType(connection) == 2) {
 				ConnectionProxyInstance.setRefCursorNumber(metaProcedure.getPgRefCursorNumber());
 				ConnectionProxyInstance.setDataTypeInOut(metaProcedure.getDataTypeInOut());
-			}
+			}*/
 			callableStatement=connection.prepareCall(metaProcedure.getSQLCall());
 			if (metaProcedure.hasParameterCursor()) {
 				// parameters cursor are always auto registered 
@@ -159,14 +164,12 @@ public class MetaProcedure {
 	
 	public List<ProcedureParameter> getParameterList() {
 		return procedureReflector.getParameterList();
-	}		
-
-	public int getPgRefCursorNumber() {
+	}
+	/*public int getPgRefCursorNumber() {
 		return procedureReflector.getPgRefCursorNumber();
 	}
-
 	public ArrayList<Integer> getDataTypeInOut() {
 		return procedureReflector.getDataTypeInOut();
-	}
+	}*/
 
 }

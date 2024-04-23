@@ -88,8 +88,9 @@ public class ProcedureReflector {
 					procedureColumn.setNullable(parameterMetaData.getShort(12));
 					procedureColumn.setRemarks(parameterMetaData.getString(13));
 					procedureColumn.setIndex(index);
+					 
 				    if ( DriverType.getDriverType(connection)==2) {
-				    	//RTC: Messo per compatibilit� postgresql. Sembra che le stored procedure 
+				    	//RTC: Messo per compatibilità postgresql. Sembra che le stored procedure 
 						//postgresql siano function che tornano void
 				    	if (procedureColumn.getTypeName().compareTo("void") == 0) {
 				    		continue;
@@ -98,7 +99,7 @@ public class ProcedureReflector {
 				    	if (procedureColumn.getDataType() ==java.sql.Types.REF_CURSOR) {
 				    		PgrefCurosrNumber++;
 				    	}
-				    	//Se la columnType � 2 significa che il parametro e inout...lo intercetto
+				    	//Se la columnType è 2 significa che il parametro e inout...lo intercetto
 				    	if (parameterMetaData.getShort(5)==2) {
 				    		dataTypeInOut.add(1);
 				    	}
@@ -106,6 +107,7 @@ public class ProcedureReflector {
 				    		dataTypeInOut.add(0);
 				    	}
 				    }
+				    
 					if (procedureColumn.getColumnType()==DatabaseMetaData.procedureColumnReturn) {
 						returnColumn=procedureColumn;
 					} else if (procedureColumn.getColumnType()==DatabaseMetaData.procedureColumnResult) {
@@ -115,15 +117,21 @@ public class ProcedureReflector {
 						procedureColumn.setDataType(JdbcType.CURSOR.TYPE_CODE);
 						refCursorList.add(procedureColumn); 
 					} else {
-						parameterMap.put(procedureColumn.getColumnName(), procedureColumn);
-						parameterList.add(procedureColumn);
+						//Se la variabile è un cursore e siamo in postgres, non la porta dietro.....viene usato nel printer
+						if (DriverType.getDriverType(connection)!=2 || (
+								DriverType.getDriverType(connection)==2 && procedureColumn.getDataType()!=java.sql.Types.REF_CURSOR)) {
+						
+							parameterMap.put(procedureColumn.getColumnName(), procedureColumn);
+							parameterList.add(procedureColumn);
+						}
+						
 					}
 					if (log.isDebugEnabled()) {
 						log.debug("*> "+ref+" #"+index+" name     : '" + procedureColumn.getColumnName());
 						log.debug("*> "+ref+" #"+index+" type     : '" + procedureColumn.getTypeName());
 						log.debug("*> "+ref+" #"+index+" direction: '" + ParameterDirection.getJDBCDirectionName(procedureColumn.getColumnType()));
 					}
-					call.append(parameterList.size()+refCursorList.size()>1?",?":"?");
+					call.append(parameterList.size()+refCursorList.size()+PgrefCurosrNumber>1?",?":"?");
 					index++;
 				}
 				call.append(")");

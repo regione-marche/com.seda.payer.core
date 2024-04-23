@@ -25,10 +25,10 @@ public class ConnectionLogger extends JdbcLogger implements InvocationHandler {
 	private ConnectionLogger(Connection conn) {
 		super();
 		this.connection = conn;
-if (log.isDebugEnabled()) {
-		log.debug("ooo Connection Opened");
+		if (log.isDebugEnabled()) {
+			log.debug("ooo Connection Opened");
+		}
 	}
-}
 
 	public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
 		try {
@@ -45,9 +45,9 @@ if (log.isDebugEnabled()) {
 				stmt = StatementLogger.newInstance(stmt);
 				return stmt;
 			} else if ("close".equals(method.getName())) {
-if (log.isDebugEnabled()) {
-				log.debug("xxx Connection Closed");
-}
+				if (log.isDebugEnabled()) {
+					log.debug("xxx Connection Closed");
+				}
 				return method.invoke(connection, params);
 			} else {
 				return method.invoke(connection, params);

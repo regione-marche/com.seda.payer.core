@@ -181,8 +181,7 @@ public class PyUserDao extends BaseDaoHandler{
 		try{
 			callableStatement = prepareCall(Routines.USR_DODETAIL_USER.routine());
 			callableStatement.setString(1, username);
-			//if (callableStatement.execute()) {
-			callableStatement.execute();
+			if (callableStatement.execute()) {
 				data = callableStatement.getResultSet();
 				while (data.next())
 				{
@@ -192,7 +191,7 @@ public class PyUserDao extends BaseDaoHandler{
 					pyUser =  PyUser.getBean(data, true);
 					listPyUser.add(pyUser);
 				}
-			//}
+			}
 			return listPyUser;
 		} catch (SQLException x) {
 			throw new DaoException(x);
