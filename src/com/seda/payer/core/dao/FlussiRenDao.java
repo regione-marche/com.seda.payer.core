@@ -11,6 +11,7 @@ import java.text.SimpleDateFormat;
 import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
+import com.seda.payer.commons.utility.LogUtility;
 import com.seda.payer.core.bean.FlussiRen;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -891,6 +892,38 @@ public class FlussiRenDao extends BaseDaoHandler{
 		}
 		//fine LP PG21XX04 Leak
 		return codSeda;
+	}
+
+	public Integer updateEsitoRendicontazioneComplex ()throws DaoException
+	{
+		CallableStatement callableStatement = null;
+		int numrighe= -1;
+
+
+		try{
+			callableStatement = prepareCall(Routines.PYRENSP_UPD_ST_REN_ALL.routine());
+			callableStatement.registerOutParameter(1, Types.INTEGER);
+			callableStatement.executeUpdate();
+			numrighe =  callableStatement.getInt(1);
+
+			return numrighe;
+		} catch (SQLException x) {
+			throw new DaoException(x);
+		} catch (IllegalArgumentException x) {
+			throw new DaoException(x);
+		} catch (HelperException x) {
+			throw new DaoException(x);
+		}
+		finally
+		{
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
 	}
 	
 	
