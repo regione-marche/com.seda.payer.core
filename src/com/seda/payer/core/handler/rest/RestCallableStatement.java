@@ -241,7 +241,7 @@ public class RestCallableStatement implements CallableStatement {
 					}
 				})
 				.get();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new RestSQLException("Exception in execute()", e);
 		} finally {
 			if (client != null) try { client.close(); } catch (Exception ex) { }

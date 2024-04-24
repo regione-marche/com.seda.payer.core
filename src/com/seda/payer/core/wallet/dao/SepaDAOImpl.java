@@ -345,7 +345,7 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 	//inizio LP PG21XX04
 	//Nota. La chiusura della connection è affidata al chiamante.
 	//fine LP PG21XX04
-	public String selectNewRid(Wallet wallet) throws DaoException {
+	public String selectNewRid(Wallet wallet) throws DaoException, SQLException, HelperException {
 		//		CallableStatement callableStatement=null;
 		String rid = "";
 
@@ -378,13 +378,12 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 			System.out.println(callableStatementRID.getString(7));
 
 
-		} catch (SQLException e) {
-			System.out.println(e);
-		} catch (IllegalArgumentException e) {
-			System.out.println(e);
-		} catch (HelperException e) {
-			System.out.println(e);
-		} finally {
+		} catch (Exception e) {
+			e.printStackTrace();
+			//System.out.println(e);
+			throw e;
+		}
+		 finally {
 			//			DAOHelper.closeIgnoringException(connection);
 		}
 
