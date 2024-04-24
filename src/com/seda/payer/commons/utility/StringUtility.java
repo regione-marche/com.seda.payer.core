@@ -357,4 +357,18 @@ public class StringUtility implements Serializable {
 		}
 		return true;
 	}
+
+	public static String removeAllEndChar(String str, char find) {
+		if ( str.length()>0 && str.charAt(str.length() - 1) == find)
+			return removeAllEndChar(str.substring(0, str.length() - 1), find);
+		else
+			return str;
+	}
+
+	public static void main(String[] args) {
+		System.out.println(
+			removeAllEndChar("/", '/')
+		);
+	}
+
 }
