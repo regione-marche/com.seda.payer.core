@@ -113,15 +113,8 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 				wallet.setAttribute("stato", wrs.getString(4));
 				wallet.setAttribute("dataAttivazione", wrs.getString(5));
 			}
-			if (callableStatementRIDSEL instanceof RestCallableStatement && ((RestCallableStatement) callableStatementRIDSEL).getRestService().equals("SEPA") ) {
-				wallet.setAttribute("voceIncasso", callableStatementRIDSEL.getString(1));
-				wallet.setAttribute("codiceABI", callableStatementRIDSEL.getString(2));
-			}
-			else{
-				wallet.setAttribute("voceIncasso", callableStatementRIDSEL.getString(5));
-				wallet.setAttribute("codiceABI", callableStatementRIDSEL.getString(6));
-			}
-
+			wallet.setAttribute("voceIncasso", callableStatementRIDSEL.getString(5));
+			wallet.setAttribute("codiceABI", callableStatementRIDSEL.getString(6));
 			//PG22XX09_SB2 - fine
 			
 
@@ -376,7 +369,6 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 
 			rid = callableStatementRID.getString(5);
 			System.out.println(callableStatementRID.getString(7));
-
 
 		} catch (Exception e) {
 			e.printStackTrace();

@@ -668,7 +668,6 @@ public class RestCallableStatement implements CallableStatement {
 	@Override
 	public void registerOutParameter(int parameterIndex, int sqlType) throws SQLException {
 		//TODO
-
 	}
 
 	@Override
@@ -683,7 +682,17 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public String getString(int parameterIndex) throws SQLException {
-		
+		//((Integer) outputDataMap.get(this.restRoutine.getOutParameterMap().get(parameterIndex - inputDataMap.size()))).intValue();
+		// 5 -> 1
+		// 7 -> 3
+		//if (callableStatementRIDSEL instanceof RestCallableStatement && ((RestCallableStatement) callableStatementRIDSEL).getRestService().equals("SEPA") ) {
+		//    wallet.setAttribute("voceIncasso", callableStatementRIDSEL.getString(1));
+		//    wallet.setAttribute("codiceABI", callableStatementRIDSEL.getString(2));
+		//}
+
+		if (this.getRestService().equals("SEPA")) {
+			parameterIndex = parameterIndex - inputDataMap.size();
+		}
 		try {
 			
 			String value = null;
