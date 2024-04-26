@@ -207,23 +207,33 @@ public class RestCallableStatement implements CallableStatement {
 						Entity<Map<String, Object>> entity = Entity.entity(getEntity(), MediaType.APPLICATION_JSON);
 						try {
 							logger.info(new ObjectMapper().writeValueAsString(entity));
+							System.out.println(new ObjectMapper().writeValueAsString(entity));
 						} catch (JsonProcessingException e) {}
 						if (this.methodRest.equals("POST") ) {
+							System.out.println("Chiamata con metodo POST");
 							return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).post(entity);
 						} else if (this.methodRest.equals("PUT") ) {
+							System.out.println("Chiamata con metodo PUT");
 							return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).put(entity);
 						}
 					} catch (SQLException e) {
+						e.printStackTrace();
 						throw new RuntimeException(e);
 					}
 					return null;
 				})
 				.map(response -> {
 					try {
-						if (restService.equals("CITYMAT"))
+						if (restService.equals("CITYMAT")) {
+							System.out.println("Risposta CITYMAT");
+							System.out.println(response.toString());
 							return checkResponse(response);
-						else if (restService.equals("SEPA"))
+						}
+						else if (restService.equals("SEPA")) {
+							System.out.println("Risposta SEPA");
+							System.out.println(response.toString());
 							return checkResponseSEPA(response);
+						}
 						else
 							throw new RestSQLException("Servizio non supportato");
 					} catch (SQLException e) {
@@ -231,7 +241,7 @@ public class RestCallableStatement implements CallableStatement {
 					}
 				})
 				.get();
-		} catch (Exception e) {
+		} catch (Throwable e) {
 			throw new RestSQLException("Exception in execute()", e);
 		} finally {
 			if (client != null) try { client.close(); } catch (Exception ex) { }
@@ -658,7 +668,6 @@ public class RestCallableStatement implements CallableStatement {
 	@Override
 	public void registerOutParameter(int parameterIndex, int sqlType) throws SQLException {
 		//TODO
-
 	}
 
 	@Override
@@ -673,7 +682,17 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public String getString(int parameterIndex) throws SQLException {
-		
+		//((Integer) outputDataMap.get(this.restRoutine.getOutParameterMap().get(parameterIndex - inputDataMap.size()))).intValue();
+		// 5 -> 1
+		// 7 -> 3
+		//if (callableStatementRIDSEL instanceof RestCallableStatement && ((RestCallableStatement) callableStatementRIDSEL).getRestService().equals("SEPA") ) {
+		//    wallet.setAttribute("voceIncasso", callableStatementRIDSEL.getString(1));
+		//    wallet.setAttribute("codiceABI", callableStatementRIDSEL.getString(2));
+		//}
+
+		if (this.getRestService().equals("SEPA")) {
+			parameterIndex = parameterIndex - inputDataMap.size();
+		}
 		try {
 			
 			String value = null;

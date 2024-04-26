@@ -1,7 +1,9 @@
 package com.seda.payer.core.wallet.dao;
 
 import java.io.Serializable;
+import java.sql.SQLException;
 
+import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.AnagraficaSoggettoSEPA;
 import com.seda.payer.core.bean.Autorizzazione;
 import com.seda.payer.core.exception.DaoException;
@@ -21,7 +23,7 @@ public interface SepaDAO extends Serializable {
 
 	public String selectSepa(String cuteCute, String rid) throws  DaoException;
 	
-	public String selectNewRid(Wallet wallet) throws  DaoException;
+	public String selectNewRid(Wallet wallet) throws DaoException, SQLException, HelperException;
 	
 	//PG22XX09_SB2 - inizio
 	public Integer insertSepaWeb(Autorizzazione autorizzazione) throws DaoException;
