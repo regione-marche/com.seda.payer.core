@@ -995,8 +995,7 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 	}
 	//fine LP PG22XX04
 
-	public int getNumeroTrasazioniPerEnte(String dataInizio, String dataFine, String chiaveEnte) throws DaoException
-	{
+	public int getNumeroTrasazioniPerEnte(String dataInizio, String dataFine, String chiaveEnte) throws DaoException {
 		int totaleTransazioniPerEnte = 0;
 		CallableStatement callableStatement = null;
 		try
@@ -1023,5 +1022,35 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			}
 		}
 		return totaleTransazioniPerEnte;
+	}
+
+	public List<QuadraturaNodo> getEntiQUN() throws DaoException {
+		List<QuadraturaNodo> list = new ArrayList<>();
+		CallableStatement callableStatement = null;
+		try
+		{
+			callableStatement = prepareCall(Routines.PYQUNSP_SEL_ENT.routine());
+			callableStatement.execute();
+			while(callableStatement.getResultSet().next()){
+				QuadraturaNodo quadraturaNodo = new QuadraturaNodo();
+				quadraturaNodo.setCodSocieta(callableStatement.getResultSet().getString("QUN_CSOCCSOC"));
+				quadraturaNodo.setCodUtente(callableStatement.getResultSet().getString("QUN_CUTECUTE"));
+				quadraturaNodo.setKeyEnte(callableStatement.getResultSet().getString("QUN_KANEKENT"));
+				list.add(quadraturaNodo);
+			}
+		}
+		catch (Exception x)
+		{
+			throw new DaoException(x);
+		}finally {
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return list;
 	}
 }
