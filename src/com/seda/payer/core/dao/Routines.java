@@ -1303,6 +1303,7 @@ public enum Routines {
 	, REG_DOSELECT  // SR PGNTCORE-23
 	, PYQUNSP_SEL_NTOT  // SR PGNTCORE-23
 	, PYQUNSP_SEL_ENT  // SR PGNTCORE-23
+	, PYRENSP_UPD_ST_REN_ALL
 	;
 	
     private static ResourceBundle rb;
