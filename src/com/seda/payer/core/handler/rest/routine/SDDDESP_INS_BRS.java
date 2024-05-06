@@ -20,9 +20,9 @@ public class SDDDESP_INS_BRS  extends ARestRoutine {
         inParameterMap.put(p++, "I_ECS_CDCSCODE");
         inParameterMap.put(p++, "I_BRS_KBRSKBRS");
         inParameterMap.put(p++, "I_DDE_CDDEOPEI");
-       // inParameterMap.put(p++, "O_CODSEPA");
-       // inParameterMap.put(p++, "O_SQLCODE");
-       // inParameterMap.put(p++, "O_MESSAGE");
+        //inParameterMap.put(p++, "O_CODSEPA");
+        //inParameterMap.put(p++, "O_SQLCODE");
+        //inParameterMap.put(p++, "O_MESSAGE");
 
 
         return inParameterMap;

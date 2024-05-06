@@ -72,7 +72,17 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 	public Wallet selectSepa(Wallet wallet) throws DaoException {
 		//		CallableStatement callableStatement=null;
 		ResultSet rs = null; 
-		//		Connection connection = null; 
+		//		Connection connection = null;
+
+
+		System.out.println("cutecute - " + wallet.getCuteCute());
+		if(wallet.getCodiceRid()!=null) {
+			System.out.println("rid05 - " + wallet.getCodiceRid().substring(0, 5));
+			System.out.println("rid56 - " + wallet.getCodiceRid().substring(5,6));
+			System.out.println("rid6 - " + wallet.getCodiceRid().substring(6));
+		}else{
+			System.out.println("codiceRid = null");
+		}
 
 		try {
 			//			connection = getConnection();
@@ -103,15 +113,8 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 				wallet.setAttribute("stato", wrs.getString(4));
 				wallet.setAttribute("dataAttivazione", wrs.getString(5));
 			}
-			if (callableStatementRIDSEL instanceof RestCallableStatement && ((RestCallableStatement) callableStatementRIDSEL).getRestService().equals("SEPA") ) {
-				wallet.setAttribute("voceIncasso", callableStatementRIDSEL.getString(1));
-				wallet.setAttribute("codiceABI", callableStatementRIDSEL.getString(2));
-			}
-			else{
-				wallet.setAttribute("voceIncasso", callableStatementRIDSEL.getString(5));
-				wallet.setAttribute("codiceABI", callableStatementRIDSEL.getString(6));
-			}
-
+			wallet.setAttribute("voceIncasso", callableStatementRIDSEL.getString(5));
+			wallet.setAttribute("codiceABI", callableStatementRIDSEL.getString(6));
 			//PG22XX09_SB2 - fine
 			
 
@@ -139,6 +142,8 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 			}
 			//fine LP PG21XX04 Leak
 		}
+
+		System.out.println("ritorno wallet SDDAUSP_SEL_BRS" + wallet.toString());
 
 		return wallet;
 	}
@@ -333,11 +338,17 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 	//inizio LP PG21XX04
 	//Nota. La chiusura della connection è affidata al chiamante.
 	//fine LP PG21XX04
-	public String selectNewRid(Wallet wallet) throws DaoException {
+	public String selectNewRid(Wallet wallet) throws DaoException, SQLException, HelperException {
 		//		CallableStatement callableStatement=null;
 		String rid = "";
 
-		//		Connection connection = null; 
+		//		Connection connection = null;
+
+		System.out.println("cutecute - " + wallet.getCuteCute());
+		System.out.println("idWallet - " + wallet.getIdWallet());
+		System.out.println("operatore - " + wallet.getOperatore());
+
+
 
 		try {
 			//			connection = getConnection();
@@ -359,14 +370,12 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 			rid = callableStatementRID.getString(5);
 			System.out.println(callableStatementRID.getString(7));
 
-
-		} catch (SQLException e) {
-			System.out.println(e);
-		} catch (IllegalArgumentException e) {
-			System.out.println(e);
-		} catch (HelperException e) {
-			System.out.println(e);
-		} finally {
+		} catch (Exception e) {
+			e.printStackTrace();
+			//System.out.println(e);
+			throw e;
+		}
+		 finally {
 			//			DAOHelper.closeIgnoringException(connection);
 		}
 
