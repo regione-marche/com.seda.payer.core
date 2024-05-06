@@ -16,15 +16,15 @@ public class SDDAUSP_SEL extends ARestRoutine {
 
         Map<Integer, String> inParameterMap = new HashMap<Integer, String>();
 
-        inParameterMap.put(p++, "data_in_cutecute_in");                  //DAU_CUTECUTE
-        inParameterMap.put(p++, "data_in_codicesia_in");                 //DAU_CDCSCSIA
-        inParameterMap.put(p++, "data_in_tipoautorizzazione_in");        //DAU_CDAUTPAU
-        inParameterMap.put(p++, "data_in_codiceAutorizzazione_in");      //DAU_CDAUCOAU
-        inParameterMap.put(p++, "data_in_codiceVoceIncasso_in");         //DAU_CDVIVOCI
-        inParameterMap.put(p++, "data_in_stato_in");                     //DAU_FDAUSTAT
-        inParameterMap.put(p++, "data_ou_numrows_in");                   //O_NUMROWS
-        inParameterMap.put(p++, "data_ou_retcode_in");                   //O_RETCODE
-        inParameterMap.put(p++, "data_ou_retmessage_in");                //O_RETMESSAGE
+        inParameterMap.put(p++, "I_DAU_CUTECUTE");
+        inParameterMap.put(p++, "I_DAU_CDCSCSIA");
+        inParameterMap.put(p++, "I_DAU_CDAUTPAU");
+        inParameterMap.put(p++, "I_DAU_CDAUCOAU");
+        inParameterMap.put(p++, "I_DAU_CDVIVOCI");
+        inParameterMap.put(p++, "I_DAU_FDAUSTAT");
+        inParameterMap.put(p++, "O_NUMROWS");
+        inParameterMap.put(p++, "O_RETCODE");
+        inParameterMap.put(p++, "O_RETMESSAGE");
 
         return inParameterMap;
     }
@@ -36,9 +36,9 @@ public class SDDAUSP_SEL extends ARestRoutine {
 
         Map<Integer, String> outParameterMap = new HashMap<Integer, String>();
 
-        outParameterMap.put(p++, "data_ou_numrows_out");
-        outParameterMap.put(p++, "data_ou_retcode_out");
-        outParameterMap.put(p++, "data_ou_retmessage_out");
+        outParameterMap.put(p++, "O_NUMROWS");
+        outParameterMap.put(p++, "O_RETCODE");
+        outParameterMap.put(p++, "O_RETMESSAGE");
 
         return outParameterMap;
     }
