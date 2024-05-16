@@ -27,7 +27,7 @@ public enum ERestRoutine {
 	IS_COMUNICAZIONE_DOSAVE(new SPISOGG2()), //OK
 	
 	IS_IMPSOGG_DOSAVE(new SPISOGG3()), //OK
-//	SELECT_PAG_HOST_ENTEIS(new SPISOGG4()), // TODO: manca esempio GET per il ResultSet
+	SELECT_PAG_HOST_ENTEIS(new SPISOGG4()), // TODO: manca esempio GET per il ResultSet
 	IS_RID_DODETAIL(new SPISOGG5()), //OK
 	DO_BOLLETTINO_CUMULATIVO(new SPISOGG6()), //OK
 	DO_DATI_BOLLETTINO(new SPISOGG7()), //OK
