@@ -271,7 +271,8 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			String impPagamentoA, String dtflussoDa, String dtflussoA
 			, String dtMakeFlussoDa, String dtMakeFlussoA
 			, String tipologiaFlusso, String scartateFlusso, String recuperateFlusso, String esitoInvioWs, String esitoInvioConservazione
-			, String chiaveTransazione	//PGNTCORE-3
+			, String chiaveTransazione	//PGNTCORE-3
+
 			) throws DaoException {
 		    //fine LP PG200200
 		CallableStatement callableStatement = null;
@@ -336,7 +337,8 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			callableStatement.setString(22, recuperateFlusso == null ? "" : recuperateFlusso);
 			callableStatement.setString(23, esitoInvioWs == null ? "" : esitoInvioWs);
 			callableStatement.setString(24, esitoInvioConservazione == null ? "" : esitoInvioConservazione);
-			callableStatement.setString(25, chiaveTransazione == null ? "" : chiaveTransazione);	//PGNTCORE-3
+			callableStatement.setString(25, chiaveTransazione == null ? "" : chiaveTransazione);	//PGNTCORE-3
+
 			
 			callableStatement.registerOutParameter(26, Types.VARCHAR);
 			callableStatement.registerOutParameter(27, Types.INTEGER);
@@ -402,7 +404,8 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			String impPagamentoA, String dtflussoDa, String dtflussoA
 			, String dtMakeFlussoDa, String dtMakeFlussoA
 			, String tipologiaFlusso, String scartateFlusso, String recuperateFlusso, String esitoInvioWs, String esitoInvioConservazione
-			, String chiaveTransazione	//PGNTCORE-3
+			, String chiaveTransazione	//PGNTCORE-3
+
 			) throws DaoException {
 		    //fine LP PG200200
 		CallableStatement callableStatement = null;
@@ -442,7 +445,8 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		    //fine LP PG200200
 			callableStatement.setString(20, esitoInvioWs == null ? "" : esitoInvioWs);
 			callableStatement.setString(21, esitoInvioConservazione == null ? "" : esitoInvioConservazione);
-			callableStatement.setString(22, chiaveTransazione == null ? "" : chiaveTransazione);	//PGNTCORE-3
+			callableStatement.setString(22, chiaveTransazione == null ? "" : chiaveTransazione);	//PGNTCORE-3
+
 			List<RiepilogoMovimentiCBI> list = new ArrayList<RiepilogoMovimentiCBI>();
 			if(callableStatement.execute()) {
 				data = callableStatement.getResultSet();
@@ -990,4 +994,89 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		return scritture;
 	}
 	//fine LP PG22XX04
+
+	public int getNumeroTrasazioniPerEnte(String dataInizio, String dataFine, String chiaveEnte) throws DaoException {
+		int numeroTransazioniPerEnte = 0;
+		CallableStatement callableStatement = null;
+		try
+		{
+			callableStatement = prepareCall(Routines.PYQUNSP_SEL_NTOT.routine());
+			callableStatement.setString(1, dataInizio);
+			callableStatement.setString(2, dataFine);
+			callableStatement.setString(3, chiaveEnte);
+			callableStatement.execute();
+			if(callableStatement.getResultSet().next()){
+				numeroTransazioniPerEnte = callableStatement.getResultSet().getInt(2);
+			}
+		}
+		catch (Exception x) {
+			throw new DaoException(x);
+		} finally {
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return numeroTransazioniPerEnte;
+	}
+
+	public BigDecimal getImportoTrasazioniPerEnte(String dataInizio, String dataFine, String chiaveEnte) throws DaoException {
+		BigDecimal importoTransazioniPerEnte = BigDecimal.ZERO;
+		CallableStatement callableStatement = null;
+		try
+		{
+			callableStatement = prepareCall(Routines.PYQUNSP_SEL_NTOT.routine());
+			callableStatement.setString(1, dataInizio);
+			callableStatement.setString(2, dataFine);
+			callableStatement.setString(3, chiaveEnte);
+			callableStatement.execute();
+			if(callableStatement.getResultSet().next()){
+				importoTransazioniPerEnte = callableStatement.getResultSet().getBigDecimal(3);
+			}
+		}
+		catch (Exception x) {
+			throw new DaoException(x);
+		} finally {
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return importoTransazioniPerEnte;
+	}
+
+	public List<QuadraturaNodo> getEntiQUN() throws DaoException {
+		List<QuadraturaNodo> list = new ArrayList<>();
+		CallableStatement callableStatement = null;
+		try
+		{
+			callableStatement = prepareCall(Routines.PYQUNSP_SEL_ENT.routine());
+			callableStatement.execute();
+			while(callableStatement.getResultSet().next()){
+				QuadraturaNodo quadraturaNodo = new QuadraturaNodo();
+				quadraturaNodo.setCodSocieta(callableStatement.getResultSet().getString("QUN_CSOCCSOC"));
+				quadraturaNodo.setCodUtente(callableStatement.getResultSet().getString("QUN_CUTECUTE"));
+				quadraturaNodo.setKeyEnte(callableStatement.getResultSet().getString("QUN_KANEKENT"));
+				list.add(quadraturaNodo);
+			}
+		}
+		catch (Exception x) {
+			throw new DaoException(x);
+		} finally {
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return list;
+	}
 }
