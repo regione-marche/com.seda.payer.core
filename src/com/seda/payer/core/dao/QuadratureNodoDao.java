@@ -996,7 +996,7 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 	//fine LP PG22XX04
 
 	public int getNumeroTrasazioniPerEnte(String dataInizio, String dataFine, String chiaveEnte) throws DaoException {
-		int totaleTransazioniPerEnte = 0;
+		int numeroTransazioniPerEnte = 0;
 		CallableStatement callableStatement = null;
 		try
 		{
@@ -1006,13 +1006,12 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			callableStatement.setString(3, chiaveEnte);
 			callableStatement.execute();
 			if(callableStatement.getResultSet().next()){
-				totaleTransazioniPerEnte = callableStatement.getResultSet().getInt(2);
+				numeroTransazioniPerEnte = callableStatement.getResultSet().getInt(2);
 			}
 		}
-		catch (Exception x)
-		{
+		catch (Exception x) {
 			throw new DaoException(x);
-		}finally {
+		} finally {
 			if (callableStatement != null) {
 				try {
 					callableStatement.close();
@@ -1021,7 +1020,35 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 				}
 			}
 		}
-		return totaleTransazioniPerEnte;
+		return numeroTransazioniPerEnte;
+	}
+
+	public BigDecimal getImportoTrasazioniPerEnte(String dataInizio, String dataFine, String chiaveEnte) throws DaoException {
+		BigDecimal importoTransazioniPerEnte = BigDecimal.ZERO;
+		CallableStatement callableStatement = null;
+		try
+		{
+			callableStatement = prepareCall(Routines.PYQUNSP_SEL_NTOT.routine());
+			callableStatement.setString(1, dataInizio);
+			callableStatement.setString(2, dataFine);
+			callableStatement.setString(3, chiaveEnte);
+			callableStatement.execute();
+			if(callableStatement.getResultSet().next()){
+				importoTransazioniPerEnte = callableStatement.getResultSet().getBigDecimal(3);
+			}
+		}
+		catch (Exception x) {
+			throw new DaoException(x);
+		} finally {
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return importoTransazioniPerEnte;
 	}
 
 	public List<QuadraturaNodo> getEntiQUN() throws DaoException {
@@ -1039,10 +1066,9 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 				list.add(quadraturaNodo);
 			}
 		}
-		catch (Exception x)
-		{
+		catch (Exception x) {
 			throw new DaoException(x);
-		}finally {
+		} finally {
 			if (callableStatement != null) {
 				try {
 					callableStatement.close();
