@@ -12,7 +12,8 @@ public class ConnectionProxyInstance {
 	private static int cursorNumber;
 	private static int variableNumberNoCursor;
 	private static ArrayList<Integer> dataTypeInOut;
-	
+	private static int flagUpdateAutocommit;
+
 	public ConnectionProxyInstance(Connection connection) {
 		this.pgConnection = connection;
 	}
@@ -28,7 +29,18 @@ public class ConnectionProxyInstance {
 		    	//Se la stored ha un cursore devo mettere autocommit a false, altrimenti su postgres non va
 		    	if (cursorNumber>0) {
 		    		pgConnection.setAutoCommit(false);
-		    	}
+		    	} else {
+					//Dal momento che in caso la sp abbia dei cursori di output è necessario impostare l'autocommit a true (vedi sopra)
+					//occorre reimpostare a true l'autocommit in caso di successive sp richiamate senza cursori
+					//Ad esempio se per fare un aggiornamento/inserimento si richiama prima una sp di select e poi una sp di uodate/insert
+					//Con la sp di sleect sarebbe impostato autocommit a false, è necessario remipostare autocommit a true per consentire il commit per update/insert
+					//Dal momento che diversi batch impostano l'autocommit a false, non deve essere impostato l'autocommit a true in caso di chiamata di sp senza cursori
+					//per cui è stato introdotto il parametro flagUpdateAutocommit che può assumere valori 0 o 1
+					//Per default flagUpdateAutocommit è settato ad 1 e reimposta l'autocommit a true per le operazioni senza cursore
+					//Si dovrà richiamare il Metadata.preparecall settando il flagUpdateAutocommit a 0 nei batch che impostano autocommit a false.
+					if (flagUpdateAutocommit == 1)
+						pgConnection.setAutoCommit(true);
+				}
 		    	return  PgResultSetProxyInstance.getCallableStatement(pgConnection.prepareCall((String)args[0]));
 		      
 		    } else {
@@ -58,4 +70,11 @@ public class ConnectionProxyInstance {
 		dataTypeInOut=dataTypeInOutIn;
 	}
 
+	public static int getFlagUpdateAutocommit() {
+		return flagUpdateAutocommit;
+	}
+
+	public static void setFlagUpdateAutocommit(int flagUpdateAutocommit) {
+		ConnectionProxyInstance.flagUpdateAutocommit = flagUpdateAutocommit;
+	}
 }

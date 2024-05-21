@@ -25,7 +25,7 @@ public class MetaProcedure {
 
 	private ProcedureReflector procedureReflector; 
 	
-	private MetaProcedure(Connection connection, String catalog, String schema, String procedure){
+	private MetaProcedure(Connection connection, String catalog, String schema, String procedure, int flagUpdateAutocommit){
 		//RTC: Dalla connessione prendo il nome del driver,
 		//se e' postgres faccio la lower
 		if (DriverType.getDriverType(connection)==2) {
@@ -37,6 +37,7 @@ public class MetaProcedure {
 			if (DriverType.getDriverType(connection) == 2) {
 				ConnectionProxyInstance.setRefCursorNumber(procedureReflector.getPgRefCursorNumber());
 				ConnectionProxyInstance.setDataTypeInOut(procedureReflector.getDataTypeInOut());
+				ConnectionProxyInstance.setFlagUpdateAutocommit(flagUpdateAutocommit);
 			}
 		}
 		else {
@@ -45,6 +46,10 @@ public class MetaProcedure {
 							schema!=null?schema.toUpperCase():null,
 									procedure!=null?procedure.toUpperCase():null);
 		}
+	}
+
+	private MetaProcedure(Connection connection, String catalog, String schema, String procedure){
+		this(connection, catalog, schema, procedure,1);
 	}
 	
 	public static MetaProcedure forProcedure(Connection connection, String procedure){
@@ -78,6 +83,10 @@ public class MetaProcedure {
 	public static CallableStatement prepareCall(Connection connection, String schema, String procedure) {
 		return prepareCall(connection, null, schema, procedure);
 	}
+
+	public static CallableStatement prepareCall(Connection connection, String schema, String procedure, int flagUpdateAutocommit) { //TODO
+		return prepareCall(connection, null, schema, procedure, flagUpdateAutocommit);
+	}
 	
 	public static CallableStatement prepareCall(Connection connection, String schema, String procedure, boolean registerOutputParameter) {
 		return prepareCall(connection, null, schema, procedure,registerOutputParameter);
@@ -86,9 +95,16 @@ public class MetaProcedure {
 	public static CallableStatement prepareCall(Connection connection, String catalog, String schema, String procedure) {
 		return prepareCall(connection, catalog, schema, procedure,false);
 	}
-	
+
+	public static CallableStatement prepareCall(Connection connection, String catalog, String schema, String procedure, int flagUpdateAutocommit) {
+		return prepareCall(connection, catalog, schema, procedure,false, flagUpdateAutocommit);
+	}
+
 	public static CallableStatement prepareCall(Connection connection, String catalog, String schema, String procedure, boolean registerOutputParameter) {
-		MetaProcedure metaProcedure = new MetaProcedure(connection, catalog, schema, procedure);
+		return prepareCall(connection, catalog, schema, procedure,false, 1);
+	}
+	public static CallableStatement prepareCall(Connection connection, String catalog, String schema, String procedure, boolean registerOutputParameter, int flagUpdateAutocommit) {
+		MetaProcedure metaProcedure = new MetaProcedure(connection, catalog, schema, procedure, flagUpdateAutocommit);
 		CallableStatement callableStatement=null;
 		try {
 			//RTC se postgresql passo il numero di refcursor
