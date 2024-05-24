@@ -65,6 +65,7 @@ public class TestataComunicazioneImpostaSoggiorno implements Serializable {
     private String numeroAvvisoPagoPACumulativo;
     private String codiceIUVCumulativo;
 	//fine LP PG200230
+	private String operatoreInserimentoComunicazione;
 	
 	public TestataComunicazioneImpostaSoggiorno() {}
 	
@@ -140,6 +141,7 @@ public class TestataComunicazioneImpostaSoggiorno implements Serializable {
         	setQrCodePagoPACumulativo(data.getString("SCT_CSCTQRCD_CUM").trim());
         	setNumeroAvvisoPagoPACumulativo(data.getString("SCT_CSCTNAVV_CUM").trim());
         	setCodiceIUVCumulativo(data.getString("SCT_CSCTCIUV_CUM").trim());
+			setOperatoreInserimentoComunicazione(data.getString("SCT_CSCTOPINV").trim());
     	} catch (Exception ex) {
     	}
 		//TODO: gestire i campi pagopa cumulativo
@@ -507,4 +509,13 @@ public class TestataComunicazioneImpostaSoggiorno implements Serializable {
 		this.codiceIUVCumulativo = codiceIUVCumulativo;
 	}
 	//fine LP PG200230
+
+
+	public String getOperatoreInserimentoComunicazione() {
+		return operatoreInserimentoComunicazione;
+	}
+
+	public void setOperatoreInserimentoComunicazione(String operatoreInserimentoComunicazione) {
+		this.operatoreInserimentoComunicazione = operatoreInserimentoComunicazione;
+	}
 }
