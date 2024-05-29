@@ -518,4 +518,60 @@ public class TestataComunicazioneImpostaSoggiorno implements Serializable {
 	public void setOperatoreInserimentoComunicazione(String operatoreInserimentoComunicazione) {
 		this.operatoreInserimentoComunicazione = operatoreInserimentoComunicazione;
 	}
+
+	@Override
+	public String toString() {
+		return "TestataComunicazioneImpostaSoggiorno{" +
+				"chiaveTestataComunicazione='" + chiaveTestataComunicazione + '\'' +
+				", chiaveAnagraficaStrutturaRicettiva='" + chiaveAnagraficaStrutturaRicettiva + '\'' +
+				", codiceSocieta='" + codiceSocieta + '\'' +
+				", codiceUtente='" + codiceUtente + '\'' +
+				", chiaveEnte='" + chiaveEnte + '\'' +
+				", dataInserimentoComunicazione=" + dataInserimentoComunicazione +
+				", dataInizioComunicazione=" + dataInizioComunicazione +
+				", dataFineComunicazione=" + dataFineComunicazione +
+				", numeroGiorniPeriodoPermanenzaTotale=" + numeroGiorniPeriodoPermanenzaTotale +
+				", tipoComunicazione='" + tipoComunicazione + '\'' +
+				", chiaveTariffaImpostaSoggiorno='" + chiaveTariffaImpostaSoggiorno + '\'' +
+				", noteAggiuntive='" + noteAggiuntive + '\'' +
+				", dataScadenzaComunicazione=" + dataScadenzaComunicazione +
+				", statoComunicazione='" + statoComunicazione + '\'' +
+				", modalitaPagamento='" + modalitaPagamento + '\'' +
+				", codiceRID='" + codiceRID + '\'' +
+				", numeroDocumentoGestionaleEntrate='" + numeroDocumentoGestionaleEntrate + '\'' +
+				", codiceBollettino='" + codiceBollettino + '\'' +
+				", statoDocumento='" + statoDocumento + '\'' +
+				", dataPagamento=" + dataPagamento +
+				", usernameUtenteUltimoAggiornamento='" + usernameUtenteUltimoAggiornamento + '\'' +
+				", dataUltimoAggiornamento=" + dataUltimoAggiornamento +
+				", operatoreUltimoAggiornamento='" + operatoreUltimoAggiornamento + '\'' +
+				", dataConfermaComunicazione=" + dataConfermaComunicazione +
+				", codiceFreccia='" + codiceFreccia + '\'' +
+				", descrizioneEnte='" + descrizioneEnte + '\'' +
+				", tipoCC='" + tipoCC + '\'' +
+				", numeroCC='" + numeroCC + '\'' +
+				", intestazioneCC='" + intestazioneCC + '\'' +
+				", autorizzazioneCC='" + autorizzazioneCC + '\'' +
+				", codiceFiscaleEnte='" + codiceFiscaleEnte + '\'' +
+				", codiceCBill='" + codiceCBill + '\'' +
+				", barcodePagoPA='" + barcodePagoPA + '\'' +
+				", qrCodePagoPA='" + qrCodePagoPA + '\'' +
+				", causaleDocumento='" + causaleDocumento + '\'' +
+				", descrizioneUfficio='" + descrizioneUfficio + '\'' +
+				", descrizioneTipoServizio='" + descrizioneTipoServizio + '\'' +
+				", descrizioneImpostaServizio='" + descrizioneImpostaServizio + '\'' +
+				", numeroAvvisoPagoPA='" + numeroAvvisoPagoPA + '\'' +
+				", codiceIUV='" + codiceIUV + '\'' +
+				", chiaveAnagraficaStrutturaRicettivaPrincipale='" + chiaveAnagraficaStrutturaRicettivaPrincipale + '\'' +
+				", dataLimiteComunicazione=" + dataLimiteComunicazione +
+				", codiceBollettinoCumulativo='" + codiceBollettinoCumulativo + '\'' +
+				", noteOperatore='" + noteOperatore + '\'' +
+				", flagAlloggio='" + flagAlloggio + '\'' +
+				", barcodePagoPACumulativo='" + barcodePagoPACumulativo + '\'' +
+				", qrCodePagoPACumulativo='" + qrCodePagoPACumulativo + '\'' +
+				", numeroAvvisoPagoPACumulativo='" + numeroAvvisoPagoPACumulativo + '\'' +
+				", codiceIUVCumulativo='" + codiceIUVCumulativo + '\'' +
+				", operatoreInserimentoComunicazione='" + operatoreInserimentoComunicazione + '\'' +
+				'}';
+	}
 }

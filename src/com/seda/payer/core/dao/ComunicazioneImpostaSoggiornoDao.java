@@ -121,8 +121,9 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 	
 	public void doUpdateTestataComunicazione(TestataComunicazioneImpostaSoggiorno testataComunicazione) throws DaoException, SQLException {
 		CallableStatement callableStatement = null;
+		System.out.println(testataComunicazione.toString());
 		try	{
-			callableStatement = prepareCall(Routines.SCT_DOUPDATE.routine());
+			callableStatement = prepareCall("PYSCTSP_UPD");
 			callableStatement.setString(1, testataComunicazione.getChiaveTestataComunicazione());
 			callableStatement.setString(2, testataComunicazione.getChiaveAnagraficaStrutturaRicettiva());
 			callableStatement.setString(3, testataComunicazione.getCodiceSocieta());
