@@ -54,6 +54,15 @@ public class ImpostaSoggiornoDatiAggregati implements Serializable {
 			listDettaglioComunicazione = new ArrayList<DettaglioComunicazioneImpostaSoggiorno>();
 		listDettaglioComunicazione.add(dettaglioComunicazione);
 	}
-	
 
+	@Override
+	public String toString() {
+		return "ImpostaSoggiornoDatiAggregati{" +
+				"testataComunicazione=" + testataComunicazione.toString() +
+				", anagraficaStrutturaRicettiva=" + anagraficaStrutturaRicettiva.toString() +
+				", tariffaImpostaSoggiorno=" + tariffaImpostaSoggiorno.toString() +
+				", tipologiaStrutturaRicettiva=" + tipologiaStrutturaRicettiva.toString() +
+				", listDettaglioComunicazione=" + listDettaglioComunicazione.toString() +
+				'}';
+	}
 }
