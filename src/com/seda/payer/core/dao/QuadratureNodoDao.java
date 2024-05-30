@@ -1051,12 +1051,14 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		return importoTransazioniPerEnte;
 	}
 
-	public List<QuadraturaNodo> getEntiQUN() throws DaoException {
+	public List<QuadraturaNodo> getEntiQUN(Boolean hasFilters, String dataDa, String dataA) throws DaoException {
 		List<QuadraturaNodo> list = new ArrayList<>();
 		CallableStatement callableStatement = null;
 		try
 		{
 			callableStatement = prepareCall(Routines.PYQUNSP_SEL_ENT.routine());
+			callableStatement.setString(1, hasFilters ? dataDa : "");
+			callableStatement.setString(2, hasFilters ? dataA : "");
 			callableStatement.execute();
 			while(callableStatement.getResultSet().next()){
 				QuadraturaNodo quadraturaNodo = new QuadraturaNodo();
