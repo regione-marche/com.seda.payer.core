@@ -1062,9 +1062,9 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			callableStatement.execute();
 			while(callableStatement.getResultSet().next()){
 				QuadraturaNodo quadraturaNodo = new QuadraturaNodo();
-				quadraturaNodo.setCodSocieta(callableStatement.getResultSet().getString("QUN_CSOCCSOC"));
-				quadraturaNodo.setCodUtente(callableStatement.getResultSet().getString("QUN_CUTECUTE"));
-				quadraturaNodo.setKeyEnte(callableStatement.getResultSet().getString("QUN_KANEKENT"));
+				quadraturaNodo.setCodSocieta(callableStatement.getResultSet().getString(1));
+				quadraturaNodo.setCodUtente(callableStatement.getResultSet().getString(2));
+				quadraturaNodo.setKeyEnte(callableStatement.getResultSet().getString(3));
 				list.add(quadraturaNodo);
 			}
 		}
