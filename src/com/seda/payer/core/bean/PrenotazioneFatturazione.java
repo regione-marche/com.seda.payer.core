@@ -17,6 +17,7 @@ public class PrenotazioneFatturazione implements Serializable {
     private String flagFatturazione;
     private String dataRichiestaDa;
     private String dataRichiestaA;
+    private String tipologiRichiesta;
 
     // dati per elaborazione fatturazione
     private String chiavePrenotazione;
@@ -40,6 +41,23 @@ public class PrenotazioneFatturazione implements Serializable {
         this.dataRichiestaA = dataRichiestaA;
     }
 
+    public PrenotazioneFatturazione(int rowsPerPage,
+                                    int pageNumber,
+                                    String order,
+                                    String codiceSocieta,
+                                    String codiceUtente,
+                                    String codiceEnte,
+                                    String dataPeriodoDa,
+                                    String dataPeriodoA,
+                                    String flagFatturazione,
+                                    String dataRichiestaDa,
+                                    String dataRichiestaA,
+                                    String tipologiRichiesta) {
+
+        this(rowsPerPage, pageNumber, order, codiceSocieta, codiceUtente, codiceEnte, dataPeriodoDa, dataPeriodoA, flagFatturazione, dataRichiestaDa, dataRichiestaA);
+        this.tipologiRichiesta=tipologiRichiesta;
+    }
+
     public PrenotazioneFatturazione(ResultSet data) throws SQLException {
         this.chiavePrenotazione = data.getString("PRE_KPREKPRE");
         this.codiceSocieta =  data.getString("PRE_CSOCCSOC");
@@ -49,6 +67,9 @@ public class PrenotazioneFatturazione implements Serializable {
         this.dataPeriodoDa =  data.getString("PRE_GPREGPRDA");
         this.dataPeriodoA =  data.getString("PRE_GPREGPRA");
         this.flagFatturazione =  data.getString("PRE_FPREFELAB");
+        if(data.getString("PRE_CPRECTRI")!=null) {
+            this.tipologiRichiesta = data.getString("PRE_CPRECTRI");
+        }
     }
 
     public int getRowsPerPage() {
@@ -155,9 +176,25 @@ public class PrenotazioneFatturazione implements Serializable {
         this.nomeFile = nomeFile;
     }
 
+    public String getDataRichiesta() {
+        return dataRichiesta;
+    }
+
+    public void setDataRichiesta(String dataRichiesta) {
+        this.dataRichiesta = dataRichiesta;
+    }
+
+    public String getTipologiRichiesta() {
+        return tipologiRichiesta;
+    }
+
+    public void setTipologiRichiesta(String tipologiRichiesta) {
+        this.tipologiRichiesta = tipologiRichiesta;
+    }
+
     @Override
     public String toString() {
-        return "PrenotazioneFatturazioni{" +
+        return "PrenotazioneFatturazione{" +
                 "rowsPerPage=" + rowsPerPage +
                 ", pageNumber=" + pageNumber +
                 ", order='" + order + '\'' +
@@ -169,6 +206,10 @@ public class PrenotazioneFatturazione implements Serializable {
                 ", flagFatturazione='" + flagFatturazione + '\'' +
                 ", dataRichiestaDa='" + dataRichiestaDa + '\'' +
                 ", dataRichiestaA='" + dataRichiestaA + '\'' +
+                ", tipologiRichiesta='" + tipologiRichiesta + '\'' +
+                ", chiavePrenotazione='" + chiavePrenotazione + '\'' +
+                ", nomeFile='" + nomeFile + '\'' +
+                ", dataRichiesta='" + dataRichiesta + '\'' +
                 '}';
     }
 

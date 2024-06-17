@@ -145,6 +145,7 @@ public class SPEPBOLL extends ARestRoutine {
 		resultSetMap2.put(p++, "BEN_TIPOSERV");
 		resultSetMap2.put(p++, "BEN_KEYTRIBU");
 		resultSetMap2.put(p++, "BEN_VALTRIBU");
+		resultSetMap2.put(p++, "BEN_TASSONOM");
 
 		p = 1;
 		
