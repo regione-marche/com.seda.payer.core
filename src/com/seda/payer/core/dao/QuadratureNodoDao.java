@@ -1051,18 +1051,20 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		return importoTransazioniPerEnte;
 	}
 
-	public List<QuadraturaNodo> getEntiQUN() throws DaoException {
+	public List<QuadraturaNodo> getEntiQUN(Boolean hasFilters, String dataDa, String dataA) throws DaoException {
 		List<QuadraturaNodo> list = new ArrayList<>();
 		CallableStatement callableStatement = null;
 		try
 		{
 			callableStatement = prepareCall(Routines.PYQUNSP_SEL_ENT.routine());
+			callableStatement.setString(1, hasFilters ? dataDa : "");
+			callableStatement.setString(2, hasFilters ? dataA : "");
 			callableStatement.execute();
 			while(callableStatement.getResultSet().next()){
 				QuadraturaNodo quadraturaNodo = new QuadraturaNodo();
-				quadraturaNodo.setCodSocieta(callableStatement.getResultSet().getString("QUN_CSOCCSOC"));
-				quadraturaNodo.setCodUtente(callableStatement.getResultSet().getString("QUN_CUTECUTE"));
-				quadraturaNodo.setKeyEnte(callableStatement.getResultSet().getString("QUN_KANEKENT"));
+				quadraturaNodo.setCodSocieta(callableStatement.getResultSet().getString(1));
+				quadraturaNodo.setCodUtente(callableStatement.getResultSet().getString(2));
+				quadraturaNodo.setKeyEnte(callableStatement.getResultSet().getString(3));
 				list.add(quadraturaNodo);
 			}
 		}
