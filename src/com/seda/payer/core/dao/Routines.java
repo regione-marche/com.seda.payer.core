@@ -1304,6 +1304,7 @@ public enum Routines {
 	, PYQUNSP_SEL_NTOT  // SR PGNTCORE-23
 	, PYQUNSP_SEL_ENT  // SR PGNTCORE-23
 	, PYRENSP_UPD_ST_REN_ALL
+	,PRE_DODELETE
 	;
 	
     private static ResourceBundle rb;
