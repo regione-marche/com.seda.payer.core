@@ -2,6 +2,7 @@ package com.seda.payer.core.handler.rest.routine;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 
 public class SPISOGG4 extends ARestRoutine {
 
@@ -49,8 +50,21 @@ public class SPISOGG4 extends ARestRoutine {
 
 	@Override
 	protected Map<Integer, Map<Integer, String>> resultSetsMap() {
-		
-		return null;
+
+		return Optional.of(new HashMap<Integer, Map<Integer, String>>())
+				.map(rsm -> {
+					int p = 1;
+					Map<Integer, String> resultSetMap = new HashMap<Integer, String>();
+					resultSetMap.put(p++, "SOG4_CUTECUTE");
+					resultSetMap.put(p++, "SOG4_CODIENTE");
+					resultSetMap.put(p++, "SOG4_CODIIMSE");
+					resultSetMap.put(p++, "SOG4_CODIFUNZ");
+					resultSetMap.put(p++, "SOG4_DOCUMENT");
+					resultSetMap.put(p++, "SOG4_FLAGPAGA");
+					resultSetMap.put(p++, "SOG4_DTLSTMOV");
+					rsm.put(0, resultSetMap);
+					return rsm;
+				}).get();
 	}
 
 }
