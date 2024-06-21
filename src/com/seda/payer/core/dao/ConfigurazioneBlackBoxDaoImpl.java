@@ -590,8 +590,8 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_SEL.routine());
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
-//			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
-			callableStatement.setString(3, blackboxpos.getCodiceIuv());
+			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
+//			callableStatement.setString(3, blackboxpos.getCodiceIuv());
 			callableStatement.execute();
 			resultSet = callableStatement.getResultSet();
 			if (resultSet.next()) {
