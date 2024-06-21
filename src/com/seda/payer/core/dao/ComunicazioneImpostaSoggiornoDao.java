@@ -1,13 +1,9 @@
 package com.seda.payer.core.dao;
 
 import java.math.BigDecimal;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
+import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
@@ -1315,14 +1311,14 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 	}
    //PG22XX04_SB1 - fine
 
-	public List<TestataComunicazioneImpostaSoggiorno> listaComunicazioni(String data, String flag)throws DaoException{
+	public List<TestataComunicazioneImpostaSoggiorno> listaComunicazioni(LocalDate data, String flag)throws DaoException{
 		CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
 		List<TestataComunicazioneImpostaSoggiorno> testate = new ArrayList<>();
 		TestataComunicazioneImpostaSoggiorno testata = new TestataComunicazioneImpostaSoggiorno();
 		try	{
 			callableStatement = prepareCall("PYSCTSP_LST_SEND_UFFICIO");
-			callableStatement.setString(1, data);
+			callableStatement.setDate(1, Date.valueOf(data));
 			callableStatement.setString(2, flag);
 
 			if (callableStatement.execute()) {
