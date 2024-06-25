@@ -1318,29 +1318,15 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 	}
    //PG22XX04_SB1 - fine
 
-	public List<TestataComunicazioneImpostaSoggiorno> listaComunicazioni(String data, String flag)throws DaoException{
+	public List<TestataComunicazioneImpostaSoggiorno> listaComunicazioni(String flag)throws DaoException{
 		CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
 		LocalDate date=null;
-		try {
-			logger.info("data core " + data);
-			logger.info("data java sql " + java.sql.Date.valueOf(data));
-			DateTimeFormatter dtf = new DateTimeFormatterBuilder()
-					.parseCaseInsensitive() //For case-insensitive parsing
-					.appendPattern("yyyy-MM-dd")
-					.toFormatter(Locale.ITALIAN);
-
-			date = LocalDate.parse(data, dtf);
-		}catch(Throwable e){
-			logger.info(e.getMessage());
-			date= LocalDate.parse("1000-01-01");
-		}
 		List<TestataComunicazioneImpostaSoggiorno> testate = new ArrayList<>();
 		TestataComunicazioneImpostaSoggiorno testata = new TestataComunicazioneImpostaSoggiorno();
 		try	{
 			callableStatement = prepareCall("PYSCTSP_LST_SEND_UFFICIO");
-			callableStatement.setString(1, Date.valueOf(date).toString()); //Stringa
-			callableStatement.setString(2, flag);
+			callableStatement.setString(1, flag);
 
 			if (callableStatement.execute()) {
 				this.loadWebRowSet(callableStatement);
