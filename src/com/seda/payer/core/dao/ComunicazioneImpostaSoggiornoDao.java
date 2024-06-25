@@ -1318,7 +1318,7 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 		TestataComunicazioneImpostaSoggiorno testata = new TestataComunicazioneImpostaSoggiorno();
 		try	{
 			callableStatement = prepareCall("PYSCTSP_LST_SEND_UFFICIO");
-			callableStatement.setString(1, data); //Stringa
+			callableStatement.setDate(1, Date.valueOf(data)); //Stringa
 			callableStatement.setString(2, flag);
 
 			if (callableStatement.execute()) {
