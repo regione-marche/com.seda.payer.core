@@ -4,9 +4,12 @@ import java.math.BigDecimal;
 import java.sql.*;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 //inizio LP PG21XX04 Leak
 //import com.seda.data.dao.DAOHelper;
@@ -1318,17 +1321,25 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 	public List<TestataComunicazioneImpostaSoggiorno> listaComunicazioni(String data, String flag)throws DaoException{
 		CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
+		LocalDate date=null;
 		try {
 			logger.info("data core " + data);
 			logger.info("data java sql " + java.sql.Date.valueOf(data));
+			DateTimeFormatter dtf = new DateTimeFormatterBuilder()
+					.parseCaseInsensitive() //For case-insensitive parsing
+					.appendPattern("yyyy-MM-dd")
+					.toFormatter(Locale.ITALIAN);
+
+			date = LocalDate.parse(data, dtf);
 		}catch(Throwable e){
 			logger.info(e.getMessage());
+			date= LocalDate.parse("1000-01-01");
 		}
 		List<TestataComunicazioneImpostaSoggiorno> testate = new ArrayList<>();
 		TestataComunicazioneImpostaSoggiorno testata = new TestataComunicazioneImpostaSoggiorno();
 		try	{
 			callableStatement = prepareCall("PYSCTSP_LST_SEND_UFFICIO");
-			callableStatement.setDate(1,java.sql.Date.valueOf(data)); //Stringa
+			callableStatement.setDate(1,Date.valueOf(date)); //Stringa
 			callableStatement.setString(2, flag);
 
 			if (callableStatement.execute()) {
