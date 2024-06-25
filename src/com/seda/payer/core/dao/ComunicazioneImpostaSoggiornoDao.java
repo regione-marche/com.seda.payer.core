@@ -11,6 +11,8 @@ import java.util.List;
 //inizio LP PG21XX04 Leak
 //import com.seda.data.dao.DAOHelper;
 //fine LP PG21XX04 Leak
+import com.seda.commons.logger.CustomLoggerManager;
+import com.seda.commons.logger.LoggerWrapper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.AnagraficaStrutturaRicettiva;
 import com.seda.payer.core.bean.DatiBollettino;
@@ -27,6 +29,8 @@ import com.sun.rowset.WebRowSetImpl;
 
 @SuppressWarnings("restriction")
 public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
+
+	protected LoggerWrapper logger = CustomLoggerManager.get(ComunicazioneImpostaSoggiornoDao.class);
 
 	public ComunicazioneImpostaSoggiornoDao(Connection connection, String schema) {
 		super(connection, schema);
@@ -1314,11 +1318,17 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 	public List<TestataComunicazioneImpostaSoggiorno> listaComunicazioni(String data, String flag)throws DaoException{
 		CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
+		try {
+			logger.info("data core " + data);
+			logger.info("data java sql " + java.sql.Date.valueOf(data));
+		}catch(Throwable e){
+			logger.info(e.getMessage());
+		}
 		List<TestataComunicazioneImpostaSoggiorno> testate = new ArrayList<>();
 		TestataComunicazioneImpostaSoggiorno testata = new TestataComunicazioneImpostaSoggiorno();
 		try	{
 			callableStatement = prepareCall("PYSCTSP_LST_SEND_UFFICIO");
-			callableStatement.setDate(1, Date.valueOf(data)); //Stringa
+			callableStatement.setDate(1,java.sql.Date.valueOf(data)); //Stringa
 			callableStatement.setString(2, flag);
 
 			if (callableStatement.execute()) {
