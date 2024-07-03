@@ -21,6 +21,8 @@ import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.helper.Messages;
+import com.seda.data.procedure.reflection.DriverType;
+import com.seda.data.procedure.reflection.MetaProcedure;
 import com.sun.rowset.CachedRowSetImpl;
 import com.sun.rowset.WebRowSetImpl;
 /**
@@ -119,7 +121,12 @@ public abstract class DaoHandler {
 	 * @throws HelperException in case of unpaired number of parameters
 	 */
 	protected final CallableStatement prepareCall(String routine, int parameterCountExpected) throws IllegalArgumentException, SQLException, HelperException {
-		return Helper.prepareCall(getConnection(), getSchema(), routine, parameterCountExpected);
+		//TODO se jdbc di tipo postgres usiamo metaprocedure altrimenti usiamo helper
+		//return Helper.prepareCall(getConnection(), getSchema(), routine, parameterCountExpected);
+		if (DriverType.getDriverType(getConnection())==2)
+			return MetaProcedure.prepareCall(getConnection(), getSchema(), routine);
+		else
+			return Helper.prepareCall(getConnection(), getSchema(), routine, parameterCountExpected);
 	}	
 	/**
 	 * Constructor of DAO object

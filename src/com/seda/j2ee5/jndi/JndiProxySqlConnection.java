@@ -9,7 +9,10 @@ import java.sql.SQLException;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
+import com.seda.data.procedure.reflection.DriverType;
 import com.seda.j2ee5.jndi.spi.JndiServer;
+
+import com.seda.data.dao.ConnectionProxyInstance;
 
 /**
  * @author dbadm
@@ -58,7 +61,10 @@ public class JndiProxySqlConnection {
 				connection = dataSource.getConnection(user,password);
 			else 
 				connection = dataSource.getConnection();	
-			
+			if (DriverType.getDriverType(connection)==2) {
+				ConnectionProxyInstance connProxy=new ConnectionProxyInstance(connection);
+				connection = connProxy.getConenction();
+			}
 			connection.setAutoCommit(autoCommit);			
 		}
 		catch (NamingException x) {

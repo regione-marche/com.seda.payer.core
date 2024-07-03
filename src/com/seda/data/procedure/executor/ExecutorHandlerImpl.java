@@ -13,6 +13,8 @@ import java.util.Map;
 
 import com.seda.commons.cache.CacheKey;
 import com.seda.data.procedure.SubSystem;
+import com.seda.data.procedure.reflection.DriverType;
+import com.seda.data.dao.ConnectionProxyInstance;
 import com.seda.data.procedure.Procedure;
 import com.seda.data.procedure.ProcedureBound;
 import com.seda.data.procedure.result.ResultBounds;
@@ -71,6 +73,11 @@ public class ExecutorHandlerImpl extends ExecutorHandler {
 	      stmt = getStatement(hashKey);
 	    } else {
 	      Connection connection = transaction.getConnection();
+	      //RTC: Se il database e' postgres inizializzo il proxy
+	      if (DriverType.getDriverType(connection)==2) {
+				ConnectionProxyInstance connProxy=new ConnectionProxyInstance(connection);
+				connection = connProxy.getConenction();
+			}
 	      stmt = handler.prepare(connection);
 //	      putStatement(hashKey, stmt); //TODO gestire la cache degli statement in modo che in fase di chiusura della session gli statement vengano preventivamente chiusi
 	    }

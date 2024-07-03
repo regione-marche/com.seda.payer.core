@@ -9,7 +9,6 @@ import java.sql.ResultSet;
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.logger.LoggerWrapper;
 import com.seda.commons.reflection.ExceptionUtil;
-import com.seda.data.procedure.wrapper.oracle.CallableStatementWrapper;
 /**
  * PreparedStatement proxy to add logging
  */
@@ -28,10 +27,10 @@ public class PreparedStatementLogger extends JdbcLogger implements InvocationHan
 	public Object invoke(Object proxy, Method method, Object[] params) throws Throwable {
 		try {
 			if (EXECUTE_METHODS.contains(method.getName())) {
-if (log.isDebugEnabled()) {
-				log.debug("==>  Executing: " + removeExcessiveBlank(sql));
-				log.debug("==> Parameters: " + getParameterValueString());
-}
+				if (log.isDebugEnabled()) {
+					log.debug("==>  Executing: " + removeExcessiveBlank(sql));
+					log.debug("==> Parameters: " + getParameterValueString());
+				}
 				clearColumnInfo();
 				if ("executeQuery".equals(method.getName())) {
 					ResultSet rs = (ResultSet) method.invoke(statement, params);

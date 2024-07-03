@@ -82,8 +82,8 @@ public class ProcedureSource extends BaseParser {
 //	}
 	private CallParameter resolveCallParameter(String parameterName) {
 		CallParameter callParameter=null;
-		if (callParameterMap.containsName(parameterName)) {
-			callParameter=callParameterMap.getByName(parameterName);	
+		if (callParameterMap.containsName(parameterName.toUpperCase())) {
+			callParameter=callParameterMap.getByName(parameterName.toUpperCase());	
 		}
 		return callParameter;
 	}

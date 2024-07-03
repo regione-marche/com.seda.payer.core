@@ -131,6 +131,8 @@ public class PooledDataSource implements DataSource {
 	}
 
 	private Connection createUserConnectionWrapper(Connection connection) {
+		// Centralizzazione modifiche getConnection()
+		connection = DAOHelper.enhance(connection);
 		if (connectionWrapperFactory!=null)
 			return connectionWrapperFactory.createWrapper(connection);
 		return connection;
