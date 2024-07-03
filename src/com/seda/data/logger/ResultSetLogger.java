@@ -32,17 +32,17 @@ public class ResultSetLogger extends JdbcLogger implements InvocationHandler {
 			if ("next".equals(method.getName())) {
 				boolean hasNext = (Boolean) o; 
 				if (hasNext) {
-if (log.isDebugEnabled()) {
-					if (first) {
-						first = false;
-						exportHandler = new ResultSetExport();
-						exportHandler.setCharacterDelimiter(',');
-						printColumnHeaders(exportHandler.open(resultSet, true, false));
+					if (log.isDebugEnabled()) {
+						if (first) {
+							first = false;
+							exportHandler = new ResultSetExport();
+							exportHandler.setCharacterDelimiter(',');
+							printColumnHeaders(exportHandler.open(resultSet, true, false));
+						}
+						printColumnValues(exportHandler.fetch(hasNext));
 					}
-					printColumnValues(exportHandler.fetch(hasNext));
 				}
 			}
-}
 			return o;
 		} catch (Throwable t) {
 			throw ExceptionUtil.unwrapThrowable(t);

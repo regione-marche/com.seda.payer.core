@@ -42,7 +42,10 @@ public class ProcedureReflector {
 	private String hashKey;
 	private ProcedureParameter returnColumn;
 	private String sqlCall;
-	
+	private int PgrefCurosrNumber=0; //Numero di cursori Postgresql in output 
+	private ArrayList<Integer> dataTypeInOut = new ArrayList<>();
+
+
 	private ProcedureReflector(String hashKey, Connection connection, String url, String catalog, String schema, String procedure) {
 		this.hashKey = hashKey;
 		addProcedureColumns(connection, url, catalog, schema, procedure);
@@ -85,6 +88,26 @@ public class ProcedureReflector {
 					procedureColumn.setNullable(parameterMetaData.getShort(12));
 					procedureColumn.setRemarks(parameterMetaData.getString(13));
 					procedureColumn.setIndex(index);
+					 
+				    if ( DriverType.getDriverType(connection)==2) {
+				    	//RTC: Messo per compatibilità postgresql. Sembra che le stored procedure 
+						//postgresql siano function che tornano void
+				    	if (procedureColumn.getTypeName().compareTo("void") == 0) {
+				    		continue;
+				    	}
+				    	//Se il cursore e' di tipo postgresql, aggiungo 1 al numero
+				    	if (procedureColumn.getDataType() ==java.sql.Types.REF_CURSOR) {
+				    		PgrefCurosrNumber++;
+				    	}
+				    	//Se la columnType è 2 significa che il parametro e inout...lo intercetto
+				    	if (parameterMetaData.getShort(5)==2) {
+				    		dataTypeInOut.add(1);
+				    	}
+				    	else {
+				    		dataTypeInOut.add(0);
+				    	}
+				    }
+				    
 					if (procedureColumn.getColumnType()==DatabaseMetaData.procedureColumnReturn) {
 						returnColumn=procedureColumn;
 					} else if (procedureColumn.getColumnType()==DatabaseMetaData.procedureColumnResult) {
@@ -94,24 +117,40 @@ public class ProcedureReflector {
 						procedureColumn.setDataType(JdbcType.CURSOR.TYPE_CODE);
 						refCursorList.add(procedureColumn); 
 					} else {
-						parameterMap.put(procedureColumn.getColumnName(), procedureColumn);
-						parameterList.add(procedureColumn);
+						//Se la variabile è un cursore e siamo in postgres, non la porta dietro.....viene usato nel printer
+						if (DriverType.getDriverType(connection)!=2 || (
+								DriverType.getDriverType(connection)==2 && procedureColumn.getDataType()!=java.sql.Types.REF_CURSOR)) {
+						
+							parameterMap.put(procedureColumn.getColumnName(), procedureColumn);
+							parameterList.add(procedureColumn);
+						}
+						
 					}
 					if (log.isDebugEnabled()) {
 						log.debug("*> "+ref+" #"+index+" name     : '" + procedureColumn.getColumnName());
 						log.debug("*> "+ref+" #"+index+" type     : '" + procedureColumn.getTypeName());
 						log.debug("*> "+ref+" #"+index+" direction: '" + ParameterDirection.getJDBCDirectionName(procedureColumn.getColumnType()));
 					}
-					call.append(parameterList.size()+refCursorList.size()>1?",?":"?");
+					call.append(parameterList.size()+refCursorList.size()+PgrefCurosrNumber>1?",?":"?");
 					index++;
 				}
 				call.append(")");
 				if (hasReturnValue()) {
 					call.insert(0, "{?=");
+					call.append("}");
+				} else {
+					//RTC: Se il driver e' postgresql non metto le praentesi graffe nelle stored procedure
+					if (DriverType.getDriverType(connection)!=2) {
+						call.insert(0, "{");
+						call.append("}");
+					}
+				}
+				/*if (hasReturnValue()) {
+					call.insert(0, "{?=");
 				} else {
 					call.insert(0, "{");
 				}
-				call.append("}");
+				call.append("}");*/
 				sqlCall=call.toString();
 			} else {
 				if (log.isDebugEnabled()) {
@@ -199,5 +238,11 @@ public class ProcedureReflector {
 	public String[] getParameterNames() {
 		return this.parameterNames;
 	}	
+	public int getPgRefCursorNumber() {
+		return PgrefCurosrNumber;
+	}
+	public ArrayList<Integer> getDataTypeInOut() {
+		return dataTypeInOut;
+	}
 	
 }

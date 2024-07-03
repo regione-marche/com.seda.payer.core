@@ -19,6 +19,7 @@ import com.seda.commons.management.annotations.Description;
 import com.seda.commons.management.annotations.ManagedAttribute;
 import com.seda.commons.management.annotations.ManagedOperation;
 import com.seda.commons.resource.ResourceManager;
+import com.seda.data.dao.DAOHelper;
 import com.seda.data.event.DAOEventProxy;
 /**
  * @author f.ricci
@@ -237,6 +238,8 @@ public class DataSourceImpl implements DataSource {
 		
 		// before returning connection fire the open connection event
 		DAOEventProxy.dispatch(conn);
+		// Centralizzazione modifiche getConnection()
+		conn = DAOHelper.enhance(conn);
 		
 		return conn;
 	}
