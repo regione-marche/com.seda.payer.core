@@ -7,6 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.List;
 
 //inizio LP PG21XX04 Leak
 //import com.seda.data.dao.DAOHelper;
@@ -22,10 +26,11 @@ import com.seda.payer.core.bean.TariffaImpostaSoggiorno;
 import com.seda.payer.core.bean.TestataComunicazioneImpostaSoggiorno;
 import com.seda.payer.core.bean.TipologiaStrutturaRicettiva;
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.handler.BaseDaoHandler;
+import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
 import com.sun.rowset.WebRowSetImpl;
 
-public class ComunicazioneImpostaSoggiornoDao extends BaseDaoHandler {
+@SuppressWarnings("restriction")
+public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 
 	public ComunicazioneImpostaSoggiornoDao(Connection connection, String schema) {
 		super(connection, schema);
@@ -39,6 +44,10 @@ public class ComunicazioneImpostaSoggiornoDao extends BaseDaoHandler {
 	//}
 	//fine LP PG21XX04 Leak
 	
+	public ComunicazioneImpostaSoggiornoDao(Connection connection, String schema, boolean isRest, String baseUrl) {
+		super(connection, schema, isRest, baseUrl);
+	}
+
 	public void doInsertTestataComunicazione(TestataComunicazioneImpostaSoggiorno testataComunicazione) throws DaoException, SQLException {
 		CallableStatement callableStatement = null;
 		try	{
@@ -86,6 +95,7 @@ public class ComunicazioneImpostaSoggiornoDao extends BaseDaoHandler {
 			callableStatement.setDate(++ik,  new java.sql.Date(testataComunicazione.getDataLimiteComunicazione().getTime()));
 			callableStatement.setString(++ik, testataComunicazione.getChiaveAnagraficaStrutturaRicettivaPrincipale());
 			callableStatement.setString(++ik, testataComunicazione.getNoteOperatore()==null?"":testataComunicazione.getNoteOperatore());
+			callableStatement.setString(++ik, testataComunicazione.getOperatoreInserimentoComunicazione()==null?"":testataComunicazione.getOperatoreInserimentoComunicazione());
 			//PG190300 - fine
 		
 			callableStatement.execute();
@@ -111,8 +121,9 @@ public class ComunicazioneImpostaSoggiornoDao extends BaseDaoHandler {
 	
 	public void doUpdateTestataComunicazione(TestataComunicazioneImpostaSoggiorno testataComunicazione) throws DaoException, SQLException {
 		CallableStatement callableStatement = null;
+		System.out.println(testataComunicazione.toString());
 		try	{
-			callableStatement = prepareCall(Routines.SCT_DOUPDATE.routine());
+			callableStatement = prepareCall("PYSCTSP_UPD");
 			callableStatement.setString(1, testataComunicazione.getChiaveTestataComunicazione());
 			callableStatement.setString(2, testataComunicazione.getChiaveAnagraficaStrutturaRicettiva());
 			callableStatement.setString(3, testataComunicazione.getCodiceSocieta());
@@ -150,7 +161,7 @@ public class ComunicazioneImpostaSoggiornoDao extends BaseDaoHandler {
 			callableStatement.setString(20, testataComunicazione.getUsernameUtenteUltimoAggiornamento());
 			callableStatement.setString(21, testataComunicazione.getOperatoreUltimoAggiornamento());
 			//PG190300 - inizio
-			//callableStatement.setString(22, testataComunicazione.getDataConfermaComunicazione()==null?null:"Y");//nella SP nn passo la data ma solo un flag se è valorizzata perchè provengo dall'invio della comunicazione
+			//callableStatement.setString(22, testataComunicazione.getDataConfermaComunicazione()==null?null:"Y");//nella SP nn passo la data ma solo un flag se ï¿½ valorizzata perchï¿½ provengo dall'invio della comunicazione
 			if (testataComunicazione.getDataConfermaComunicazione() != null)
 				callableStatement.setTimestamp(22, new Timestamp(testataComunicazione.getDataConfermaComunicazione().getTimeInMillis()));
 			else
@@ -264,6 +275,12 @@ public class ComunicazioneImpostaSoggiornoDao extends BaseDaoHandler {
 				callableStatement.setString(++ik, testataComunicazione.getQrCodePagoPACumulativo());
 			else
 				callableStatement.setNull(++ik, Types.VARCHAR);
+
+			if(testataComunicazione.getOperatoreInserimentoComunicazione()!=null){
+				callableStatement.setString(++ik, testataComunicazione.getOperatoreInserimentoComunicazione());
+			}else{
+				callableStatement.setNull(++ik, Types.VARCHAR);
+			}
 			//fine LP PG200230
 			callableStatement.execute();
 			
@@ -660,8 +677,8 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			ResponseData res = new ResponseData();
 			res.setRetCode(callableStatement.getString(8));
 			res.setRetMessage(callableStatement.getString(9));
-			res.setInfo1(callableStatement.getString(5)); //SI/NO: indica se per l'ente è attiva la procedura RID
-			res.setInfo2(callableStatement.getString(6)); //SI/NO: indica se il codice RID contribuente è autorizzato
+			res.setInfo1(callableStatement.getString(5)); //SI/NO: indica se per l'ente ï¿½ attiva la procedura RID
+			res.setInfo2(callableStatement.getString(6)); //SI/NO: indica se il codice RID contribuente ï¿½ autorizzato
 			res.setInfo3(callableStatement.getString(7).trim()); //codice RID contribuente
 			
 			return res;
@@ -1296,6 +1313,110 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			}
 		}	
 	}
-	//PG22XX04_SB1 - fine
-	
+   //PG22XX04_SB1 - fine
+
+	public List<TestataComunicazioneImpostaSoggiorno> listaComunicazioni(String data, String flag)throws DaoException{
+		CallableStatement callableStatement = null;
+		ResultSet resultSet = null;
+		List<TestataComunicazioneImpostaSoggiorno> testate = new ArrayList<>();
+		TestataComunicazioneImpostaSoggiorno testata = new TestataComunicazioneImpostaSoggiorno();
+		try	{
+			callableStatement = prepareCall("PYSCTSP_LST_SEND_UFFICIO");
+			callableStatement.setString(1, data);
+			callableStatement.setString(2, flag);
+
+			if (callableStatement.execute()) {
+				this.loadWebRowSet(callableStatement);
+			}
+
+			while (this.getWebRowSet().next()) {
+
+                testata.setChiaveTestataComunicazione(this.getWebRowSet().getString(1));
+				testata.setChiaveAnagraficaStrutturaRicettiva(this.getWebRowSet().getString(2));
+				testata.setCodiceSocieta(this.getWebRowSet().getString(3));
+				testata.setCodiceUtente(this.getWebRowSet().getString(4));
+				testata.setChiaveEnte(this.getWebRowSet().getString(5));
+				Calendar calInse = Calendar.getInstance();
+				calInse.setTimeInMillis(this.getWebRowSet().getDate(6).getTime());
+				testata.setDataInserimentoComunicazione(calInse);
+				testata.setDataInizioComunicazione(this.getWebRowSet().getDate(7));
+				testata.setDataFineComunicazione(this.getWebRowSet().getDate(8));
+				testata.setNumeroGiorniPeriodoPermanenzaTotale(this.getWebRowSet().getInt(9));
+				testata.setTipoComunicazione(this.getWebRowSet().getString(10));
+				testata.setChiaveTariffaImpostaSoggiorno(this.getWebRowSet().getString(11));
+				testata.setNoteAggiuntive(this.getWebRowSet().getString(12));
+				testata.setDataScadenzaComunicazione(this.getWebRowSet().getDate(13));
+				testata.setStatoComunicazione(this.getWebRowSet().getString(14));
+				testata.setModalitaPagamento(this.getWebRowSet().getString(15));
+				testata.setCodiceRID(this.getWebRowSet().getString(16));
+				testata.setNumeroDocumentoGestionaleEntrate(this.getWebRowSet().getString(17));
+				testata.setCodiceBollettino(this.getWebRowSet().getString(18));
+				testata.setStatoDocumento(this.getWebRowSet().getString(19));
+				testata.setDataPagamento(this.getWebRowSet().getDate(20));
+				testata.setUsernameUtenteUltimoAggiornamento(this.getWebRowSet().getString(21));
+				Calendar cal = Calendar.getInstance();
+				cal.setTimeInMillis(this.getWebRowSet().getDate(22).getTime());
+				testata.setDataUltimoAggiornamento(cal);
+				testata.setOperatoreUltimoAggiornamento(this.getWebRowSet().getString(23));
+				Calendar calConf = Calendar.getInstance();
+				calConf.setTimeInMillis(this.getWebRowSet().getDate(24).getTime());
+				testata.setDataConfermaComunicazione(calConf);
+				//LP PG200230 Ho inserito la trim in tutti le data.getString da qui in avanti
+				testata.setCodiceFreccia(this.getWebRowSet().getString(25));
+				//inizio LP PG190010_002_LP
+				testata.setDescrizioneEnte(this.getWebRowSet().getString(26));
+				testata.setTipoCC(this.getWebRowSet().getString(27));
+				testata.setNumeroCC(this.getWebRowSet().getString(28));
+				testata.setIntestazioneCC(this.getWebRowSet().getString(29));
+				testata.setAutorizzazioneCC(this.getWebRowSet().getString(30));
+				testata.setCodiceFiscaleEnte(this.getWebRowSet().getString(31));
+				testata.setCodiceCBill(this.getWebRowSet().getString(32));
+				testata.setBarcodePagoPA(this.getWebRowSet().getString(33));
+				testata.setQrCodePagoPA(this.getWebRowSet().getString(34));
+				testata.setCausaleDocumento(this.getWebRowSet().getString(35));
+				testata.setDescrizioneUfficio(this.getWebRowSet().getString(36));
+				testata.setDescrizioneTipoServizio(this.getWebRowSet().getString(37));
+				testata.setDescrizioneImpostaServizio(this.getWebRowSet().getString(38));
+				testata.setNumeroAvvisoPagoPA(this.getWebRowSet().getString(39));
+				testata.setCodiceIUV(this.getWebRowSet().getString(40));
+				//fine LP PG190010_002_LP
+				//PG190300 - inizio
+				testata.setDataLimiteComunicazione(this.getWebRowSet().getDate(41));
+				testata.setChiaveAnagraficaStrutturaRicettivaPrincipale(this.getWebRowSet().getString(42));
+				testata.setCodiceBollettinoCumulativo(this.getWebRowSet().getString(43));
+				testata.setNoteOperatore(this.getWebRowSet().getString(44));
+				//PG190300 - fine
+				//PG190330 GG - inizio
+				try {
+					testata.setFlagAlloggio(this.getWebRowSet().getString(45));
+				} catch (Exception ex) {
+				}
+				//PG190330 GG - fine
+				//inizio LP PG200230
+				testata.setBarcodePagoPACumulativo(this.getWebRowSet().getString(46));
+				testata.setQrCodePagoPACumulativo(this.getWebRowSet().getString(47));
+				testata.setNumeroAvvisoPagoPACumulativo(this.getWebRowSet().getString(48));
+				testata.setOperatoreInserimentoComunicazione(this.getWebRowSet().getString(49));
+
+				testate.add(testata);
+			}
+
+		} catch (SQLException x) {
+			throw new DaoException(x);
+		} catch (IllegalArgumentException x) {
+			throw new DaoException(x);
+		} catch (HelperException x) {
+			throw new DaoException(x);
+		} finally {
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		}
+		return testate;
+	}
+
 }

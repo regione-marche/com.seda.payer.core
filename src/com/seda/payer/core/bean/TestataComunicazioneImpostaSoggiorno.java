@@ -65,6 +65,7 @@ public class TestataComunicazioneImpostaSoggiorno implements Serializable {
     private String numeroAvvisoPagoPACumulativo;
     private String codiceIUVCumulativo;
 	//fine LP PG200230
+	private String operatoreInserimentoComunicazione;
 	
 	public TestataComunicazioneImpostaSoggiorno() {}
 	
@@ -140,6 +141,7 @@ public class TestataComunicazioneImpostaSoggiorno implements Serializable {
         	setQrCodePagoPACumulativo(data.getString("SCT_CSCTQRCD_CUM").trim());
         	setNumeroAvvisoPagoPACumulativo(data.getString("SCT_CSCTNAVV_CUM").trim());
         	setCodiceIUVCumulativo(data.getString("SCT_CSCTCIUV_CUM").trim());
+			setOperatoreInserimentoComunicazione(data.getString("SCT_CSCTOPINV").trim());
     	} catch (Exception ex) {
     	}
 		//TODO: gestire i campi pagopa cumulativo
@@ -507,4 +509,69 @@ public class TestataComunicazioneImpostaSoggiorno implements Serializable {
 		this.codiceIUVCumulativo = codiceIUVCumulativo;
 	}
 	//fine LP PG200230
+
+
+	public String getOperatoreInserimentoComunicazione() {
+		return operatoreInserimentoComunicazione;
+	}
+
+	public void setOperatoreInserimentoComunicazione(String operatoreInserimentoComunicazione) {
+		this.operatoreInserimentoComunicazione = operatoreInserimentoComunicazione;
+	}
+
+	@Override
+	public String toString() {
+		return "TestataComunicazioneImpostaSoggiorno{" +
+				"chiaveTestataComunicazione='" + chiaveTestataComunicazione + '\'' +
+				", chiaveAnagraficaStrutturaRicettiva='" + chiaveAnagraficaStrutturaRicettiva + '\'' +
+				", codiceSocieta='" + codiceSocieta + '\'' +
+				", codiceUtente='" + codiceUtente + '\'' +
+				", chiaveEnte='" + chiaveEnte + '\'' +
+				", dataInserimentoComunicazione=" + dataInserimentoComunicazione +
+				", dataInizioComunicazione=" + dataInizioComunicazione +
+				", dataFineComunicazione=" + dataFineComunicazione +
+				", numeroGiorniPeriodoPermanenzaTotale=" + numeroGiorniPeriodoPermanenzaTotale +
+				", tipoComunicazione='" + tipoComunicazione + '\'' +
+				", chiaveTariffaImpostaSoggiorno='" + chiaveTariffaImpostaSoggiorno + '\'' +
+				", noteAggiuntive='" + noteAggiuntive + '\'' +
+				", dataScadenzaComunicazione=" + dataScadenzaComunicazione +
+				", statoComunicazione='" + statoComunicazione + '\'' +
+				", modalitaPagamento='" + modalitaPagamento + '\'' +
+				", codiceRID='" + codiceRID + '\'' +
+				", numeroDocumentoGestionaleEntrate='" + numeroDocumentoGestionaleEntrate + '\'' +
+				", codiceBollettino='" + codiceBollettino + '\'' +
+				", statoDocumento='" + statoDocumento + '\'' +
+				", dataPagamento=" + dataPagamento +
+				", usernameUtenteUltimoAggiornamento='" + usernameUtenteUltimoAggiornamento + '\'' +
+				", dataUltimoAggiornamento=" + dataUltimoAggiornamento +
+				", operatoreUltimoAggiornamento='" + operatoreUltimoAggiornamento + '\'' +
+				", dataConfermaComunicazione=" + dataConfermaComunicazione +
+				", codiceFreccia='" + codiceFreccia + '\'' +
+				", descrizioneEnte='" + descrizioneEnte + '\'' +
+				", tipoCC='" + tipoCC + '\'' +
+				", numeroCC='" + numeroCC + '\'' +
+				", intestazioneCC='" + intestazioneCC + '\'' +
+				", autorizzazioneCC='" + autorizzazioneCC + '\'' +
+				", codiceFiscaleEnte='" + codiceFiscaleEnte + '\'' +
+				", codiceCBill='" + codiceCBill + '\'' +
+				", barcodePagoPA='" + barcodePagoPA + '\'' +
+				", qrCodePagoPA='" + qrCodePagoPA + '\'' +
+				", causaleDocumento='" + causaleDocumento + '\'' +
+				", descrizioneUfficio='" + descrizioneUfficio + '\'' +
+				", descrizioneTipoServizio='" + descrizioneTipoServizio + '\'' +
+				", descrizioneImpostaServizio='" + descrizioneImpostaServizio + '\'' +
+				", numeroAvvisoPagoPA='" + numeroAvvisoPagoPA + '\'' +
+				", codiceIUV='" + codiceIUV + '\'' +
+				", chiaveAnagraficaStrutturaRicettivaPrincipale='" + chiaveAnagraficaStrutturaRicettivaPrincipale + '\'' +
+				", dataLimiteComunicazione=" + dataLimiteComunicazione +
+				", codiceBollettinoCumulativo='" + codiceBollettinoCumulativo + '\'' +
+				", noteOperatore='" + noteOperatore + '\'' +
+				", flagAlloggio='" + flagAlloggio + '\'' +
+				", barcodePagoPACumulativo='" + barcodePagoPACumulativo + '\'' +
+				", qrCodePagoPACumulativo='" + qrCodePagoPACumulativo + '\'' +
+				", numeroAvvisoPagoPACumulativo='" + numeroAvvisoPagoPACumulativo + '\'' +
+				", codiceIUVCumulativo='" + codiceIUVCumulativo + '\'' +
+				", operatoreInserimentoComunicazione='" + operatoreInserimentoComunicazione + '\'' +
+				'}';
+	}
 }

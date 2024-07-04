@@ -27,9 +27,14 @@ public class MinIntRule extends RuleOptionsHandler {
 		} catch (NumberFormatException x) {
 			error=true;
 		}
-		if ((value < option) || error) 
-			throw new ValidationException(RulesNames.MIN_INT,Messages.MININT.format(getOptions()[0]));		
-		
+		if ((value < option) || error) {
+			if(getLocale().getCountry().equals("IT")) {
+			  throw new ValidationException(RulesNames.MIN_INT,Messages.MININTIT.format(getOptions()[0]));
+			}else {
+			  throw new ValidationException(RulesNames.MIN_INT,Messages.MININT.format(getOptions()[0]));
+			}
+		}
+
 		return true;		
 	}
 

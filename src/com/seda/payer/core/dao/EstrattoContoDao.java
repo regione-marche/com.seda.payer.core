@@ -12,14 +12,19 @@ import java.sql.Types;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.CodFiscHost;
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.handler.BaseDaoHandler;
+import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
 import com.seda.payer.core.messages.Messages;
 
-public class EstrattoContoDao extends BaseDaoHandler {
+public class EstrattoContoDao extends RestBaseDaoHandler {
 
-	public EstrattoContoDao(Connection connection, String schema) {
-		super(connection, schema);
+	public EstrattoContoDao(Connection connection, String schema, boolean isRest, String baseUrl) {
 		
+		super(connection, schema, isRest, baseUrl);
+	}
+	
+	public EstrattoContoDao(Connection connection, String schema) {
+		
+		super(connection, schema);
 	}
 	//inizio LP PG21XX04 Leak
 	//private void closeConnection(CallableStatement callableStatement)
@@ -1045,7 +1050,9 @@ public class EstrattoContoDao extends BaseDaoHandler {
 				callableStatement.registerOutParameter(11, Types.CHAR);
 
 				callableStatement.execute();
+				@SuppressWarnings("unused")
 				String retCode = callableStatement.getString(10);
+				@SuppressWarnings("unused")
 				String message = callableStatement.getString(11);
 
 				//  Legenda ReturnCode:

@@ -16,8 +16,13 @@ public class TimeRule extends RuleHandler {
 	 */
 	@Override
 	public boolean apply() throws ValidationException {
-		if (RegexManager.time.doesntMatch(getValue()))
-			throw new ValidationException(RulesNames.TIME, Messages.TIME.format());
+		if (RegexManager.time.doesntMatch(getValue())) {
+			if(getLocale().getCountry().equals("IT")) {
+			  throw new ValidationException(RulesNames.TIME, Messages.TIMEIT.format());
+			}else {
+			  throw new ValidationException(RulesNames.TIME, Messages.TIME.format());
+			}
+		}
 		return true;
 	}
 
