@@ -15,12 +15,4 @@ public class FormAgidTag extends FormTag {
 		return new FormAgid();
 	}
 	
-	public void setLanguage(String value) {
-		((FormAgid) Form).setLanguage(value);
-	}
-	
-	public String getLanguage() {
-		return ((FormAgid) Form).getLanguage();
-	}
-	
 }

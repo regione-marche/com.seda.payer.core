@@ -245,6 +245,9 @@ public class Form implements TagRenderInterface {
 		return (getAutocomplete() != null && getAutocomplete().length() > 0);
 	}
 	
+
+	
+
 	public String hasCss() {
 		if (cssclass != null && cssclass.trim() != "")
 			return " " + cssclass;
@@ -252,6 +255,7 @@ public class Form implements TagRenderInterface {
 			return "";
 	}
 
+	
 	public String render() {
 		try {
 			sHtml = "";
@@ -337,19 +341,24 @@ public class Form implements TagRenderInterface {
 		}
 
 		return sHtml;
+
 	}
 
 	public void render(JspWriter writer) throws IOException {
 		
+		Class<? extends Form> clazz = this.getClass();
+		
 		writer.print(render());
+
 	}
-	
-	public String normalizeHref(String sHref) {
+	public String normalizeHref(String sHref)
+	{
+		
 		
 		sHref =sHref.replaceAll("&amp;","&");
 		sHref = sHref.replaceAll("&", "&amp;");
 		
 		return sHref;
+		
 	}
-	
 }

@@ -6,7 +6,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Optional;
 
 import javax.servlet.Filter;
 import javax.servlet.FilterChain;
@@ -34,7 +33,6 @@ import com.seda.j2ee5.maf.util.MAFAttributes;
 import com.seda.j2ee5.maf.util.MAFLogger;
 import com.seda.j2ee5.maf.util.MAFRequest;
 import com.seda.j2ee5.maf.util.MAFUtil;
-import com.seda.payer.commons.utility.StringUtility;
 /**
  * Servlet Filter implementation class ValidatorManager
  */
@@ -76,16 +74,6 @@ public class ValidationManager implements Filter {
         } else {
         	subContextCheck=mafRequest.getSubcontext();
         }
-
-        if (subContextCheck!=null && subContextCheck.trim().length()>0 && subContextCheck.endsWith("//")) {
-			((HttpServletResponse)response).sendRedirect(
-				Optional.of(request)
-					.map(r -> (HttpServletRequest)r)
-					.map(r -> r.getRequestURI().toString())
-					.map(url -> StringUtility.removeAllEndChar(url, '/'))
-					.get()
-			);
-		}
 
         if (subContextCheck!=null && subContextCheck.trim().length()>0 && !subContextCheck.trim().equals("/")) {
         	if (defaultIgnoredSubcontext.contains(subContextCheck)) {

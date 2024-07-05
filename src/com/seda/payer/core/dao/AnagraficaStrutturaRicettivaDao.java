@@ -14,20 +14,15 @@ import com.seda.payer.core.bean.AnagraficaStrutturaRicettiva;
 import com.seda.payer.core.bean.AnagraficaStrutturaRicettivaCsv;
 import com.seda.payer.core.bean.ResponseData;
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
+import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.messages.Messages;
 
-public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
+public class AnagraficaStrutturaRicettivaDao extends BaseDaoHandler {
 
 	public AnagraficaStrutturaRicettivaDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
-	
-	public AnagraficaStrutturaRicettivaDao(Connection connection, String schema, boolean isRest, String baseUrl) {
-		super(connection, schema, isRest, baseUrl);
-	}
-	
-	@SuppressWarnings("unused")
+
 	private void closeConnection(CallableStatement callableStatement)
 	{
 		if (callableStatement != null)

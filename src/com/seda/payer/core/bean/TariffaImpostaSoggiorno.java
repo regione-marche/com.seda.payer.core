@@ -184,22 +184,5 @@ public class TariffaImpostaSoggiorno implements Serializable{
 	}
     //fine LP PG1800XX_016
 
-
-	@Override
-	public String toString() {
-		return "TariffaImpostaSoggiorno{" +
-				"chiaveTariffa='" + chiaveTariffa + '\'' +
-				", codiceBelfiore='" + codiceBelfiore + '\'' +
-				", chiaveTipologiaStruttura='" + chiaveTipologiaStruttura + '\'' +
-				", dataValiditaTariffa=" + dataValiditaTariffa +
-				", importoTariffa=" + importoTariffa +
-				", dataUltimoAggiornamento=" + dataUltimoAggiornamento +
-				", operatoreUltimoAggiornamento='" + operatoreUltimoAggiornamento + '\'' +
-				", descrizioneComune='" + descrizioneComune + '\'' +
-				", descrizioneTipologiaRicettiva='" + descrizioneTipologiaRicettiva + '\'' +
-				", ricercaDataDa='" + ricercaDataDa + '\'' +
-				", ricercaDataA='" + ricercaDataA + '\'' +
-				", fasceTariffa=" + fasceTariffa +
-				'}';
-	}
+	
 }

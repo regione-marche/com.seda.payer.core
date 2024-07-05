@@ -27,13 +27,8 @@ public class RangeIntRule extends RuleOptionsHandler {
 		} catch (NumberFormatException x) {
 			error=true;
 		}
-		if ((value > maxoption) || (value < minoption) || error) {
-			if(getLocale().getCountry().equals("IT")) {
-			  throw new ValidationException(RulesNames.RANGE_INT,Messages.RANGEINTIT.format(getOptions()[0],getOptions()[1]));
-			}else {
-			  throw new ValidationException(RulesNames.RANGE_INT,Messages.RANGEINT.format(getOptions()[0],getOptions()[1]));
-			}
-		}
+		if ((value > maxoption) || (value < minoption) || error) 
+			throw new ValidationException(RulesNames.RANGE_INT,Messages.RANGEINT.format(getOptions()[0],getOptions()[1]));		
 		
 		return true;		
 	}

@@ -18,20 +18,12 @@ public class DateRule extends RuleHandler {
 	@Override
 	public boolean apply() throws ValidationException {
 		if (getValue()==null) {
-			if(getLocale().getCountry().equals("IT")) {
-				throw new ValidationException(RulesNames.DATE,Messages.DATEISOIT.format());
-			}else {
-			    throw new ValidationException(RulesNames.DATE,Messages.DATEISO.format());
-			}
+			throw new ValidationException(RulesNames.DATE,Messages.DATEISO.format());			
 		}
 		try {
 			Date.parse(getValue());
 		} catch (IllegalArgumentException x) {
-			if(getLocale().getCountry().equals("IT")) {
-				throw new ValidationException(RulesNames.DATE,Messages.DATEISOIT.format());
-			}else {
-			    throw new ValidationException(RulesNames.DATE,Messages.DATEISO.format());
-			}
+			throw new ValidationException(RulesNames.DATE,Messages.DATE.format());
 		}
 		return true;
 	}

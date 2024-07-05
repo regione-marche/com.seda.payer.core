@@ -19,19 +19,10 @@ public class RangeLengthRule extends RuleOptionsHandler {
 			min = Integer.parseInt(getOptions()[0]);	
 			max = Integer.parseInt(getOptions()[1]);			
 		} catch (NumberFormatException x) {
-			if(getLocale().getCountry().equals("IT")) {
-			  throw new ValidationException(RulesNames.RANGE_LENGTH,Messages.integerExpectedIT.format(min + " " + max));
-			}else {
-			  throw new ValidationException(RulesNames.RANGE_LENGTH,Messages.integerExpected.format(min + " " + max));
-			}
+			throw new ValidationException(RulesNames.RANGE_LENGTH,Messages.integerExpected.format(min + " " + max));
 		}
-		if (getValue().length() < min || getValue().length() > max) {
-			if(getLocale().getCountry().equals("IT")) {
-				throw new ValidationException(RulesNames.RANGE_LENGTH,Messages.MAXLENGTHIT.format(min,max));
-			}else {
-			  throw new ValidationException(RulesNames.RANGE_LENGTH,Messages.MAXLENGTH.format(min,max));
-			}
-		}
+		if (getValue().length() < min || getValue().length() > max) 
+			throw new ValidationException(RulesNames.RANGE_LENGTH,Messages.MAXLENGTH.format(min,max));
 		
 		return true;		
 	}

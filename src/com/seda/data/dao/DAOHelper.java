@@ -34,11 +34,6 @@ public class DAOHelper {
 	public final static String JDBC_USER = "username";
 	public final static String JDBC_PASSWORD = "password";
 
-	public final static String SEPAFLAG = "enable";
-
-	public final static String SEPABASEURL = "baseUrl";
-
-
 	private static boolean incontainer;
 	
 	static {
