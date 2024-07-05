@@ -192,7 +192,7 @@ public class FormTag extends BodyTagSupport {
 	public void setCssclass(String value) {
 		Form.setCssclass(value);
 	}
-	
+
 	public int doStartTag() throws JspTagException {
 		validationFields = new HashMap<String, ValidationField>();
         validationSubmits = new ArrayList<ValidationSubmit>();
@@ -200,6 +200,8 @@ public class FormTag extends BodyTagSupport {
         return EVAL_BODY_BUFFERED;
 	}
 
+	
+	
 	public int doAfterBody() {
 		try {
 			BodyContent bodyContent = super.getBodyContent();

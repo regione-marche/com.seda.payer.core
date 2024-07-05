@@ -86,14 +86,4 @@ public class TipologiaStrutturaRicettiva extends Lifecycle implements Serializab
 	public void setOperatoreUltimoAggiornamento(String operatoreUltimoAggiornamento) {
 		this.operatoreUltimoAggiornamento = operatoreUltimoAggiornamento;
 	}
-
-	@Override
-	public String toString() {
-		return "TipologiaStrutturaRicettiva{" +
-				"chiaveTipologiaStruttura='" + chiaveTipologiaStruttura + '\'' +
-				", descrizioneTipologiaStruttura='" + descrizioneTipologiaStruttura + '\'' +
-				", dataUltimoAggiornamento=" + dataUltimoAggiornamento +
-				", operatoreUltimoAggiornamento='" + operatoreUltimoAggiornamento + '\'' +
-				'}';
-	}
 }

@@ -25,7 +25,7 @@ public class WalletDAOFactory {
 			walletDAO = constructor.newInstance(datasource,schema);
 		} catch (Exception x) {
 			throw new DaoException(x);
-		}
+		} 
 		return walletDAO;
 	}
 
@@ -39,22 +39,10 @@ public class WalletDAOFactory {
 			walletDAO = constructor.newInstance(connection, schema);
 		} catch (Exception x) {
 			throw new DaoException(x);
-		}
+		} 
 		return walletDAO;
 	}
 	//fine LP PG21XX04 Leak
-
-	public static WalletDAO getWalletDAO(Connection connection, String schema, boolean isRest, String baseUrl) throws DaoException {
-		WalletDAO walletDAO = null;
-		try {
-			Class<WalletDAO> clazz = (Class<WalletDAO>)Class.forName(WALLET_CLASS);
-			Constructor<WalletDAO> constructor = clazz.getConstructor(new Class[] {java.sql.Connection.class, java.lang.String.class,java.lang.Boolean.class,java.lang.String.class});
-			walletDAO = constructor.newInstance(connection, schema,isRest,baseUrl);
-		} catch (Exception x) {
-			throw new DaoException(x);
-		}
-		return walletDAO;
-	}
 
 	private static String ANAGRAFICA_GENITORE_MENSE_CLASS;
 
@@ -63,7 +51,7 @@ public class WalletDAOFactory {
 
 	static {
 		ANAGRAFICA_FIGLIO_MENSE_CLASS = AnagraficaFiglioMenseDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -99,7 +87,7 @@ public class WalletDAOFactory {
 
 	static {
 		SCUOLA_CLASS = ScuolaDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -135,7 +123,7 @@ public class WalletDAOFactory {
 
 	static {
 		SERVIZIO_CLASS = ServizioDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -151,7 +139,7 @@ public class WalletDAOFactory {
 		}
 		return servizioDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static ServizioDAO getServizioDAO(Connection connection, String schema) throws DaoException {
@@ -171,7 +159,7 @@ public class WalletDAOFactory {
 
 	static {
 		CONFIGURAZIONE_SOLLECITI_CLASS =  ConfigurazioneSollecitiDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -187,7 +175,7 @@ public class WalletDAOFactory {
 		}
 		return configurazioneSollecitiDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static ConfigurazioneSollecitiDAO getConfigurazioneSollecitiDAO(Connection connection, String schema) throws DaoException {
@@ -207,7 +195,7 @@ public class WalletDAOFactory {
 
 	static {
 		CONFIGURAZIONE_EVOINTIMAZIONI_CLASS =  ConfigurazioneEvoIntimazioniDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -224,7 +212,7 @@ public class WalletDAOFactory {
 		}
 		return configurazioneEvoIntimazioniDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static ConfigurazioneEvoIntimazioniDAO getConfigurazioneEvoIntimazione(Connection connection, String schema) throws DaoException {
@@ -243,7 +231,7 @@ public class WalletDAOFactory {
 	private static String CONFIGURAZIONE_PAGAMENTOPERSERVIZIO_CLASS;
 	static {
 		CONFIGURAZIONE_PAGAMENTOPERSERVIZIO_CLASS = ConfigurazionePagamentoServizioDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -259,7 +247,7 @@ public class WalletDAOFactory {
 		}
 		return configurazionePagamentoServizioDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static ConfigurazionePagamentoServizioDAO getPagamentoPerservizio(Connection connection, String schema) throws DaoException {
@@ -279,7 +267,7 @@ public class WalletDAOFactory {
 
 	static {
 		TRIBUTO_CLASS = TributoDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -295,7 +283,7 @@ public class WalletDAOFactory {
 		}
 		return tributoDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static TributoDAO getTributoDAO(Connection connection, String schema) throws DaoException {
@@ -328,10 +316,10 @@ public class WalletDAOFactory {
 			sollecitiDAO = constructor.newInstance(datasource,schema);
 		} catch (Exception x) {
 			throw new DaoException(x);
-		}
+		} 
 		return sollecitiDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static SollecitiDAO getSollecitiDAO(Connection connection, String schema) throws DaoException {
@@ -342,7 +330,7 @@ public class WalletDAOFactory {
 			sollecitiDAO = constructor.newInstance(connection, schema);
 		} catch (Exception x) {
 			throw new DaoException(x);
-		}
+		} 
 		return sollecitiDAO;
 	}
 	//fine LP PG21XX04 Leak
@@ -350,7 +338,7 @@ public class WalletDAOFactory {
 	private static String CONFIGURAZIONE_ATTRIBUZIONEPAGSERV_CLASS;
 	static {
 		CONFIGURAZIONE_ATTRIBUZIONEPAGSERV_CLASS = ConfigurazioneAttribuzionePagamentoServizioDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -366,7 +354,7 @@ public class WalletDAOFactory {
 		}
 		return configurazioneAttribuzionePagamentoServizioDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static ConfigurazioneAttribuzionePagamentoServizioDAO getAttribuzionePagamentoServizio(Connection connection, String schema) throws DaoException {
@@ -385,7 +373,7 @@ public class WalletDAOFactory {
 	private static String CONFIGURAZIONE_RACCORDOPAGONET_CLASS;
 	static {
 		CONFIGURAZIONE_RACCORDOPAGONET_CLASS = ConfigurazioneRaccordoPagonetDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -401,7 +389,7 @@ public class WalletDAOFactory {
 		}
 		return configurazioneRaccordoPagonetDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static ConfigurazioneRaccordoPagonetDAO getRaccordoPagonet(Connection connection, String schema) throws DaoException {
@@ -420,7 +408,7 @@ public class WalletDAOFactory {
 	private static String REP_CLASS;
 	static {
 		REP_CLASS = RepDAOImpl.class.getName();
-	}
+	}    
 	@SuppressWarnings("unchecked")
 	public static RepDAO getRepDao(Connection connection, String schema) throws DaoException {
 		RepDAO dao= null;
@@ -437,7 +425,7 @@ public class WalletDAOFactory {
 	private static String FATTURE_REP_CLASS;
 	static {
 		FATTURE_REP_CLASS = FattureRepDAOImpl.class.getName();
-	}
+	}    
 	@SuppressWarnings("unchecked")
 	public static FattureRepDAO getFattureRepDAO(Connection connection, String schema) throws DaoException {
 		FattureRepDAO dao= null;
@@ -455,7 +443,7 @@ public class WalletDAOFactory {
 	private static String IMPORTO_TOTALE_FATTURE_REP_CLASS;
 	static {
 		IMPORTO_TOTALE_FATTURE_REP_CLASS = ImportoTotaleFattureREPDAOImpl.class.getName();
-	}
+	}    
 	@SuppressWarnings("unchecked")
 	public static ImportoTotaleFattureREPDAO getImportoTotaleFattureREPDao(Connection connection, String schema) throws DaoException {
 		ImportoTotaleFattureREPDAO dao= null;
@@ -473,7 +461,7 @@ public class WalletDAOFactory {
 	private static String FATTURE_COMUNICAZIONI_REP_CLASS;
 	static {
 		FATTURE_COMUNICAZIONI_REP_CLASS = FattureComunicazioniREPDAOImpl.class.getName();
-	}
+	}    
 	@SuppressWarnings("unchecked")
 	public static FattureComunicazioniREPDAO getFattureComunicazioniREPDAO(Connection connection, String schema) throws DaoException {
 		FattureComunicazioniREPDAO dao= null;
@@ -492,7 +480,7 @@ public class WalletDAOFactory {
 
 	static {
 		PRESENZEGIORNALIERE_CLASS =  PresenzeGiornaliereDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -508,7 +496,7 @@ public class WalletDAOFactory {
 		}
 		return presenzeGiornaliereDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static PresenzeGiornaliereDAO getPresenzeGiornaliereDAO(Connection connection, String schema) throws DaoException {
@@ -527,7 +515,7 @@ public class WalletDAOFactory {
 	private static String ANAGRAFICA_SPEDIZIONI_REP_CLASS;
 	static {
 		ANAGRAFICA_SPEDIZIONI_REP_CLASS = AnagraficaSpedizioneREPDAOImpl.class.getName();
-	}
+	}    
 	@SuppressWarnings("unchecked")
 	public static AnagraficaSpedizioneREPDAO getAnagraficaSpedizioneREPDAO(Connection connection, String schema) throws DaoException {
 		AnagraficaSpedizioneREPDAO dao= null;
@@ -545,7 +533,7 @@ public class WalletDAOFactory {
 
 	static {
 		LOG_ANAGRAFICA_FIGLIO_MENSE_CLASS = LogAnagraficaFiglioMenseDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -561,7 +549,7 @@ public class WalletDAOFactory {
 		}
 		return logAnagraficaFiglioMenseDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static LogAnagraficaFiglioMenseDAO getLogAnagraficaFiglioMenseDAO(Connection connection, String schema) throws DaoException {
@@ -581,7 +569,7 @@ public class WalletDAOFactory {
 
 	static {
 		PAGAMENTO_BORSELLINO_CLASS = PagamentoBorsellinoDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -597,7 +585,7 @@ public class WalletDAOFactory {
 		}
 		return pagamentoBorsellinoDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static PagamentoBorsellinoDAO getPagamentoBorsellinoDAO(Connection connection, String schema) throws DaoException {
@@ -617,7 +605,7 @@ public class WalletDAOFactory {
 
 	static {
 		ADDEBITI_BORSELLINO_CLASS = AddebitiBorsellinoDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -633,7 +621,7 @@ public class WalletDAOFactory {
 		}
 		return addebitiBorsellinoDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static AddebitiBorsellinoDAO getAddebitiBorsellinoDAO(Connection connection, String schema) throws DaoException {
@@ -653,7 +641,7 @@ public class WalletDAOFactory {
 
 	static {
 		IMPUTA_PAGAMENTI_CLASS = ImputaPagamentiDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -669,7 +657,7 @@ public class WalletDAOFactory {
 		}
 		return imputaPagamentiDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static ImputaPagamentiDAO getImputaPagamentiDAO(Connection connection, String schema) throws DaoException {
@@ -688,7 +676,7 @@ public class WalletDAOFactory {
 	private static String ABILITAZIONE_DISCARICO_CLASS;
 	static {
 		ABILITAZIONE_DISCARICO_CLASS = AbilitazioneDiscaricoDAOImpl.class.getName();
-	}
+	}  
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -704,7 +692,7 @@ public class WalletDAOFactory {
 		}
 		return abilitazioneDiscaricoDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static AbilitazioneDiscaricoDAO getAbilitazioneDiscarico(Connection connection, String schema) throws DaoException {
@@ -724,7 +712,7 @@ public class WalletDAOFactory {
 
 	static {
 		SEPA_CLASS = SepaDAOImpl.class.getName();
-	}
+	}    
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -740,20 +728,7 @@ public class WalletDAOFactory {
 		}
 		return sepaDAO;
 	}
-
-	// Connection connection, String schema, boolean isRest, String baseUrl
-	public static SepaDAO getSepaDAO(Connection connection, String schema, boolean isRest, String baseUrl) throws DaoException {
-		SepaDAO sepaDAO = null;
-		try {
-			Class<SepaDAO> clazz = (Class<SepaDAO>)Class.forName(SEPA_CLASS);
-			Constructor<SepaDAO> constructor = clazz.getConstructor(new Class[] {java.sql.Connection.class, java.lang.String.class, boolean.class, java.lang.String.class});
-			sepaDAO = constructor.newInstance(connection,schema,isRest,baseUrl);
-		} catch (Exception x) {
-			throw new DaoException(x);
-		}
-		return sepaDAO;
-	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static SepaDAO getSepaDAO(Connection connection, String schema) throws DaoException {
@@ -772,7 +747,7 @@ public class WalletDAOFactory {
 	private static String GESTIONE_AVVISI_CLASS;
 	static {
 		GESTIONE_AVVISI_CLASS = GestioneAvvisiDAOImpl.class.getName();
-	}
+	}  
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -788,7 +763,7 @@ public class WalletDAOFactory {
 		}
 		return gestioneAvvisiDAO;
 	}
-
+	
 	//inizio LP PG21XX04 Leak
 	@SuppressWarnings("unchecked")
 	public static GestioneAvvisiDAO getGestioneAvvisi(Connection connection, String schema) throws DaoException {

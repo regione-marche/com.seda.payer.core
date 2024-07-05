@@ -6,21 +6,19 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.PgBollIV;
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
+import com.seda.payer.core.handler.BaseDaoHandler;
 
-public class PgBollIVDao extends RestBaseDaoHandler {
+public class PgBollIVDao extends BaseDaoHandler
+{
 	
-	public PgBollIVDao(Connection connection, String schema, boolean isRest, String baseUrl) {
-		
-		super(connection, schema, isRest, baseUrl);
-	}
-
 	public PgBollIVDao(Connection connection, String schema) {
 		super(connection, schema);	
 	}
+
 	
 	public PgBollIV doBollDetailIV(String cuteCute, String bollettino, String tipoDato, String codiceEnte, String codiceIUV, String codiceFiscale) throws DaoException {
 		CallableStatement callableStatement = null;
@@ -105,8 +103,8 @@ public class PgBollIVDao extends RestBaseDaoHandler {
 		    //fine LP EP22405X
 		    //fine LP PG200360
 
-		    callableStatement.execute();
-		    return new PgBollIV(bdBoll, callableStatement, false);
+		    callableStatement.execute();			
+		    return new PgBollIV(bdBoll, callableStatement, false);		    
 		    
 		} catch (SQLException x) {
 			throw new DaoException(x);

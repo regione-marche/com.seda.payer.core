@@ -24,6 +24,7 @@ import com.seda.payer.core.bean.ArchivioCarichiScadenza;
 //fine LP PG210130
 import com.seda.payer.core.bean.ArchivioCarichiTesta;
 import com.seda.payer.core.bean.ArchivioCarichiTributo;
+import com.seda.payer.core.bean.Configurazione;
 import com.seda.payer.core.bean.DatiFlussoIO;
 import com.seda.payer.core.bean.DatiMailGeos;
 import com.seda.payer.core.bean.DettaglioFlussoOttico;
@@ -1592,32 +1593,5 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		if (callableStatement != null)
 			DAOHelper.closeIgnoringException(callableStatement);
 	}
-
-	// inizio SR PGNTCORE-17
-	public void doRollbackArchivioCarichiELG(String fileNameToElab, int progressivoFlusso) throws DaoException {
-		CallableStatement callableStatement = null;	
-		try {
-			callableStatement = prepareCall(Routines.PYELGSP_DEL.routine());
-			callableStatement.setString(1, fileNameToElab);
-			callableStatement.setLong(2, progressivoFlusso);
-			callableStatement.execute();
-		} catch (SQLException x) {
-			throw new DaoException(x);
-		} catch (IllegalArgumentException x) {
-			throw new DaoException(x);
-		} catch (HelperException x) {
-			throw new DaoException(x);
-		} finally {
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		}	
-	}
-	//fine SR PGNTCORE-17
-
 	
 }
