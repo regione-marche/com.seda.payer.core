@@ -5,22 +5,20 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.PgBollCDS;
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
+import com.seda.payer.core.handler.BaseDaoHandler;
 
-public class PgBollCDSDao extends RestBaseDaoHandler
+public class PgBollCDSDao extends BaseDaoHandler
 {
 	
 	public PgBollCDSDao(Connection connection, String schema) {
 		super(connection, schema);	
 	}
-	
-	public PgBollCDSDao(Connection connection, String schema, boolean isRest, String baseUrl) {
-		super(connection, schema, isRest, baseUrl);
-	}
 
+	
 	public PgBollCDS doBollDetailIV(String cuteCute, String bollettino) throws DaoException {
 		CallableStatement callableStatement = null;
 		try	{ 

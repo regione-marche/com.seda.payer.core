@@ -15,23 +15,12 @@ public class CreditCardRule extends RuleHandler {
 	 */
 	@Override
 	public boolean apply() throws ValidationException {
-		if (RegexManager.creditcard.doesntMatch(getValue())) {
-		   if(getLocale().getCountry().equals("IT")) {
-			  throw new ValidationException(RulesNames.CREDIT_CARD,Messages.CREDITCARDIT.format());
-			 }else {
-			  throw new ValidationException(RulesNames.CREDIT_CARD,Messages.CREDITCARD.format());
-			 }
-		} 
+		if (RegexManager.creditcard.doesntMatch(getValue()))
+			throw new ValidationException(RulesNames.CREDIT_CARD,Messages.CREDITCARD.format());
 		
-		if (checkLuhn()) {
+		if (checkLuhn()) 
 			return true;
-		}else {
-			   if(getLocale().getCountry().equals("IT")) {
-					  throw new ValidationException(RulesNames.CREDIT_CARD,Messages.CREDITCARDIT.format());
-					 }else {
-					  throw new ValidationException(RulesNames.CREDIT_CARD,Messages.CREDITCARD.format());
-					 }
-		}
+		throw new ValidationException(RulesNames.CREDIT_CARD,Messages.CREDITCARD.format()); 
 	}
 
 	public CreditCardRule() {}

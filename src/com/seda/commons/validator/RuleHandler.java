@@ -18,9 +18,8 @@ private Locale locale;	//04082016 GG
 	 */
 	public abstract boolean apply() throws ValidationException;
 
-	public final boolean apply(String value,Locale locale) throws ValidationException {
+	public final boolean apply(String value) throws ValidationException {
 		setValue(value);
-		setLocale(locale);
 		return apply();
 	}
 	/* (non-Javadoc)

@@ -13,15 +13,15 @@ import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.ConfigurazioneImpostaSoggiorno;
 import com.seda.payer.core.bean.ResponseData;
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
+import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.messages.Messages;
 
-public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
+public class ConfigurazioneImpostaSoggiornoDao extends BaseDaoHandler {
 
 	public ConfigurazioneImpostaSoggiornoDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
-	
+
 	//inizio LP PG21XX04 Leak
 	//private void closeConnection(CallableStatement callableStatement)
 	//{
@@ -30,10 +30,6 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 	//}
 	//fine LP PG21XX04 Leak
 	
-	public ConfigurazioneImpostaSoggiornoDao(Connection connection, String schema, boolean isRest, String baseUrl) {
-		super(connection, schema, isRest, baseUrl);
-	}
-
 	public ConfigurazioneImpostaSoggiorno doDetail(String codiceBelfiore) throws DaoException
 	{
 		CallableStatement callableStatement = null;

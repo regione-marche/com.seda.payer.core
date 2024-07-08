@@ -16,13 +16,8 @@ public class RangeRule extends RuleOptionsHandler {
 	public boolean apply() throws ValidationException {
 		checkOptionsExpected();
 		if (getValue().compareTo(getOptions()[0]) < 0 || 
-				getValue().compareTo(getOptions()[1]) > 0) {
-			if(getLocale().getCountry().equals("IT")) {
-			  throw new ValidationException(RulesNames.RANGE, Messages.RANGEIT.format(getOptions()[0],getOptions()[1]));
-			}else {
-			  throw new ValidationException(RulesNames.RANGE, Messages.RANGE.format(getOptions()[0],getOptions()[1]));
-			}
-		}
+				getValue().compareTo(getOptions()[1]) > 0) 
+			throw new ValidationException(RulesNames.RANGE, Messages.RANGE.format(getOptions()[0],getOptions()[1]));
 		
 		return true;		
 	}

@@ -16,15 +16,9 @@ public class DigitsRule extends RuleHandler {
 	 */
 	@Override
 	public boolean apply() throws ValidationException {
-		if (RegexManager.digits.doesntMatch(getValue())) {
-			if(getLocale().getCountry().equals("IT")) {
-				throw new ValidationException(RulesNames.DIGITS,Messages.DIGITSIT.format());
-			}else {
-			    throw new ValidationException(RulesNames.DIGITS,Messages.DIGITS.format());
-			}
-		}else {
+		if (RegexManager.digits.doesntMatch(getValue()))
+			throw new ValidationException(RulesNames.DIGITS,Messages.DIGITS.format());
 		return true;
-		}
 	}
 
 	public DigitsRule() {}	

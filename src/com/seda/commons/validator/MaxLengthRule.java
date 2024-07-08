@@ -11,19 +11,10 @@ public class MaxLengthRule extends RuleOptionsHandler {
 		try {
 			max = Integer.parseInt(getOptions()[0]);			
 		} catch (NumberFormatException x) {
-			if(getLocale().getCountry().equals("IT")) {
-				throw new ValidationException(RulesNames.MAX_LENGTH,Messages.integerExpectedIT.format(max));
-			}else {
-			   throw new ValidationException(RulesNames.MAX_LENGTH,Messages.integerExpected.format(max));
-			}
+			throw new ValidationException(RulesNames.MAX_LENGTH,Messages.integerExpected.format(max));
 		}
-		if (getValue().length() > max) {
-			if(getLocale().getCountry().equals("IT")) {
-			  throw new ValidationException(RulesNames.MAX_LENGTH,Messages.MAXLENGTHIT.format(max));
-			}else {
-			  throw new ValidationException(RulesNames.MAX_LENGTH,Messages.MAXLENGTH.format(max));
-			}
-		}
+		if (getValue().length() > max) 
+			throw new ValidationException(RulesNames.MAX_LENGTH,Messages.MAXLENGTH.format(max));
 
 		return true;		
 	}

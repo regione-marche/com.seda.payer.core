@@ -5,20 +5,17 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
+import com.seda.payer.core.handler.BaseDaoHandler;
 
-public class ImuTasiDao extends RestBaseDaoHandler {
+public class ImuTasiDao extends BaseDaoHandler {
 	
 	public ImuTasiDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
-	
-	public ImuTasiDao(Connection connection, String schema, boolean isRest, String baseUrl) {
-		super(connection, schema, isRest, baseUrl);
-	}
-	
+
 	//PG160180_001 GG - Introdotto dataPagamentoDa e dataPagamentoA
 	public void recuperaPagamentiImuTasi(String codiceUtente, String codiceProvinciaComune, String codiceFiscaleContribuente, String dataPagamentoDa, String dataPagamentoA) throws DaoException
 	{

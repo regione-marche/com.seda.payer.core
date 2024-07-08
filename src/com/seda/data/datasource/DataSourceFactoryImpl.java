@@ -1,5 +1,5 @@
 /**
- *
+ * 
  */
 package com.seda.data.datasource;
 
@@ -7,8 +7,6 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import com.seda.commons.logger.CustomLoggerManager;
-import com.seda.commons.logger.LoggerWrapper;
 import com.seda.commons.reflection.MetaObject;
 /**
  * @author f.ricci
@@ -17,10 +15,8 @@ import com.seda.commons.reflection.MetaObject;
 public class DataSourceFactoryImpl implements DataSourceFactory {
 
 	public final String DRIVER_KEY="driver.";
-
+	
 	protected DataSource dataSource;
-
-	protected LoggerWrapper logger = CustomLoggerManager.get(DataSourceFactoryImpl.class);
 
 	public DataSourceFactoryImpl() {
 		this.dataSource = new DataSourceImpl();
@@ -35,8 +31,10 @@ public class DataSourceFactoryImpl implements DataSourceFactory {
 				String value = (String) properties.get(propertyName);
 				Object convertedValue = convertValue(metaDataSource, retroCompatibility(propertyName), value);
 				metaDataSource.setValue(retroCompatibility(propertyName), convertedValue);
-			} else if (propertyName.contains(DRIVER_KEY)){
+			} else if (propertyName.startsWith(DRIVER_KEY)){
 				driverProperties.put(propertyName.substring(DRIVER_KEY.length()), properties.get(propertyName));
+			} else {
+				throw new DataSourceException("Unkown DataSource property: " + propertyName);
 			}
 		}
 		if (driverProperties.size() > 0) {
@@ -52,7 +50,7 @@ public class DataSourceFactoryImpl implements DataSourceFactory {
 		}
 		return propertyName;
 	}
-
+	
 	public DataSource getDataSource() {
 		return dataSource;
 	}

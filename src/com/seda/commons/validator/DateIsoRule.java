@@ -8,22 +8,14 @@ public class DateIsoRule extends RuleHandler {
 	@Override
 	public boolean apply() throws ValidationException {
 		if (getValue()==null) {
-			if(getLocale().getCountry().equals("IT")) {
-				throw new ValidationException(RulesNames.DATE_ISO,Messages.DATEISOIT.format());
-			}else {
-			    throw new ValidationException(RulesNames.DATE_ISO,Messages.DATEISO.format());	
-			}
+			throw new ValidationException(RulesNames.DATE_ISO,Messages.DATEISO.format());			
 		}
 		try {
 			SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 			sdf.setLenient(false);
 			sdf.parse(getValue());
 		} catch (ParseException e) {
-			if(getLocale().getCountry().equals("IT")) {
-				throw new ValidationException(RulesNames.DATE_ISO,Messages.DATEISOIT.format());
-			}else {
-			    throw new ValidationException(RulesNames.DATE_ISO,Messages.DATEISO.format());	
-			}
+			throw new ValidationException(RulesNames.DATE_ISO,Messages.DATEISO.format());
 		}
 //		if (RegexManager.dateISO.doesntMatch(getValue()))
 //			throw new ValidationException(Messages.DATEISO.format());

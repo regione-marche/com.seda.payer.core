@@ -124,13 +124,9 @@ public class DettaglioMonTransazione implements Serializable {
 				
 				if (note != null) {
 					String[] campi = note.split("\\|");
-					if (campi.length >= 1) {
+					if (campi.length == 3) {
 						res.setCausaleServizio(campi[0]);
-					}
-					if(campi.length >= 2){
 						res.setAnnoRiferimento(campi[1]);
-					}
-					if(campi.length == 3){
 						res.setCespite(campi[2]);
 					}
 				}

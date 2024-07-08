@@ -2,93 +2,100 @@ package com.seda.tag.core;
 
 import com.seda.tag.i18n.Strings;
 
+ 
 public class DateSelectorAgid extends DateSelector {
-
+	
 	@Override
 	public String render() {
 
 		try {
+			
+			String cssClass = this.getCssclass();
+			String cssClassLabel = this.getCssclasslabel();
 
-			sHtml = "<label class=\"active\" for=\"" + prefix + "_hidden\">" + label;
-
-			if (showRequired && HtmlUtil.isRequired(sValidator)) {
-				this.sHtml += HtmlUtil.getRequired();
-			}
-
-			sHtml += "</label>";
-
-			String value_hidden = "";
-			String value_day = "";
-			String value_month = "";
-			String value_year = "";
-
-			if (!(day.equals(1) && month.equals(1) && year.equals(1000))) {
-
-				value_hidden = String.format("%04d-%02d-%02d", year, month, day);
-				value_day = day.toString();
-				value_month = month.toString();
-				value_year = year.toString();
-			} else {
+			// default to current calendar if not specified
+//			if (calendar == null) {
+//				setCurrentCalendar();
+//			}
+			//Integer day =0;
+			//Integer month =0;
+			//Integer year =0;
 				
-				day = -1;
-				month = -1;
-				year = -1;
-			}
+			//if (calendar != null) {
+				//day = calendar.get(Calendar.DAY_OF_MONTH);
+				//month = calendar.get(Calendar.MONTH) + 1;
+				//year = calendar.get(Calendar.YEAR);
+				// Gestione data di default 1970-01-01
+				if(day.equals(1) && month.equals(1) && year.equals(1000)) {
+					day=-1;
+					month=-1;
+					year=-1;
+				}
+			//}
+					
 			
-			sHtml += "<input type=\"date\" id=\"" + prefix + "_hidden\" name=\"" + prefix + "_hidden\" value=\""
-					+ value_hidden + "\" class=\"form-control\" ";
+		
+			// create the select tags
+			if ((locale != null) && locale.toLowerCase().equals("en_us")
+					|| locale.toLowerCase().equals("en-us")) {
+				if (hasLabel())
+				{
+					sHtml = "<div id=\"" + prefix + "_label_div\" class=\"" + cssClassLabel +"\">" + this.label;
 
-			if (yearbegin != null && !yearbegin.isEmpty()) {
-				sHtml += "min=\"" + yearbegin + "-01-01\" ";
+					if (showRequired && HtmlUtil.isRequired(sValidator)) {
+						this.sHtml += HtmlUtil.getRequired();
+					}
+					
+					sHtml += "</div>";
+				}
+				else
+					sHtml ="";
+				
+				sHtml += "<div id=\"" + prefix + "_div\" class=\"" + cssClass +"\" >";
+				//sHtml += "<label for=\"" + prefix + Strings.DEFAULTMONTHID.format() + "\">"+ getSeparator(Strings.MONTHID.format(),1) +"</label>";
+				sHtml += "<label style=\"display:none\" for=\"" + prefix + Strings.DEFAULTMONTHID.format() + "\">hidden</label>";
+				
+				sHtml += createSelect(prefix + Strings.DEFAULTSUFFIXMONTH.format(), Integer.parseInt(monthbegin), Integer.parseInt(monthend), month, prefix + Strings.DEFAULTMONTHID.format());
+				//sHtml += "<label for=\"" + prefix + Strings.DEFAULTDAYID.format() + "\">"+ getSeparator(Strings.DAYID.format(),2) +"</label>";
+				sHtml += createSelect(prefix + Strings.DEFAULTSUFFIXDAY.format(), 1, 31, day, prefix + Strings.DEFAULTDAYID.format());
+				//sHtml += "<label for=\"" + prefix + Strings.DEFAULTYEARID.format() + "\">"+ getSeparator(Strings.YEARID.format(),3) +"</label>";
+				sHtml += createSelect(prefix + Strings.DEFAULTSUFFIXYEAR.format(), Integer.parseInt(yearbegin) , Integer.parseInt(yearend), year, prefix + Strings.DEFAULTYEARID.format());
+				sHtml += "</div>";
+			} else if ((locale != null) && locale.toLowerCase().equals("it_it")
+					|| locale.toLowerCase().equals("it-it")) {
+
+				if (hasLabel()){
+					sHtml = "<div id=\"" + prefix + "_label_div\" class=\"" + cssClassLabel +"\">" + this.label;
+				
+					if (showRequired && HtmlUtil.isRequired(sValidator)) {
+						this.sHtml += HtmlUtil.getRequired();
+					}
+				
+					sHtml += "</div>";
+				}
+				else
+					sHtml ="";
+				
+				sHtml += "<div style=\"column-gap: 10px\" id=\"" + prefix + "_div\" class=\"" + cssClass +"\">";
+				//sHtml += "<label for=\"" + prefix + Strings.DEFAULTDAYID.format() + "\">"+ getSeparator(Strings.DAYID.format(),1) +"</label>";
+				sHtml += "<label style=\"display:none\" for=\"" + prefix + Strings.DEFAULTDAYID.format() + "\">hidden</label>";
+				sHtml += createSelect(prefix + Strings.DEFAULTSUFFIXDAY.format(), 1, 31, day, prefix + Strings.DEFAULTDAYID.format());
+				//sHtml += "<label for=\"" + prefix + Strings.DEFAULTMONTHID.format() + "\">"+ getSeparator(Strings.MONTHID.format(),2) +"</label>";
+				sHtml += createSelect(prefix + Strings.DEFAULTSUFFIXMONTH.format(), Integer.parseInt(monthbegin), Integer.parseInt(monthend), month, prefix + Strings.DEFAULTMONTHID.format());
+				//sHtml += "<label for=\"" + prefix + Strings.DEFAULTYEARID.format() + "\">"+ getSeparator(Strings.YEARID.format(),3) +"</label>";
+				sHtml += createSelect(prefix + Strings.DEFAULTSUFFIXYEAR.format(), Integer.parseInt(yearbegin), Integer.parseInt(yearend), year, prefix + Strings.DEFAULTYEARID.format());
+				sHtml += "</div>";
 			}
-
-			if (yearend != null && !yearend.isEmpty()) {
-				sHtml += "max=\"" + yearend + "-12-31\" ";
-			}
-
-			sHtml += getStrDisabled();
-			
-			sHtml += "/>";
-
-			sHtml += "<input type=\"hidden\" id=\"" + prefix + Strings.DEFAULTSUFFIXDAY.format() + "\" name=\"" + prefix
-					+ Strings.DEFAULTSUFFIXDAY.format() + "\" value=\"" + value_day + "\" />";
-
-			sHtml += "<input type=\"hidden\" id=\"" + prefix + Strings.DEFAULTSUFFIXMONTH.format() + "\" name=\""
-					+ prefix + Strings.DEFAULTSUFFIXMONTH.format() + "\" value=\"" + value_month + "\" />";
-
-			sHtml += "<input type=\"hidden\" id=\"" + prefix + Strings.DEFAULTSUFFIXYEAR.format() + "\" name=\""
-					+ prefix + Strings.DEFAULTSUFFIXYEAR.format() + "\" value=\"" + value_year + "\" />";
-
-			sHtml += "<script type=\"text/javascript\" >\n"
-					+ "	$(document).ready(function(){\n"
-					+ "	    $(\"#" + prefix + "_hidden\").on(\"change\", function(){\n"
-					+ "	    	console.log($(\"#" + prefix + "_hidden\").val());\n"
-					+ "	    	const myArray = $(\"#" + prefix + "_hidden\").val().split(\"-\");\n"
-					+ "	    	$(\"#" + prefix + Strings.DEFAULTSUFFIXDAY.format() + "\").val(myArray[2]);\n"
-					+ "	    	$(\"#" + prefix + Strings.DEFAULTSUFFIXMONTH.format() + "\").val(myArray[1]);\n"
-					+ "	    	$(\"#" + prefix + Strings.DEFAULTSUFFIXYEAR.format() + "\").val(myArray[0]);\n"
-					+ "	    });\n"
-					+ "	});\n"
-					+ "</script>";
 			
 		} catch (Exception ex) {
 			sHtml = "<div class=\"seda-ui-error\" >il tag DateSelector non è ben definito</div>";
-		} finally {
+		}
+		finally{
 			reset();
 		}
 
 		return sHtml;
 
-	}
-
-	@Override
-	protected String getStrDisabled() {
-		
-		String disabled="";
-		if (this.getDisabled())
-			disabled="readonly=\"readonly\"";
-		
-		return disabled;
 	}
 	
 }

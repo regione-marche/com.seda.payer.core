@@ -56,8 +56,7 @@ public class Ente extends Lifecycle implements Serializable {
     //fine LP PG180290
     //inizio LP PG210040
     private java.lang.String codiceGruppo;
-	//fine LP PG210040
-	private java.lang.String flagIntegrazioneJPPA;
+    //fine LP PG210040
     private User user;
     private AnagEnte anagEnte;
 
@@ -133,8 +132,6 @@ public class Ente extends Lifecycle implements Serializable {
         //inizio LP PG210040
         if(data.getString("ENT_CGRPCODE") != null)
         	codiceGruppo = data.getString("ENT_CGRPCODE").trim();
-		if(data.getString("ENT_FENTJPPA") != null)
-			flagIntegrazioneJPPA = data.getString("ENT_FENTJPPA").trim();
         //fine LP PG210040
         user = new User(); {
         	user.getCompany().setCompanyCode(data.getString("ENT_CSOCCSOC"));
@@ -471,15 +468,7 @@ public class Ente extends Lifecycle implements Serializable {
 		this.codiceGruppo = codiceGruppo;
 	}
     //fine LP PG210040
-
-	public java.lang.String getFlagIntegrazioneJPPA() {
-		return flagIntegrazioneJPPA;
-	}
-
-	public void setFlagIntegrazioneJPPA(java.lang.String flagIntegrazioneJPPA) {
-		this.flagIntegrazioneJPPA = flagIntegrazioneJPPA;
-	}
-
+	
 	@Override
 	public void onSave(CallableStatement arg) throws SQLException {
 		arg.setString(1, this.user.getCompany().getCompanyCode());
@@ -550,10 +539,6 @@ public class Ente extends Lifecycle implements Serializable {
 		else
 			arg.setNull(40, Types.VARCHAR);
 	    //fine LP PG210040
-		if(flagIntegrazioneJPPA != null)
-			arg.setString(41, flagIntegrazioneJPPA);
-		else
-			arg.setNull(41, Types.VARCHAR);
 	}
 	
 
@@ -626,10 +611,6 @@ public class Ente extends Lifecycle implements Serializable {
 			arg.setString(40,codiceGruppo);
 		else
 			arg.setNull(40, Types.VARCHAR);
-		if(flagIntegrazioneJPPA != null)
-			arg.setString(41, flagIntegrazioneJPPA);
-		else
-			arg.setNull(41, Types.VARCHAR);
 	    //fine LP PG210040
 	}
 	
