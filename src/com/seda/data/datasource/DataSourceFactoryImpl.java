@@ -7,6 +7,8 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import com.seda.commons.logger.CustomLoggerManager;
+import com.seda.commons.logger.LoggerWrapper;
 import com.seda.commons.reflection.MetaObject;
 /**
  * @author f.ricci
@@ -17,6 +19,8 @@ public class DataSourceFactoryImpl implements DataSourceFactory {
 	public final String DRIVER_KEY="driver.";
 	
 	protected DataSource dataSource;
+
+	protected LoggerWrapper logger = CustomLoggerManager.get(DataSourceFactoryImpl.class);
 
 	public DataSourceFactoryImpl() {
 		this.dataSource = new DataSourceImpl();

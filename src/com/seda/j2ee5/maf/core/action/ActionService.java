@@ -4,6 +4,7 @@
 package com.seda.j2ee5.maf.core.action;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -21,6 +22,6 @@ public interface ActionService extends Serializable {
 	 * @return <code>Object</code> a reserved event Object
 	 * @throws ActionException if an error occurred
 	 */	
-	public Object service(HttpServletRequest request) throws ActionException;	
+	public Object service(HttpServletRequest request) throws ActionException;
 	
 }

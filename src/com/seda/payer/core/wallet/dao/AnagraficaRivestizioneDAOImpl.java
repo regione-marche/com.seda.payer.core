@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Properties;
+import java.util.TimerTask;
 import java.util.TreeSet;
 
 import javax.sql.DataSource;
@@ -15,6 +16,7 @@ import com.seda.data.dao.DAOHelper;
 
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 
@@ -58,7 +60,10 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			connection = getConnection();
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE);
-			callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE);
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE);
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE);
+			//PGNTCORE-24 - fine
 			//fine LP PG21XX04 Leak
 			callableStatement.registerOutParameter(1, Types.INTEGER);
 			callableStatement.registerOutParameter(2, Types.VARCHAR);
@@ -66,7 +71,7 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			
 			// save output parameters as attributes
 			attributes = new Properties();
-			attributes.setProperty("RETURNCODE", callableStatement.getString(1));
+			attributes.setProperty("RETURNCODE", String.valueOf(callableStatement.getInt(1)));
 			attributes.setProperty("RETURNMESSAGE", callableStatement.getString(2));
 			
 			return callableStatement.getInt(1);
@@ -74,8 +79,8 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
-			throw new DaoException(e);
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
 			if (callableStatement != null) {
@@ -157,7 +162,10 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_350);
-			callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_350);
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_350);
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_350);
+			//PGNTCORE-24 - fine
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, welcomeKit);
 			callableStatement.registerOutParameter(2, Types.INTEGER);
@@ -210,8 +218,8 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
-			throw new DaoException(e);
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
 			if (resultSet != null) {
@@ -696,7 +704,7 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 		try {
 			connection = getConnection();
 			if (callableStatement512==null) {
-				callableStatement512=Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512_ONLY_ONE);
+				callableStatement512=MetaProcedure.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512_ONLY_ONE);
 			}
 //			callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512_ONLY_ONE);
 			callableStatement512.setInt(1, lunghezzaAnagrafica);

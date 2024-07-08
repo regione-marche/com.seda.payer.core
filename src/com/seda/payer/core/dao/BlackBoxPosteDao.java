@@ -10,12 +10,17 @@ import java.util.List;
 
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflector;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.bean.ConfigurazioneBlackBox;
 import com.seda.payer.core.bean.ConfigurazionePosteBlackBoxPos;
 import com.seda.payer.core.bean.PosteBlackBoxTes;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.wallet.bean.EsitoRisposte;
+
+import javax.swing.plaf.metal.MetalProgressBarUI;
 
 public class BlackBoxPosteDao extends BaseDaoHandler {
 
@@ -33,7 +38,10 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		ResultSet resultSet = null;
 		
 		try {
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNCNFSP_PST_LST.routine()); 
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNCNFSP_PST_LST.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNCNFSP_PST_LST.routine());
+			//PGNTCORE-24 - fine
 			resultSet = callableStatement.executeQuery();
 			
 			while (resultSet.next()) {
@@ -47,7 +55,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			}
 		} catch (SQLException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		} finally {
 			if (resultSet != null) {
@@ -76,9 +84,10 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		
 		try {
-
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_INS.routine());
-		
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_INS.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_INS.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
 			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
@@ -128,7 +137,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
 		} finally {
@@ -153,9 +162,11 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		ResultSet resultSet = null;
 		
 		try {
-			
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_LST.routine());
-			
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_LST.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_LST.routine());
+			//PGNTCORE-24 - fine
+
 			callableStatement.setString(1, idDominio);
 			callableStatement.setString(2, codiceEnte);
 			callableStatement.setString(3, inviato ? "Y" : "N");
@@ -167,7 +178,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			}
 		} catch (SQLException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		} finally {
 			if (resultSet != null) {
@@ -197,9 +208,10 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		ResultSet resultSet =  null;
 
 		try {
-			
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_SEL.routine());
-			
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_SEL.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_SEL.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1, codiceIdentificativoDominio);
 			callableStatement.setString(2, codiceEnte);
 			callableStatement.setString(3, numeroAvviso);
@@ -213,7 +225,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		} finally {
 			if (resultSet != null) {
@@ -241,8 +253,10 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		int ret = 0;
 		CallableStatement callableStatement = null;
 		try {
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNPSTSP_INS.routine());
-			
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNPSTSP_INS.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNPSTSP_INS.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1, testata.getTipoFlusso());
 			callableStatement.setString(2, testata.getCodiceIdDominio());
 			callableStatement.setDate(3, new java.sql.Date(testata.getTimestampFlusso().getTimeInMillis()));
@@ -256,7 +270,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
 		} finally {
@@ -278,8 +292,10 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		CallableStatement callableStatement = null;
 		try {
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_DEL.routine());
-			
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_DEL.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_DEL.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1, configurazionePosteBlackBoxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, configurazionePosteBlackBoxpos.getCodiceEnte());
 			callableStatement.setString(3, configurazionePosteBlackBoxpos.getNumeroAvviso());
@@ -294,7 +310,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
 		} finally {
@@ -323,7 +339,10 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		CallableStatement stat = null;
 		try {
 			Connection connection = getConnection();
-			stat = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_UPD.routine());
+			//PGNTCORE-24 - inizio
+			//stat = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_UPD.routine());
+			stat = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_UPD.routine());
+			//PGNTCORE-24 - fine
 			stat.setString(1, posizioneDebitoria.getCodiceIdentificativoDominio());
 			stat.setString(2, posizioneDebitoria.getCodiceEnte());
 			stat.setString(3, posizioneDebitoria.getNumeroAvviso());

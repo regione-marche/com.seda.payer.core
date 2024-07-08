@@ -15,6 +15,8 @@ import javax.sql.rowset.CachedRowSet;
 import com.seda.commons.string.Convert;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.BlackBoxPagelist;
 import com.seda.payer.core.bean.BlackBoxPosLog;
@@ -50,7 +52,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNCNFSP_SEL.routine());
+			//PGNTCORE-24 - inizio
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNCNFSP_SEL.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1, blackbox.getCodiceEnte());
 			callableStatement.setString(2, blackbox.getCodiceIdentificativoDominio());
 			callableStatement.setString(3, blackbox.getCodiceApplicationCode());
@@ -96,7 +100,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		} finally {
 			// inizio LP PG21XX04 Leak
@@ -590,8 +594,8 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_SEL.routine());
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
-//			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
-			callableStatement.setString(3, blackboxpos.getCodiceIuv());
+			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
+//			callableStatement.setString(3, blackboxpos.getCodiceIuv());
 			callableStatement.execute();
 			resultSet = callableStatement.getResultSet();
 			if (resultSet.next()) {

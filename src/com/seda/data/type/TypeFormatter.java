@@ -44,11 +44,7 @@ public class TypeFormatter {
 					break;
 				default:
 					if (compareNames)
-						//tabSize[i] = Math.max(metaData.getColumnName(i).length(), metaData.getColumnDisplaySize(i));
-						//RTC: Messo per correggere un problema del driver di postgresql
-						//Quando il driver non sa qual e' la size giusta, ritorna la massima che e' troppo grande
-						tabSize[i] = Math.max(metaData.getColumnName(i).length(), (metaData.getColumnDisplaySize(i) == 2147483647 ? metaData.getColumnName(i).length(): metaData.getColumnDisplaySize(i)));
-					
+						tabSize[i] = Math.max(metaData.getColumnName(i).length(), metaData.getColumnDisplaySize(i));					
 					else
 						tabSize[i] = metaData.getColumnDisplaySize(i);
 				}

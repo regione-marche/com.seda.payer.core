@@ -1,16 +1,15 @@
 package com.seda.payer.core.dao;
 
 import java.math.BigDecimal;
-import java.sql.CallableStatement;
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Timestamp;
-import java.sql.Types;
+import java.sql.*;
 import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
+import java.util.Locale;
 
 //inizio LP PG21XX04 Leak
 //import com.seda.data.dao.DAOHelper;
@@ -32,11 +31,12 @@ import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
 import com.sun.rowset.WebRowSetImpl;
 
 @SuppressWarnings("restriction")
-public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
+public class
+ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 
-    protected LoggerWrapper logger = CustomLoggerManager.get(ComunicazioneImpostaSoggiornoDao.class);
+	protected LoggerWrapper logger = CustomLoggerManager.get(ComunicazioneImpostaSoggiornoDao.class);
 
-    public ComunicazioneImpostaSoggiornoDao(Connection connection, String schema) {
+	public ComunicazioneImpostaSoggiornoDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
 
@@ -1319,15 +1319,16 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 	}
    //PG22XX04_SB1 - fine
 
-	public List<TestataComunicazioneImpostaSoggiorno> listaComunicazioni(String data, String flag)throws DaoException{
+	public List<TestataComunicazioneImpostaSoggiorno> listaComunicazioni(Date data,String flag)throws DaoException{
 		CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
+		LocalDate date=null;
 		List<TestataComunicazioneImpostaSoggiorno> testate = new ArrayList<>();
 		TestataComunicazioneImpostaSoggiorno testata = new TestataComunicazioneImpostaSoggiorno();
 		try	{
 			callableStatement = prepareCall("PYSCTSP_LST_SEND_UFFICIO");
-			callableStatement.setString(1, data);
-			callableStatement.setString(2, flag);
+			callableStatement.setString(1, flag);
+			callableStatement.setDate(2, data);
 
 			if (callableStatement.execute()) {
 				this.loadWebRowSet(callableStatement);

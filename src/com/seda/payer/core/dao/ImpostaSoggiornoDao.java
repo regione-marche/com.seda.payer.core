@@ -14,7 +14,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
 
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;

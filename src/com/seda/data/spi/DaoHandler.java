@@ -104,6 +104,11 @@ public abstract class DaoHandler {
 	protected final CallableStatement prepareCall(String routine) throws IllegalArgumentException, SQLException, HelperException {
 		return prepareCall(routine, -1);
 	}
+//aggiunto
+	protected CallableStatement prepareCall(String routine, String methodRest, String restService) throws IllegalArgumentException, SQLException, HelperException {
+		return prepareCall(routine, -1);
+	}
+
 	
 	/**
 	 * Returns a prepared CallableStatement object builded using DAO schema and provided routine name

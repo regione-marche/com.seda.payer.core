@@ -15,6 +15,8 @@ import com.seda.commons.string.Convert;
 import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -41,7 +43,10 @@ public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 		String storicoXML= "";
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST.routine());
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST.routine());
+			//PGNTCORE-24 - fine
 			                        /* page number*/
 			callableStatement.setString(1,solleciti.getIdWallet());			 
 			/* we execute procedure */
@@ -61,7 +66,7 @@ public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		}finally {
 			//inizio LP PG21XX04 Leak

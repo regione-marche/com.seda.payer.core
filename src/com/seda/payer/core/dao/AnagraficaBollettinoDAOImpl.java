@@ -13,6 +13,9 @@ import javax.sql.rowset.CachedRowSet;
 import com.seda.commons.string.Convert;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflector;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.AnagraficaBollettino;
 import com.seda.payer.core.bean.AnagraficaBollettinoECReports;
@@ -57,7 +60,10 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		try	{
 			connection = getConnection();
 			AnagraficaBollettino res=null;
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_SEL.routine());
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_SEL.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYECASP_SEL.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1, codiceSocieta);
 			callableStatement.setString(2, codiceUtente);
 			callableStatement.setString(3, chiaveEnte);
@@ -88,7 +94,7 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
-		} catch (HelperException x) {
+		} catch (ProcedureReflectorException x) {
 			throw new DaoException(x);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -208,7 +214,10 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_LST_ANA.routine());
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_LST_ANA.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYECASP_LST_ANA.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,order);
@@ -272,7 +281,7 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			anaBollettinoPageList = new AnagraficaBollettinoPageList(pageInfo, "01","Sql-Exception","");
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			anaBollettinoPageList = new AnagraficaBollettinoPageList(pageInfo, "01","Sql-Exception","");
 		} finally {
@@ -316,7 +325,10 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_LST_ANA.routine());
+			//PGNTCORE-24 - inzio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_LST_ANA.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYECASP_LST_ANA.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,order);
@@ -434,7 +446,7 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -470,7 +482,10 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		int ret=0;
 		try { 
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_UPD_PACC.routine());
+			//PGNTCORE-24 - inzio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_UPD_PACC.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYECASP_UPD_PACC.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1, anagraficabollettino.getCodiceSocieta());
 			callableStatement.setString(2, anagraficabollettino.getCodiceUtente());
 			callableStatement.setString(3, anagraficabollettino.getChiaveEnte());
@@ -492,7 +507,7 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -528,7 +543,10 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		AnagraficaBollettinoECReports res = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECABRS_RPT.routine());
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECABRS_RPT.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYECABRS_RPT.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1,codiceSocieta);
 			callableStatement.setString(2,codiceUtente);
 			callableStatement.setString(3,chiaveEnte);
@@ -565,7 +583,7 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
-		} catch (HelperException x) {
+		} catch (ProcedureReflectorException x) {
 			throw new DaoException(x);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -613,7 +631,10 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		String xmlLst  ="";
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECBRLOG_RPT.routine());
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECBRLOG_RPT.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYECBRLOG_RPT.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,order);
@@ -662,7 +683,7 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			anaBollLogReportsList = new AnaBollLogReportsPageList(pageInfo, "01","Sql-Exception","");
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			anaBollLogReportsList = new AnaBollLogReportsPageList(pageInfo, "01","Sql-Exception","");
 		} finally {
@@ -699,7 +720,10 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		Connection connection = null;
 		try { 
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_UPD.routine());
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_UPD.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYECASP_UPD.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1, anagraficabollettino.getCodiceSocieta());				
 			callableStatement.setString(2, anagraficabollettino.getCodiceUtente());
 			callableStatement.setString(3, anagraficabollettino.getChiaveEnte());
@@ -722,7 +746,7 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -755,7 +779,10 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		try	{
 			connection = getConnection();
 			AnagraficaStrutturaRicettiva res = null;
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSANSP_SEL_CFIS.routine());
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSANSP_SEL_CFIS.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSANSP_SEL_CFIS.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1, codiceFiscale);
 			callableStatement.registerOutParameter(2, Types.INTEGER);
 
@@ -785,7 +812,7 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
-		} catch (HelperException x) {
+		} catch (ProcedureReflectorException x) {
 			throw new DaoException(x);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -831,7 +858,9 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		ArrayList<AnagraficaStrutturaRicettiva> anaStrutturaRicettivaList = null;
 		try	{	
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSANSP_SEL_CFIS.routine());
+			//PGNTCORE-24 - inizio
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSANSP_SEL_CFIS.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1, codiceFiscale);
 			callableStatement.registerOutParameter(2, Types.INTEGER);
 
@@ -850,7 +879,7 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
-		} catch (HelperException x) {
+		} catch (ProcedureReflectorException x) {
 			throw new DaoException(x);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -893,7 +922,10 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		String retMessage = "";
 		try { 
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_INS.routine());
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_INS.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYECASP_INS.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1, anagraficabollettino.getCodiceSocieta());				
 			callableStatement.setString(2, anagraficabollettino.getCodiceUtente());
 			callableStatement.setString(3, anagraficabollettino.getChiaveEnte());
@@ -937,7 +969,7 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -968,7 +1000,10 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		Connection connection = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYUTESP_SEL_SOC.routine());
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYUTESP_SEL_SOC.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYUTESP_SEL_SOC.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1, codiceUtente);
 			callableStatement.execute();
 			
@@ -1017,7 +1052,10 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		ResultSet out = null;
 		try { 
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.EH1_FLAGSTAMPA.routine());
+			//PGNTCORE-24 - inizio
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.EH1_FLAGSTAMPA.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.EH1_FLAGSTAMPA.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1,codUtente);
 			callableStatement.setString(2,"");
 			callableStatement.setString(3,codEnte);
@@ -1037,7 +1075,7 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -1078,7 +1116,9 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		Connection connection = null;
 		try { 
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_UPD_PIN.routine());
+			//PGNTCORE-24 - inizio
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYECASP_UPD_PIN.routine());
+			//PGNTCORE-24 - fine
 			callableStatement.setString(1, codiceSocieta);				
 			callableStatement.setString(2, codiceUtente);
 			callableStatement.setString(3, chiaveEnte);
@@ -1096,7 +1136,7 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
