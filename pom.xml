@@ -8,9 +8,6 @@
 	<name>com.seda.payer.core</name>
 	<description>com.seda.payer.core</description>
 
-
-
-
 	<parent>
 		<groupId>it.maggioli.informatica.base.pom</groupId>
 		<artifactId>pagonet-base</artifactId>
