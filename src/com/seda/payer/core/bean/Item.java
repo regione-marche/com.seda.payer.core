@@ -183,7 +183,6 @@ public class Item implements Serializable {
 	}
 
 	public void onSave(CallableStatement arg) throws SQLException {
-		int i = 1;
 		System.out.println("getIdCarrello() = " + getIdCarrello());
 		System.out.println("getCodiceSocieta() = " + getCodiceSocieta());
 		System.out.println("getCodiceUtente() = " + getCodiceUtente());
@@ -195,18 +194,18 @@ public class Item implements Serializable {
 		System.out.println("getPrezzo() = " + getPrezzo());
 		System.out.println("getQuantita() = " + getQuantita());
 		System.out.println("getAttributesAsBuffer() = " + getAttributesAsBuffer());
-		arg.setString(i++, getIdCarrello());
-		arg.setString(i++,getCodiceSocieta());
-		arg.setString(i++,getCodiceUtente());
-		arg.setString(i++,getChiaveEnte());
-		arg.setString(i++,getCodiceTipologiaServizio());
-		arg.setString(i++,getCodiceImpostaServizio());
-		arg.setString(i++,getTipoBollettino());
-		arg.setString(i++,getDescrizione());
-		arg.setBigDecimal(i++, getPrezzo());
-		arg.setInt(i++, getQuantita());
-		arg.setString(i++, getAttributesAsBuffer());
-		
+
+		arg.setString(1, getIdCarrello());
+		arg.setString(2,getCodiceSocieta());
+		arg.setString(3,getCodiceUtente());
+		arg.setString(4,getChiaveEnte());
+		arg.setString(5,getCodiceTipologiaServizio());
+		arg.setString(6,getCodiceImpostaServizio());
+		arg.setString(7,getTipoBollettino());
+		arg.setString(8,getDescrizione());
+		arg.setBigDecimal(9, getPrezzo());
+		arg.setInt(10, getQuantita());
+		arg.setString(11, getAttributesAsBuffer());
 
 		System.out.println("getIdCarrello: "+ getIdCarrello());
 		System.out.println("getCodiceSocieta: "+ getCodiceSocieta());
