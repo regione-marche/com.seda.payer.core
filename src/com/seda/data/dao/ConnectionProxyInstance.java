@@ -30,10 +30,10 @@ public class ConnectionProxyInstance {
 		    	if (cursorNumber>0) {
 		    		pgConnection.setAutoCommit(false);
 		    	} else {
-					//Dal momento che in caso la sp abbia dei cursori di output è necessario impostare l'autocommit a true (vedi sopra)
+					//Dal momento che in caso la sp abbia dei cursori di output è necessario impostare l'autocommit a fakse (vedi sopra)
 					//occorre reimpostare a true l'autocommit in caso di successive sp richiamate senza cursori
-					//Ad esempio se per fare un aggiornamento/inserimento si richiama prima una sp di select e poi una sp di uodate/insert
-					//Con la sp di sleect sarebbe impostato autocommit a false, è necessario remipostare autocommit a true per consentire il commit per update/insert
+					//Ad esempio se per fare un aggiornamento/inserimento si richiama prima una sp di select e poi una sp di update/insert
+					//Con la sp di select sarebbe impostato autocommit a false, è necessario remipostare autocommit a true per consentire il commit per update/insert
 					//Dal momento che diversi batch impostano l'autocommit a false, non deve essere impostato l'autocommit a true in caso di chiamata di sp senza cursori
 					//per cui è stato introdotto il parametro flagUpdateAutocommit che può assumere valori 0 o 1
 					//Per default flagUpdateAutocommit è settato ad 1 e reimposta l'autocommit a true per le operazioni senza cursore

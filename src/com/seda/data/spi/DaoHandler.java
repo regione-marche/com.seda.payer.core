@@ -101,7 +101,7 @@ public abstract class DaoHandler {
 	 * @throws HelperException in case of unpaired number of parameters. In this method will never happen
 	 */
 	
-	protected final CallableStatement prepareCall(String routine) throws IllegalArgumentException, SQLException, HelperException {
+	protected CallableStatement prepareCall(String routine) throws IllegalArgumentException, SQLException, HelperException {
 		return prepareCall(routine, -1);
 	}
 //aggiunto
