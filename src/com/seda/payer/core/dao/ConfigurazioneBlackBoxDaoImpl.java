@@ -426,14 +426,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			blackboxPagelist = new BlackBoxPagelist(pageInfo, "01", "Sql-Exception", "");
-		} catch (HelperException e) {
-			e.printStackTrace();
-			blackboxPagelist = new BlackBoxPagelist(pageInfo, "01", "Sql-Exception", "");
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	blackboxPagelist = new BlackBoxPagelist(pageInfo, "01", "Sql-Exception", "");
-		} catch (ProcedureReflectorException e) {
+		}
+		// inizio LP PGNTCORE-24
+		catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			blackboxPagelist = new BlackBoxPagelist(pageInfo, "01", "Sql-Exception", "");
 		//fine LP PGNTCORE-24 
@@ -536,13 +531,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			blackBoxPosPagelist = new BlackBoxPosPagelist(pageInfo, "01", "Sql-Exception", "");
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	blackboxPagelist = new BlackBoxPagelist(pageInfo, "01", "Sql-Exception", "");
+		//inizio LP PGNTCORE-24
 		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
-			blackboxPagelist = new BlackBoxPagelist(pageInfo, "01", "Sql-Exception", "");
+			blackBoxPosPagelist = new BlackBoxPosPagelist(pageInfo, "01", "Sql-Exception", "");
 		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
@@ -917,14 +909,12 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			blackBoxPosLogPagelist = new BlackBoxPosLogPagelist(pageInfo, "01", "Sql-Exception", "");
-		} catch (HelperException e) {
-			e.printStackTrace();
-			blackBoxPosLogPagelist = new BlackBoxPosLogPagelist(pageInfo, "01", "Sql-Exception", "");
+		}
 		//inizio LP PGNTCORE-24 
 		//} catch (HelperException e) {
 		//	e.printStackTrace();
 		//	blackBoxPosLogPagelist = new BlackBoxPosLogPagelist(pageInfo, "01", "Sql-Exception", "");
-		} catch (ProcedureReflectorException e) {
+		catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			blackBoxPosLogPagelist = new BlackBoxPosLogPagelist(pageInfo, "01", "Sql-Exception", "");
 		//fine LP PGNTCORE-24 
