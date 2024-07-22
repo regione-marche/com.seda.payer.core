@@ -17,6 +17,7 @@ import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 
@@ -759,7 +760,7 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 		} catch (IllegalArgumentException e) {
 			System.out.println("errore AnagraficaRivestizione512OnlyOne = " + e.getMessage()) ;
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			System.out.println("errore AnagraficaRivestizione512OnlyOne = " + e.getMessage()) ;
 			throw new DaoException(e);
 		} finally {

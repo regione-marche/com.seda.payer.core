@@ -57,7 +57,7 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		try {
 			connection = getConnection();
 			//PG180080 modificare SP e parametri da passare
-			callableStatement = prepareCall(connection, getSchema(), Routines.PYMDTSP_SEL.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMDTSP_SEL.routine());
 			callableStatement.setString(1, configurazioneModello3.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneModello3.getCodiceUtente());
 			callableStatement.setString(3, configurazioneModello3.getChiaveEnte());
@@ -123,7 +123,7 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		}finally {
 			//inizio LP PG21XX04 Leak
