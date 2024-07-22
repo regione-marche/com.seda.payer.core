@@ -8,8 +8,8 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.DaoHandler;
 import com.seda.payer.core.bean.FlussiPageList;
 import com.seda.payer.core.bean.Flusso;
@@ -31,7 +31,10 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 		ResultSet data = null;
 		
 		try {
-			cs = Helper.prepareCall(connection, getSchema(), Routines.CNPSTSP_MAN_LST.routine());
+			//inizio LP PGNTCORE-24 
+			//cs = Helper.prepareCall(connection, getSchema(), Routines.CNPSTSP_MAN_LST.routine());
+            cs = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNPSTSP_MAN_LST.routine());
+			//fine LP PGNTCORE-24 
 			int p = 1;
 			cs.setString(p++, tipoFlusso);
 			cs.setString(p++, codFiscAgg);
@@ -69,8 +72,12 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 			}
 		} catch (SQLException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24 
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			if (data != null) {
 				try {
@@ -100,7 +107,10 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 		ResultSet data = null;
 		
 		try {
-			cs = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_MAN_LST.routine());
+			//inizio LP PGNTCORE-24 
+			//cs = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_MAN_LST.routine());
+            cs = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_MAN_LST.routine());
+			//fine LP PGNTCORE-24 
 			int p = 1;
 			cs.setInt(p++, idFlusso);
 			cs.setString(p++, idDominio);
@@ -129,8 +139,12 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 			}
 		} catch (SQLException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24 
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			if (data != null) {
 				try {
@@ -159,7 +173,10 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 		CallableStatement cs = null;
 		ResultSet rs = null;
 		try {
-			cs = Helper.prepareCall(connection, getSchema(), Routines.CNPSTSP_SEL.routine());
+			//inizio LP PGNTCORE-24 
+			//cs = Helper.prepareCall(connection, getSchema(), Routines.CNPSTSP_SEL.routine());
+            cs = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNPSTSP_SEL.routine());
+			//fine LP PGNTCORE-24 
 			int p = 1;
 			cs.setInt(p++, idFlusso);
 			rs = cs.executeQuery();
@@ -167,8 +184,12 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 				flusso = new Flusso(rs);
 		} catch (SQLException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24 
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			if (rs != null) {
 				try {

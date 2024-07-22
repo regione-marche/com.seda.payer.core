@@ -14,9 +14,8 @@ import javax.sql.DataSource;
 import javax.sql.rowset.WebRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.GruppoAgenzia;
 import com.seda.payer.core.bean.GruppoAgenziaPageList;
@@ -46,7 +45,10 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		GruppoAgenzia gruppoAgenzia = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_SEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_SEL.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYGAGSP_SEL.routine());
+			//fine LP PGNTCORE-24 
 			callableStatement.setString(1, codiceGruppoAgenzia);
 
 			callableStatement.execute();
@@ -60,9 +62,13 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
-		}finally {
+		//fine LP PGNTCORE-24 
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//	DAOHelper.closeIgnoringException(callableStatement);
 			//	DAOHelper.closeIgnoringException(connection);
@@ -100,8 +106,10 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_UPD.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_UPD.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYGAGSP_UPD.routine());
+			//fine LP PGNTCORE-24 
 			
 			callableStatement.setString(1, gruppoAgenzia.getCodiceGruppoAgenzia());
 			callableStatement.setString(2, gruppoAgenzia.getDescrizioneGruppoAgenzia());
@@ -115,9 +123,12 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
-			e.printStackTrace();
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//	DAOHelper.closeIgnoringException(connection);
@@ -146,7 +157,10 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_DEL.routine());	
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_DEL.routine());	
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYGAGSP_DEL.routine());
+			//fine LP PGNTCORE-24 
 			
 			callableStatement.setString(1, codiceGruppoAgenzia);
 			callableStatement.registerOutParameter(2, Types.VARCHAR);
@@ -160,9 +174,12 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
-			e.printStackTrace();
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//	DAOHelper.closeIgnoringException(connection);
@@ -190,7 +207,10 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_INS.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_INS.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYGAGSP_INS.routine());
+			//fine LP PGNTCORE-24 
 			
 			callableStatement.setString(1, gruppoAgenzia.getCodiceGruppoAgenzia());
 			callableStatement.setString(2, gruppoAgenzia.getDescrizioneGruppoAgenzia());
@@ -205,9 +225,12 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
-			e.printStackTrace();
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//	DAOHelper.closeIgnoringException(connection);
@@ -247,7 +270,10 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		List<GruppoAgenzia> listGruppoAgenzia = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYGAGSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYGAGSP_LST.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYGAGSP_LST.routine());
+			//fine LP PGNTCORE-24 
 
 			callableStatement.setInt(1,pageNumber);
 			callableStatement.setInt(2,rowsPerPage);
@@ -306,9 +332,14 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			gruppoAgenziaPagelist = new GruppoAgenziaPageList(pageInfo, "01","Sql-Exception","", null);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	gruppoAgenziaPagelist = new GruppoAgenziaPageList(pageInfo, "01","Sql-Exception","", null);
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			gruppoAgenziaPagelist = new GruppoAgenziaPageList(pageInfo, "01","Sql-Exception","", null);
+		//fine LP PGNTCORE-24
 		} catch (IOException e) {
 			e.printStackTrace();
 			gruppoAgenziaPagelist = new GruppoAgenziaPageList(pageInfo, "01","Sql-Exception","", null);
@@ -360,7 +391,10 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		String gruppoAgenziaLstXml  = "";
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYGAGSP_LST_DDL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYGAGSP_LST_DDL.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYGAGSP_LST_DDL.routine());
+			//fine LP PGNTCORE-24 
 			
 			if(callableStatement.execute()) {
 				data = callableStatement.getResultSet();
@@ -375,9 +409,14 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			gruppoAgenziaPagelist = new GruppoAgenziaPageList(null, "01","Sql-Exception","", null);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	gruppoAgenziaPagelist = new GruppoAgenziaPageList(null, "01","Sql-Exception","", null);
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			gruppoAgenziaPagelist = new GruppoAgenziaPageList(null, "01","Sql-Exception","", null);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);

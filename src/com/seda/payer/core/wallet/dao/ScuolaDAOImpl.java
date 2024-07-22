@@ -4,17 +4,10 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
-
 import javax.sql.DataSource;
-
-import com.seda.data.dao.DAOHelper;
-
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
 import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.dao.Routines;
-import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.wallet.bean.Scuola;
 

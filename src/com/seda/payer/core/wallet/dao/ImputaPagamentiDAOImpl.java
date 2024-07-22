@@ -18,6 +18,8 @@ import javax.sql.DataSource;
 import com.seda.commons.security.TokenGenerator;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler; 
@@ -26,7 +28,6 @@ import com.seda.payer.core.wallet.bean.ImpPagamenti;
 import com.seda.payer.core.wallet.bean.PagamentoBorsellino;
 import com.seda.payer.core.wallet.bean.TributiForSORINET;
  
-
 public class ImputaPagamentiDAOImpl extends BaseDaoHandler  implements ImputaPagamentiDAO { 
 	CallableStatement callStmt=null;
 	Connection connection = null;
@@ -91,7 +92,10 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler  implements ImputaPag
 		//fine LP PG21XX04 Leak
 		try {
 			connection = getConnection();
-			callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYPGBSP_AGG_PAGAM.routine());
+			//inizio LP PGNTCORE-24
+			//callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYPGBSP_AGG_PAGAM.routine());
+			callStmt =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGBSP_AGG_PAGAM.routine());
+			//fine LP PGNTCORE-24
 			callStmt.setString(1, impPagamenti.getFunzElab());
 			callStmt.setString(2, impPagamenti.getCutecute() );
 			callStmt.setString(3, impPagamenti.getElabSenzaConermaEpgf() );
@@ -206,7 +210,10 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler  implements ImputaPag
 		
 		try {
 			connection = getConnection();
-			callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_ALL_DISP.routine());
+			//inizio LP PGNTCORE-24
+			//callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_ALL_DISP.routine());
+			callStmt =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_ALL_DISP.routine());
+			//fine LP PGNTCORE-24
 			callStmt.registerOutParameter(1, Types.INTEGER); 
 			callStmt.execute();
 			Integer numBorsellini_agg = callStmt.getInt(1);
@@ -255,7 +262,10 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler  implements ImputaPag
 		//fine LP PG21XX04 Leak
 		try {
 			connection = getConnection();
-			callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYSISSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYSISSP_LST.routine());
+			callStmt =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSISSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callStmt.setString(1, cutecute);
 			callStmt.setString(2, "L");
 			callStmt.execute();
@@ -322,7 +332,10 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler  implements ImputaPag
 		
 		try {
 			connection = getConnection();
-			callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYSISSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYSISSP_LST.routine());
+			callStmt =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSISSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callStmt.setString(1, cutecute);
 			callStmt.setString(2, "D");
 			callStmt.execute();
@@ -401,7 +414,10 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler  implements ImputaPag
 
 		try {
 			connection = getConnection();
-			callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYPGBSP_PAG_WEB.routine());
+			//inizio LP PGNTCORE-24
+			//callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYPGBSP_PAG_WEB.routine());
+			callStmt =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGBSP_PAG_WEB.routine());
+			//fine LP PGNTCORE-24
 			callStmt.setString(1, codTransazione);
 			callStmt.setString(2, TokenGenerator.generateUUIDToken());
 			callStmt.setDate(3, new java.sql.Date(dataPagamento.getTime().getTime()));//imposto la data aggiornamento uguale alla data corrente
@@ -412,8 +428,12 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler  implements ImputaPag
 		} catch (SQLException e) {
 			String msg = "Errore nell'esecuzione della stored "+Routines.PYPGBSP_PAG_WEB.routine();
 			throw new DaoException(1,msg,e);
+		//inizio LP PGNTCORE-24
+		} catch (ProcedureReflectorException e) {
+			String msg = "Errore nell'esecuzione della stored "+Routines.PYPGBSP_PAG_WEB.routine();
+			throw new DaoException(1,msg,e);
+		//fine LP PGNTCORE-24
 		} catch (NoSuchAlgorithmException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 		//inizio LP PG21XX04 Leak
@@ -441,7 +461,10 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler  implements ImputaPag
 
 		try {
 			connection = getConnection();
-			callStmt = Helper.prepareCall(connection, getSchema(), "PYPGBSP_ANN_WEB");
+			//inizio LP PGNTCORE-24
+			//callStmt = Helper.prepareCall(connection, getSchema(), "PYPGBSP_ANN_WEB");
+			callStmt =  MetaProcedure.prepareCall(connection, getSchema(), "PYPGBSP_ANN_WEB");
+			//fine LP PGNTCORE-24
 			callStmt.setString(1, codTransazione);
 			callStmt.setDate(2, new java.sql.Date(dataPagamento.getTime().getTime()));
 			callStmt.execute();
@@ -449,6 +472,11 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler  implements ImputaPag
 		} catch (SQLException e) {
 			String msg = "Errore nell'esecuzione della stored " + "PYPGBSP_ANN_WEB";
 			throw new DaoException(1,msg,e);
+		//inizio LP PGNTCORE-24
+		} catch (ProcedureReflectorException e) {
+			String msg = "Errore nell'esecuzione della stored " + "PYPGBSP_ANN_WEB";
+			throw new DaoException(1,msg,e);
+		//fine LP PGNTCORE-24
 		}
 		//inizio LP PG21XX04 Leak
 		finally {
@@ -478,7 +506,10 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler  implements ImputaPag
 
 		try {
 			connection = getConnection();
-			callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYSISSP_GENERA.routine());
+			//inizio LP PGNTCORE-24
+			//callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYSISSP_GENERA.routine());
+			callStmt =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSISSP_GENERA.routine());
+			//fine LP PGNTCORE-24
 			callStmt.setString(1, cutecute);
 			callStmt.setString(2, "G");
 			callStmt.registerOutParameter(3, Types.CHAR); 
@@ -490,6 +521,11 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler  implements ImputaPag
 		} catch (SQLException e) {
 			String msg = "Errore nell'esecuzione della stored "+Routines.PYSISSP_GENERA.routine();
 			throw new DaoException(1,msg,e);
+		//inizio LP PGNTCORE-24
+		} catch (ProcedureReflectorException e) {
+			String msg = "Errore nell'esecuzione della stored "+Routines.PYSISSP_GENERA.routine();
+			throw new DaoException(1,msg,e);
+		//fine LP PGNTCORE-24
 		}
 		//inizio LP PG21XX04 Leak
 		finally {
@@ -520,7 +556,10 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler  implements ImputaPag
 		//fine LP PG21XX04 Leak
 		try {
 			connection = getConnection();
-			callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYSNTSP_FOR_SORINET.routine());
+			//inizio LP PGNTCORE-24
+			//callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYSNTSP_FOR_SORINET.routine());
+			callStmt =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSNTSP_FOR_SORINET.routine());
+			//fine LP PGNTCORE-24
 			callStmt.setString(1, cutecute);
 			callStmt.registerOutParameter(2, Types.VARCHAR); 
 			callStmt.registerOutParameter(3, Types.VARCHAR); 
@@ -618,7 +657,10 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler  implements ImputaPag
 		
 		try {
 			connection = getConnection();
-			callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYSNTSP_AGGIORNA.routine());
+			//inizio LP PGNTCORE-24
+			//callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYSNTSP_AGGIORNA.routine());
+			callStmt =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSNTSP_AGGIORNA.routine());
+			//fine LP PGNTCORE-24
 			callStmt.setString(1, funzione);
 			callStmt.setString(2, tributiForSORINET.getCodUtente());
 			callStmt.setString(3, tributiForSORINET.getDocumento());

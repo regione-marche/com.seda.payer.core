@@ -9,6 +9,8 @@ import javax.sql.DataSource;
 import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.bean.Stats;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -30,7 +32,10 @@ public class StatsDaoImpl extends BaseDaoHandler implements StatsDao   {
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSTSSP_UPD.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSTSSP_UPD.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSTSSP_UPD.routine());
+			//fine LP PGNTCORE-24 
 			callableStatement.setInt(1, stats.getId());
 			callableStatement.setInt(2, stats.getPagamentoNbollettino());
 			callableStatement.setInt(3, stats.getPagamentoNavviso());				
@@ -42,9 +47,15 @@ public class StatsDaoImpl extends BaseDaoHandler implements StatsDao   {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24 
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		//} 
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			DAOHelper.closeIgnoringException(connection);
 		}

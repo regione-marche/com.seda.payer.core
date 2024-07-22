@@ -7,9 +7,8 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.monitoraggiocruss.bean.MonitoraggioCruscotto;
@@ -42,7 +41,10 @@ public class MonitoraggioCruscottoDAOImpl extends BaseDaoHandler implements Moni
 		RendicontazioneList rendicontazioneList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYTRASP_SEL_CRUSS_MG");
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYTRASP_SEL_CRUSS_MG");
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYTRASP_SEL_CRUSS_MG");
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, dataDa);
 			callableStatement.setString(2, dataAl);
 			callableStatement.setString(3, "1");	
@@ -108,8 +110,12 @@ public class MonitoraggioCruscottoDAOImpl extends BaseDaoHandler implements Moni
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);

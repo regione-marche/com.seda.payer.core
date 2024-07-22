@@ -15,9 +15,8 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -52,7 +51,10 @@ public class MonitoraggioMercatiDAOImpl extends BaseDaoHandler implements Monito
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_MTT.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_MTT.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYTAMSP_MTT.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, monitor.getCodiceSocieta());
 			callableStatement.setString(2, monitor.getCodUt());
 			callableStatement.setString(3, monitor.getDescrizioneEnte());
@@ -151,8 +153,12 @@ public class MonitoraggioMercatiDAOImpl extends BaseDaoHandler implements Monito
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//DAOHelper.closeIgnoringException(connection);
 			if (resultSet != null) {
@@ -212,7 +218,10 @@ public class MonitoraggioMercatiDAOImpl extends BaseDaoHandler implements Monito
 //				OUT O_TOTPAGES SMALLINT
 				
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_MNL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_MNL.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYTAMSP_MNL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                         /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,monitoraggio.getCodiceSocieta());
@@ -270,9 +279,14 @@ public class MonitoraggioMercatiDAOImpl extends BaseDaoHandler implements Monito
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
+		//fine LP PGNTCORE-24
 		} finally {
 			//DAOHelper.closeIgnoringException(connection);
 			if (data != null) {
@@ -310,8 +324,10 @@ public class MonitoraggioMercatiDAOImpl extends BaseDaoHandler implements Monito
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-		
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_MON.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_MON.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYTAMSP_MON.routine());
+			//fine LP PGNTCORE-24
 //			IN I_TAM_KTAMKTAM VARCHAR(64), 
 //			IN I_PRN_KPRNKPRN VARCHAR(64)
 					
@@ -325,7 +341,6 @@ public class MonitoraggioMercatiDAOImpl extends BaseDaoHandler implements Monito
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (rowSet.next() ) {
@@ -373,9 +388,13 @@ public class MonitoraggioMercatiDAOImpl extends BaseDaoHandler implements Monito
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
-		}finally {
+		//fine LP PGNTCORE-24
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (rowSet != null) {

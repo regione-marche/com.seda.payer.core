@@ -2,28 +2,19 @@ package com.seda.payer.core.wallet.dao;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
-
-
 import javax.sql.DataSource;
-
-
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.dao.DAOSysException;
-
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -48,7 +39,10 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSRVSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSRVSP_LST.routine());
+			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSRVSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1,wallet.getCodiceSocieta());
 			callableStatement.setString(2,wallet.getCuteCute());
 			callableStatement.setString(3,wallet.getChiaveEnte());
@@ -69,8 +63,12 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -110,7 +108,10 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAFMSP_LST_ANNO_SCOL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAFMSP_LST_ANNO_SCOL.routine());
+			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYAFMSP_LST_ANNO_SCOL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1,presenzeGiornaliere.getIdWallet());
 			callableStatement.setString(2,presenzeGiornaliere.getCodiceServizio());
 			callableStatement.setString(3,presenzeGiornaliere.getCodiceScuola());
@@ -132,8 +133,12 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -174,7 +179,10 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 		try {
 			   
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRMSP_INS.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRMSP_INS.routine());
+			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPRMSP_INS.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, presenzeGiornaliere.getCuteCute()); 
 			callableStatement.setString(2, presenzeGiornaliere.getCodiceEnte());
 			callableStatement.setString(3, presenzeGiornaliere.getCodiceAnagraficaFiglio());
@@ -205,7 +213,6 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 			e.printStackTrace();
 			throw new Exception(e);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new Exception(e);
 		} finally {
@@ -231,7 +238,10 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRMSP_SEL_DAY.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRMSP_SEL_DAY.routine());
+			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPRMSP_SEL_DAY.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1,codAnaFiglio);
 			callableStatement.setString(2,idWallet);
 			callableStatement.setString(3,codScuola);
@@ -257,8 +267,12 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} finally {
@@ -297,7 +311,10 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRMSP_SEL_DAY.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRMSP_SEL_DAY.routine());
+			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPRMSP_SEL_DAY.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1,codAnaFiglio);
 			callableStatement.setString(2,idWallet);
 			callableStatement.setString(3,codScuola);
@@ -324,8 +341,12 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} finally {
@@ -365,7 +386,10 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRMSP_SEL_ABD.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRMSP_SEL_ABD.routine());
+			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPRMSP_SEL_ABD.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1,codAnaFiglio);
 			callableStatement.setString(2,idWallet);
 			callableStatement.setString(3,codScuola);
@@ -403,8 +427,12 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} finally {
@@ -447,7 +475,10 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 //			,I_PRM_KBRSKBRS VARCHAR(18)
 //			,I_PRM_GPRMGPRE
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRMSP_INS_DIS.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRMSP_INS_DIS.routine());
+			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPRMSP_INS_DIS.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, presenzeGiornaliere.getCausale()); 
 			callableStatement.setString(2, presenzeGiornaliere.getIdentificativoRecord());
 			callableStatement.setInt(3, Integer.valueOf((String) presenzeGiornaliere.getAttribute("progressivo")));
@@ -470,7 +501,6 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 			e.printStackTrace();
 			throw new Exception(e);
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new Exception(e);
 		} finally {
@@ -500,7 +530,7 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 	//inizio LP PG21XX04
 	//Nota. La chiusura della connection è affidata al chiamante.
 	//fine LP PG21XX04
-	public ArrayList<String> getCodiciFiscali(PresenzeGiornaliere presenzeGiornaliere) throws DaoException {	//TODO da verificare
+	public ArrayList<String> getCodiciFiscali(PresenzeGiornaliere presenzeGiornaliere) throws DaoException {
 		ArrayList<String>codiciFiscaliGenitoreFiglio=null;
 		CallableStatement callableStatement=null;
 		Connection connection = null;
@@ -508,7 +538,10 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 		String codiceFiscaleFiglio = "";
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAFMSP_SEL_CFIS.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAFMSP_SEL_CFIS.routine());
+			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYAFMSP_SEL_CFIS.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, presenzeGiornaliere.getCuteCute());
 			callableStatement.setString(2, presenzeGiornaliere.getCodiceEnte());
 			callableStatement.setString(3, presenzeGiornaliere.getCodiceAnagraficaGenitore());
@@ -526,8 +559,12 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);

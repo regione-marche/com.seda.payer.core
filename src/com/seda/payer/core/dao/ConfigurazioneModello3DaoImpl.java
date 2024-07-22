@@ -22,8 +22,6 @@ import com.seda.commons.string.Convert;
 //inizio LP PG21XX04 Leak
 //import com.seda.data.dao.DAOHelper;
 //fine LP PG21XX04 Leak
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
 import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
@@ -57,7 +55,10 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		try {
 			connection = getConnection();
 			//PG180080 modificare SP e parametri da passare
-			callableStatement = prepareCall(connection, getSchema(), Routines.PYMDTSP_SEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_SEL.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMDTSP_SEL.routine());
+			//fine LP PGNTCORE-24 
 			callableStatement.setString(1, configurazioneModello3.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneModello3.getCodiceUtente());
 			callableStatement.setString(3, configurazioneModello3.getChiaveEnte());
@@ -123,8 +124,14 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
+			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		}finally {
 			//inizio LP PG21XX04 Leak
 			//	DAOHelper.closeIgnoringException(callableStatement);
@@ -229,7 +236,10 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_DEL.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_DEL.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMDTSP_DEL.routine());
+			//fine LP PGNTCORE-24 
 //			IN I_MDT_CSOCCSOC
 //			IN I_MDT_CUTECUTE
 //			IN I_MDT_KANEKENT
@@ -257,9 +267,14 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -287,7 +302,10 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_INS.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_INS.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMDTSP_INS.routine());
+			//fine LP PGNTCORE-24 
 			
 //			 IN I_MDT_CSOCCSOC
 //			 IN I_MDT_CUTECUTE
@@ -322,9 +340,14 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -371,7 +394,10 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		List<ConfigurazioneModello3> listConfigurazioneModello3 = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYMDTSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYMDTSP_LST.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMDTSP_LST.routine());
+			//fine LP PGNTCORE-24 
 //			   IN I_MDT_CSOCCSOC
 //             IN I_MDT_CUTECUTE
 //             IN I_MDT_KANEKENT
@@ -457,9 +483,14 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			configurazioneModello3Pagelist = new ConfigurazioneModello3Pagelist(pageInfo, "01","Sql-Exception","", null);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	configurazioneModello3Pagelist = new ConfigurazioneModello3Pagelist(pageInfo, "01","Sql-Exception","", null);
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			configurazioneModello3Pagelist = new ConfigurazioneModello3Pagelist(pageInfo, "01","Sql-Exception","", null);
+		//fine LP PGNTCORE-24 
 		} catch (IOException e) {
 			e.printStackTrace();
 			configurazioneModello3Pagelist = new ConfigurazioneModello3Pagelist(pageInfo, "01","Sql-Exception","", null);

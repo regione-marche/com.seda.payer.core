@@ -8,10 +8,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
 import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflector;
 import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.bean.ConfigurazioneBlackBox;
 import com.seda.payer.core.bean.ConfigurazionePosteBlackBoxPos;
@@ -20,7 +17,7 @@ import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.wallet.bean.EsitoRisposte;
 
-import javax.swing.plaf.metal.MetalProgressBarUI;
+//import javax.swing.plaf.metal.MetalProgressBarUI;
 
 public class BlackBoxPosteDao extends BaseDaoHandler {
 

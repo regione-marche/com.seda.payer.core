@@ -2,8 +2,8 @@ package com.seda.payer.core.dao;
 
 import com.seda.commons.security.TokenGenerator;
 import com.seda.commons.string.Convert;
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.DaoHandler;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.PrenotazioneFatturazione;
@@ -27,7 +27,10 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
 
         try {
             Connection connection = getConnection();
-            CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOLIST.routine());
+			//inizio LP PGNTCORE-24 
+            //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOLIST.routine());
+            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PRE_DOLIST.routine());
+			//fine LP PGNTCORE-24 
 
             callableStatement.setInt(1, prenotazione.getPageNumber());
             callableStatement.setInt(2, prenotazione.getRowsPerPage());
@@ -79,9 +82,14 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
             return new PrenotazioneFatturazionePagelist(pageInfo, "00", "", prenotazioneList);
         } catch (SQLException e) {
             throw new DaoException(e);
-        } catch (HelperException e) {
-            throw new RuntimeException(e);
-        }
+		//inizio LP PGNTCORE-24 
+        //} catch (HelperException e) {
+        //    throw new RuntimeException(e);
+        //}
+	    } catch (ProcedureReflectorException e) {
+	        throw new RuntimeException(e);
+	    }
+		//fine LP PGNTCORE-24 
     }
 
     public EsitoRisposte inserisciPrenotazione(PrenotazioneFatturazione prenotazione, String cfOperatore) throws DaoException {
@@ -89,7 +97,10 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
 
         try {
             Connection connection = getConnection();
-            CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOSAVE.routine());
+			//inizio LP PGNTCORE-24 
+            //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOSAVE.routine());
+            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PRE_DOSAVE.routine());
+			//fine LP PGNTCORE-24 
 
             callableStatement.setString(1, TokenGenerator.generateUUIDToken());
             callableStatement.setString(2, prenotazione.getCodiceSocieta() != null ? prenotazione.getCodiceSocieta() : "");
@@ -121,7 +132,10 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
 
         try {
             Connection connection = getConnection();
-            CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOSELECT_REQ.routine());
+			//inizio LP PGNTCORE-24 
+            //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOSELECT_REQ.routine());
+            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PRE_DOSELECT_REQ.routine());
+			//fine LP PGNTCORE-24 
             if (callableStatement.execute()) {
                 ResultSet data = callableStatement.getResultSet();
                 while (data.next()){
@@ -131,15 +145,23 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
             return list;
         } catch (SQLException e) {
             throw new DaoException(e);
-        } catch (HelperException e) {
-            throw new RuntimeException(e);
-        }
+		//inizio LP PGNTCORE-24 
+        //} catch (HelperException e) {
+        //    throw new RuntimeException(e);
+        //}
+	    } catch (ProcedureReflectorException e) {
+	        throw new RuntimeException(e);
+	    }
+		//fine LP PGNTCORE-24 
     }
 
     public boolean aggiornaPrenotazione(String chiavePrenotazione, String flagElaborazione, String nomeFile) throws DaoException {
         Connection connection = getConnection();
         try {
-            CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOUPDATE.routine());
+			//inizio LP PGNTCORE-24 
+            //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOUPDATE.routine());
+            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PRE_DOUPDATE.routine());
+			//fine LP PGNTCORE-24 
             callableStatement.setString(1, chiavePrenotazione);
             callableStatement.setString(2, flagElaborazione);
             callableStatement.setString(3, nomeFile);
@@ -148,15 +170,23 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
             return true;
         } catch (SQLException e) {
             throw new DaoException(e);
-        } catch (HelperException e) {
-            throw new RuntimeException(e);
-        }
+		//inizio LP PGNTCORE-24 
+        //} catch (HelperException e) {
+        //    throw new RuntimeException(e);
+        //}
+	    } catch (ProcedureReflectorException e) {
+	        throw new RuntimeException(e);
+	    }
+		//fine LP PGNTCORE-24 
     }
 
     public RegolaFatturazione getRegolaFatturazione(Date dataInizioValidita) throws DaoException {
         try {
             Connection connection = getConnection();
-            CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.REG_DOSELECT.routine());
+			//inizio LP PGNTCORE-24 
+            //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.REG_DOSELECT.routine());
+            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.REG_DOSELECT.routine());
+			//fine LP PGNTCORE-24 
             callableStatement.setDate(1, dataInizioValidita);
 
             if (callableStatement.execute()) {
@@ -167,9 +197,14 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
             }
         } catch (SQLException e) {
             throw new DaoException(e);
-        } catch (HelperException e) {
-            throw new RuntimeException(e);
-        }
+		//inizio LP PGNTCORE-24 
+        //} catch (HelperException e) {
+        //    throw new RuntimeException(e);
+        //}
+	    } catch (ProcedureReflectorException e) {
+	        throw new RuntimeException(e);
+	    }
+		//fine LP PGNTCORE-24 
         return null;
     }
 
@@ -177,7 +212,10 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
     public boolean cancellaPrenotazione(String chiave) {
       try {
           Connection connection = getConnection();
-          CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DODELETE.routine());
+          //inizio LP PGNTCORE-24 
+          //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DODELETE.routine());
+          CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PRE_DODELETE.routine());
+          //fine LP PGNTCORE-24 
 
           callableStatement.setString(1, chiave);
 
@@ -186,7 +224,7 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
           } else {
               return false;
           }
-      }catch (Throwable e) {
+      } catch (Throwable e) {
           e.printStackTrace();
           return false;
       }

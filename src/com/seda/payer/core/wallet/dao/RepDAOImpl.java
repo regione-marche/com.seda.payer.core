@@ -4,12 +4,9 @@ import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Types;
-
 import javax.sql.DataSource;
-
 import com.seda.data.helper.Helper;
-import com.seda.data.spi.DaoHandler;
+import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler; 
@@ -30,8 +27,11 @@ public class RepDAOImpl extends BaseDaoHandler  implements RepDAO {
 	public void openInsertBatch( )	throws DaoException { 
 		try {
 			connection = getConnection();
-			insertBatchCs = Helper.prepareCall(connection, getSchema(), Routines.PYREPSP_INS.routine());
-		}catch (Exception e) {
+			//inizio LP PGNTCORE-24
+			//insertBatchCs = Helper.prepareCall(connection, getSchema(), Routines.PYREPSP_INS.routine());
+			insertBatchCs =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYREPSP_INS.routine());
+			//fine LP PGNTCORE-24
+		} catch (Exception e) {
 			throw new DaoException(e);
 		}
 	} 
@@ -78,7 +78,7 @@ public class RepDAOImpl extends BaseDaoHandler  implements RepDAO {
 			if (e.getErrorCode() == -803) {
 				String msg = "Disposizione già presente "+Routines.PYREPSP_INS.routine();
 				throw new DaoException(803,msg,e);
-			}else{
+			} else {
 				String msg = "Errore nell'esecuzione della stored "+Routines.PYREPSP_INS.routine();
 				throw new DaoException(1,msg,e);
 			}

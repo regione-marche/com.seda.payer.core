@@ -1,24 +1,16 @@
 package com.seda.payer.core.wallet.dao;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
-
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -72,7 +64,10 @@ public class ConfigurazioneAttribuzionePagamentoServizioDAOImpl  extends BaseDao
 //				OUT O_TOTPAGES SMALLINT
 				
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPASSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPASSP_LST.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPASSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,configurazioneAttribuzionePagamentoServizio.getCodiceSocieta());
@@ -113,9 +108,14 @@ public class ConfigurazioneAttribuzionePagamentoServizioDAOImpl  extends BaseDao
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -152,8 +152,10 @@ public class ConfigurazioneAttribuzionePagamentoServizioDAOImpl  extends BaseDao
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPASSP_DEL.routine());
-			
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPASSP_DEL.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPASSP_DEL.routine());
+			//fine LP PGNTCORE-24
 //			CREATE PROCEDURE PYPASSP_DEL ( 
 //					IN I_PAS_CSOCCSOC VARCHAR(5), 
 //					IN I_PAS_CUTECUTE VARCHAR(5),
@@ -185,9 +187,14 @@ public class ConfigurazioneAttribuzionePagamentoServizioDAOImpl  extends BaseDao
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -218,8 +225,10 @@ public class ConfigurazioneAttribuzionePagamentoServizioDAOImpl  extends BaseDao
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPASSP_INS.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPASSP_INS.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPASSP_INS.routine());
+			//fine LP PGNTCORE-24
 //			CREATE PROCEDURE PYPASSP_INS ( 
 //				1	IN I_PAS_CSOCCSOC VARCHAR(5), 
 //				2	IN I_PAS_CUTECUTE VARCHAR(5),
@@ -262,9 +271,14 @@ public class ConfigurazioneAttribuzionePagamentoServizioDAOImpl  extends BaseDao
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -295,7 +309,10 @@ public class ConfigurazioneAttribuzionePagamentoServizioDAOImpl  extends BaseDao
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPASSP_SEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPASSP_SEL.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPASSP_SEL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneAttribuzionePagamentoServizio.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneAttribuzionePagamentoServizio.getCuteCute());
 			callableStatement.setString(3, configurazioneAttribuzionePagamentoServizio.getChiaveEnte());
@@ -309,7 +326,6 @@ public class ConfigurazioneAttribuzionePagamentoServizioDAOImpl  extends BaseDao
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -337,8 +353,12 @@ public class ConfigurazioneAttribuzionePagamentoServizioDAOImpl  extends BaseDao
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -384,8 +404,10 @@ public class ConfigurazioneAttribuzionePagamentoServizioDAOImpl  extends BaseDao
 		String retMes = "";
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPASSP_UPD.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPASSP_UPD.routine());
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPASSP_UPD.routine());
+			//fine LP PGNTCORE-24
 //			CREATE PROCEDURE PYPASSP_UPD (
 //			1		IN I_PAS_CSOCCSOC VARCHAR(5), 
 //			2		IN I_PAS_CUTECUTE VARCHAR(5),
@@ -423,9 +445,14 @@ public class ConfigurazioneAttribuzionePagamentoServizioDAOImpl  extends BaseDao
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);

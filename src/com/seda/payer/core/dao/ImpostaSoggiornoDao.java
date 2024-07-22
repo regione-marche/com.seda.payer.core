@@ -17,6 +17,8 @@ import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
 
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.bean.ConfigurazioneImpostaSoggiorno;
 import com.seda.payer.core.bean.TestataComunicazioneImpostaSoggiorno;
 import com.seda.payer.core.exception.DaoException;
@@ -360,10 +362,12 @@ public class ImpostaSoggiornoDao extends RestBaseDaoHandler {
 	    
 	    try	{
 
-			if (callableStatementUPDISBATCH ==null) {
-				callableStatementUPDISBATCH  = Helper.prepareCall(getConnection(), getSchema(), Routines.SCT_UPDATE_DOC.routine());
+			if (callableStatementUPDISBATCH == null) {
+				//inizio LP PGNTCORE-24 
+				//callableStatementUPDISBATCH  = Helper.prepareCall(getConnection(), getSchema(), Routines.SCT_UPDATE_DOC.routine());
+				callableStatementUPDISBATCH  = MetaProcedure.prepareCall(getConnection(), getSchema(), Routines.SCT_UPDATE_DOC.routine());
+				//fine LP PGNTCORE-24 
 			}
-
 	    	
 			/*
 			callableStatement = prepareCall(Routines.SCT_UPDATE_DOC.routine());
@@ -396,10 +400,14 @@ public class ImpostaSoggiornoDao extends RestBaseDaoHandler {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
-		} catch (HelperException x) {
+		//inizio LP PGNTCORE-24 
+		//} catch (HelperException x) {
+		//	throw new DaoException(x);
+		//}
+		} catch (ProcedureReflectorException x) {
 			throw new DaoException(x);
 		}
-		
+		//fine LP PGNTCORE-24 
 		return retCode;
 	}
 

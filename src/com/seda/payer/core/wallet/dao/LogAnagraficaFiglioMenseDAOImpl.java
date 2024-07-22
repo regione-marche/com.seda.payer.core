@@ -10,12 +10,10 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-
 import javax.sql.DataSource;
-
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -41,7 +39,10 @@ public class LogAnagraficaFiglioMenseDAOImpl  extends  BaseDaoHandler  implement
 			ResultSet resultSet=null;
 				try {
 					connection = getConnection();
-					callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYLFMSP_LST.routine());
+					//inizio LP PGNTCORE-24
+					//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYLFMSP_LST.routine());
+					callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYLFMSP_LST.routine());
+					//fine LP PGNTCORE-24
 					callableStatement.setString(1,logAnagraficaFiglioMense.getIdWallet());
 					callableStatement.setString(2,logAnagraficaFiglioMense.getCodiceAnagraficaFiglio());
 					callableStatement.setString(3,logAnagraficaFiglioMense.getCodiceServizio());				
@@ -118,13 +119,14 @@ public class LogAnagraficaFiglioMenseDAOImpl  extends  BaseDaoHandler  implement
 		            }
 				} catch (SQLException e) {
 					e.printStackTrace();
-					
 				} catch (IllegalArgumentException e) {
 					e.printStackTrace();
-					
-				} catch (HelperException e) {
+				//inizio LP PGNTCORE-24
+				//} catch (HelperException e) {
+				//	e.printStackTrace();
+				} catch (ProcedureReflectorException e) {
 					e.printStackTrace();
-					
+				//fine LP PGNTCORE-24
 				} finally {
 					//inizio LP PG21XX04 Leak
 					//DAOHelper.closeIgnoringException(connection);

@@ -7,19 +7,12 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Properties;
-import java.util.TimerTask;
 import java.util.TreeSet;
-
 import javax.sql.DataSource;
-
-import com.seda.data.dao.DAOHelper;
-
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
 import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
-
 import com.seda.payer.core.wallet.bean.AnagraficaRivestizione350;
 import com.seda.payer.core.wallet.bean.AnagraficaRivestizioneCSI;
 import com.seda.payer.core.wallet.bean.AnagraficaRivestizione500;
@@ -81,6 +74,10 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			throw new DaoException(e);
 		//} catch (HelperException e) {
 		//	throw new DaoException(e);
+		//inizio LP PGNTCORE-24
+		} catch (ProcedureReflectorException e) {
+			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			if (callableStatement != null) {
@@ -109,8 +106,10 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 		CallableStatement callableStatement = null ;
 		try {
 			connection = getConnection();
-			
-			callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE);
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE);
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE);
+			//fine LP PGNTCORE-24
 			callableStatement.registerOutParameter(1, Types.INTEGER);
 			callableStatement.registerOutParameter(2, Types.VARCHAR);
 			callableStatement.execute();		
@@ -129,13 +128,16 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			try {
 				callableStatement.close();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 //			//inizio LP PG21XX04 Leak
@@ -220,6 +222,10 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			throw new DaoException(e);
 		//} catch (HelperException e) {
 		//	throw new DaoException(e);
+		//inizio LP PGNTCORE-24
+		} catch (ProcedureReflectorException e) {
+			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			if (resultSet != null) {
@@ -264,7 +270,10 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_CSI);
-			callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_CSI);
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_CSI);
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_CSI);
+			//fine LP PGNTCORE-24
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, welcomeKit);
 			callableStatement.registerOutParameter(2, Types.INTEGER);
@@ -298,8 +307,12 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			if (resultSet != null) {
@@ -344,7 +357,10 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_500);
-			callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_500);
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_500);
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_500);
+			//fine LP PGNTCORE-24
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, welcomeKit);
 			callableStatement.setString(2, societa);
@@ -397,8 +413,12 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			if (resultSet != null) {
@@ -436,8 +456,10 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 		CallableStatement callableStatement = null;
 		try {
 			connection = getConnection();
-			
-			callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_511);
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_511);
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_511);
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, codiceFiscale);
 			callableStatement.setString(2, cap);
 			callableStatement.setString(3, indirizzo);
@@ -459,7 +481,6 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			System.out.println("indirizzo:" + indirizzo);
 			System.out.println("provincia:" + provincia);
 			System.out.println("comune:" + comune);
-			
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			System.out.println("ERRORE2:" );
@@ -510,7 +531,10 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512);
-			callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512);
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512);
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512);
+			//fine LP PGNTCORE-24
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, welcomeKit);
 			callableStatement.setInt(2, lunghezzaAnagrafica);
@@ -560,8 +584,12 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			if (resultSet != null) {
@@ -607,7 +635,10 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512_EC);
-			callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512_EC);
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512_EC);
+			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512_EC);
+			//fine LP PGNTCORE-24
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, welcomeKit);
 			callableStatement.setInt(2, lunghezzaAnagrafica);
@@ -659,8 +690,12 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			if (resultSet != null) {
@@ -703,8 +738,8 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 		
 		try {
 			connection = getConnection();
-			if (callableStatement512==null) {
-				callableStatement512=MetaProcedure.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512_ONLY_ONE);
+			if (callableStatement512 == null) {
+				callableStatement512 = MetaProcedure.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512_ONLY_ONE);
 			}
 //			callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512_ONLY_ONE);
 			callableStatement512.setInt(1, lunghezzaAnagrafica);
@@ -759,9 +794,14 @@ public class AnagraficaRivestizioneDAOImpl   extends BaseDaoHandler  implements 
 		} catch (IllegalArgumentException e) {
 			System.out.println("errore AnagraficaRivestizione512OnlyOne = " + e.getMessage()) ;
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	System.out.println("errore AnagraficaRivestizione512OnlyOne = " + e.getMessage()) ;
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			System.out.println("errore AnagraficaRivestizione512OnlyOne = " + e.getMessage()) ;
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(resultSet);

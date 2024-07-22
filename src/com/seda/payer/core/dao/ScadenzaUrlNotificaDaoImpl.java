@@ -7,9 +7,8 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import javax.sql.DataSource;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.bean.ScadenzaUrlNotifica;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -37,7 +36,10 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		ScadenzaUrlNotifica scadenzaUrlNotifica = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYUNPSP_SEL");
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYUNPSP_SEL");
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYUNPSP_SEL");
+			//fine LP PGNTCORE-24 
 			System.out.println("PYEUNPSP_SEL - codEnte: " + codEnte);
 			System.out.println("PYEUNPSP_SEL - codiceFiscale: " + codiceFiscale);
 			System.out.println("PYEUNPSP_SEL - numeroDocumento: " + numeroDocumento);
@@ -56,7 +58,11 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24 
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		//} 
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		} 
 		//inizio LP PG21XX04 Leak
@@ -93,7 +99,10 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYUNPSP_UPD");
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYUNPSP_UPD");
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYUNPSP_UPD");
+			//fine LP PGNTCORE-24 
 			callableStatement.setString(1, scadenzaUrl.getCodiceEnte());
 			if(scadenzaUrl.getCodiceUtente()==null || scadenzaUrl.getCodiceUtente().equals(""))
 				callableStatement.setNull(2, Types.VARCHAR);
@@ -126,9 +135,16 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24 
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		//} 
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
+		//inizio LP PG21XX04 Leak
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -157,7 +173,10 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYUNPSP_INS");
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYUNPSP_INS");
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYUNPSP_INS");
+			//fine LP PGNTCORE-24 
 			callableStatement.setString(1, scadenzaUrlNotifica.getCodiceEnte());
 			callableStatement.setString(2, scadenzaUrlNotifica.getCodiceUtente());
 			callableStatement.setString(3, scadenzaUrlNotifica.getCodiceSocieta());
@@ -177,9 +196,15 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24 
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		//} 
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -211,8 +236,10 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		
 		try {	
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYENTSP_SEL_INFO_CENT");
-	
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYENTSP_SEL_INFO_CENT");
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYENTSP_SEL_INFO_CENT");
+			//fine LP PGNTCORE-24 
 			callableStatement.setString(1, cutecute);
 			callableStatement.setString(2, codEnte);
 			callableStatement.execute();
@@ -227,9 +254,15 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24 
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		//} 
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);

@@ -3,21 +3,16 @@ package com.seda.payer.core.dao;
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.security.TokenGenerator;
 import com.seda.commons.string.Convert;
-import com.seda.data.helper.Helper;
+import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.data.spi.DaoHandler;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.ComunicazioneUfficio;
 import com.seda.payer.core.bean.ComunicazioneUfficioPageList;
-import com.seda.payer.core.bean.PrenotazioneFatturazionePagelist;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.wallet.bean.EsitoRisposte;
 import com.seda.payer.core.wallet.bean.EsitoRisposteUfficio;
 
 import java.sql.*;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.time.format.DateTimeFormatter;
-import java.util.TimeZone;
 
 public class InserisciUfficioDao extends DaoHandler {
 
@@ -39,7 +34,10 @@ public class InserisciUfficioDao extends DaoHandler {
 
         try{
             Connection connection = getConnection();
-            CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), "PYINFTB_INS");
+			//inizio LP PGNTCORE-24 
+            //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), "PYINFTB_INS");
+            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYINFTB_INS");
+			//fine LP PGNTCORE-24 
 
             callableStatement.setString(1, TokenGenerator.generateUUIDToken());
             callableStatement.setDate(2, Date.valueOf(parametriUfficio.getDataConferma()));
@@ -52,7 +50,7 @@ public class InserisciUfficioDao extends DaoHandler {
             callableStatement.execute();
             esito.setCodiceMessaggio("0");
 
-        }catch (Throwable e) {
+        } catch (Throwable e) {
             logger.info("errore inserimento richiesta: " + e.getMessage());
             e.printStackTrace();
             esito.setCodiceMessaggio("1");
@@ -68,7 +66,10 @@ public class InserisciUfficioDao extends DaoHandler {
 
         try{
             Connection connection = getConnection();
-            CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(),"PYINFTB_SEL");
+			//inizio LP PGNTCORE-24 
+            //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(),"PYINFTB_SEL");
+            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYINFTB_SEL");
+			//fine LP PGNTCORE-24 
 
             callableStatement.setInt(1, parametriUfficio.getPageNumber());
             callableStatement.setInt(2, parametriUfficio.getRowsPerPage());
@@ -114,7 +115,7 @@ public class InserisciUfficioDao extends DaoHandler {
             return new ComunicazioneUfficioPageList(pageInfo, "00", "", ufficioList);
 
 
-        }catch(Throwable e){
+        } catch(Throwable e){
             logger.info("errore getParametriPrenotazione" + e.getMessage());
             e.printStackTrace();
         }

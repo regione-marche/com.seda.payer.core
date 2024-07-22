@@ -10,12 +10,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Types;
 import java.text.DateFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
-import java.util.Iterator;
 import java.util.TimeZone;
 
 import javax.sql.DataSource;
@@ -23,17 +21,14 @@ import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.security.TokenGenerator;
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 //import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
-import com.seda.payer.core.mercato.bean.ConfigurazioneTariffe;
 import com.seda.payer.core.mercato.bean.EsitoRisposte;
 //import com.seda.payer.core.mercato.bean.MercatoPageList;
-import com.seda.payer.core.mercato.dao.MercatoDAO;
 import com.seda.payer.core.mercato.bean.ConfigurazionePrenotazioni;
 
 public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implements ConfigurazionePrenotazioniDAO  {
@@ -59,7 +54,10 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRNSP_SLT.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRNSP_SLT.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPRNSP_SLT.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazionePrenotazioni.getCodiceKeyTariffa());
 			callableStatement.execute();
 			resultSet=callableStatement.getResultSet();
@@ -82,8 +80,12 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -121,7 +123,7 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 		dataPren = dataInizioVal;
 		boolean ciclo = true;
 		int gapIni=0;
-		int day = dataInizioVal.get(dataInizioVal.DAY_OF_WEEK) - 1;
+		int day = dataInizioVal.get(Calendar.DAY_OF_WEEK) - 1;
 		if (day == 0) day = 7;
 		if (day==giornoSett) {
 			gapIni=0;
@@ -281,7 +283,7 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 		dataIniValSave.setTimeInMillis(dataIniValSave.getTimeInMillis());
 		boolean ciclo = true;
 		int gapIni=0;
-		int day = dataInizioVal.get(dataInizioVal.DAY_OF_WEEK) - 1;
+		int day = dataInizioVal.get(Calendar.DAY_OF_WEEK) - 1;
 		if (day == 0) day = 7;
 		if (day==giornoSett) {
 			gapIni=0;
@@ -434,7 +436,7 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 		dataIniValSave.setTimeInMillis(dataInizioVal.getTimeInMillis());
 		boolean ciclo = true;
 		int gapIni=0;
-		int day = dataInizioVal.get(dataInizioVal.DAY_OF_WEEK) - 1;
+		int day = dataInizioVal.get(Calendar.DAY_OF_WEEK) - 1;
 		if (day == 0) day = 7;
 		if (day==giornoSett) {
 			gapIni=0;
@@ -556,7 +558,10 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRNSP_DEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRNSP_DEL.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPRNSP_DEL.routine());
+			//fine LP PGNTCORE-24
 //			IN I_PRN_CSOCCSOC VARCHAR(5), 
 //			IN I_PRN_CUTECUTE VARCHAR(5),
 //			IN I_PRN_KANEKENT CHAR(10),
@@ -581,9 +586,14 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -614,7 +624,10 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRNSP_DLK.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRNSP_DLK.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPRNSP_DLK.routine());
+			//fine LP PGNTCORE-24
 //	IN I_PRN_CPRNKTAM VARCHAR(64), 
 //	IN I_PRN_GPRNDATA_INI TIMESTAMP,
 //  IN I_PRN_GPRNDATA_FIN TIMESTAMP,
@@ -635,9 +648,14 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
-	throw new DaoException(e);
+			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -669,7 +687,10 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRNSP_INS.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRNSP_INS.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPRNSP_INS.routine());
+			//fine LP PGNTCORE-24
 //					IN I_PRN_KPRNKPRN VARCHAR(64),
 //					IN I_PRN_CSOCCSOC VARCHAR(5), 
 //					IN I_PRN_CUTECUTE VARCHAR(5),
@@ -716,9 +737,14 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -755,7 +781,10 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 //			IN I_PRN_KANEKENT CHAR(10),
 //			IN I_PRN_CPRNKTAM VARCHAR(64),
 //			IN I_PRN_GPRNDATA TIMESTAMP
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRNSP_SEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRNSP_SEL.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPRNSP_SEL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, prenotazioni.getCodiceSocieta());
 			callableStatement.setString(2, prenotazioni.getCuteCute());
 			callableStatement.setString(3, prenotazioni.getChiaveEnte());
@@ -769,7 +798,6 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -791,8 +819,12 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		}finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -838,8 +870,10 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRNSP_UPD.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRNSP_UPD.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPRNSP_UPD.routine());
+			//fine LP PGNTCORE-24
 //			IN I_PRN_CSOCCSOC VARCHAR(5), 
 //			IN I_PRN_CUTECUTE VARCHAR(5),
 //			IN I_PRN_KANEKENT CHAR(10),
@@ -870,9 +904,14 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);

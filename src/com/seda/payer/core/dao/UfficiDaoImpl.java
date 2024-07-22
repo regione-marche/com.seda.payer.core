@@ -1,18 +1,14 @@
 package com.seda.payer.core.dao;
 
-import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import javax.sql.DataSource;
-import javax.sql.rowset.CachedRowSet;
 
-import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.UfficiPageList;
 import com.seda.payer.core.bean.Ufficio;
@@ -40,7 +36,10 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 		Connection connection = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_SEL.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_SEL.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPABSP_SEL.routine());
+			//fine LP PGNTCORE-24 
 			callableStatement.setString(1, ufficio.getIdUfficio());
 			callableStatement.execute();
 			resultSet=callableStatement.getResultSet();
@@ -51,8 +50,13 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24 
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		//} 
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -89,7 +93,10 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_UPD.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_UPD.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPABSP_UPD.routine());
+			//fine LP PGNTCORE-24 
 			callableStatement.setString(1, ufficio.getIdUfficio());
 			callableStatement.setString(2, ufficio.getCodiceUfficio());
 			callableStatement.setString(3, ufficio.getDescrizioneIT());
@@ -102,9 +109,15 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24 
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		//} 
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -133,7 +146,10 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_DEL.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_DEL.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPABSP_DEL.routine());
+			//fine LP PGNTCORE-24 
 			callableStatement.setString(1, ufficio.getIdUfficio());			
 			callableStatement.execute();
 			ret=1;
@@ -143,9 +159,15 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		//} 
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -174,7 +196,10 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_INS.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_INS.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPABSP_INS.routine());
+			//fine LP PGNTCORE-24 
 			callableStatement.setString(1, ufficio.getIdUfficio());
 			callableStatement.setString(2, ufficio.getCodiceUfficio());
 			callableStatement.setString(3, ufficio.getDescrizioneIT());
@@ -188,9 +213,15 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	throw new DaoException(e);
+		//} 
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -226,7 +257,10 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 		String selectXml = "";
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_LST.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_LST.routine());
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPABSP_LST.routine());
+			//fine LP PGNTCORE-24 
 			callableStatement.setString(1, (ufficio.getCodiceUfficio()==null || ufficio.getCodiceUfficio().equals("")) ? "" : ufficio.getCodiceUfficio());
 			callableStatement.setString(2, ufficio.getDescrizioneIT());
 			callableStatement.setString(3, ufficio.getDescrizioneDE());
@@ -254,8 +288,13 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		//} 
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24 
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//	DAOHelper.closeIgnoringException(callableStatement);

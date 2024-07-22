@@ -1,4 +1,5 @@
 package com.seda.payer.core.dao;
+
 import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -11,10 +12,8 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflector;
 import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.AnagraficaBollettino;

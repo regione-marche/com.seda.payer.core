@@ -4,17 +4,10 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-
 import java.util.ArrayList;
-
-
 import javax.sql.DataSource;
-
-
-import com.seda.data.dao.DAOHelper;
-
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -40,7 +33,10 @@ public class ServizioDAOImpl   extends BaseDaoHandler  implements ServizioDAO  {
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSRVSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSRVSP_LST.routine());
+			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSRVSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.execute();
 			resultSet=callableStatement.getResultSet();
 			
@@ -59,8 +55,12 @@ public class ServizioDAOImpl   extends BaseDaoHandler  implements ServizioDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -102,7 +102,10 @@ public class ServizioDAOImpl   extends BaseDaoHandler  implements ServizioDAO  {
 		Servizio servizio=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSRVSP_SEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSRVSP_SEL.routine());
+			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSRVSP_SEL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, societa);
 			callableStatement.setString(2, cutecute);
 			callableStatement.setString(3, ente);
@@ -121,8 +124,12 @@ public class ServizioDAOImpl   extends BaseDaoHandler  implements ServizioDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -155,7 +162,10 @@ public class ServizioDAOImpl   extends BaseDaoHandler  implements ServizioDAO  {
 		ArrayList<String> listServiziFiglio;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAFMSP_LST_SRV.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAFMSP_LST_SRV.routine());
+			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYAFMSP_LST_SRV.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, idWwallet);
 			callableStatement.setString(2, anagGen);
 			callableStatement.setString(3, codFiscGen);
@@ -177,8 +187,12 @@ public class ServizioDAOImpl   extends BaseDaoHandler  implements ServizioDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);

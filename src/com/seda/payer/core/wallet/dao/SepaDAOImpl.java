@@ -13,6 +13,8 @@ import javax.sql.rowset.WebRowSet;
 import com.seda.commons.string.Convert;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.bean.AnagraficaSoggettoSEPA;
 import com.seda.payer.core.bean.Autorizzazione;
 import com.seda.payer.core.dao.Routines;
@@ -283,9 +285,10 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 
 		try {
 			connection = getConnection();
-
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SEL_NORID.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SEL_NORID.routine());
+			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_SEL_NORID.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, cuteCute);
 
 			callableStatement.execute();
@@ -303,8 +306,12 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 			System.out.println(e);
 		} catch (IllegalArgumentException e) {
 			System.out.println(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	System.out.println(e);
+		} catch (ProcedureReflectorException e) {
 			System.out.println(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -354,7 +361,7 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 			//			connection = getConnection();
 			if (callableStatementRID==null) {
 				//callableStatementRID = Helper.prepareCall(getConnection(), getSchema(), Routines.SDDDESP_INS_BRS.routine());
-				callableStatementRID = prepareCall(Routines.SDDDESP_INS_BRS.routine(), "POST","SEPA");
+				callableStatementRID = prepareCall(Routines.SDDDESP_INS_BRS.routine(), "POST","SEPA");				
 			}
 
 

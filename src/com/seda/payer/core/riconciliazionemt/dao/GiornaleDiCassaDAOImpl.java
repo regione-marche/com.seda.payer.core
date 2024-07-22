@@ -5,22 +5,17 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
+import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.riconciliazionemt.bean.ContoList;
 import com.seda.payer.core.riconciliazionemt.bean.FlussiAbbinatiList;
-import com.seda.payer.core.riconciliazionemt.bean.Flusso;
-import com.seda.payer.core.riconciliazionemt.bean.FlussoPageList;
 import com.seda.payer.core.riconciliazionemt.bean.Flusso;
 import com.seda.payer.core.riconciliazionemt.bean.FlussoPageList;
 import com.seda.payer.core.riconciliazionemt.bean.GiornaleDiCassa;
@@ -127,7 +122,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		GiornaleDiCassaPageList gdcPageList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYGDCSP_LST");                      
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYGDCSP_LST");
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYGDCSP_LST");
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, gdc.getCodSocieta());
 			callableStatement.setString(2, gdc.getCodUtente());
 			callableStatement.setString(3, gdc.getCodEnte());
@@ -195,9 +193,14 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			gdcPageList = new GiornaleDiCassaPageList(pageInfo, "01","Sql-Exception","");
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	gdcPageList = new GiornaleDiCassaPageList(pageInfo, "01","Sql-Exception","");
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			gdcPageList = new GiornaleDiCassaPageList(pageInfo, "01","Sql-Exception","");
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -234,7 +237,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		PspList pspList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST_PSP");                      
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST_PSP");
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYMDCSP_LST_PSP");
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, gdc.getCodSocieta());
 			callableStatement.setString(2, gdc.getCodUtente());
 			callableStatement.setString(3, gdc.getCodEnte());
@@ -253,9 +259,14 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			pspList = new PspList("");
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	pspList = new PspList("");
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			pspList = new PspList("");
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -292,7 +303,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		ContoList contoList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST_CONT");                      
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST_CONT");
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYMDCSP_LST_CONT");
+			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, IDgdc);
 			
 			if(callableStatement.execute())	{
@@ -308,9 +322,14 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			contoList = new ContoList("");
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	contoList = new ContoList("");
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			contoList = new ContoList("");
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -352,7 +371,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		MovimentoDiCassaPageList mdcPageList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST");                      
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST");                      
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYMDCSP_LST");
+			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, gdc.getId());
 			callableStatement.setString(2, mdc.getRegolarizzato());
 			callableStatement.setString(3, mdc.getRendicontato());
@@ -412,9 +434,14 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			mdcPageList = new MovimentoDiCassaPageList(pageInfo, "01","Sql-Exception","");
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	mdcPageList = new MovimentoDiCassaPageList(pageInfo, "01","Sql-Exception","");
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			mdcPageList = new MovimentoDiCassaPageList(pageInfo, "01","Sql-Exception","");
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -452,7 +479,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_SEL");
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_SEL");
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYMDCSP_SEL");
+			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
 			
 			callableStatement.execute();
@@ -510,8 +540,12 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -549,7 +583,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		FlussiAbbinatiList flussiAbbinatiList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_SEL");                      
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_SEL");                      
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYRMFSP_SEL");
+			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, IDmdc);
 			
 			if(callableStatement.execute())	{
@@ -565,9 +602,14 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			flussiAbbinatiList = new FlussiAbbinatiList("");
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	flussiAbbinatiList = new FlussiAbbinatiList("");
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			flussiAbbinatiList = new FlussiAbbinatiList("");
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -604,7 +646,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		TransazioniAbbinateList transazioniAbbinateList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_SEL");                      
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_SEL");                      
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYRMTSP_SEL");
+			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, IDmdc);
 			
 			if(callableStatement.execute())	{
@@ -620,9 +665,14 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			transazioniAbbinateList = new TransazioniAbbinateList("");
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	transazioniAbbinateList = new TransazioniAbbinateList("");
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			transazioniAbbinateList = new TransazioniAbbinateList("");
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -659,7 +709,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		NumeroDocumentoList numdocList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST_DOCN");                      
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST_DOCN");
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYMDCSP_LST_DOCN");
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, gdc.getCodSocieta());
 			callableStatement.setString(2, gdc.getCodUtente());
 			callableStatement.setString(3, gdc.getCodEnte());
@@ -691,9 +744,14 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			numdocList = new NumeroDocumentoList("");
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	numdocList = new NumeroDocumentoList("");
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			numdocList = new NumeroDocumentoList("");
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -734,7 +792,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		FlussoPageList flussoPageList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_LST");                      
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_LST");                      
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYRMFSP_LST");
+			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, flusso.getIdMdc());
 			if (flusso.getDataFlussoDa()==null) {
 				callableStatement.setTimestamp(2, null);
@@ -787,9 +848,14 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			flussoPageList = new FlussoPageList(pageInfo, "01","Sql-Exception","");
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	flussoPageList = new FlussoPageList(pageInfo, "01","Sql-Exception","");
+		//	throw new DaoException(e);
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			flussoPageList = new FlussoPageList(pageInfo, "01","Sql-Exception","");
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -830,7 +896,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		TransazionePageList transazionePageList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_LST");                      
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_LST");                      
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYRMTSP_LST");
+			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, transazione.getIdMdc());
 			if (transazione.getDataTransazioneDa()==null) {
 				callableStatement.setTimestamp(2, null);
@@ -884,9 +953,14 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			transazionePageList = new TransazionePageList(pageInfo, "01","Sql-Exception","");
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	transazionePageList = new TransazionePageList(pageInfo, "01","Sql-Exception","");
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			transazionePageList = new TransazionePageList(pageInfo, "01","Sql-Exception","");
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -922,7 +996,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_INS");                      
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_INS");                      
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYRMFSP_INS");
+			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
 			callableStatement.setLong(2, idFlusso);
 			callableStatement.execute();
@@ -930,8 +1007,12 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -959,7 +1040,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_DEL_QUN");                      
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_DEL_QUN");                      
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYRMFSP_DEL_QUN");
+			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
 			callableStatement.setLong(2, idFlusso);
 			callableStatement.execute();
@@ -967,8 +1051,12 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -996,7 +1084,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_INS");                      
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_INS");                      
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYRMTSP_INS");
+			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
 			callableStatement.setLong(2, idTransazione);
 			callableStatement.execute();
@@ -1004,8 +1095,12 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -1033,7 +1128,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_DEL_RPT");                     
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_DEL_RPT");                 
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYRMTSP_DEL_RPT");
+			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
 			callableStatement.setLong(2, idTransazione);
 			callableStatement.execute();
@@ -1041,8 +1139,12 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -1071,7 +1173,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		MittenteList mittenteList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYQUNSP_LST_MITT");                      
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYQUNSP_LST_MITT");                      
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYQUNSP_LST_MITT");
+			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
 			
 			if(callableStatement.execute())	{
@@ -1087,9 +1192,14 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			mittenteList = new MittenteList("");
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		//	mittenteList = new MittenteList("");
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
 			mittenteList = new MittenteList("");
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -1125,7 +1235,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_UPD_REND_DEF");                     
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_UPD_REND_DEF");                     
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYMDCSP_UPD_REND_DEF");
+			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
 			callableStatement.setString(2, user);
 			callableStatement.setString(3, nota);
@@ -1134,8 +1247,12 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		} catch (HelperException e) {
+		//inizio LP PGNTCORE-24
+		//} catch (HelperException e) {
+		//	e.printStackTrace();
+		} catch (ProcedureReflectorException e) {
 			e.printStackTrace();
+		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
