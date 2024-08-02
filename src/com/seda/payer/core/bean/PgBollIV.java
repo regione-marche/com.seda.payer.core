@@ -61,7 +61,10 @@ public class PgBollIV implements Serializable{
 	//inizio LP EP22405X
 	private String causalePreavvisiBRAV;
 	//fine LP EP22405X
-	
+	//inizio SB PGNTCORE-49
+	private String flagPagPagoPAPreVerbaliZTL;
+	//inizio SB PGNTCORE-49
+
 	public String getAnnoDocumento() {
 		return annoDocumento;
 	}
@@ -156,7 +159,8 @@ public class PgBollIV implements Serializable{
 					this.causalePreavvisiBRAV = appo.trim();
 				else
 					this.causalePreavvisiBRAV = null;
-				this.setMessage(cs.getString(38));
+				this.setFlagPagPagoPAPreVerbaliZTL(cs.getString(38)); //SB PGNTCORE-49
+				this.setMessage(cs.getString(39));
 				//fine LP EP22405X
 			}
 			//PAGONET-371 - fine
@@ -523,4 +527,14 @@ public class PgBollIV implements Serializable{
 		this.causalePreavvisiBRAV = causalePreavvisiBRAV;
 	}
 	//fine LP EP22405X
+
+	//inizio SB PGNTCORE-49
+	public String getFlagPagPagoPAPreVerbaliZTL() {
+		return flagPagPagoPAPreVerbaliZTL;
+	}
+
+	public void setFlagPagPagoPAPreVerbaliZTL(String flagPagPagoPAPreVerbaliZTL) {
+		this.flagPagPagoPAPreVerbaliZTL = flagPagPagoPAPreVerbaliZTL;
+	}
+	//fine SB PGNTCORE-49
 }
