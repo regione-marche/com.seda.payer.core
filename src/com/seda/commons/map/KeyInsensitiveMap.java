@@ -11,7 +11,7 @@ public class KeyInsensitiveMap<K,V> extends HashMap<String,V> {
     }   
 
     public KeyInsensitiveMap(Map <K,V> map) {
-        map.entrySet().forEach(m -> put((String)m.getKey(), m.getValue()));
+        map.entrySet().forEach(m -> put((String)m.getKey(), m.getValue() instanceof String ? (V)((String)m.getValue()).trim() : m.getValue()) );
     }   
 
     @Override
@@ -21,7 +21,7 @@ public class KeyInsensitiveMap<K,V> extends HashMap<String,V> {
 
     @Override
     public V put(String key, V value) {
-        return super.put(key.toLowerCase(), value);
+        return super.put(key.toLowerCase(), value instanceof String ? (V)((String)value).trim() : value);
     }
 
     

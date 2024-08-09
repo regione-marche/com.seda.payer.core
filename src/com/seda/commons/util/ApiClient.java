@@ -213,7 +213,8 @@ public class ApiClient {
             }
             connection.getResponseCode();
             if(c != null) {
-                response = new ObjectMapper().readValue(output.toString(), c);
+                if (output != null && output.length() > 0)
+                    response = new ObjectMapper().readValue(output.toString(), c);
             }
         } catch (MalformedURLException err) {
             throw new Exception("MalformedURLException - " + err.getMessage(), err);
