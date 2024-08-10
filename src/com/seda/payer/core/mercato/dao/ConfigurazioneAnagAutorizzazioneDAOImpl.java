@@ -13,9 +13,6 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
 import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
@@ -25,7 +22,6 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.mercato.bean.ConfigurazioneAnagAutorizzazione;
 import com.seda.payer.core.mercato.bean.EsitoRisposte;
 import com.seda.payer.core.mercato.bean.MercatoPageList;
-import com.seda.payer.core.mercato.dao.MercatoDAO;
 
 public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  implements ConfigurazioneAnagAutorizzazioneDAO  {
 	//private static final long serialVersionUID = 1L;
@@ -302,6 +298,7 @@ public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  imp
 		return esitoRisposte;
 	}
 
+	@SuppressWarnings("deprecation")
 	public ConfigurazioneAnagAutorizzazione select(ConfigurazioneAnagAutorizzazione configurazioneAnagAutorizzazione)
 			throws DaoException 
 	{

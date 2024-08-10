@@ -33,13 +33,20 @@ public class ConservazioneDao extends BaseDaoHandler {
 		ResultSet rs = null;
 		try {
 			callableStatement = prepareCall(Routines.PYCFTSP_SEL_BATCH.routine());
-			
 			callableStatement.setString(1, cutecute);
-			rs = callableStatement.executeQuery();
-			while(rs.next()) {
-				result.add(new ConfigRtEnte(rs));
+			//inizio LP 20240810 - PGNTCORE-24
+			//rs = callableStatement.executeQuery();
+			if(callableStatement.execute()) {
+				rs = callableStatement.getResultSet();
+				if(rs != null) {
+			//fine LP 20240810 - PGNTCORE-24
+					while(rs.next()) {
+						result.add(new ConfigRtEnte(rs));
+					}
+			//inizio LP 20240810 - PGNTCORE-24
+				}
 			}
-			
+			//fine LP 20240810 - PGNTCORE-24
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch  (HelperException e) {
@@ -73,12 +80,22 @@ public class ConservazioneDao extends BaseDaoHandler {
 			callableStatement.setString(1, ente.getCodiceSocieta());
 			callableStatement.setString(2, ente.getCuteCute());
 			callableStatement.setString(3, ente.getChiaveEnte());
-			callableStatement.setTimestamp(4, Timestamp.valueOf(dataInizioDati.atStartOfDay())); // TODO: aggiungere parametro alla SP
+			callableStatement.setTimestamp(4, Timestamp.valueOf(dataInizioDati.atStartOfDay()));
 			callableStatement.setString(5, tipoReg);
 			rs = callableStatement.executeQuery();
-			while(rs.next()) {
-				result.add(new InfoTracciato(rs));
+			//inizio LP 20240810 - PGNTCORE-24
+			//rs = callableStatement.executeQuery();
+			if(callableStatement.execute()) {
+				rs = callableStatement.getResultSet();
+				if(rs != null) {
+			//fine LP 20240810 - PGNTCORE-24
+					while(rs.next()) {
+						result.add(new InfoTracciato(rs));
+					}
+			//inizio LP 20240810 - PGNTCORE-24
+				}
 			}
+			//fine LP 20240810 - PGNTCORE-24
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
@@ -109,11 +126,21 @@ public class ConservazioneDao extends BaseDaoHandler {
 			callableStatement.setString(1, ente.getCodiceSocieta());
 			callableStatement.setString(2, ente.getCuteCute());
 			callableStatement.setString(3, ente.getChiaveEnte());
-			callableStatement.setTimestamp(4, Timestamp.valueOf(dataInizioDati.atStartOfDay())); // TODO: aggiungere parametro alla SP
+			callableStatement.setTimestamp(4, Timestamp.valueOf(dataInizioDati.atStartOfDay()));
 			rs = callableStatement.executeQuery();
-			while(rs.next()) {
-				result.add(new InfoTracciatoFlusso(rs));
+			//inizio LP 20240810 - PGNTCORE-24
+			//rs = callableStatement.executeQuery();
+			if(callableStatement.execute()) {
+				rs = callableStatement.getResultSet();
+				if(rs != null) {
+			//fine LP 20240810 - PGNTCORE-24
+					while(rs.next()) {
+						result.add(new InfoTracciatoFlusso(rs));
+					}
+			//inizio LP 20240810 - PGNTCORE-24
+				}
 			}
+			//fine LP 20240810 - PGNTCORE-24
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
@@ -126,7 +153,6 @@ public class ConservazioneDao extends BaseDaoHandler {
 				try { callableStatement.close(); } catch (SQLException e) { }
 			}
 		}
-		
 		return result;
 	}
 	
