@@ -1,5 +1,6 @@
 package com.seda.payer.core.dao;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -175,19 +176,21 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 		try	{
 			callableStatement = prepareCall(Routines.SRG_DOINSERT.routine());
 			configImposta.save(callableStatement);
-			
 			callableStatement.execute();
-			
 		} catch (SQLException x) {
 			if(x.getErrorCode()== -803){
 				throw new DaoException(x.getErrorCode(),"esiste già una anagrafica per i parametri selezionati");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, "Esiste già una anagrafica per i parametri selezionati");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
+  		}
 		finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);

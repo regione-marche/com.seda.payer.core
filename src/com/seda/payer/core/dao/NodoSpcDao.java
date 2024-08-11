@@ -4,9 +4,9 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.CallableStatement;
@@ -17,17 +17,12 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
-
 import com.seda.payer.core.bean.NodoSpcRpt;
 import com.seda.payer.core.bean.NodoSpcPsc;
 import com.seda.payer.core.bean.NodoSpcPsp;
-
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
-
 
 public class NodoSpcDao extends BaseDaoHandler {
 	
@@ -118,10 +113,12 @@ public class NodoSpcDao extends BaseDaoHandler {
 		
 	}
 
-	private BufferedWriter getFilePath(String nomeFilePath) throws FileNotFoundException  {
-		// TODO[AA]
-		return  new BufferedWriter( new OutputStreamWriter( new FileOutputStream( new File(nomeFilePath) , false) )  );   // il true finale indica che siamo in append
-	}
+	//inizio LP 20240811  - PGNTCORE-24
+	//private BufferedWriter getFilePath(String nomeFilePath) throws FileNotFoundException  {
+	//	return  new BufferedWriter( new OutputStreamWriter( new FileOutputStream( new File(nomeFilePath) , false) )  );   // il true finale indica che siamo in append
+	//}
+	//fine LP 20240811  - PGNTCORE-24
+
 	/***
 	 * Svuota e ricarica la tabella dei PSP ottenuti dal Nodo Nazionale SPC
 	 * @param nodoSpcPsp
@@ -190,8 +187,6 @@ public class NodoSpcDao extends BaseDaoHandler {
 //						filelog.write("getCondizioniEconomiche = " + psc.getCondizioniEconomiche());
 //						filelog.write("getUrl = " + psc.getUrl());
 //					} catch (IOException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
 //					}
 					
 					callableStatement = prepareCall(Routines.PYPSCSP_INS.routine());
@@ -215,8 +210,11 @@ public class NodoSpcDao extends BaseDaoHandler {
 			if(x.getErrorCode()== -803){
 				throw new DaoException(55,"esiste già un psp con la chiave selezionata");
 			}
-			
 			throw new DaoException(x);
+		//inizio LP 20240811  - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già un psp con la chiave selezionata");
+		//fine LP 20240811  - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
 //			try {
@@ -224,7 +222,6 @@ public class NodoSpcDao extends BaseDaoHandler {
 //				filelog.close();
 //				
 //			} catch (IOException e) {
-//				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
 			throw new DaoException(101, x.getMessage());
@@ -233,7 +230,6 @@ public class NodoSpcDao extends BaseDaoHandler {
 //				filelog.write("errore  = " + x.getMessage());
 //				filelog.close();
 //			} catch (IOException e) {
-//				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
 			throw new DaoException(x);
@@ -241,7 +237,6 @@ public class NodoSpcDao extends BaseDaoHandler {
 //			try {
 //				filelog.close();
 //			} catch (IOException e) {
-//				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
 			//inizio LP PG21XX04 Leak
@@ -424,7 +419,9 @@ public class NodoSpcDao extends BaseDaoHandler {
 				
 				//inizio LP PG190220
 				//int recCount = callableStatement.getInt(25);
-				int recCount = callableStatement.getInt(33);
+				//inizio LP 20240811  - PGNTCORE-24
+				//int recCount = callableStatement.getInt(33);
+				//fine LP 20240811  - PGNTCORE-24
 				//fine LP PG190220
 				//fine LP PG180290
 				
@@ -436,6 +433,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 				throw new DaoException(55,"esiste già una rpt con la chiave selezionata");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811  - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già un rpt con la chiave selezionata");
+		//fine LP 20240811  - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			x.printStackTrace();
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
@@ -704,6 +705,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 				throw new DaoException(55,"esiste già una rpt con la chiave selezionata");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già un rpt con la chiave selezionata");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
 			throw new DaoException(101, x.getMessage());
@@ -724,8 +729,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 		}
 		return recCount;
 	}
-	
-	
+
 	private String CalculateIUV(int paymentId){
 		String res = "";
 		
@@ -988,6 +992,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 				throw new DaoException(55,"esiste già un psp con la chiave selezionata");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già un psp con la chiave selezionata");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
 			throw new DaoException(101, x.getMessage());
@@ -1090,6 +1098,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 				throw new DaoException(55,"esiste già un psp con la chiave selezionata");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già un psp con la chiave selezionata");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
 			throw new DaoException(101, x.getMessage());
@@ -1204,6 +1216,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 				throw new DaoException(55,"esiste già un psp con la chiave selezionata");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già un psp con la chiave selezionata");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
 			throw new DaoException(101, x.getMessage());

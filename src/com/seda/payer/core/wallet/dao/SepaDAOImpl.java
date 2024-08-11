@@ -1,5 +1,6 @@
 package com.seda.payer.core.wallet.dao;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -510,6 +511,11 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 				if (returnCode == -803) {
 					throw new DaoException(new Throwable("AnagrafeSoggetto (SDDASTB) con chiave duplicata"));
 				}
+			//inizio LP 20240811 - PGNTCORE-24
+			} catch (UndeclaredThrowableException x) {
+				//TODO: verificare SDDASSP_INS
+				DaoException.makeIfDuplicateKeyError(x, "anagrafeSoggetto (SDDASTB) con chiave duplicata");
+			//fine LP 20240811 - PGNTCORE-24
 			} catch (SQLException e) {
 				throw new DaoException(e);
 			} catch (IllegalArgumentException e) {

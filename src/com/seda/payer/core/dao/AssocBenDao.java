@@ -1,5 +1,6 @@
 package com.seda.payer.core.dao;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -157,9 +158,13 @@ public class AssocBenDao extends BaseDaoHandler {
 			code = callableStatement.getInt(11);
 		} catch (SQLException x) {
 			if (x.getErrorCode()== -803 || x.getErrorCode()== 1062) 
-				throw new DaoException(x.getErrorCode(),Messages.UNIQUE_CONSTRAINT_VIOLATION.format("Associazione"));
+				throw new DaoException(x.getErrorCode(), Messages.UNIQUE_CONSTRAINT_VIOLATION.format("Associazione"));
 			else
 				throw new DaoException(x.getErrorCode(),x.getMessage());
+		//inizio LP 20240811  - PGNTCORE-24 	
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, Messages.UNIQUE_CONSTRAINT_VIOLATION.format("Associazione"));
+		//fine LP 20240811  - PGNTCORE-24 	
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {

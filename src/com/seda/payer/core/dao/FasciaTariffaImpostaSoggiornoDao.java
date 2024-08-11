@@ -1,5 +1,6 @@
 package com.seda.payer.core.dao;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -210,6 +211,10 @@ public class FasciaTariffaImpostaSoggiornoDao extends BaseDaoHandler {
 				throw new DaoException(55,"Esiste già una fascia tariffa con lo stesso codice inserito.");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811  - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "esiste già una fascia tariffa con lo stesso codice inserito.");
+		//fine LP 20240811  - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
 			throw new DaoException(101, x.getMessage());

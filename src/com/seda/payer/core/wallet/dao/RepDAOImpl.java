@@ -1,5 +1,6 @@
 package com.seda.payer.core.wallet.dao;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -82,6 +83,11 @@ public class RepDAOImpl extends BaseDaoHandler  implements RepDAO {
 				String msg = "Errore nell'esecuzione della stored "+Routines.PYREPSP_INS.routine();
 				throw new DaoException(1,msg,e);
 			}
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			String msg = "disposizione già presente " + Routines.PYREPSP_INS.routine();
+			DaoException.makeIfDuplicateKeyError(x, 803, msg);
+		//fine LP 20240811 - PGNTCORE-24
 		} 
 	}
 	

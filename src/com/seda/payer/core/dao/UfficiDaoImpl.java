@@ -1,5 +1,6 @@
 package com.seda.payer.core.dao;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -210,6 +211,11 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 			ret = e.getErrorCode();
 			e.printStackTrace();
 			throw new DaoException(e);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			ret = 803;
+			DaoException.makeIfDuplicateKeyError(x, 803, "record duplicato");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);

@@ -7,6 +7,7 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -247,6 +248,10 @@ public class TipologiaSoggettoDao extends BaseDaoHandler {
 				throw new DaoException(55,"esiste già una tipologia Soggetto per i parametri selezionati");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già una tipologia Soggetto per i parametri selezionati");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
