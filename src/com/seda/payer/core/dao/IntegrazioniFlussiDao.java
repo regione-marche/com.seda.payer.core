@@ -179,9 +179,18 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 			//fine LP PGNTCORE-24 
 			int p = 1;
 			cs.setInt(p++, idFlusso);
-			rs = cs.executeQuery();
-			if (rs.next())
-				flusso = new Flusso(rs);
+			//inizio LP 20240811 PGNTCORE-24
+			//rs = cs.executeQuery();
+			if(cs.execute()) {
+				rs = cs.getResultSet();
+				if(rs!= null) {
+			//fine LP 20240811 PGNTCORE-24
+				if (rs.next())
+					flusso = new Flusso(rs);
+			//inizio LP 20240811 PGNTCORE-24
+				}
+			}
+			//fine LP 20240811 PGNTCORE-24
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		//inizio LP PGNTCORE-24 
@@ -206,7 +215,6 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 				}
 			}
 		}
-		
 		return flusso;
 	}
 }

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-//import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -21,14 +20,13 @@ import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.security.TokenGenerator;
 import com.seda.commons.string.Convert;
+import com.seda.data.procedure.reflection.DriverType;
 import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.data.procedure.reflection.ProcedureReflectorException;
-//import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.mercato.bean.EsitoRisposte;
-//import com.seda.payer.core.mercato.bean.MercatoPageList;
 import com.seda.payer.core.mercato.bean.ConfigurazionePrenotazioni;
 
 public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implements ConfigurazionePrenotazioniDAO  {
@@ -257,11 +255,25 @@ public class ConfigurazionePrenotazioniDAOImpl extends BaseDaoHandler  implement
 		boolean esito=true;
 		String msg ="";
 		ArrayList <String> CodKeyTar = new ArrayList<String>();
-		String SQL = "SELECT TAM_KTAMKTAM FROM PYTAMTB WHERE TAM_CTAMKPZL IN"
+		//inizio LP 20240811 - PGNTCORE-24
+		String SQL = ""; 
+		if (DriverType.isPostgres(getConnection())) {
+			   SQL = "SELECT TAM_KTAMKTAM FROM PYTAMTB WHERE TAM_CTAMKPZL IN"
+					   + "(SELECT DISTINCT PZL_KPZLKPZL FROM PYPZLTB WHERE PZL_CSOCCSOC = '" + codiceSocieta + "' AND PZL_CUTECUTE = '"
+					   + codiceUtente + "' AND PZL_KANEKENT='" + codiceEnte + "' AND PZL_CPZLKMRC = '" + codiceMercato
+					   + "' AND PZL_CPZLCTIP = '" + codicePiazzola + "' AND (PZL_GPZLDTFN IS NULL OR PZL_GPZLDTFN > CURRENT_TIMESTAMP))"
+					   + " AND TAM_ITAMGSEM = " + giornoSett;
+		} else {
+		//String SQL = "SELECT TAM_KTAMKTAM FROM PYTAMTB WHERE TAM_CTAMKPZL IN"
+		   SQL = "SELECT TAM_KTAMKTAM FROM PYTAMTB WHERE TAM_CTAMKPZL IN"
+		//fine LP 20240811 - PGNTCORE-24
 		   + "(SELECT DISTINCT PZL_KPZLKPZL FROM PYPZLTB WHERE PZL_CSOCCSOC = '" + codiceSocieta + "' AND PZL_CUTECUTE = '"
 		   + codiceUtente + "' AND PZL_KANEKENT='" + codiceEnte + "' AND PZL_CPZLKMRC = '" + codiceMercato 
 		   + "' AND PZL_CPZLCTIP = '" + codicePiazzola + "' AND (PZL_GPZLDTFN IS NULL OR PZL_GPZLDTFN > CURRENT TIMESTAMP))"
 		   + " AND TAM_ITAMGSEM = " + giornoSett;
+		//inizio LP 20240811 - PGNTCORE-24
+		}
+		//fine LP 20240811 - PGNTCORE-24
 		try {
 			stmt = conn.createStatement();
 			//inizio LP PG21XX04 Leak

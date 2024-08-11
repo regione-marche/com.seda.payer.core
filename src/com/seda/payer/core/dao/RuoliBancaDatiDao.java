@@ -1499,25 +1499,26 @@ SUM(RAR_IRARRESI) RESIDUO,RRU_GRRUGRUO
 			callableStatement.setString(11, dto.getDataRegistrazioneA());
 			callableStatement.setString(12, dto.getDataEffettivaDa());
 			callableStatement.setString(13, dto.getDataEffettivaA());
-
-			data = callableStatement.executeQuery();
-
-			if (data != null) 
-			{
-				loadWebRowSet(data);
-				rowSet = getWebRowSet();
+			//inizio LP 20240811 - PGNTCORE-24
+			//data = callableStatement.executeQuery()
+			if(callableStatement.execute()) {
+				data = callableStatement.getResultSet();
+				if(data != null) {
+			//fine LP 20240811 - PGNTCORE-24
+					if (data != null) {
+						loadWebRowSet(data);
+						rowSet = getWebRowSet();
+					}
+			//inizio LP 20240811 - PGNTCORE-24
+				}
 			}
+			//fine LP 20240811 - PGNTCORE-24
 	} 
-	catch (SQLException x) 
-	{
+	catch (SQLException x) {
 		throw new DaoException(x);
-	} 
-	catch (IllegalArgumentException x) 
-	{
+	} catch (IllegalArgumentException x) {
 		throw new DaoException(x);
-	} 
-	catch (HelperException x) 
-	{
+	} catch (HelperException x) {
 		throw new DaoException(x);
 	} 
 	//inizio LP PG21XX04 Leak

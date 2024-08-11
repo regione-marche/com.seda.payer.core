@@ -17,8 +17,6 @@ import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.wallet.bean.EsitoRisposte;
 
-//import javax.swing.plaf.metal.MetalProgressBarUI;
-
 public class BlackBoxPosteDao extends BaseDaoHandler {
 
 	public BlackBoxPosteDao(Connection connection, String schema) {
@@ -26,30 +24,34 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 	}
 
 	public List<ConfigurazioneBlackBox> configurazionePosteBlackBoxList() throws DaoException {
-
 		List<ConfigurazioneBlackBox> result = new ArrayList<ConfigurazioneBlackBox>();
-
 		Connection connection = getConnection();
-		
 		CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
-		
 		try {
 			//PGNTCORE-24 - inizio
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNCNFSP_PST_LST.routine());
 			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNCNFSP_PST_LST.routine());
 			//PGNTCORE-24 - fine
-			resultSet = callableStatement.executeQuery();
-			
-			while (resultSet.next()) {
-				ConfigurazioneBlackBox conf = new ConfigurazioneBlackBox();
-				conf.setCodiceEnte(resultSet.getString("CNF_CCNFCENT"));
-				conf.setCodiceIdentificativoDominio(resultSet.getString("CNF_CCNFCIDD"));
-				conf.setCodiceSegregazione(resultSet.getString("CNF_CCNFSEGC"));
-				conf.setEmailPoste(resultSet.getString("CNF_CCNFEPST"));
-				conf.setCodiceServizio(resultSet.getString("CNF_CCNFCODS"));
-				result.add(conf);
+			//inizio LP 20240811 - PGNTCORE-24
+			//resultSet = callableStatement.executeQuery();
+			if(callableStatement.execute()) {
+				resultSet = callableStatement.getResultSet();
+				if(resultSet != null) {
+			//fine LP 20240811 - PGNTCORE-24
+					while (resultSet.next()) {
+						ConfigurazioneBlackBox conf = new ConfigurazioneBlackBox();
+						conf.setCodiceEnte(resultSet.getString("CNF_CCNFCENT"));
+						conf.setCodiceIdentificativoDominio(resultSet.getString("CNF_CCNFCIDD"));
+						conf.setCodiceSegregazione(resultSet.getString("CNF_CCNFSEGC"));
+						conf.setEmailPoste(resultSet.getString("CNF_CCNFEPST"));
+						conf.setCodiceServizio(resultSet.getString("CNF_CCNFCODS"));
+						result.add(conf);
+					}
+			//inizio LP 20240811 - PGNTCORE-24
+				}
 			}
+			//fine LP 20240811 - PGNTCORE-24
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (ProcedureReflectorException e) {
@@ -70,7 +72,6 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 				}
 			}
 		}
-
 		return result;
 	}
 
@@ -151,28 +152,32 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 	}
 
 	public List<ConfigurazionePosteBlackBoxPos> configurazionePosteBlackBoxPos(String idDominio, String codiceEnte, boolean inviato) throws DaoException {
-
 		List<ConfigurazionePosteBlackBoxPos> result = new ArrayList<ConfigurazionePosteBlackBoxPos>();
 		Connection connection = getConnection();
-		
 		CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
-		
 		try {
 			//PGNTCORE-24 - inizio
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_LST.routine());
 			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_LST.routine());
 			//PGNTCORE-24 - fine
-
 			callableStatement.setString(1, idDominio);
 			callableStatement.setString(2, codiceEnte);
 			callableStatement.setString(3, inviato ? "Y" : "N");
-			
-			resultSet = callableStatement.executeQuery();
-			while (resultSet.next()) {
-				ConfigurazionePosteBlackBoxPos conf = new ConfigurazionePosteBlackBoxPos(resultSet);
-				result.add(conf);
+			//inizio LP 20240811 - PGNTCORE-24
+			//resultSet = callableStatement.executeQuery();
+			if(callableStatement.execute()) {
+				resultSet = callableStatement.getResultSet();
+				if(resultSet != null) {
+			//fine LP 20240811 - PGNTCORE-24
+					while (resultSet.next()) {
+						ConfigurazionePosteBlackBoxPos conf = new ConfigurazionePosteBlackBoxPos(resultSet);
+						result.add(conf);
+					}
+			//inizio LP 20240811 - PGNTCORE-24
+				}
 			}
+			//fine LP 20240811 - PGNTCORE-24
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (ProcedureReflectorException e) {
@@ -195,15 +200,12 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		}
 		return result;
 	}
-	
-	public ConfigurazionePosteBlackBoxPos select(String codiceIdentificativoDominio, String codiceEnte, String numeroAvviso) throws DaoException {
 
+	public ConfigurazionePosteBlackBoxPos select(String codiceIdentificativoDominio, String codiceEnte, String numeroAvviso) throws DaoException {
 		ConfigurazionePosteBlackBoxPos blackboxpos = null;
 		Connection connection = getConnection();
-		
 		CallableStatement callableStatement = null;
 		ResultSet resultSet =  null;
-
 		try {
 			//PGNTCORE-24 - inizio
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_SEL.routine());
@@ -212,12 +214,19 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			callableStatement.setString(1, codiceIdentificativoDominio);
 			callableStatement.setString(2, codiceEnte);
 			callableStatement.setString(3, numeroAvviso);
-			callableStatement.execute();
-			
-			resultSet = callableStatement.getResultSet();
-			if (resultSet.next()) {
-				blackboxpos = new ConfigurazionePosteBlackBoxPos(resultSet);
+			//inizio LP 20240811 - PGNTCORE-24
+			//callableStatement.execute()
+			if(callableStatement.execute()) {
+				resultSet = callableStatement.getResultSet();
+				if(resultSet != null) {
+			//fine LP 20240811 - PGNTCORE-24
+					if (resultSet.next()) {
+						blackboxpos = new ConfigurazionePosteBlackBoxPos(resultSet);
+					}
+			//inizio LP 20240811 - PGNTCORE-24
+				}
 			}
+			//fine LP 20240811 - PGNTCORE-24
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
@@ -240,12 +249,10 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 				}
 			}
 		}
-		
 		return blackboxpos;
 	}
 
 	public Integer insert(PosteBlackBoxTes testata) throws DaoException {
-		
 		Connection connection = getConnection();
 		int ret = 0;
 		CallableStatement callableStatement = null;
@@ -279,7 +286,6 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 				}
 			}
 		}
-		
 		return ret;
 	}
 
@@ -358,7 +364,6 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 				}
 			}
 		}
-
 		return updated;
 	}
 	

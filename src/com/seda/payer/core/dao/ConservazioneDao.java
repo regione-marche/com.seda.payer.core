@@ -82,7 +82,6 @@ public class ConservazioneDao extends BaseDaoHandler {
 			callableStatement.setString(3, ente.getChiaveEnte());
 			callableStatement.setTimestamp(4, Timestamp.valueOf(dataInizioDati.atStartOfDay()));
 			callableStatement.setString(5, tipoReg);
-			rs = callableStatement.executeQuery();
 			//inizio LP 20240810 - PGNTCORE-24
 			//rs = callableStatement.executeQuery();
 			if(callableStatement.execute()) {
@@ -127,7 +126,6 @@ public class ConservazioneDao extends BaseDaoHandler {
 			callableStatement.setString(2, ente.getCuteCute());
 			callableStatement.setString(3, ente.getChiaveEnte());
 			callableStatement.setTimestamp(4, Timestamp.valueOf(dataInizioDati.atStartOfDay()));
-			rs = callableStatement.executeQuery();
 			//inizio LP 20240810 - PGNTCORE-24
 			//rs = callableStatement.executeQuery();
 			if(callableStatement.execute()) {

@@ -13,21 +13,16 @@ import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class TipologiaServizioAPPIODao extends BaseDaoHandler {
-	
-	
+
 	public TipologiaServizioAPPIODao(Connection connection, String schema) {
 		super(connection, schema);
 	}
 
 	public String insertTipologiaServizio(TipologiaServizioAPPIO tipologiaServizioAPPIO) throws DaoException {
-		
 		String codiceTipologia = "";
-		
 		CallableStatement cs = null;
-		
 		try {
 			cs = prepareCall(Routines.TIO_DOINS.routine());
-			
 			int p = 1;
 			cs.setString(p++, tipologiaServizioAPPIO.getCodiceTipologiaServizio());
 			cs.setString(p++, tipologiaServizioAPPIO.getDescrizioneTipologiaServizio());
@@ -35,11 +30,8 @@ public class TipologiaServizioAPPIODao extends BaseDaoHandler {
 
 			cs.registerOutParameter(p++, Types.INTEGER);
 			cs.registerOutParameter(p++, Types.CHAR);
-
 			cs.execute();
-			
 			codiceTipologia = cs.getString(5);
-			
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
@@ -49,35 +41,37 @@ public class TipologiaServizioAPPIODao extends BaseDaoHandler {
 				try { cs.close(); } catch (SQLException e) { }
 			}
 		}
-		
 		return codiceTipologia;
 	}
 
 	public TipologiaServizioAPPIO detailTipologiaAPPIO(String codiceTipologiaServizioAPPIO) throws DaoException {
-		
 		TipologiaServizioAPPIO tipologiaServizioAPPIO = null;
-		
 		CallableStatement cs = null;
-		
 		try {
-			
 			cs = prepareCall(Routines.TIO_DODETAIL.routine());
-			
 			int p = 1;
 			cs.setString(p++, codiceTipologiaServizioAPPIO);
 //			cs.setString(p++, codiceUtente);
 //			cs.setString(p++, codiceEnte);
 //			cs.setString(p++, tipologiaServizio);
 //			cs.setString(p++, impostaServizio);
-			
-			ResultSet rs = cs.executeQuery();
-			try {
-				if (rs.next())
-					tipologiaServizioAPPIO = new TipologiaServizioAPPIO(rs);
-			} finally {
-				if (rs!=null)
-					try { rs.close(); } catch (SQLException e) { }
+			//inizio LP 20240811 - PGNTCORE-24
+			//ResultSet rs = cs.executeQuery();
+			if(cs.execute()) {
+				ResultSet rs = cs.getResultSet();
+				if(rs != null) {
+			//fine LP 20240811 - PGNTCORE-24
+					try {
+						if (rs.next())
+							tipologiaServizioAPPIO = new TipologiaServizioAPPIO(rs);
+					} finally {
+						if (rs!=null)
+							try { rs.close(); } catch (SQLException e) { }
+					}
+			//inizio LP 20240811 - PGNTCORE-24
+				}
 			}
+			//fine LP 20240811 - PGNTCORE-24
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
@@ -87,31 +81,20 @@ public class TipologiaServizioAPPIODao extends BaseDaoHandler {
 				try { cs.close(); } catch (SQLException e) { }
 			}
 		}
-
 		return tipologiaServizioAPPIO;
 	}
-	
-	
+
 	public int updateTipologiaServizio(TipologiaServizioAPPIO tipologiaServizioAPPIO) throws DaoException {
-		
 		int numRighe = 0;
-		
 		CallableStatement cs = null;
-				
 		try {
-						
 			cs = prepareCall(Routines.TIO_DOUPD.routine());
-			
 			cs.setString(1, tipologiaServizioAPPIO.getCodiceTipologiaServizio());
 			cs.setString(2, tipologiaServizioAPPIO.getDescrizioneTipologiaServizio());
 			cs.setString(3, tipologiaServizioAPPIO.getCodiceOperatore());
-
 			cs.registerOutParameter(4, Types.INTEGER);
-
 			cs.execute();
-			
 			numRighe = cs.getInt(4);
-			
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
@@ -121,28 +104,18 @@ public class TipologiaServizioAPPIODao extends BaseDaoHandler {
 				try { cs.close(); } catch (SQLException e) { }
 			}
 		}
-		
 		return numRighe;
 	}
-	
+
 	public int deleteTipologiaServizioAPPIO(String codiceTipologiaServizioAPPIO) throws DaoException {
-		
 		int numRighe = 0;
-		
 		CallableStatement cs = null;
-		
 		try {
-			
 			cs = prepareCall(Routines.TIO_DODELETE.routine());
-			
 			cs.setString(1, codiceTipologiaServizioAPPIO);
-
 			cs.registerOutParameter(2, Types.INTEGER);
-
 			cs.execute();
-			
 			numRighe = cs.getInt(2);
-			
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
@@ -152,23 +125,16 @@ public class TipologiaServizioAPPIODao extends BaseDaoHandler {
 				try { cs.close(); } catch (SQLException e) { }
 			}
 		}
-		
 		return numRighe;
-		
 	}
-	
-	public TipologiaServizioAPPIOList tipologiaServizioAPPIOList(TipologiaServizioAPPIO tipologiaServizioAPPIO, int pageNumber, int rowsPerPage, String orderBy) throws DaoException {
-		
-		TipologiaServizioAPPIOList tipologiaServizioAPPIOList = null;
 
+	public TipologiaServizioAPPIOList tipologiaServizioAPPIOList(TipologiaServizioAPPIO tipologiaServizioAPPIO, int pageNumber, int rowsPerPage, String orderBy) throws DaoException {
+		TipologiaServizioAPPIOList tipologiaServizioAPPIOList = null;
 		CallableStatement cs = null;
 		ResultSet data = null;
-		
 		try {
 			int p = 1;
-			
 			cs = prepareCall(Routines.TIO_DOLIST.routine());
-			
 			cs.setString(p++, tipologiaServizioAPPIO.getCodiceTipologiaServizio());
 			cs.setString(p++, tipologiaServizioAPPIO.getDescrizioneTipologiaServizio());
 			cs.setString(p++, orderBy);
@@ -181,21 +147,16 @@ public class TipologiaServizioAPPIODao extends BaseDaoHandler {
 			cs.registerOutParameter(p++, Types.SMALLINT);
 
 			if (cs.execute()) {
-
 				tipologiaServizioAPPIOList = new TipologiaServizioAPPIOList();
-
 				tipologiaServizioAPPIOList.setPageNumber(pageNumber);
 				tipologiaServizioAPPIOList.setRowsPerPage(rowsPerPage);
 				tipologiaServizioAPPIOList.setFirstRow(cs.getInt(6));
 				tipologiaServizioAPPIOList.setLastRow(cs.getInt(7));
 				tipologiaServizioAPPIOList.setNumRows(cs.getInt(8));
 				tipologiaServizioAPPIOList.setNumPages(cs.getInt(9));
-
 				data = cs.getResultSet();
-
 				loadWebRowSet(data);
 				tipologiaServizioAPPIOList.setTipologiaServizioAPPIOListXml(getWebRowSetXml());
-				
 			}
 		} catch (SQLException e) {
 			throw new DaoException(e);
@@ -209,7 +170,6 @@ public class TipologiaServizioAPPIODao extends BaseDaoHandler {
 				try { cs.close(); } catch (SQLException e) { }
 			}
 		}
-
 		return tipologiaServizioAPPIOList;
 	}
 	
@@ -254,6 +214,5 @@ public class TipologiaServizioAPPIODao extends BaseDaoHandler {
 //			}
 //		}
 //	}
-
 	
 }
