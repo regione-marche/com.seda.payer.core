@@ -335,7 +335,7 @@ public class NotificheSoap extends BaseDaoHandler {
 			cs.registerOutParameter(p++, Types.INTEGER);
 			cs.registerOutParameter(p++, Types.INTEGER);
 			cs.registerOutParameter(p++, Types.INTEGER);
-			cs.registerOutParameter(p++, Types.SMALLINT);
+			cs.registerOutParameter(p++, Types.INTEGER);//LP 20240812  - PGNTCORE-24
 
 			if (cs.execute()) {
 
