@@ -10,9 +10,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
-import com.seda.payer.core.bean.FasciaTariffaImpostaSoggiorno;
 import com.seda.payer.core.bean.TariffaImpostaSoggiorno;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -393,7 +391,7 @@ public class TariffaImpostaSoggiornoDao extends BaseDaoHandler {
 			
 				data = callableStatement.getResultSet();
 				
-				while(data.next()) {
+				while(data != null && data.next()) {
 					sb.append(data.getString("RECORD"));
 					sb.append("\r\n");
 				}
