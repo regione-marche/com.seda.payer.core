@@ -1599,15 +1599,17 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			callableStatement.setString(7,wallet.getCodiceFiscaleGenitore());
 			callableStatement.setString(8,wallet.getIdWallet());
 			callableStatement.setString(9,wallet.getDenominazioneGenitore());
+			callableStatement.setString(10, (String)wallet.getAttribute("PGBDATA_PAGAMENTO_DA"));
+			callableStatement.setString(11, (String)wallet.getAttribute("PGBDATA_PAGAMENTO_A"));
 
 			/* we register row start */
-			callableStatement.registerOutParameter(10, Types.INTEGER);
-			/* we register row end */
-			callableStatement.registerOutParameter(11, Types.INTEGER);
-			/* we register total rows */
 			callableStatement.registerOutParameter(12, Types.INTEGER);
+			/* we register row end */
+			callableStatement.registerOutParameter(13, Types.INTEGER);
+			/* we register total rows */
+			callableStatement.registerOutParameter(14, Types.INTEGER);
 			/* we register total pages */
-			callableStatement.registerOutParameter(13, Types.SMALLINT);
+			callableStatement.registerOutParameter(15, Types.SMALLINT);
 			String walletCsv = ""; 
 
 			/* we execute procedure */
