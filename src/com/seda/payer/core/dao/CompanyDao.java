@@ -134,7 +134,17 @@ public class CompanyDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
-	public void doSave(Company company,String codOp) throws DaoException {
+	//inizio LP 20240821 - Versione dei metodi per essere usati in autocommit == true o false 
+	public void doSave(Company company, String codOp) throws DaoException {
+		doSaveTail(company,  codOp, true);
+	}
+
+	public void doSaveAutocommitFalse(Company company, String codOp) throws DaoException {
+		doSaveTail(company,  codOp, false);
+	}
+		
+	private void doSaveTail(Company company, String codOp, boolean bFlagUpdateAutocommit) throws DaoException {
+	//fine LP 20240821 
 		CallableStatement callableStatement=null;
 		try	{
 			if (company.getCompanyCode() == null || company.getCompanyCode().length() == 0)
@@ -142,9 +152,10 @@ public class CompanyDao extends BaseDaoHandler {
 
 			Company data = doDetail(company.getCompanyCode());
 			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("company.saveadd.error"));
+			 
 			if (data != null)	
-			    callableStatement = prepareCall(Routines.COMPANY_DOUPDATE.routine());
-			else callableStatement = prepareCall(Routines.COMPANY_DOINSERT.routine());
+			    callableStatement = prepareCall(Routines.COMPANY_DOUPDATE.routine(), bFlagUpdateAutocommit); //LP 20240821
+			else callableStatement = prepareCall(Routines.COMPANY_DOINSERT.routine(), bFlagUpdateAutocommit); //LP 20240821
 			
 			company.save(callableStatement);
 			callableStatement.execute();
