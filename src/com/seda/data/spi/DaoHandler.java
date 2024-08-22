@@ -116,6 +116,10 @@ public abstract class DaoHandler {
 	protected CallableStatement prepareCall(String routine, String methodRest, String restService, boolean flagUpdateAutocommit) throws IllegalArgumentException, SQLException, HelperException {
 		return prepareCall(routine, -1, flagUpdateAutocommit ? 1 : 0);
 	}
+
+	protected CallableStatement prepareCall(boolean flagUpdateAutocommit, String routine) throws IllegalArgumentException, SQLException, HelperException {
+		return prepareCall(routine, -1, flagUpdateAutocommit ? 1 : 0);
+	}
 	//fine LP 20240821 - Nuove prepareCall per flagUpdateAutocommit
 	
 	/**
