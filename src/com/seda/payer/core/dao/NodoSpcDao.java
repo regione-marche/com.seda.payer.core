@@ -1,10 +1,5 @@
 package com.seda.payer.core.dao;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigDecimal;
@@ -466,7 +461,14 @@ public class NodoSpcDao extends BaseDaoHandler {
 	 * @return numero di righe modificate
 	 * @throws DaoException
 	 */
+	//inizio LP 20240826 - PGNTBNPE-1
 	public int updateRptNodoSpc(NodoSpcRpt nodoSpcRpt) throws DaoException 
+	{
+		return updateRptNodoSpcTail(true, nodoSpcRpt);
+	}
+		
+	public int updateRptNodoSpcTail(boolean bFlagAutocommitUpdate, NodoSpcRpt nodoSpcRpt) throws DaoException 
+	//fine LP 20240826 - PGNTBNPE-1
 	{
 		int recCount = 0;
 		CallableStatement callableStatement = null;
@@ -474,7 +476,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 			//recupero id
 			int id = nodoSpcRpt.getId().intValue();
 			System.out.println("recupero id = " + id);
-			callableStatement = prepareCall(Routines.PYRPTSP_UPD.routine());
+			//inizio LP 20240826 - PGNTBNPE-1
+			//callableStatement = prepareCall(Routines.PYRPTSP_UPD.routine());
+			callableStatement = prepareCall(bFlagAutocommitUpdate, Routines.PYRPTSP_UPD.routine());
+			//fine LP 20240826 - PGNTBNPE-1
 			callableStatement.setInt(1, id);
 			if(nodoSpcRpt.getChiaveTra() != null &&  !nodoSpcRpt.getChiaveTra().equalsIgnoreCase(""))
 				callableStatement.setString(2, nodoSpcRpt.getChiaveTra());
@@ -767,13 +772,22 @@ public class NodoSpcDao extends BaseDaoHandler {
 	//fine LP PG21XX08_1
 
 	//29072016 PG160130 GG introdotto codContestoPagamento
+	//inizio LP 20240826 - PGNTBNPE-1
 	public List<NodoSpcRpt> recuperaRPT(BigInteger id, String chiaveTra, String codiceIuv, String codContestoPagamento, String idDominio, String identificativoPSP) throws DaoException 
+	{
+		return recuperaRPTTail(true, id, chiaveTra, codiceIuv, codContestoPagamento, idDominio, identificativoPSP);
+	}
+		
+	public List<NodoSpcRpt> recuperaRPTTail(boolean bFlagAutocommitUpdate, BigInteger id, String chiaveTra, String codiceIuv, String codContestoPagamento, String idDominio, String identificativoPSP) throws DaoException 
+	//fine LP 20240826 - PGNTBNPE-1
 	{
 		List<NodoSpcRpt> listRpt = new ArrayList<NodoSpcRpt>(); 
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		try	{
-			callableStatement = prepareCall(Routines.PYRPTSP_SEL.routine());
+			//inizio LP 20240826 - PGNTBNPE-1
+			callableStatement = prepareCall(bFlagAutocommitUpdate,  Routines.PYRPTSP_SEL.routine());
+			//fine LP 20240826 - PGNTBNPE-1
 			if (id != null && id.longValue()>0)
 				callableStatement.setInt(1, id.intValue());
 			else
