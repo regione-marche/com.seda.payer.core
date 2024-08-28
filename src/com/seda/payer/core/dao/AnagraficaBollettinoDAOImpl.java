@@ -992,16 +992,31 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		return res;
 	}
 	
+	//inizio LP 20240827 - PGNTCONS-3
 	public String selCodiceSocieta(String codiceUtente) throws DaoException {
+		return selCodiceSocietaTail(true, codiceUtente);
+	}
+
+	public String selCodiceSocietaTail(boolean bFlagUpdateAutocommit, String codiceUtente) throws DaoException {
+	//fine LP 20240827 - PGNTCONS-3
 		String codiceSocieta = "";
 		ResultSet listCodSoc = null;
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		try {
-			connection = getConnection();
+			//inizio LP 20240827 - PGNTCONS-3
+			if(bFlagUpdateAutocommit) {
+			//fine LP 20240827 - PGNTCONS-3
+				connection = getConnection();
+			//inizio LP 20240827 - PGNTCONS-3
+			}
+			//fine LP 20240827 - PGNTCONS-3
 			//PGNTCORE-24 - inizio
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYUTESP_SEL_SOC.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYUTESP_SEL_SOC.routine());
+			//inizio LP 20240827 - PGNTCONS-3
+			//callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYUTESP_SEL_SOC.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYUTESP_SEL_SOC.routine());
+			//fine LP 20240827 - PGNTCONS-3
 			//PGNTCORE-24 - fine
 			callableStatement.setString(1, codiceUtente);
 			callableStatement.execute();

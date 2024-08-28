@@ -27,12 +27,21 @@ public class ConservazioneDao extends BaseDaoHandler {
 	 * @return Lista configurazioni abilitate 
 	 * @throws DaoException
 	 */
+	//inizio LP 20240827 - PGNTCONS-3
 	public List<ConfigRtEnte> getConfigurazioniAbilitate(String cutecute) throws DaoException {
+		return getConfigurazioniAbilitateTail(true, cutecute);
+	}
+
+	public List<ConfigRtEnte> getConfigurazioniAbilitateTail(boolean bFlagUpdateAutocommit, String cutecute) throws DaoException {
+	//fine LP 20240827 - PGNTCONS-3
 		List<ConfigRtEnte> result = new ArrayList<ConfigRtEnte>();
 		CallableStatement callableStatement = null;
 		ResultSet rs = null;
 		try {
-			callableStatement = prepareCall(Routines.PYCFTSP_SEL_BATCH.routine());
+			//inizio LP 20240827 - PGNTCONS-3
+			//callableStatement = prepareCall(Routines.PYCFTSP_SEL_BATCH.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYCFTSP_SEL_BATCH.routine());
+			//fine LP 20240827 - PGNTCONS-3
 			callableStatement.setString(1, cutecute);
 			//inizio LP 20240810 - PGNTCORE-24
 			//rs = callableStatement.executeQuery();
@@ -68,15 +77,21 @@ public class ConservazioneDao extends BaseDaoHandler {
 	 * @return Lista contentente XML di RPT e RT del singolo ente abilitato
 	 * @throws DaoException
 	 */
-	
+	//inizio LP 20240827 - PGNTCONS-3
 	public List<InfoTracciato> getListaRPTRT(ConfigRtEnte ente, String tipoReg, LocalDate dataInizioDati) throws DaoException {
-		
+		return getListaRPTRTTail(true, ente, tipoReg, dataInizioDati);
+	}
+
+	public List<InfoTracciato> getListaRPTRTTail(boolean bFlagUpdateAutocommit, ConfigRtEnte ente, String tipoReg, LocalDate dataInizioDati) throws DaoException {
+	//fine LP 20240827 - PGNTCONS-3
 		List<InfoTracciato> result = new ArrayList<InfoTracciato>();
 		CallableStatement callableStatement = null;
 		ResultSet rs = null;
 		try {
-			callableStatement = prepareCall(Routines.PYRPTSP_SEL_BATCH.routine());
-			
+			//inizio LP 20240827 - PGNTCONS-3
+			//callableStatement = prepareCall(Routines.PYRPTSP_SEL_BATCH.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYRPTSP_SEL_BATCH.routine());
+			//fine LP 20240827 - PGNTCONS-3
 			callableStatement.setString(1, ente.getCodiceSocieta());
 			callableStatement.setString(2, ente.getCuteCute());
 			callableStatement.setString(3, ente.getChiaveEnte());
@@ -115,13 +130,21 @@ public class ConservazioneDao extends BaseDaoHandler {
 	 * @return Lista di XML Flusso del singolo ente abilitato
 	 * @throws DaoException  
 	 */	
+	//inizio LP 20240827 - PGNTCONS-3
 	public List<InfoTracciatoFlusso> getListaFRN(ConfigRtEnte ente, LocalDate dataInizioDati) throws DaoException {
-		
+		return getListaFRNTail(true, ente, dataInizioDati); 
+	}
+
+	public List<InfoTracciatoFlusso> getListaFRNTail(boolean bFlagUpdateAutocommit, ConfigRtEnte ente, LocalDate dataInizioDati) throws DaoException {
+	//fine LP 20240827 - PGNTCONS-3
 		List<InfoTracciatoFlusso> result = new ArrayList<InfoTracciatoFlusso>();
 		CallableStatement callableStatement = null;
 		ResultSet rs = null;
 		try {
-			callableStatement = prepareCall(Routines.PYQUNSP_SEL_BATCH.routine());
+			//inizio LP 20240827 - PGNTCONS-3
+			//callableStatement = prepareCall(Routines.PYQUNSP_SEL_BATCH.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYQUNSP_SEL_BATCH.routine());
+			//fine LP 20240827 - PGNTCONS-3
 			callableStatement.setString(1, ente.getCodiceSocieta());
 			callableStatement.setString(2, ente.getCuteCute());
 			callableStatement.setString(3, ente.getChiaveEnte());
@@ -160,14 +183,21 @@ public class ConservazioneDao extends BaseDaoHandler {
 	 * @param versamentoResult
 	 * @throws DaoException 
 	 */
-	
+	//inizio LP 20240827 - PGNTCONS-3
 	public void updateStatoFRN(long chiave, String errorMessage, String transportOutcome, String idSip) throws DaoException  {
-		
+		updateStatoFRNTail(true, chiave, errorMessage, transportOutcome, idSip);
+	}
+
+	public void updateStatoFRNTail(boolean bFlagUpdateAutocommit, long chiave, String errorMessage, String transportOutcome, String idSip) throws DaoException  {
+	//fine LP 20240827 - PGNTCONS-3
 		CallableStatement callableStatement = null;
 		
 		int p = 1;
 		try {
-		callableStatement = prepareCall(Routines.PYQUNSP_UPD_BATCH.routine());
+			//inizio LP 20240827 - PGNTCONS-3
+			//callableStatement = prepareCall(Routines.PYQUNSP_UPD_BATCH.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYQUNSP_UPD_BATCH.routine());
+			//fine LP 20240827 - PGNTCONS-3
 			callableStatement.setLong(p++, chiave);
 			callableStatement.setString(p++, errorMessage);
 			callableStatement.setString(p++, transportOutcome);
@@ -192,12 +222,21 @@ public class ConservazioneDao extends BaseDaoHandler {
 	 * @param tipoRegistro
 	 * @throws DaoException 
 	 */
+	//inizio LP 20240827 - PGNTCONS-3
 	public void updateStato(long chiave, String errorMessage, String transportOutcome, String idSip, String tipoRegistro) throws DaoException {
+		updateStatoTail(true, chiave, errorMessage, transportOutcome, idSip, tipoRegistro);
+	}
+
+	public void updateStatoTail(boolean bFlagUpdateAutocommit, long chiave, String errorMessage, String transportOutcome, String idSip, String tipoRegistro) throws DaoException {
+	//fine LP 20240827 - PGNTCONS-3
 		CallableStatement callableStatement = null;
 		
 		int p = 1;
 		try {
-			callableStatement = prepareCall(Routines.PYRPTSP_UPD_BATCH.routine());
+			//inizio LP 20240827 - PGNTCONS-3
+			//callableStatement = prepareCall(Routines.PYRPTSP_UPD_BATCH.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYRPTSP_UPD_BATCH.routine());
+			//fine LP 20240827 - PGNTCONS-3
 			callableStatement.setLong(p++, chiave);
 			callableStatement.setString(p++, errorMessage);
 			callableStatement.setString(p++, transportOutcome);
