@@ -45,6 +45,8 @@ public class DataSourceImpl implements DataSource {
 	
 	private volatile boolean suspend=false;
 
+	private DataSource originalDataSource = null;
+
 	@ManagedOperation @Description("Suspend connection requests on this datasource")
 	public void suspend() {
 		if (suspend) return;
@@ -118,17 +120,24 @@ public class DataSourceImpl implements DataSource {
 		this.driverProperties = driverProperties;
 	}
 
+	public DataSourceImpl(DataSource dataSource) {
+		this.originalDataSource = dataSource;
+	}
+
 	public Connection getConnection() throws SQLException {
-		initializeDriver();
 		Connection connection;
-		if (driverProperties != null) {
-			connection = DriverManager.getConnection(url, driverProperties);
-		} else if (username == null || password == null) {
-			connection = DriverManager.getConnection(url);
+		if (originalDataSource != null) {
+			connection = originalDataSource.getConnection();			
 		} else {
-			connection = DriverManager.getConnection(url, username, password);
+			initializeDriver();
+			if (driverProperties != null) {
+				connection = DriverManager.getConnection(url, driverProperties);
+			} else if (username == null || password == null) {
+				connection = DriverManager.getConnection(url);
+			} else {
+				connection = DriverManager.getConnection(url, username, password);
+			}
 		}
-		
 		return configureConnection(connection);
 	}
 
