@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.commons.bean.TypeRequest;
 import com.seda.payer.core.bean.User;

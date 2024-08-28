@@ -9,7 +9,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.ArchivioCarichiAnagrafica;
 import com.seda.payer.core.bean.ArchivioCarichiCoda;
@@ -18,10 +17,6 @@ import com.seda.payer.core.bean.ArchivioCarichiLogFlussi;
 import com.seda.payer.core.bean.ArchivioCarichiMovimento;
 import com.seda.payer.core.bean.ArchivioCarichiRuolo;
 import com.seda.payer.core.bean.ArchivioCarichiScadenza;
-//inizio LP PG210130
-//import com.seda.payer.core.bean.ArchivioCarichiDettaglioPagamento;
-//import com.seda.payer.core.bean.ArchivioCarichiDettaglioContabile;
-//fine LP PG210130
 import com.seda.payer.core.bean.ArchivioCarichiTesta;
 import com.seda.payer.core.bean.ArchivioCarichiTributo;
 import com.seda.payer.core.bean.DatiFlussoIO;
@@ -30,7 +25,6 @@ import com.seda.payer.core.bean.DettaglioFlussoOttico;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 
-//@SuppressWarnings("unchecked")
 public class ArchivioCarichiDao extends BaseDaoHandler {
 	
 	public ArchivioCarichiDao(Connection connection, String schema) {
@@ -38,13 +32,22 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	}
 
 	//PYEH1SP_SE2
+	//inizio LP 20240828 - PGNTACWS-22
 	public ArchivioCarichiDocumento getDocumento(ArchivioCarichiDocumento dto) throws DaoException {
+		return getDocumentoTail(true, dto);
+	}
+
+	public ArchivioCarichiDocumento getDocumentoTail(boolean bFlagUpdateAutocommit, ArchivioCarichiDocumento dto) throws DaoException {
+	//fine LP 20240828 - PGNTACWS-22
 		CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
 		ResultSet rs = null;
 		//fine LP PG21XX04 Leak
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH1SP_SE2.routine());
+			//inizio LP 20240828 - PGNTACWS-22
+			//callableStatement = prepareCall(Routines.PYEH1SP_SE2.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH1SP_SE2.routine());
+			//fine LP 20240828 - PGNTACWS-22
 			callableStatement.setString(1, dto.getCodiceUtente());
 			callableStatement.setString(2, dto.getTipoServizio());
 			callableStatement.setString(3, dto.getCodiceEnte());			
@@ -635,13 +638,22 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	//fine LP PG210130
 	
 	//PYEH7SP_SE2
+	//inizio LP 20240828 - PGNTACWS-22
 	public ArchivioCarichiTributo getTributo(ArchivioCarichiTributo dto) throws DaoException {
+		return getTributoTail(true, dto);
+	}
+
+	public ArchivioCarichiTributo getTributoTail(boolean bFlagUpdateAutocommit, ArchivioCarichiTributo dto) throws DaoException {
+	//fine LP 20240828 - PGNTACWS-22
 		CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
 		ResultSet rs = null;
 		//fine LP PG21XX04 Leak
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH7SP_SE2.routine());
+			//inizio LP 20240828 - PGNTACWS-22
+			//callableStatement = prepareCall(Routines.PYEH7SP_SE2.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH7SP_SE2.routine());
+			//fine LP 20240828 - PGNTACWS-22
 			callableStatement.setString(1, dto.getCodiceUtente());
 			callableStatement.setString(2, dto.getTipoServizio());
 			callableStatement.setString(3, dto.getCodiceEnte());			
@@ -906,10 +918,19 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	}
 	
 	//PYEHXSP_DIS
-	public void applicaDiscarico (ArchivioCarichiTributo dto) throws DaoException {
+	//inizio LP 20240828 - PGNTACWS-22
+	public void applicaDiscarico(ArchivioCarichiTributo dto) throws DaoException {
+		applicaDiscaricoTail(true, dto);
+	}
+
+	public void applicaDiscaricoTail(boolean bFlagUpdateAutocommit, ArchivioCarichiTributo dto) throws DaoException {
+	//fine LP 20240828 - PGNTACWS-22
 		CallableStatement callableStatement = null;
 		try	{		
-			callableStatement = prepareCall(Routines.PYEHXSP_DIS.routine());
+			//inizio LP 20240828 - PGNTACWS-22
+			//callableStatement = prepareCall(Routines.PYEHXSP_DIS.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEHXSP_DIS.routine());
+			//fine LP 20240828 - PGNTACWS-22
 			callableStatement.setLong(1, dto.getProgressivoFlusso());
 			callableStatement.setString(2, dto.getCodiceUtente());
 			callableStatement.setString(3, dto.getTipoServizio());
@@ -979,11 +1000,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	}
 	
 	//PYEH3SP_SEL_PPAG
+	//inizio LP 20240828 - PGNTACWS-22
 	public int getProgressivoPagamento(ArchivioCarichiDocumento dto) throws DaoException {
+		return getProgressivoPagamentoTail(true, dto);
+	}
+
+	public int getProgressivoPagamentoTail(boolean bFlagUpdateAutocommit, ArchivioCarichiDocumento dto) throws DaoException {
+	//fine LP 20240828 - PGNTACWS-22
 		int progressivoPagamento = 0;
 		CallableStatement callableStatement = null;
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH3SP_SEL_PPAG.routine());
+			//inizio LP 20240828 - PGNTACWS-22
+			//callableStatement = prepareCall(Routines.PYEH3SP_SEL_PPAG.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH3SP_SEL_PPAG.routine());
+			//fine LP 20240828 - PGNTACWS-22
 			callableStatement.setString(1, dto.getCodiceUtente());
 			callableStatement.setString(2, dto.getTipoServizio());
 			callableStatement.setString(3, dto.getCodiceEnte());			
@@ -1424,7 +1454,7 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 		System.out.println("fine inserisciPagamentoEcDifferito codiceRitorno = " + codiceRitorno);
-		return codiceRitorno; 	//TODO da verificare
+		return codiceRitorno; //Da verificare
 	}
 	
 	//inizio LP PG190220
@@ -1543,7 +1573,7 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(3, dettaglioFlussoOttico.getCodiceEnte());	
 			callableStatement.setString(4, dettaglioFlussoOttico.getNumeroDocumento());
 			callableStatement.setString(5, dettaglioFlussoOttico.getCodicFiscaleDebitore());
-			callableStatement.setString(6, "");	//TODO qui dovrò mettere codiceimpostaservizio
+			callableStatement.setString(6, "");	//Qui dovrò mettere codiceimpostaservizio
 			
 			list = new ArrayList<DatiFlussoIO>();
 			// we execute callableStatement
@@ -1587,11 +1617,13 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		return list;
 	}
 	
-	private void closeCallableStatement(CallableStatement callableStatement)
-	{
-		if (callableStatement != null)
-			DAOHelper.closeIgnoringException(callableStatement);
-	}
+	//inizio LP 20240828 - PGNTACWS-22
+	//private void closeCallableStatement(CallableStatement callableStatement)
+	//{
+	//	if (callableStatement != null)
+	//		DAOHelper.closeIgnoringException(callableStatement);
+	//}
+	//fine LP 20240828 - PGNTACWS-22
 
 	// inizio SR PGNTCORE-17
 	public void doRollbackArchivioCarichiELG(String fileNameToElab, int progressivoFlusso) throws DaoException {

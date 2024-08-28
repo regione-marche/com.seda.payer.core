@@ -1,8 +1,5 @@
 package com.seda.payer.core.dao;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.security.NoSuchAlgorithmException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -15,9 +12,6 @@ import java.util.List;
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.logger.LoggerWrapper;
 import com.seda.commons.security.TokenGenerator;
-//inizio LP PG21XX04 Leak
-//import com.seda.data.dao.DAOHelper;
-//fine LP PG21XX04 Leak
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.DettaglioFlussoOttico;
 import com.seda.payer.core.exception.DaoException;

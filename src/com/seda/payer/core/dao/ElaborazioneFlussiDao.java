@@ -633,13 +633,31 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 
 	//fine LP PG210130
 
+	//inizio LP 20240828 - PGNTACWS-22
 	public int doInsertEH3(int prog, String tipoRecord, String codiceUtente, Date dataFlusso, String tipoServizio, 
 						   String codEnte, String tipoUff, String codUfficio, String codImposta, String numDoc, int  progPagamento, String movimento, 
 						   Date dataMovimento, String causale, String segno, double importoPagato, double notifica, double aggioCoattivo, double spese,
 						   double mora, int numRate, int primaRata, String canPagamento, String tipoPagamento, String stato) throws DaoException {
+		
+		return doInsertEH3Tail(true,
+					prog, tipoRecord, codiceUtente, dataFlusso, tipoServizio, 
+					codEnte, tipoUff, codUfficio, codImposta, numDoc,  progPagamento, movimento, 
+					dataMovimento, causale, segno,  importoPagato,  notifica,  aggioCoattivo,  spese,
+					mora, numRate, primaRata, canPagamento, tipoPagamento, stato);
+	}
+
+	public int doInsertEH3Tail(boolean bFlagUpdateAutocommit,
+						int prog, String tipoRecord, String codiceUtente, Date dataFlusso, String tipoServizio, 
+						String codEnte, String tipoUff, String codUfficio, String codImposta, String numDoc, int  progPagamento, String movimento, 
+						Date dataMovimento, String causale, String segno, double importoPagato, double notifica, double aggioCoattivo, double spese,
+						double mora, int numRate, int primaRata, String canPagamento, String tipoPagamento, String stato) throws DaoException {
+	//fine LP 20240828 - PGNTACWS-22
 		CallableStatement callableStatement = null;	
 		try {
-			callableStatement = prepareCall(Routines.EH3_DOINSERT.routine());	
+			//inizio LP 20240828 - PGNTACWS-22
+			//callableStatement = prepareCall(Routines.EH3_DOINSERT.routine());	
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.EH3_DOINSERT.routine());	
+			//fine LP 20240828 - PGNTACWS-22
 			callableStatement.setString(1, tipoRecord);
 			callableStatement.setString(2, codiceUtente);
 			callableStatement.setDate(3, dataFlusso);
