@@ -17,6 +17,7 @@ import java.util.List;
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 import com.seda.commons.string.Convert;
+import com.seda.data.helper.HelperException;
 import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
@@ -28,6 +29,7 @@ import com.seda.payer.core.wallet.bean.FattureRep;
 import com.seda.payer.core.wallet.bean.Wallet;
 import com.seda.payer.core.wallet.bean.WalletPageList;
 
+@SuppressWarnings("unused")
 public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  { 
 	private static final long serialVersionUID = 1L;
 	protected CallableStatement callableStatementServAnno = null;
@@ -588,7 +590,7 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 	//      closeConnection == true si esegue la chiusura
 	//      sia della connection che del callableStatement
 	//fine LP PG21XX04 Leak
-	public void update(Wallet wallet,boolean closeConnection) throws DaoException {
+	public void update(Wallet wallet, boolean closeConnection) throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		
@@ -599,7 +601,11 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 				connection = getConnection();
 				//inizio LP PGNTCORE-24
 				//callableStatementBRSUP = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_UPD.routine());
-				callableStatementBRSUP =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_UPD.routine());
+				//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
+				//callableStatementBRSUP =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_UPD.routine());
+				//Nota. Dai processi batch arrica closeConnection == false e quindi fa le veci di bFlagUpdateAutocommit 
+				callableStatementBRSUP =  prepareCall(closeConnection, Routines.PYBRSSP_UPD.routine());
+				//fine LP 20240828 - PGNTCORE-24/PAGONET-604
 				//fine LP PGNTCORE-24
 			}
 			callableStatementBRSUP.setString(1, wallet.getIdWallet());
@@ -619,9 +625,9 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
+		} catch (HelperException e) {
+			throw new DaoException(e);
 		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
 		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		//fine LP PGNTCORE-24
@@ -4196,10 +4202,11 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		Wallet wallet = new Wallet();
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SEL_NORID.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_SEL_NORID.routine());
-			//fine LP PGNTCORE-24
+			//Nota. Mi fido del vecchio me se la procedura è usataa solo da batch flagUpdateAutocommit ==> false
+			callableStatement =  prepareCall(false, Routines.PYBRSSP_SEL_NORID.routine());
+			//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
 			callableStatement.setString(1, cuteCute);
 
 			callableStatement.execute();
@@ -4222,12 +4229,12 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			System.out.println(e);
 		} catch (IllegalArgumentException e) {
 			System.out.println(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	System.out.println(e);
+		} catch (HelperException e) {
+			System.out.println(e);
+		//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
 		} catch (ProcedureReflectorException e) {
 			System.out.println(e);
-		//fine LP PGNTCORE-24
+		//fine LP 20240828 - PGNTCORE-24/PAGONET-604
 		} finally {
 			//			DAOHelper.closeIgnoringException(connection);
 			//inizio LP PG21XX04 Leak

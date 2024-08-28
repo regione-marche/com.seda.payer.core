@@ -121,6 +121,12 @@ public abstract class DaoHandler {
 		return prepareCall(routine, -1, flagUpdateAutocommit ? 1 : 0);
 	}
 	//fine LP 20240821 - Nuove prepareCall per flagUpdateAutocommit
+
+	//inizio LP 20240828 - Nuove prepareCall per flagUpdateAutocommit
+	protected CallableStatement prepareCall(boolean flagUpdateAutocommit, String routine, String methodRest, String restService) throws IllegalArgumentException, SQLException, HelperException {
+		return prepareCall(routine, -1, flagUpdateAutocommit ? 1 : 0);
+	}
+	//fine LP 20240828 - Nuove prepareCall per flagUpdateAutocommit
 	
 	/**
 	 * Returns a prepared CallableStatement object builded using DAO schema and provided routine name

@@ -12,7 +12,6 @@ import javax.sql.DataSource;
 import javax.sql.rowset.WebRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.data.procedure.reflection.ProcedureReflectorException;
@@ -20,12 +19,10 @@ import com.seda.payer.core.bean.AnagraficaSoggettoSEPA;
 import com.seda.payer.core.bean.Autorizzazione;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
-import com.seda.payer.core.handler.rest.RestCallableStatement;
 import com.seda.payer.core.wallet.bean.Wallet;
 
-public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
+public class SepaDAOImpl extends RestBaseDaoHandler implements SepaDAO  {
 	private static final long serialVersionUID = 1L;
 	protected CallableStatement callableStatementRID = null;
 	protected CallableStatement callableStatementRIDSEL = null;
@@ -39,6 +36,7 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 	public SepaDAOImpl(Connection connection, String schema, boolean isRest, String baseUrl){
 		super(connection, schema, isRest, baseUrl);
 	}
+
 	public SepaDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
@@ -346,7 +344,13 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 	//inizio LP PG21XX04
 	//Nota. La chiusura della connection è affidata al chiamante.
 	//fine LP PG21XX04
+	//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
 	public String selectNewRid(Wallet wallet) throws DaoException, SQLException, HelperException {
+		return selectNewRidTail(true, wallet);
+	}
+
+	public String selectNewRidTail(boolean bFlagUpdateAutocommit, Wallet wallet) throws DaoException, SQLException, HelperException {
+	//fine LP 20240828 - PGNTCORE-24/PAGONET-604
 		//		CallableStatement callableStatement=null;
 		String rid = "";
 
@@ -360,12 +364,12 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 
 		try {
 			//			connection = getConnection();
-			if (callableStatementRID==null) {
+			if (callableStatementRID == null) {
+				//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
 				//callableStatementRID = Helper.prepareCall(getConnection(), getSchema(), Routines.SDDDESP_INS_BRS.routine());
-				callableStatementRID = prepareCall(Routines.SDDDESP_INS_BRS.routine(), "POST","SEPA");				
+				callableStatementRID = prepareCall(false, Routines.SDDDESP_INS_BRS.routine(), "POST","SEPA");				
+				//fine LP 20240828 - PGNTCORE-24/PAGONET-604
 			}
-
-
 			callableStatementRID.setString(1, wallet.getCuteCute());
 			callableStatementRID.setString(2, "");
 			callableStatementRID.setString(3, wallet.getIdWallet());
@@ -380,13 +384,11 @@ public class SepaDAOImpl  extends RestBaseDaoHandler implements SepaDAO  {
 
 		} catch (Exception e) {
 			e.printStackTrace();
-			//System.out.println(e);
 			throw e;
 		}
 		 finally {
 			//			DAOHelper.closeIgnoringException(connection);
 		}
-
 		return rid;
 	}
 	

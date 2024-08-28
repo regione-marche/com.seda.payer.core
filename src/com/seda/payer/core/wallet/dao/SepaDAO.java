@@ -24,7 +24,11 @@ public interface SepaDAO extends Serializable {
 	public String selectSepa(String cuteCute, String rid) throws  DaoException;
 	
 	public String selectNewRid(Wallet wallet) throws DaoException, SQLException, HelperException;
-	
+
+	//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
+	public String selectNewRidTail(boolean FlagUpdateAutocommit, Wallet wallet) throws DaoException, SQLException, HelperException;
+	//fine LP 20240828 - PGNTCORE-24/PAGONET-604
+
 	//PG22XX09_SB2 - inizio
 	public Integer insertSepaWeb(Autorizzazione autorizzazione) throws DaoException;
 	
