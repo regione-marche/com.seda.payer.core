@@ -67,10 +67,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		try { 
 //			connection = getConnection();
 			if (callableStatementBRS == null) {
-				//inizio LP PGNTCORE-24
+				//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
 				//callableStatementBRS = Helper.prepareCall(getConnection(), getSchema(), Routines.PYBRSSP_INS.routine());
-				callableStatementBRS =  MetaProcedure.prepareCall(getConnection(), getSchema(), Routines.PYBRSSP_INS.routine());
-				//fine LP PGNTCORE-24
+				callableStatementBRS =  prepareCall(Routines.PYBRSSP_INS.routine());
+				//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
 			}
 			
 			callableStatementBRS.setString(1, wallet.getCuteCute().trim());
@@ -111,12 +111,12 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
+		} catch (HelperException e) {
+			throw new DaoException(e);
+		//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
 		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
+		//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
 		} finally {
 //			DAOHelper.closeIgnoringException(callableStatementBRS);
 			//			DAOHelper.closeIgnoringException(connection);
@@ -125,21 +125,27 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		return wallet;
 	}
 
+	//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
 	public Wallet select(Wallet wallet) throws DaoException {
-		return select(wallet,true);
+		return select(wallet, true);
 	}
 
-	public Wallet select(Wallet wallet,boolean closeConnection) throws DaoException {
+	public Wallet select(Wallet wallet, boolean closeConnection) throws DaoException {
+		return selectTail(true, wallet, true);
+	}
+	
+	public Wallet selectTail(boolean bFlagUpdateAutocommit, Wallet wallet, boolean closeConnection) throws DaoException {
+	//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
 		CallableStatement callableStatement=null;
 		ResultSet resultSet=null;
 		Connection connection = null;
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SEL.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_SEL.routine());
-			//fine LP PGNTCORE-24
+			callableStatement =  prepareCall(bFlagUpdateAutocommit, Routines.PYBRSSP_SEL.routine());
+			//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
 			callableStatement.setString(1, wallet.getIdWallet());
 			callableStatement.setString(2, wallet.getCodiceFiscaleGenitore());
 			callableStatement.setString(3, wallet.getCodiceSocieta());
@@ -243,9 +249,9 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
+		} catch (HelperException e) {
+			throw new DaoException(e);
 		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
 		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		//fine LP PGNTCORE-24
@@ -289,15 +295,21 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		return wallet;
 	}
 
+	//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
 	public Wallet selectBatch(Wallet wallet) throws DaoException {
+		return selectBatchTail(true, wallet);
+	}
+
+	public Wallet selectBatchTail(boolean bFlagUpdateAutocommit, Wallet wallet) throws DaoException {
+	//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
 		ResultSet resultSet=null;
 		try {
 			
 			if (callableStatementBRSBATCH == null) {
-				//inizio LP PGNTCORE-24
+				//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
 				//callableStatementBRSBATCH  = Helper.prepareCall(getConnection(), getSchema(), Routines.PYBRSSP_SEL.routine());
-				callableStatementBRSBATCH =  MetaProcedure.prepareCall(getConnection(), getSchema(), Routines.PYBRSSP_SEL.routine());
-				//fine LP PGNTCORE-24
+				callableStatementBRSBATCH =  prepareCall(bFlagUpdateAutocommit, Routines.PYBRSSP_SEL.routine());
+				//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
 			}
 			
 			callableStatementBRSBATCH.setString(1, wallet.getIdWallet());
@@ -369,9 +381,9 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
+		} catch (HelperException e) {
+			throw new DaoException(e);
 		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
 		} catch (ProcedureReflectorException e) {
 			throw new DaoException(e);
 		//fine LP PGNTCORE-24
@@ -590,7 +602,13 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 	//      closeConnection == true si esegue la chiusura
 	//      sia della connection che del callableStatement
 	//fine LP PG21XX04 Leak
+	//inizio LP 20240828 - PGNTCORE-24/PAGONET-604/PGNTWPB-3
 	public void update(Wallet wallet, boolean closeConnection) throws DaoException {
+		updateTail(true, wallet,closeConnection);
+	}
+		
+	public void updateTail(boolean bFlagUpdateAutocommit, Wallet wallet, boolean closeConnection) throws DaoException {
+	//fine LP 20240828 - PGNTCORE-24/PAGONET-604/PGNTWPB-3
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		
@@ -601,11 +619,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 				connection = getConnection();
 				//inizio LP PGNTCORE-24
 				//callableStatementBRSUP = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_UPD.routine());
-				//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
+				//inizio LP 20240828 - PGNTCORE-24/PAGONET-604/PGNTWPB-3
 				//callableStatementBRSUP =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_UPD.routine());
-				//Nota. Dai processi batch arrica closeConnection == false e quindi fa le veci di bFlagUpdateAutocommit 
-				callableStatementBRSUP =  prepareCall(closeConnection, Routines.PYBRSSP_UPD.routine());
-				//fine LP 20240828 - PGNTCORE-24/PAGONET-604
+				callableStatementBRSUP =  prepareCall(bFlagUpdateAutocommit, Routines.PYBRSSP_UPD.routine());
+				//fine LP 20240828 - PGNTCORE-24/PAGONET-604/PGNTWPB-3
 				//fine LP PGNTCORE-24
 			}
 			callableStatementBRSUP.setString(1, wallet.getIdWallet());

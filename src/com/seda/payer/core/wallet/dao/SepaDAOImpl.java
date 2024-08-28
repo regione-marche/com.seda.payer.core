@@ -367,7 +367,7 @@ public class SepaDAOImpl extends RestBaseDaoHandler implements SepaDAO  {
 			if (callableStatementRID == null) {
 				//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
 				//callableStatementRID = Helper.prepareCall(getConnection(), getSchema(), Routines.SDDDESP_INS_BRS.routine());
-				callableStatementRID = prepareCall(false, Routines.SDDDESP_INS_BRS.routine(), "POST","SEPA");				
+				callableStatementRID = prepareCall(bFlagUpdateAutocommit, Routines.SDDDESP_INS_BRS.routine(), "POST","SEPA");				
 				//fine LP 20240828 - PGNTCORE-24/PAGONET-604
 			}
 			callableStatementRID.setString(1, wallet.getCuteCute());

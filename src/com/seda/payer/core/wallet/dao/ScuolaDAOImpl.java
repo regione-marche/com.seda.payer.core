@@ -5,7 +5,8 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
 import javax.sql.DataSource;
-import com.seda.data.procedure.reflection.MetaProcedure;
+
+import com.seda.data.helper.HelperException;
 import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -27,15 +28,16 @@ public class ScuolaDAOImpl  extends  BaseDaoHandler  implements ScuolaDAO  {
 	//fine LP PG21XX04
 	public String insertBatch(Scuola scuola)  {
 		CallableStatement callableStatement=null;
-		Connection connection = null; 
+		//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
+		//Connection connection = null; 
+		//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
 		String message = "";
 		try {
-			connection = getConnection();
-
-			//PGNTCORE-24 - inizio
+			//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
+			//connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSCUSP_INS.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSCUSP_INS.routine());
-			//PGNTCORE-24 - fine
+			callableStatement = prepareCall(Routines.PYSCUSP_INS.routine());
+			//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
 //		1	I_SCU_CSOCCSOC VARCHAR(5),
 //		2	I_SCU_CUTECUTE VARCHAR(5),
 //		3	I_SCU_KANEKENT CHAR(10),
@@ -66,6 +68,9 @@ public class ScuolaDAOImpl  extends  BaseDaoHandler  implements ScuolaDAO  {
 			System.out.println(e);
 			message = e.getMessage();
 		} catch (IllegalArgumentException e) {
+			System.out.println(e);
+			message = e.getMessage();
+		} catch (HelperException e) {
 			System.out.println(e);
 			message = e.getMessage();
 		} catch (ProcedureReflectorException e) {
