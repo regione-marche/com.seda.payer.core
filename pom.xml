@@ -118,6 +118,6 @@
 		<dependency>
 			<groupId>org.postgresql</groupId>
 			<artifactId>postgresql</artifactId>
-PGNT		</dependency>
+		</dependency>
 	</dependencies>
 </project>
