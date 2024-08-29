@@ -1,11 +1,7 @@
 package com.seda.payer.core.wallet.dao;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
-import java.sql.Connection;
-import java.sql.ResultSet;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 import com.seda.data.page.Page;
@@ -51,11 +47,14 @@ public interface WalletDAO extends Serializable {
 	public Wallet insertBatch(Wallet wallet) throws  DaoException;
 	public Wallet select(Wallet wallet) throws  DaoException;
 	public Wallet select(Wallet wallet,boolean closeConnection) throws  DaoException;
+	public Wallet selectTail(boolean bFlagUpdateAutocommit, Wallet wallet,boolean closeConnection) throws  DaoException;
 	public Wallet selectBatch(Wallet wallet) throws  DaoException;
+	public Wallet selectBatchTail(boolean bFlagUpdateAutocommit, Wallet wallet) throws  DaoException;
 	public Wallet select_anag(Wallet wallet)throws DaoException;
 	public String select_id( Wallet wallet)throws DaoException;
 	public void update(Wallet wallet) throws  DaoException;
 	public void update(Wallet wallet,boolean closeConnection) throws  DaoException;
+	public void updateTail(boolean bFlagUpdateAutocommit,Wallet wallet,boolean closeConnection) throws  DaoException;
 	public Integer updateAnagrafica(Wallet wallet) throws  DaoException;	
 	public WalletPageList walletList(Wallet wallet, String tipoServizio, String tipoSollecito,String flagrendicontato, String presenzaOneri,int rowsPerPage, int pageNumber,String OrderBy) throws  DaoException;
 	public boolean verRepCaricato(FattureRep fattureRep)  throws  DaoException;  

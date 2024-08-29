@@ -131,7 +131,7 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 	}
 
 	public Wallet select(Wallet wallet, boolean closeConnection) throws DaoException {
-		return selectTail(true, wallet, true);
+		return selectTail(true, wallet, closeConnection);
 	}
 	
 	public Wallet selectTail(boolean bFlagUpdateAutocommit, Wallet wallet, boolean closeConnection) throws DaoException {
