@@ -172,4 +172,27 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
         }
         return null;
     }
+
+
+    public boolean cancellaPrenotazione(String chiave) {
+      try {
+          Connection connection = getConnection();
+          CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DODELETE.routine());
+
+          callableStatement.setString(1, chiave);
+
+          if (callableStatement.execute()) {
+              return true;
+          } else {
+              return false;
+          }
+      }catch (Throwable e) {
+          e.printStackTrace();
+          return false;
+      }
+
+    }
+
+
+
 }

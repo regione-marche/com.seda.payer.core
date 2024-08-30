@@ -366,7 +366,7 @@ public class ConfigUtenteTipoServizioEnteDao extends BaseDaoHandler {
 	}
 	//fine LP PG210130
 	//inizio SB PG210140
-		public String downloadServiziAttiviCsv(String companyCode, String codiceUtente, String chiaveEnte, String codiceTipologiaServizio) throws DaoException {
+		public String downloadServiziAttiviCsv(String companyCode, String codiceUtente, String chiaveEnte, String codiceTipologiaServizio, String sito) throws DaoException {
 			CallableStatement callableStatement = null;
 			ResultSet data = null;
 			
@@ -377,7 +377,8 @@ public class ConfigUtenteTipoServizioEnteDao extends BaseDaoHandler {
 				callableStatement.setString(2, codiceUtente);
 				callableStatement.setString(3, chiaveEnte);		
 				callableStatement.setString(4, codiceTipologiaServizio);
-				
+				callableStatement.setString(5, sito);
+
 				
 				StringBuffer sb = new StringBuffer();
 				boolean resultsAvailable = callableStatement.execute();
@@ -387,7 +388,7 @@ public class ConfigUtenteTipoServizioEnteDao extends BaseDaoHandler {
 					data = callableStatement.getResultSet();
 					
 					while(data.next()) {
-						
+
 						sb.append(data.getString("RECORD"));
 						sb.append("\r\n");
 					}
