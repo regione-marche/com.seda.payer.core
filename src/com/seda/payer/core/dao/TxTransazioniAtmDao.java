@@ -33,7 +33,7 @@ public class TxTransazioniAtmDao extends BaseDaoHandler {
 	public void insertTransazione(TransazioneAtm transazione) throws DaoException {
 		CallableStatement callableStatement = null;
 		try {
-			callableStatement = prepareCall(Routines.ATM_DOINSERT.routine());
+			callableStatement = prepareCall(Routines.ATM_DOINSERT.routine(), false);
 			transazione.save(callableStatement);
 			callableStatement.execute();
 			commit();

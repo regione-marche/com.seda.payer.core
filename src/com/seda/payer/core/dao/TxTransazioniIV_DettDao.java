@@ -38,7 +38,7 @@ public class TxTransazioniIV_DettDao   extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		try
 		{
-			callableStatement = prepareCall(Routines.DMD_DOINSERT.routine());
+			callableStatement = prepareCall(Routines.DMD_DOINSERT.routine(), false);
 			transazione.save(callableStatement);
 			callableStatement.execute();
 			

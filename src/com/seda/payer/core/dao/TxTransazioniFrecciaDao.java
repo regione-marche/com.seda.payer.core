@@ -36,7 +36,7 @@ public class TxTransazioniFrecciaDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		try
 		{
-			callableStatement = prepareCall(Routines.TFR_DOINSERT.routine());
+			callableStatement = prepareCall(Routines.TFR_DOINSERT.routine(), false);
 			transazione.save(callableStatement);
 			callableStatement.execute();
 						

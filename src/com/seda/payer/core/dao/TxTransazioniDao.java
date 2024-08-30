@@ -2144,7 +2144,7 @@ public class TxTransazioniDao extends BaseDaoHandler{
 		CallableStatement callableStatement = null;
 		try
 		{
-			callableStatement = prepareCall(Routines.TRA_DOINSERT.routine());
+			callableStatement = prepareCall(Routines.TRA_DOINSERT.routine(),false);
 			transazione.save(callableStatement);
 			callableStatement.execute();
 			String esito=callableStatement.getString(49);

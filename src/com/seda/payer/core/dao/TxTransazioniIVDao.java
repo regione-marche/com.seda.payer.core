@@ -38,7 +38,7 @@ public class TxTransazioniIVDao   extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		try
 		{
-			callableStatement = prepareCall(Routines.TDT_DOINSERT.routine());
+			callableStatement = prepareCall(Routines.TDT_DOINSERT.routine(), false);
 			transazione.save(callableStatement);
 			callableStatement.execute();
 			

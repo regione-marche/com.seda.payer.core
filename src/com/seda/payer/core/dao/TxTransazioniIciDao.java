@@ -39,7 +39,7 @@ public class TxTransazioniIciDao   extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		try
 		{
-			callableStatement = prepareCall(Routines.TIC_DOINSERT.routine());
+			callableStatement = prepareCall(Routines.TIC_DOINSERT.routine(), false);
 			transazione.save(callableStatement);
 			callableStatement.execute();
 			
