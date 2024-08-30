@@ -755,7 +755,7 @@ public class Transazione extends Lifecycle implements Serializable, Transformers
 		arg.setTimestamp(46, new java.sql.Timestamp(this.dataAccredito.getTime()));
 		arg.setString(47, hashEncode(this.chiaveTransazione));
 		arg.registerOutParameter(48, Types.INTEGER);
-		arg.registerOutParameter(49, Types.INTEGER);
+		arg.registerOutParameter(49, Types.VARCHAR);
 	}
 	
 	private String hashEncode(String cTran) {
