@@ -1,30 +1,39 @@
 package com.seda.commons.util;
 
-import com.esed.log.req.ExecLogPap;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.DeserializationFeature;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.ibm.db2.jcc.am.he;
-import com.seda.commons.logger.CustomLoggerManager;
-import com.seda.commons.logger.LoggerInterface;
-import com.seda.commons.logger.LoggerWrapper;
-import com.seda.commons.xml.XmlParserSupport;
-import com.seda.payer.commons.utility.StringUtility;
-
-import javax.net.ssl.*;
-import javax.ws.rs.HttpMethod;
-
-import org.apache.commons.codec.binary.StringUtils;
-import org.apache.logging.log4j.util.Base64Util;
-
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.security.KeyStore;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
+
+import javax.net.ssl.HttpsURLConnection;
+import javax.net.ssl.KeyManager;
+import javax.net.ssl.KeyManagerFactory;
+import javax.net.ssl.SSLContext;
+import javax.net.ssl.SSLSocketFactory;
+import javax.net.ssl.TrustManager;
+import javax.net.ssl.TrustManagerFactory;
+import javax.ws.rs.HttpMethod;
+
+import org.apache.logging.log4j.util.Base64Util;
+
+import com.esed.log.req.ExecLogPap;
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.seda.commons.logger.CustomLoggerManager;
+import com.seda.commons.logger.LoggerInterface;
+import com.seda.commons.logger.LoggerWrapper;
+import com.seda.commons.xml.XmlParserSupport;
+import com.seda.payer.commons.utility.StringUtility;
 
 public class ApiClient {
 
