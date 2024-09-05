@@ -8,10 +8,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.text.SimpleDateFormat;
 
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
-import com.seda.payer.commons.utility.LogUtility;
 import com.seda.payer.core.bean.FlussiRen;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -21,6 +18,7 @@ import com.sun.rowset.WebRowSetImpl;
  * @author s.parisi
  *
  */
+@SuppressWarnings("restriction")
 public class FlussiRenDao extends BaseDaoHandler{
 /**	
  * Il carattere usato per separare i campi nei file CSV
@@ -41,13 +39,23 @@ public class FlussiRenDao extends BaseDaoHandler{
 	 * @return
 	 * @throws DaoException
 	 */
-	public FlussiRen selectByKey (String chiaveRendicontazione)throws DaoException
+	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+	public FlussiRen selectByKey(String chiaveRendicontazione) throws DaoException
+	{
+		return selectByKeyTail(true, chiaveRendicontazione);
+	}
+
+	public FlussiRen selectByKeyTail(boolean bFlagUpdateAutocommit, String chiaveRendicontazione) throws DaoException
+	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 	{
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 			
 		try{
-			callableStatement = prepareCall(Routines.FLREN_SELBYKEY.routine());
+			//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+			//callableStatement = prepareCall(Routines.FLREN_SELBYKEY.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.FLREN_SELBYKEY.routine());
+			//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 			callableStatement.setString(1, chiaveRendicontazione);
 			if (callableStatement.execute()) {
 				data = callableStatement.getResultSet();
@@ -739,12 +747,22 @@ public class FlussiRenDao extends BaseDaoHandler{
 	 */
 	//inizio LP PG21XX04
 	//public boolean updRecord (FlussiRen fr,boolean bFtp,boolean bEmail)throws DaoException
+	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 	public boolean updRecord (FlussiRen fr, boolean bFtp, boolean bEmail, boolean bWS) throws DaoException
+	{
+		return updRecordTail(true, fr, bFtp, bEmail, bWS);
+	}
+
+	public boolean updRecordTail(boolean bFlagUpdateAutocommit, FlussiRen fr, boolean bFtp, boolean bEmail, boolean bWS) throws DaoException
+	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 	//fine LP PG21XX04
 	{
 		CallableStatement callableStatement = null;
 		try{
-			callableStatement = prepareCall(Routines.FLREN_UPD.routine());
+			//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+			//callableStatement = prepareCall(Routines.FLREN_UPD.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.FLREN_UPD.routine());
+			//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 			callableStatement.setString(1,fr.getChiaveRendicontazione());
 			callableStatement.setString(2, fr.getTipologiaFlusso());
 			callableStatement.setString(3, fr.getCodiceSocieta());

@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.FlussiRen;
 import com.seda.payer.core.bean.PagDaRend_Contabilita;
@@ -354,15 +353,25 @@ public class PagDaRendDao extends BaseDaoHandler{
 		//fine LP PG21XX04 Leak
 	}
 
-//inizio LP 20180711
-	public boolean aggiornaChiaveRenEvol(String chiaveSpedizione, FlussiRen fr) throws DaoException{
+	//inizio LP 20180711
+	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+	public boolean aggiornaChiaveRenEvol(String chiaveSpedizione, FlussiRen fr) throws DaoException {
+		return aggiornaChiaveRenEvolTail(true,  chiaveSpedizione, fr);
+	}
+
+	public boolean aggiornaChiaveRenEvolTail(boolean bFlagUpdateAutocommit, String chiaveSpedizione, FlussiRen fr) throws DaoException
+	{
+	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.FLREN_UPD_GLOBAL_EVOL.routine());
-			callableStatement = prepareCall(Routines.FLREN_UPD_GLOBAL_EVOL.routine());
+			//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+			//callableStatement = prepareCall(Routines.FLREN_UPD_GLOBAL_EVOL.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.FLREN_UPD_GLOBAL_EVOL.routine());
+			//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 			//fine LP PG21XX04 Leak
 			System.out.println("aggiornaChiaveRenEvol - chiaveSpedizione: " + chiaveSpedizione);
 			System.out.println("aggiornaChiaveRenEvol - fr.getTipologiaFlusso: " + fr.getTipologiaFlusso());
@@ -412,7 +421,7 @@ public class PagDaRendDao extends BaseDaoHandler{
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
-		throw new DaoException(x);
+			throw new DaoException(x);
 		}
 		//inizio LP PG21XX04 Leak
 		finally {
@@ -896,14 +905,25 @@ public class PagDaRendDao extends BaseDaoHandler{
 	}
 	
 	//inizio LP 20180713
+	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 	public String aggiornaRenContabilitaEvol(String dbSchemaCodSocieta, int progressivo, 
 			                                 String nomeFile, String operatore) throws DaoException
+	{
+		return aggiornaRenContabilitaEvolTail(true, dbSchemaCodSocieta, progressivo, nomeFile, operatore);
+	}
+	public String aggiornaRenContabilitaEvolTail(boolean bFlagUpdateAutocommit, 
+				String dbSchemaCodSocieta, int progressivo, 
+                String nomeFile, String operatore) throws DaoException
+	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 	{
 		CallableStatement callableStatement = null;
 		String chiaveRen = "";
 		try
 		{
-			callableStatement = prepareCall(Routines.CNB_DOUPDATE_GLOBAL_EVOL.routine());
+			//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+			//callableStatement = prepareCall(Routines.CNB_DOUPDATE_GLOBAL_EVOL.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.CNB_DOUPDATE_GLOBAL_EVOL.routine());
+			//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 			callableStatement.setString(1, dbSchemaCodSocieta);
 			callableStatement.setInt(2, progressivo);
 			callableStatement.setString(3, nomeFile);
@@ -943,26 +963,29 @@ public class PagDaRendDao extends BaseDaoHandler{
 		}
 	}
 	
+	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 	public boolean aggiornaRenContabilitaList(String listaChiaviRen, String chiaveRen) throws DaoException
 	{
+		return aggiornaRenContabilitaListTail(true, listaChiaviRen, chiaveRen);
+	}
+
+	public boolean aggiornaRenContabilitaListTail(boolean bFlagUpdateAutocommit, String listaChiaviRen, String chiaveRen) throws DaoException
+	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+	{
 		CallableStatement callableStatement = null;
-		try
-		{
-			callableStatement = prepareCall(Routines.CNB_DOUPDATE_GLOBAL_LIST.routine());
+		try {
+			//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+			//callableStatement = prepareCall(Routines.CNB_DOUPDATE_GLOBAL_LIST.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.CNB_DOUPDATE_GLOBAL_LIST.routine());
+			//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 			callableStatement.setString(1, listaChiaviRen);
 			callableStatement.setString(2, chiaveRen);
-			
 			callableStatement.registerOutParameter(3, Types.INTEGER);
-			
 			callableStatement.executeUpdate();
-			
 			int retCode =  callableStatement.getInt(3);
-
 			if (retCode == 0) 
 				return true;
-			
 			return false;
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
