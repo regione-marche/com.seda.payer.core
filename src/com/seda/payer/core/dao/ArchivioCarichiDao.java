@@ -531,13 +531,23 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	}
 	
 //inizio LP PG210130 Step02
+	//inizio LP 20240907 - PAGONET-604
 	public String getKeyEnteEC(String idDominio) throws Exception
+	{
+		return getKeyEnteECTail(true, idDominio);
+	}
+
+	public String getKeyEnteECTail(boolean bFlagUpdateAutocomit, String idDominio) throws Exception
+	//fine LP 20240907 - PAGONET-604
 	{
 		String keyEnte = null;
 		ResultSet listanagEnte = null;
 		CallableStatement callableStatement = null;
 		try{
-			callableStatement = prepareCall(Routines.PYANESP_SEL_DOMINIO.routine());
+			//inizio LP 20240907 - PAGONET-604
+			//callableStatement = prepareCall(Routines.PYANESP_SEL_DOMINIO.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.PYANESP_SEL_DOMINIO.routine());
+			//fine LP 20240907 - PAGONET-604
 			callableStatement.setString(1, idDominio);
 			callableStatement.execute();
 			listanagEnte = callableStatement.getResultSet();
@@ -553,7 +563,7 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 				//listanagEnte.getString("ANE_CANECUFF"),
 				//listanagEnte.getString("ANE_DANEDENT"));
 			}	
-		}catch (SQLException e) {
+		} catch (SQLException e) {
 			throw new Exception(e);
 		} catch (IllegalArgumentException e) {
 			throw new Exception(e);

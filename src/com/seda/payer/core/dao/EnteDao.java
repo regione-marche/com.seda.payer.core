@@ -73,8 +73,14 @@ public class EnteDao extends BaseDaoHandler {
 	//inizio LP 20180629
 	//inizio LP PG200060
 	//public Ente doDetailToCodFis(String userCode, String codFis) throws DaoException {
+	//inizio LP 20240907 - PGNTBIMAIO-1
 	public Ente doDetailToCodFis(String userCode, String codFis, String dbSchemaCodSocieta) throws DaoException {
-		//inizio LP PG21XX04 Leak
+		return doDetailToCodFisTail(true, userCode, codFis, dbSchemaCodSocieta);
+	}
+
+	public Ente doDetailToCodFisTail(boolean bFlagUpdateAutocomit, String userCode, String codFis, String dbSchemaCodSocieta) throws DaoException {
+	//fine LP 20240907 - PGNTBIMAIO-1
+	//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		//fine LP PG21XX04 Leak
@@ -82,7 +88,10 @@ public class EnteDao extends BaseDaoHandler {
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.ENT_DODETAIL_CODFIS.routine());
-			callableStatement = prepareCall(Routines.ENT_DODETAIL_CODFIS.routine());
+			//inizio LP 20240907 - PGNTBIMAIO-1
+			//callableStatement = prepareCall(Routines.ENT_DODETAIL_CODFIS.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.ENT_DODETAIL_CODFIS.routine());
+			//fine LP 20240907 - PGNTBIMAIO-1
 			//fine LP PG21XX04 Leak
 			//inizio LP PG200060
 			//NOTA: le sp SV e RM sono diverse

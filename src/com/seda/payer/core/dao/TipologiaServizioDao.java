@@ -23,13 +23,13 @@ public class TipologiaServizioDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
-	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5/PGNTBIMAIO-1
 	public TipologiaServizio doDetail(String companyCode, String codiceTipologiaServizio) throws DaoException {
 		return doDetailTail(true, companyCode, codiceTipologiaServizio);
 	}
 		
 	public TipologiaServizio doDetailTail(boolean bFlagUpdateAutocommit, String companyCode, String codiceTipologiaServizio) throws DaoException {
-	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5/PGNTBIMAIO-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;;
 		ResultSet data = null;
@@ -37,10 +37,10 @@ public class TipologiaServizioDao extends BaseDaoHandler {
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.TSE_DODETAIL.routine());
-			//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+			//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5/PGNTBIMAIO-1
 			//callableStatement = prepareCall(Routines.TSE_DODETAIL.routine());
 			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.TSE_DODETAIL.routine());
-			//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+			//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5/PGNTBIMAIO-1
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, companyCode);
 			callableStatement.setString(2, codiceTipologiaServizio);

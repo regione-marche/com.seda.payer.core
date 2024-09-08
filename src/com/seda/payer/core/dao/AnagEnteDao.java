@@ -22,13 +22,13 @@ public class AnagEnteDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
-	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5/PGNTBIMAIO-1
 	public AnagEnte doDetail(String chiaveEnte) throws DaoException {
 		return doDetailTail(true, chiaveEnte);
 	}
 
 	public AnagEnte doDetailTail(boolean bFlagUpdateAutocommit, String chiaveEnte) throws DaoException {
-	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5/PGNTBIMAIO-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
@@ -36,10 +36,10 @@ public class AnagEnteDao extends BaseDaoHandler {
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.ANE_DODETAIL.routine());
-			//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+			//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5/PGNTBIMAIO-1
 			//callableStatement = prepareCall(Routines.ANE_DODETAIL.routine());
 			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.ANE_DODETAIL.routine());
-			//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+			//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5/PGNTBIMAIO-1
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, chiaveEnte);
 			if (callableStatement.execute()) {

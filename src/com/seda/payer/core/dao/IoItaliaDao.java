@@ -102,15 +102,27 @@ public class IoItaliaDao extends BaseDaoHandler {
 	}
 //	YLM PG22XX06 FINE
 	
+	//inizio LP 20240907 - PAGONET-604
 	public IoItaliaConfigurazione selectConfigurazioneTail(String codiceSocieta, String codiceUtente, String codiceEnte, String tipologiaServizio, String impostaServizio , boolean evol) throws DaoException {
+		return selectConfigurazioneTailBis(true, codiceSocieta, codiceUtente, codiceEnte, tipologiaServizio, impostaServizio, evol);
+	}
+	
+	public IoItaliaConfigurazione selectConfigurazioneTailBis(boolean bFlagUpdateAutocomit, String codiceSocieta, String codiceUtente, String codiceEnte, String tipologiaServizio, String impostaServizio , boolean evol) throws DaoException {
+	//fine LP 20240907 - PAGONET-604
 		IoItaliaConfigurazione configurazione = null;
 		CallableStatement cs = null;
 		try {
 //    		YLM PG22XX06 INI
     		if (evol) {
-    			cs = prepareCall(Routines.PYIICSP_SEL_APPIO2.routine());
+    			//inizio LP 20240907 - PAGONET-604
+    			//cs = prepareCall(Routines.PYIICSP_SEL_APPIO2.routine());
+    			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYIICSP_SEL_APPIO2.routine());
+    			//fine LP 20240907 - PAGONET-604
     		} else {
-    			cs = prepareCall(Routines.PYIICSP_SEL2.routine());		
+    			//inizio LP 20240907 - PAGONET-604
+    			//cs = prepareCall(Routines.PYIICSP_SEL2.routine());		
+    			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYIICSP_SEL2.routine());		
+    			//fine LP 20240907 - PAGONET-604
     		}
 //    		YLM PG22XX06 FINE
     		System.out.println("selectConfigurazioneTail evol = " + evol);
@@ -160,15 +172,27 @@ public class IoItaliaDao extends BaseDaoHandler {
 		return configurazione;
 	}
 //	YLM PG22XX06 FINE
-	public IoItaliaConfigurazione selectConfigurazioneTail(long idConfigurazione,boolean evol ) throws DaoException {
+	//inizio LP 20240907 - PAGONET-604
+	public IoItaliaConfigurazione selectConfigurazioneTail(long idConfigurazione, boolean evol) throws DaoException {
+		return selectConfigurazioneTailBis(true, idConfigurazione, evol);
+	}
+
+	public IoItaliaConfigurazione selectConfigurazioneTailBis(boolean bFlagUpdateAutocomit, long idConfigurazione, boolean evol) throws DaoException {
+	//fine LP 20240907 - PAGONET-604
 		IoItaliaConfigurazione configurazione = null;
 		CallableStatement cs = null;
 		try {
 //    		YLM PG22XX06 INI
     		if (evol) {
-    			cs = prepareCall(Routines.PYIICSP_SEL_APPIO.routine());
+    			//inizio LP 20240907 - PAGONET-604
+    			//cs = prepareCall(Routines.PYIICSP_SEL_APPIO.routine());
+    			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYIICSP_SEL_APPIO.routine());
+    			//fine LP 20240907 - PAGONET-604
     		} else {
-    			cs = prepareCall(Routines.PYIICSP_SEL.routine());		
+    			//inizio LP 20240907 - PAGONET-604
+    			//cs = prepareCall(Routines.PYIICSP_SEL.routine());		
+    			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYIICSP_SEL.routine());		
+    			//fine LP 20240907 - PAGONET-604
     		}
 //    		YLM PG22XX06 FINE
 			int p = 1;
@@ -210,15 +234,27 @@ public class IoItaliaDao extends BaseDaoHandler {
 	}
 //	YLM PG22XX06 FINE
 
+	//inizio LP 20240907 - PAGONET-604
 	public IoItaliaConfigurazione selectConfigurazioneTail(String wsKey1, boolean evol) throws DaoException {
+		return selectConfigurazioneTailBis(true, wsKey1, evol);
+	}
+
+	public IoItaliaConfigurazione selectConfigurazioneTailBis(boolean bFlagUpdateAutocomit, String wsKey1, boolean evol) throws DaoException {
+	//fine LP 20240907 - PAGONET-604
 		IoItaliaConfigurazione configurazione = null;
 		CallableStatement cs = null;
 		try {
 //    		YLM PG22XX06 INI
     		if (evol) {
-    			cs = prepareCall(Routines.PYIICSP_SEL_APPIO3.routine());
+    			//inizio LP 20240907 - PAGONET-604
+    			//cs = prepareCall(Routines.PYIICSP_SEL_APPIO3.routine());
+    			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYIICSP_SEL_APPIO3.routine());
+    			//fine LP 20240907 - PAGONET-604
     		} else {
-    			cs = prepareCall(Routines.PYIICSP_SEL3.routine());		
+    			//inizio LP 20240907 - PAGONET-604
+    			//cs = prepareCall(Routines.PYIICSP_SEL3.routine());		
+    			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYIICSP_SEL3.routine());		
+    			//fine LP 20240907 - PAGONET-604
     		}
 //			cs = prepareCall(Routines.PYIICSP_SEL3.routine());
 //    		YLM PG22XX06 FINE
@@ -408,14 +444,24 @@ public class IoItaliaDao extends BaseDaoHandler {
 		return ioItaliaConfigurazioniList;
 	}
 
+	//inizio LP 20240907 - PAGONET-604
    	public long insertFornitura(String codiceSocieta, String codiceUtente, String codiceEnte,
 			String tipologiaServizio, String impostaServizio, String codiceFornitura) throws DaoException {
+   		return insertFornituraTail(true, codiceSocieta, codiceUtente, codiceEnte,
+   				tipologiaServizio, impostaServizio, codiceFornitura);
+   	}
 		
+   	public long insertFornituraTail(boolean bFlagUpdateAutocomit, String codiceSocieta, String codiceUtente, String codiceEnte,
+			String tipologiaServizio, String impostaServizio, String codiceFornitura) throws DaoException {
+	//fine LP 20240907 - PAGONET-604
 		long idFornitura = 0;
 		CallableStatement cs = null;
 		try {
 			int p = 1;
-			cs = prepareCall(Routines.PYFORSP_INS.routine());
+			//inizio LP 20240907 - PAGONET-604
+			//cs = prepareCall(Routines.PYFORSP_INS.routine());
+			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYFORSP_INS.routine());
+			//fine LP 20240907 - PAGONET-604
 			cs.setString(p++, codiceSocieta);
 			cs.setString(p++, codiceUtente);
 			cs.setString(p++, codiceEnte);
@@ -440,21 +486,33 @@ public class IoItaliaDao extends BaseDaoHandler {
 
 //	YLM PG22XX06 INI
    	public IoItaliaFornitura selectFornitura(long idFornitura) throws DaoException {
-   		IoItaliaFornitura fornitura  = selectFornituraTail (idFornitura,false );
+   		IoItaliaFornitura fornitura  = selectFornituraTail (idFornitura, false);
 		return fornitura;
 	}
 //	YLM PG22XX06 FINE
 
+	//inizio LP 20240907 - PGNTBIMAIO-1
 	public IoItaliaFornitura selectFornituraTail(long idFornitura, boolean evol) throws DaoException {
+		return selectFornituraTailBis(true, idFornitura, evol);
+	}
+
+	public IoItaliaFornitura selectFornituraTailBis(boolean bFlagUpdateAutocomit, long idFornitura, boolean evol) throws DaoException {
+	//fine LP 20240907 - PGNTBIMAIO-1
 		IoItaliaFornitura fornitura = null;
 		CallableStatement cs = null;
 		try {
 			int p = 1;
 //    		YLM PG22XX06 INI
     		if (evol) {
-    			cs = prepareCall(Routines.PYFORSP_SEL_APPIO.routine());
+    			//inizio LP 20240907 - PGNTBIMAIO-1
+    			//cs = prepareCall(Routines.PYFORSP_SEL_APPIO.routine());
+    			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYFORSP_SEL_APPIO.routine());
+    			//fine LP 20240907 - PGNTBIMAIO-1
     		} else {
-    			cs = prepareCall(Routines.PYFORSP_SEL.routine());		
+    			//inizio LP 20240907 - PGNTBIMAIO-1
+    			//cs = prepareCall(Routines.PYFORSP_SEL.routine());		
+    			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYFORSP_SEL.routine());		
+    			//fine LP 20240907 - PGNTBIMAIO-1
     		}
 //    		YLM PG22XX06 FINE
 			cs.setLong(p++, idFornitura);
@@ -562,11 +620,20 @@ public class IoItaliaDao extends BaseDaoHandler {
 		return ioItaliaFornitureList;
 	}
 
+	//inizio LP 20240907 - PAGONET-604
 	public long insertMessaggio(IoItaliaMessaggio messaggio) {
+		return insertMessaggioTail(true, messaggio);
+	}
+
+	public long insertMessaggioTail(boolean bFlagUpdateAutocomit, IoItaliaMessaggio messaggio) {
+	//fine LP 20240907 - PAGONET-604
 		CallableStatement cs = null;
 		long idMessaggio = 0;
 		try {
-			cs = prepareCall(Routines.PYMESSP_INS.routine());
+			//inizio LP 20240907 - PAGONET-604
+			//cs = prepareCall(Routines.PYMESSP_INS.routine());
+			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYMESSP_INS.routine());
+			//fine LP 20240907 - PAGONET-604
 			cs.setString(1, messaggio.getCutecute());
 			cs.setString(2, messaggio.getIdDominio());
 			cs.setString(3, messaggio.getTipologiaServizio());
@@ -633,11 +700,20 @@ public class IoItaliaDao extends BaseDaoHandler {
 		return totRows;
 	}
 
+	//inizio LP 20240907 - PGNTBIMAIO-1
 	public int updateStatoInvioMessaggio(IoItaliaMessaggio messaggio) throws DaoException {
+		return updateStatoInvioMessaggioTail(true, messaggio); 
+	}
+
+	public int updateStatoInvioMessaggioTail(boolean bFlagUpdateAutocomit, IoItaliaMessaggio messaggio) throws DaoException {
+	//fine LP 20240907 - PGNTBIMAIO-1
 		CallableStatement cs = null;
 		int totRows = 0;
 		try {
-			cs = prepareCall(Routines.PYMESSP_UPD_STA.routine());
+			//inizio LP 20240907 - PGNTBIMAIO-1
+			//cs = prepareCall(Routines.PYMESSP_UPD_STA.routine());
+			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYMESSP_UPD_STA.routine());
+			//fine LP 20240907 - PGNTBIMAIO-1
 			cs.setLong(1, messaggio.getIdMessaggio());
 			cs.setString(2, messaggio.getStato());
 			cs.setString(3, messaggio.getMessaggioErrore());
@@ -660,12 +736,21 @@ public class IoItaliaDao extends BaseDaoHandler {
 		return totRows;
 	}
 
+	//inizio LP 20240907 - PGNTBIMAIO-1
 	public List<IoItaliaMessaggio> getListaMessaggi(String cutecute, String stato) throws DaoException {
+		return getListaMessaggiTail(true, cutecute, stato);
+	}
+
+	public List<IoItaliaMessaggio> getListaMessaggiTail(boolean bFlagUpdateAutocomit, String cutecute, String stato) throws DaoException {
+	//fine LP 20240907 - PGNTBIMAIO-1
 		CallableStatement cs = null;
 		ResultSet rs = null;
 		List<IoItaliaMessaggio> listMessaggioEnte = new ArrayList<IoItaliaMessaggio>();
 		try {
-			cs = prepareCall(Routines.PYMESSP_SEL_STA.routine());
+			//inizio LP 20240907 - PGNTBIMAIO-1
+			//cs = prepareCall(Routines.PYMESSP_SEL_STA.routine());
+			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYMESSP_SEL_STA.routine());
+			//fine LP 20240907 - PGNTBIMAIO-1
 			cs.setString(1, cutecute);
 			cs.setString(2, stato);
 			//inizio LP 20240810 - PGNTCORE-24
@@ -848,12 +933,21 @@ public class IoItaliaDao extends BaseDaoHandler {
 		return messaggio;
 	}
 
+	//inizio LP 20240907 - PAGONET-604
 	public List<IoItaliaPagamentoInAttesa> getArchivioPagamentiInAttesa(IoItaliaConfigurazione configurazione) throws DaoException {
+		return getArchivioPagamentiInAttesaTail(true, configurazione);
+	}
+
+	public List<IoItaliaPagamentoInAttesa> getArchivioPagamentiInAttesaTail(boolean bFlagUpdateAutocomit, IoItaliaConfigurazione configurazione) throws DaoException {
+	//fine LP 20240907 - PAGONET-604
 		List<IoItaliaPagamentoInAttesa> lista = new ArrayList<IoItaliaPagamentoInAttesa>();
 		CallableStatement cs = null;
 		ResultSet rs = null;
 		try {
-			cs = prepareCall(Routines.PYEH2SP_IOIT.routine());
+			//inizio LP 20240907 - PAGONET-604
+			//cs = prepareCall(Routines.PYEH2SP_IOIT.routine());
+			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYEH2SP_IOIT.routine());
+			//fine LP 20240907 - PAGONET-604
 			cs.setString(1, configurazione.getCodiceUtente());
 			cs.setString(2, configurazione.getCodiceSocieta());
 			cs.setString(3, configurazione.getCodiceEnte());
@@ -893,12 +987,21 @@ public class IoItaliaDao extends BaseDaoHandler {
 		return lista;
 	}
 
+	//inizio LP 20240907 - PAGONET-604
 	public List<IoItaliaConfigurazione> getConfigurazioniAbilitate(String codiceUtente) throws DaoException {
+		return getConfigurazioniAbilitateTail(true, codiceUtente);
+	}
+
+	public List<IoItaliaConfigurazione> getConfigurazioniAbilitateTail(boolean bFlagUpdateAutocomit, String codiceUtente) throws DaoException {
+	//fine LP 20240907 - PAGONET-604
 		List<IoItaliaConfigurazione> configurazioniList = new ArrayList<IoItaliaConfigurazione>();
 		CallableStatement cs = null;
 		ResultSet rs = null;
 		try {
-			cs = prepareCall(Routines.PYIICSP_ABIL_SEL.routine());
+			//inizio LP 20240907 - PAGONET-604
+			//cs = prepareCall(Routines.PYIICSP_ABIL_SEL.routine());
+			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYIICSP_ABIL_SEL.routine());
+			//fine LP 20240907 - PAGONET-604
 			cs.setString(1, codiceUtente);
 			//inizio LP 20240810 - PGNTCORE-24
 			//rs = cs.executeQuery();
@@ -927,11 +1030,20 @@ public class IoItaliaDao extends BaseDaoHandler {
 		return configurazioniList;
 	}
 
+	//inizio LP 20240907 - PAGONET-604
 	public IoItaliaMessaggio selectMessaggio(String cutecute, String idDominio, String tipologiaServizio, String impostaServizio, String avvisoPagoPa) throws DaoException {
+		return selectMessaggioTail(true, cutecute, idDominio, tipologiaServizio, impostaServizio, avvisoPagoPa);
+	}
+
+	public IoItaliaMessaggio selectMessaggioTail(boolean bFlagUpdateAutocomit, String cutecute, String idDominio, String tipologiaServizio, String impostaServizio, String avvisoPagoPa) throws DaoException {
+	//fine LP 20240907 - PAGONET-604
 		IoItaliaMessaggio messaggio = null;
 		CallableStatement cs = null;
 		try {
-			cs = prepareCall(Routines.PYMESSP_SEL2.routine());
+			//inizio LP 20240907 - PAGONET-604
+			//cs = prepareCall(Routines.PYMESSP_SEL2.routine());
+			cs = prepareCall(bFlagUpdateAutocomit, Routines.PYMESSP_SEL2.routine());
+			//fine LP 20240907 - PAGONET-604
 			int p = 1;
 			cs.setString(p++, cutecute);
 			cs.setString(p++, idDominio);

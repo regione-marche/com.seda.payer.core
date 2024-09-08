@@ -21,12 +21,21 @@ public class IoItaliaBBDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
+	//inizio LP 20240907 - PAGONET-604
 	public List<IoItaliaPagamentoInAttesa> getArchivioPagamentiBlackBox(String idDominio, String chiaveEnte5, String tipologiaServizio, BigDecimal importoDa, BigDecimal importoA) throws DaoException {
+		return getArchivioPagamentiBlackBoxTail(true,idDominio, chiaveEnte5, tipologiaServizio, importoDa, importoA);
+	}
+
+	public List<IoItaliaPagamentoInAttesa> getArchivioPagamentiBlackBoxTail(boolean bFlagUpdateAutocomit, String idDominio, String chiaveEnte5, String tipologiaServizio, BigDecimal importoDa, BigDecimal importoA) throws DaoException {
+	//fine LP 20240907 - PAGONET-604
 		List<IoItaliaPagamentoInAttesa> lista = new ArrayList<IoItaliaPagamentoInAttesa>();
 		CallableStatement cs = null;
 		ResultSet rs = null;
 		try {
-			cs = prepareCall(Routines.CNDOCSP_IOIT.routine());
+			//inizio LP 20240907 - PAGONET-604
+			//cs = prepareCall(Routines.CNDOCSP_IOIT.routine());
+			cs = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_IOIT.routine());
+			//fine LP 20240907 - PAGONET-604
 			cs.setString(1, idDominio);
 			cs.setString(2, chiaveEnte5);
 			cs.setString(3, tipologiaServizio);

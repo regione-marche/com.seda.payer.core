@@ -8,8 +8,7 @@ import java.sql.Types;
 
 import javax.sql.DataSource;
 
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.ConfigurazioneEasyBridge;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -34,10 +33,10 @@ public class ConfigurazioneEasyBridgeDaoImpl extends BaseDaoHandler implements C
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240907 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.EYUTESP_INS.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.EYUTESP_INS.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.EYUTESP_INS.routine());
+			//fine LP 20240907 - PGNTCORE-24
 			callableStatement.setString(1, configurazioneEasyBridge.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, configurazioneEasyBridge.getCutecute());
 			callableStatement.setString(3, configurazioneEasyBridge.getOperatore());
@@ -51,14 +50,9 @@ public class ConfigurazioneEasyBridgeDaoImpl extends BaseDaoHandler implements C
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -91,10 +85,10 @@ public class ConfigurazioneEasyBridgeDaoImpl extends BaseDaoHandler implements C
 		//fine LP PG21XX04 Leak
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240907 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.EYUTESP_SEL.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.EYUTESP_SEL.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.EYUTESP_SEL.routine());
+			//fine LP 20240907 - PGNTCORE-24
 			callableStatement.setString(1, configurazioneEasyBridge.getCodiceIdentificativoDominio());
 			callableStatement.execute();
 			//inizio LP PG21XX04 Leak
@@ -116,14 +110,9 @@ public class ConfigurazioneEasyBridgeDaoImpl extends BaseDaoHandler implements C
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);

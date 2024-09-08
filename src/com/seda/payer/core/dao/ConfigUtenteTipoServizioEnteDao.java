@@ -95,15 +95,38 @@ public class ConfigUtenteTipoServizioEnteDao extends BaseDaoHandler {
 			rowSets(config, rowsPerPage, pageNumber, strDescrEnte,strDescrSocieta,strDescrUtente,strDescrTipologiaServizio);
 		
 	}
+
+	//inizio LP 20240907 - PAGONET-604
+	public void doRowSets(boolean bFlagUpdateAutocomit, ConfigUtenteTipoServizioEnte config,String strDescrEnte,String strDescrSocieta,String strDescrUtente,String strDescrTipologiaServizio) throws DaoException {
+		rowSets(bFlagUpdateAutocomit, config, 0, 0, strDescrEnte, strDescrSocieta, strDescrUtente, strDescrTipologiaServizio);
+	}
+
+	public void doRowSets(boolean bFlagUpdateAutocomit, ConfigUtenteTipoServizioEnte config, int rowsPerPage, int pageNumber, String strDescrEnte,String strDescrSocieta,String strDescrUtente,String strDescrTipologiaServizio) throws DaoException {
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(bFlagUpdateAutocomit, config, rowsPerPage, pageNumber, strDescrEnte,strDescrSocieta,strDescrUtente,strDescrTipologiaServizio);
+	}
+	//fine LP 20240907 - PAGONET-604
 	
+	//inizio LP 20240907 - PAGONET-604
 	public void rowSets(ConfigUtenteTipoServizioEnte config, int rowsPerPage, int pageNumber, String strDescrEnte,String strDescrSocieta,String strDescrUtente,String strDescrTipologiaServizio) throws DaoException {
+		rowSets(true, config, rowsPerPage, pageNumber, strDescrEnte, strDescrSocieta, strDescrUtente, strDescrTipologiaServizio);
+	}
+
+	public void rowSets(boolean bFlagUpdateAutocomit, ConfigUtenteTipoServizioEnte config, int rowsPerPage, int pageNumber, String strDescrEnte,String strDescrSocieta,String strDescrUtente,String strDescrTipologiaServizio) throws DaoException {
+	//fine LP 20240907 - PAGONET-604
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.CFE_DOLIST.routine());
-			callableStatement = prepareCall(Routines.CFE_DOLIST.routine());
+			//inizio LP 20240907 - PAGONET-604
+			//callableStatement = prepareCall(Routines.CFE_DOLIST.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CFE_DOLIST.routine());
+			//fine LP 20240907 - PAGONET-604
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, config.getEnte().getUser().getCompany().getCompanyCode());
 			callableStatement.setString(2, config.getEnte().getUser().getUserCode());
