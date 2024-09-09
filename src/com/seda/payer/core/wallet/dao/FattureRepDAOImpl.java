@@ -101,7 +101,7 @@ public class FattureRepDAOImpl  extends BaseDaoHandler  implements FattureRepDAO
 		try	
 		{
 			//inizio LP PGNTCORE-24
-			callableStatement = Helper.prepareCall(conn, getSchema(), Routines.PYAFMSP_SEL_SRV.routine());
+			//callableStatement = Helper.prepareCall(conn, getSchema(), Routines.PYAFMSP_SEL_SRV.routine());
 			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYAFMSP_SEL_SRV.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, idWallet);
