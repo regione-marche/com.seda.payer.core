@@ -23,7 +23,13 @@ public class CanalePagamentoDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
  
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public CanalePagamento doDetail(String code) throws DaoException {
+		return doDetailTail(true, code);
+	}
+
+	public CanalePagamento doDetailTail(boolean bFlagUpdateAutocomit, String code) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
@@ -31,7 +37,10 @@ public class CanalePagamentoDao extends BaseDaoHandler {
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.CAN_DODETAIL.routine());
-			callableStatement = prepareCall(Routines.CAN_DODETAIL.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.CAN_DODETAIL.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CAN_DODETAIL.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, code);
 			if (callableStatement.execute()) {
@@ -135,17 +144,33 @@ public class CanalePagamentoDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doSave(CanalePagamento can, String codOp) throws DaoException {
+		doSaveTail(true, can, codOp);
+	}
+
+	public void doSaveTail(boolean bFlagUpdateAutocomit, CanalePagamento can, String codOp) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		try	{
 			if (can.getChiaveCanalePagamento() == null || can.getChiaveCanalePagamento().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("canalepagamento.chiaveCanalePagamento"));
-
-			CanalePagamento data = doDetail(can.getChiaveCanalePagamento());
-			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("canalePagamento.saveadd.error"));
-			if (data != null) 
-				callableStatement = prepareCall(Routines.CAN_DOUPDATE.routine());
-			else callableStatement = prepareCall(Routines.CAN_DOINSERT.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//CanalePagamento data = doDetail(can.getChiaveCanalePagamento());
+			CanalePagamento data = doDetailTail(bFlagUpdateAutocomit, can.getChiaveCanalePagamento());
+			//fine LP 20240909 - PGNTBOLDER-1
+			if ((data != null) && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("canalePagamento.saveadd.error"));
+			if (data != null)  {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.CAN_DOUPDATE.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CAN_DOUPDATE.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			} else {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.CAN_DOINSERT.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CAN_DOINSERT.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			}
 			can.save(callableStatement);
 			callableStatement.execute();
 			//commit();
@@ -169,14 +194,23 @@ public class CanalePagamentoDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doDelete(CanalePagamento can) throws DaoException {
+		doDeleteTail(true, can);
+	}
+
+	public void doDeleteTail(boolean bFlagUpdateAutocomit, CanalePagamento can) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.CAN_DODELETE.routine());
-			callableStatement = prepareCall(Routines.CAN_DODELETE.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.CAN_DODELETE.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CAN_DODELETE.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			if (can.getChiaveCanalePagamento() == null || can.getChiaveCanalePagamento().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("canalepagamento.chiaveCanalePagamento"));

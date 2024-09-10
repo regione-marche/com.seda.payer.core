@@ -149,8 +149,14 @@ public class TipologiaServizioDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 	
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doSave(TipologiaServizio tipo,String codOp) throws DaoException {
-		CallableStatement callableStatement=null;
+		doSaveTail(true, tipo, codOp);
+	}
+
+	public void doSaveTail(boolean bFlagUpdateAutocomit, TipologiaServizio tipo,String codOp) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
+		CallableStatement callableStatement = null;
 		try	{
 			if (tipo.getCodiceTipologiaServizio() == null || tipo.getCodiceTipologiaServizio().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("tipologiaServizio.codiceTipologiaServizio"));
@@ -158,11 +164,22 @@ public class TipologiaServizioDao extends BaseDaoHandler {
 			if (tipo.getCompany() == null || tipo.getCompany().getCompanyCode() == null || tipo.getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("tipologiaServizio.company.companyCode"));
 
-			TipologiaServizio data = doDetail(tipo.getCompany().getCompanyCode(), tipo.getCodiceTipologiaServizio());
-			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("tipologiaServizio.saveadd.error"));
-			if (data != null) 
-				callableStatement = prepareCall(Routines.TSE_DOUPDATE.routine());
-			else callableStatement = prepareCall(Routines.TSE_DOINSERT.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//TipologiaServizio data = doDetail(tipo.getCompany().getCompanyCode(), tipo.getCodiceTipologiaServizio());
+			TipologiaServizio data = doDetailTail(bFlagUpdateAutocomit, tipo.getCompany().getCompanyCode(), tipo.getCodiceTipologiaServizio());
+			//fine LP 20240909 - PGNTBOLDER-1
+			if ((data != null) && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("tipologiaServizio.saveadd.error"));
+			if (data != null) {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.TSE_DOUPDATE.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.TSE_DOUPDATE.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			} else {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.TSE_DOINSERT.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.TSE_DOINSERT.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			}
 
 			tipo.save(callableStatement);
 			callableStatement.execute();
@@ -187,14 +204,22 @@ public class TipologiaServizioDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doDelete(TipologiaServizio tipo) throws DaoException {
+		doDeleteTail(true, tipo);
+	}
+
+	public void doDeleteTail(boolean bFlagUpdateAutocomit, TipologiaServizio tipo) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;;
 		//fine LP PG21XX04 Leak
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.TSE_DODELETE.routine());
-			callableStatement = prepareCall(Routines.TSE_DODELETE.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.TSE_DODELETE.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			if (tipo.getCodiceTipologiaServizio() == null || tipo.getCodiceTipologiaServizio().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("tipo.codiceTipologiaServizio"));

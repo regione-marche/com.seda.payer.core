@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.TransazioneIV;
@@ -33,12 +32,23 @@ public class TxTransazioniIVDao   extends BaseDaoHandler {
 	//		DAOHelper.closeIgnoringException(callableStatement);
 	//}
 	//fine LP PG21XX04 Leak
-	
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void insertTransazioneIV(TransazioneIV transazione) throws DaoException, SQLException {
+		//
+		// Nota:
+		//		Qui rispetto allo "standard" il metodo con firma 
+		//		"pre postgres" viene usato con bFlagUpdateAutocomit == false
+		//
+		insertTransazioneIVTail(false, transazione);
+	}
+
+	public void insertTransazioneIVTail(boolean bFlagUpdateAutocomit, TransazioneIV transazione) throws DaoException, SQLException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
-		try
-		{
-			callableStatement = prepareCall(Routines.TDT_DOINSERT.routine(), false);
+		try {
+			//inizio LP 20240909 - PGNTBOLDER-1
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.TDT_DOINSERT.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			transazione.save(callableStatement);
 			callableStatement.execute();
 			

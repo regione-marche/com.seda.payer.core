@@ -24,7 +24,13 @@ public class CartaPagamentoDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public CartaPagamento doDetail(String codiceCarta) throws DaoException {
+		return doDetailTail(true, codiceCarta);
+	}
+
+	public CartaPagamento doDetailTail(boolean bFlagUpdateAutocomit, String codiceCarta) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;;
 		ResultSet data = null;
@@ -32,7 +38,8 @@ public class CartaPagamentoDao extends BaseDaoHandler {
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.CAR_DODETAIL.routine());
-			callableStatement = prepareCall(Routines.CAR_DODETAIL.routine());
+			//callableStatement = prepareCall(Routines.CAR_DODETAIL.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CAR_DODETAIL.routine());
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, codiceCarta);
 			if (callableStatement.execute()) {
@@ -134,17 +141,33 @@ public class CartaPagamentoDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doSave(CartaPagamento carta, String codOp) throws DaoException {
+		doSaveTail(true, carta, codOp);
+	}
+
+	public void doSaveTail(boolean bFlagUpdateAutocomit, CartaPagamento carta, String codOp) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		try	{
 			if (carta.getCodiceCartaPagamento() == null || carta.getCodiceCartaPagamento().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("carta.codiceCartaPagamento"));
-
-			CartaPagamento data = doDetail(carta.getCodiceCartaPagamento());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//CartaPagamento data = doDetail(carta.getCodiceCartaPagamento());
+			CartaPagamento data = doDetailTail(bFlagUpdateAutocomit, carta.getCodiceCartaPagamento());
+			//fine LP 20240909 - PGNTBOLDER-1
 			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("cartaPagamento.saveadd.error"));
-			if (data != null) 
-				callableStatement = prepareCall(Routines.CAR_DOUPDATE.routine());
-			else callableStatement = prepareCall(Routines.CAR_DOINSERT.routine());
+			if (data != null) {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.CAR_DOUPDATE.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CAR_DOUPDATE.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			} else {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.CAR_DOINSERT.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CAR_DOINSERT.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			}
 			carta.save(callableStatement);
 			callableStatement.execute();
 			//commit();
@@ -168,14 +191,23 @@ public class CartaPagamentoDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doDelete(CartaPagamento carta) throws DaoException {
+		doDeleteTail(true, carta);
+	}
+
+	public void doDeleteTail(boolean bFlagUpdateAutocomit, CartaPagamento carta) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;;
 		//fine LP PG21XX04 Leak
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.CAR_DODELETE.routine());
-			callableStatement = prepareCall(Routines.CAR_DODELETE.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.CAR_DODELETE.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CAR_DODELETE.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			if (carta.getCodiceCartaPagamento() == null || carta.getCodiceCartaPagamento().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("carta.codiceCartaPagamento"));

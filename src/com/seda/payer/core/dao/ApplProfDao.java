@@ -23,7 +23,13 @@ public class ApplProfDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public ApplProf doDetail(String chiaveProfilo) throws DaoException {
+		return doDetailTail(false, chiaveProfilo);
+	}
+
+	public ApplProf doDetailTail(boolean bFlagUpdateAutocomit, String chiaveProfilo) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		ResultSet data =  null;
@@ -31,7 +37,9 @@ public class ApplProfDao extends BaseDaoHandler {
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.PRF_DODETAIL.routine());
-			callableStatement = prepareCall(Routines.PRF_DODETAIL.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.PRF_DODETAIL.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, chiaveProfilo);
 			if (callableStatement.execute()) {
@@ -136,20 +144,34 @@ public class ApplProfDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
-	public void doSave(ApplProf applProf,String codOp) throws DaoException {
-	    CallableStatement callableStatement=null;
+	//inizio LP 20240909 - PGNTBOLDER-1
+	public void doSave(ApplProf applProf, String codOp) throws DaoException {
+		doSaveTail(true, applProf, codOp);
+	}
+
+	public void doSaveTail(boolean bFlagUpdateAutocomit, ApplProf applProf,String codOp) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
+	    CallableStatement callableStatement = null;
 		try	{
 			if ((applProf.getChiaveProfilo() == null || applProf.getChiaveProfilo().length() == 0) && codOp.compareTo(TypeRequest.EDIT_SCOPE.scope())==0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("applProf.chiaveProfilo"));
-		
-			ApplProf data = doDetail(applProf.getChiaveProfilo());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//ApplProf data = doDetail(applProf.getChiaveProfilo());
+			ApplProf data = doDetailTail(bFlagUpdateAutocomit, applProf.getChiaveProfilo());
+			//fine LP 20240909 - PGNTBOLDER-1
 			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("applProf.saveadd.error"));
 			if (data != null) {
-				callableStatement = prepareCall(Routines.PRF_DOUPDATE.routine());
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.PRF_DOUPDATE.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.PRF_DOUPDATE.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
 				applProf.update(callableStatement);
 			}
 			else {
-				callableStatement = prepareCall(Routines.PRF_DOINSERT.routine());
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.PRF_DOINSERT.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.PRF_DOINSERT.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
 				applProf.save(callableStatement);
 			}
 			callableStatement.execute();
@@ -174,14 +196,23 @@ public class ApplProfDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doDelete(ApplProf applProf) throws DaoException {
+		doDeleteTail(true, applProf);
+	}
+
+	public void doDeleteTail(boolean bFlagUpdateAutocomit, ApplProf applProf) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.PRF_DODELETE.routine());
-			callableStatement = prepareCall(Routines.PRF_DODELETE.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.PRF_DODELETE.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.PRF_DODELETE.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			if ((applProf.getChiaveProfilo() == null || applProf.getChiaveProfilo().length() == 0))
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("applProf.chiaveProfilo"));

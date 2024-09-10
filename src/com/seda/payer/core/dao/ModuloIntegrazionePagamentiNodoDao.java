@@ -22,13 +22,21 @@ public class ModuloIntegrazionePagamentiNodoDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
  
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public ModuloIntegrazionePagamentiNodo doDetail(String chiaveTransazione) throws DaoException {
+		return doDetailTail(true, chiaveTransazione);
+	}
+
+	public ModuloIntegrazionePagamentiNodo doDetailTail(boolean bFlagUpdateAutocomit, String chiaveTransazione) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		try	{
-			callableStatement = prepareCall(Routines.MIN_DODETAIL.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.MIN_DODETAIL.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.MIN_DODETAIL.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			callableStatement.setString(1, chiaveTransazione);
-			
 			if (callableStatement.execute()) {
 				data = callableStatement.getResultSet();
 				if (data.next())
@@ -41,8 +49,7 @@ public class ModuloIntegrazionePagamentiNodoDao extends BaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//if (callableStatement != null)
 			//	DAOHelper.closeIgnoringException(callableStatement);
@@ -157,23 +164,33 @@ public class ModuloIntegrazionePagamentiNodoDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doSave(ModuloIntegrazionePagamentiNodo mip) throws DaoException {
+		doSaveTail(true, mip);
+	}
+
+	public void doSaveTail(boolean bFlagUpdateAutocomit, ModuloIntegrazionePagamentiNodo mip) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		try	{
 			if (mip.getChiaveTransazione() == null || mip.getChiaveTransazione().length() == 0) 
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ModuloIntegrazionePagamenti.chiaveTransazione"));
-			
-			ModuloIntegrazionePagamentiNodo data = doDetail(mip.getChiaveTransazione());
-			
-			if (data != null)  
-			{
-				callableStatement = prepareCall(Routines.MIN_DOUPDATE.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//ModuloIntegrazionePagamentiNodo data = doDetail(mip.getChiaveTransazione());
+			ModuloIntegrazionePagamentiNodo data = doDetailTail(bFlagUpdateAutocomit, mip.getChiaveTransazione());
+			//fine LP 20240909 - PGNTBOLDER-1
+			if (data != null)  {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.MIN_DOUPDATE.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.MIN_DOUPDATE.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
 				mip.update(callableStatement);
-			}
-			else
-			{
-				callableStatement = prepareCall(Routines.MIN_DOINSERT.routine());
+			} else {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.MIN_DOINSERT.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.MIN_DOINSERT.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
 				mip.save(callableStatement);
 			}
 

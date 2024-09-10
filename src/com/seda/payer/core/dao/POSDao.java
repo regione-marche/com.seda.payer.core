@@ -4,7 +4,6 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.POS;
 import com.seda.payer.core.exception.DaoException;
@@ -17,13 +16,22 @@ public class POSDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void insertTransazionePOS(POS pos) throws DaoException {
+		insertTransazionePOSTail(true, pos);
+	}
+
+	public void insertTransazionePOSTail(boolean bFlagUpdateAutocomit, POS pos) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		try	{
 			if (pos.getChiaveTransazione() == null || pos.getChiaveTransazione().length() == 0) 
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("POS.chiaveTransazione"));
 			
-			callableStatement = prepareCall(Routines.POS_DOINSERT.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.POS_DOINSERT.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.POS_DOINSERT.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			callableStatement.setString(1, pos.getChiaveTransazione());
 			callableStatement.setString(2, pos.getTerminalID());
 			callableStatement.setString(3, pos.getAcquirerID());

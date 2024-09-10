@@ -23,7 +23,13 @@ public class AnagProvComDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public AnagProvCom doDetail(String codiceBelfiore) throws DaoException {
+		return doDetailTail(true, codiceBelfiore);
+	}
+
+	public AnagProvCom doDetailTail(boolean bFlagUpdateAutocomit, String codiceBelfiore) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
@@ -31,7 +37,10 @@ public class AnagProvComDao extends BaseDaoHandler {
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.APC_DODETAIL.routine());
-			callableStatement = prepareCall(Routines.APC_DODETAIL.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.APC_DODETAIL.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.APC_DODETAIL.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1,codiceBelfiore);
 			if (callableStatement.execute()) {
@@ -137,7 +146,13 @@ public class AnagProvComDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
-	public void doSave(AnagProvCom anag,String codOp) throws DaoException {
+	//inizio LP 20240909 - PGNTBOLDER-1
+	public void doSave(AnagProvCom anag, String codOp) throws DaoException {
+		doSaveTail(true, anag, codOp);
+	}
+
+	public void doSaveTail(boolean bFlagUpdateAutocomit, AnagProvCom anag,String codOp) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement=null;
 		try	{
 			if (anag.getCodiceBelfiore() == null || anag.getCodiceBelfiore().length() == 0)
@@ -145,13 +160,22 @@ public class AnagProvComDao extends BaseDaoHandler {
 
 			/*if (anag.getCompany() == null || anag.getCompany().getCompanyCode() == null || anag.getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagProvCom.company.companyCode"));*/
-
-			AnagProvCom data = doDetail(anag.getCodiceBelfiore());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//AnagProvCom data = doDetail(anag.getCodiceBelfiore());
+			AnagProvCom data = doDetailTail(bFlagUpdateAutocomit, anag.getCodiceBelfiore());
+			//fine LP 20240909 - PGNTBOLDER-1
 			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagProvCom.saveadd.error"));
-			if (data != null) 
-				callableStatement = prepareCall(Routines.APC_DOUPDATE.routine());
-			else callableStatement = prepareCall(Routines.APC_DOINSERT.routine());
-
+			if (data != null) {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.APC_DOUPDATE.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.APC_DOUPDATE.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			} else {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.APC_DOINSERT.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.APC_DOINSERT.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			}
 			anag.save(callableStatement);
 			callableStatement.execute();
 			//commit();
@@ -175,21 +199,30 @@ public class AnagProvComDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doDelete(AnagProvCom anag) throws DaoException {
+		doDeleteTail(true, anag);
+	}
+
+	public void doDeleteTail(boolean bFlagUpdateAutocomit, AnagProvCom anag) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.APC_DODELETE.routine());
-			callableStatement = prepareCall(Routines.APC_DODELETE.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.APC_DODELETE.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.APC_DODELETE.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			if (anag.getCodiceBelfiore() == null || anag.getCodiceBelfiore().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagProvCom.codiceBelfiore"));
 
 			/*if (anag.getCompany() == null || anag.getCompany().getCompanyCode() == null || anag.getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagProvCom.company.companyCode"));
-*/
+			*/
 			callableStatement.setString(1, anag.getCodiceBelfiore());
 			callableStatement.execute();
 			//commit();
