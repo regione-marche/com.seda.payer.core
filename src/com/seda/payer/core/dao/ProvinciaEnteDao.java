@@ -13,6 +13,10 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class ProvinciaEnteDao extends BaseDaoHandler {
 
+	//inizio LP 20240912 - PGNTFATT-5
+	private CallableStatement callableStatementDoDetailEnte2 = null;
+	//fine LP 20240912 - PGNTFATT-5
+
 	public ProvinciaEnteDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
@@ -430,17 +434,32 @@ public class ProvinciaEnteDao extends BaseDaoHandler {
 		}
 	}	
 	
-	public void doGetEnteUtenteSocieta_Ane(String chiaveEnte) throws DaoException 
+	public void doGetEnteUtenteSocieta_Ane(String chiaveEnte) throws DaoException
+	{
+	//inizio LP 20240912 - PGNTFATT-5
+		doGetEnteUtenteSocieta_AneTail(true, true,chiaveEnte);
+	}
+
+	public void doGetEnteUtenteSocieta_AneBatch(boolean bUpdateFlagAutocommit, boolean bCloseStat, String chiaveEnte) throws DaoException 
+	{
+		doGetEnteUtenteSocieta_AneTail(bUpdateFlagAutocommit, bCloseStat, chiaveEnte);
+	}
+
+	private void doGetEnteUtenteSocieta_AneTail(boolean bUpdateFlagAutocommit, boolean bCloseStat, String chiaveEnte) throws DaoException 
 	{		
+	//fine LP 20240912 - PGNTFATT-5
 		CallableStatement callableStatement = null;
-		try	{ 
-			callableStatement = prepareCall(Routines.ANE_DODETAIL_ENTE2.routine());
+		try	{
+			//inizio LP 20240912 - PGNTFATT-5
+			//callableStatement = prepareCall(Routines.ANE_DODETAIL_ENTE2.routine());
+			if(callableStatementDoDetailEnte2 == null) {
+				callableStatementDoDetailEnte2 = prepareCall(bUpdateFlagAutocommit, Routines.ANE_DODETAIL_ENTE2.routine());
+				callableStatement = callableStatementDoDetailEnte2;
+			}
 			callableStatement.setString(1, chiaveEnte);
-			
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);	
 			}
-	
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -450,13 +469,21 @@ public class ProvinciaEnteDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240912 - PGNTFATT-5
+			if(bCloseStat) {
+			//fine LP 20240912 - PGNTFATT-5
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240912 - PGNTFATT-5
+				callableStatement = null;
+				callableStatementDoDetailEnte2 = null;
 			}
+			//fine LP 20240912 - PGNTFATT-5
 			//fine LP PG21XX04 Leak
 		}
 	}	
@@ -607,4 +634,18 @@ public class ProvinciaEnteDao extends BaseDaoHandler {
 		}
 	}
 	//PG1800XX_017 GG 18122018 - fine
+
+	//inizio LP 20240912 - PGNTFATT-5
+    public void closeCallableStatementS()  {
+	    if(callableStatementDoDetailEnte2 != null) {
+			try {
+				callableStatementDoDetailEnte2.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementDoDetailEnte2 = null;
+	    }
+    }
+    //fine LP 20240912 - PGNTFATT-5
+
 }

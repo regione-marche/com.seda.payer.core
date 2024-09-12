@@ -20,6 +20,10 @@ import com.seda.payer.core.messages.Messages;
 
 public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 
+	//inizio LP 20240912 - PAGONET-604
+	CallableStatement callableStatementDetail = null;
+	//fine LP 20240912  - PAGONET-604
+
 	public AnagraficaStrutturaRicettivaDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
@@ -139,20 +143,33 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
-
-	
 	public AnagraficaStrutturaRicettiva doDetail(String chiaveAnagraficaStruttura, String annoComunicazione) throws DaoException {
+	//inizio LP 20240912 - PAGONET-604
+		return doDetailTail(true, true, chiaveAnagraficaStruttura, annoComunicazione);
+	}
+
+	public AnagraficaStrutturaRicettiva doDetailBatch(boolean bFlagUpdateAutocomit, boolean bclostStat, String chiaveAnagraficaStruttura, String annoComunicazione) throws DaoException {
+		return doDetailTail(bFlagUpdateAutocomit, bclostStat, chiaveAnagraficaStruttura, annoComunicazione);
+	}
+
+	private AnagraficaStrutturaRicettiva doDetailTail(boolean bFlagUpdateAutocomit, boolean bclostStat, String chiaveAnagraficaStruttura, String annoComunicazione) throws DaoException {
+	//fine LP 20240912 - PAGONET-604
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		try	{
-			callableStatement = prepareCall(Routines.SAN_DODETAIL.routine());
+			//inizio LP 20240912 - PAGONET-604
+			//callableStatement = prepareCall(Routines.SAN_DODETAIL.routine());
+			if(callableStatementDetail == null) {
+				callableStatementDetail = prepareCall(bFlagUpdateAutocomit, Routines.SAN_DODETAIL.routine());
+				callableStatement = callableStatementDetail;
+			}
+			//fine LP 20240912 - PAGONET-604
 			callableStatement.setString(1, chiaveAnagraficaStruttura);
 			if(annoComunicazione==null){
 				callableStatement.setNull(2,Types.VARCHAR);
-			}else{
+			} else {
 				callableStatement.setString(2,annoComunicazione);
 			}
-			
 			if (callableStatement.execute()) {
 				data = callableStatement.getResultSet();
 				if (data.next()){
@@ -184,13 +201,21 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240912 - PAGONET-604
+			if(bclostStat) {
+			//fine LP 20240912 - PAGONET-604
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240912 - PAGONET-604
+				callableStatement = null;
+				callableStatementDetail = null;
 			}
+			//fine LP 20240912 - PAGONET-604
 			//fine LP PG21XX04 Leak
 		}
 	}
@@ -708,7 +733,20 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
 	//PG190330 SB - fine
+
+	//inizio LP 20240912 - PAGONET-604
+    public void closeCallableStatementS()  {
+	    if(callableStatementDetail != null) {
+			try {
+				callableStatementDetail.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementDetail = null;
+	    	
+	    }
+    }
+    //fine LP 20240912 - PAGONET-604
 
 }

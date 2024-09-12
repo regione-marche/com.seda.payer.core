@@ -13,6 +13,7 @@ import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
 import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.AnagraficaBollettino;
@@ -42,12 +43,24 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		super(dataSource.getConnection(), schema);
 	}
 
+	//inizio LP 20240912 - PGNTBIPECA-1
 	public AnagraficaBollettino doDetail(
 			String codiceSocieta,
 			String codiceUtente,
 			String chiaveEnte,
 			String codiceFiscale
 	) throws DaoException {
+		return doDetailTail(true, codiceSocieta, codiceUtente, chiaveEnte, codiceFiscale); 
+	}
+
+	public AnagraficaBollettino doDetailTail(
+			boolean bFlagUpdateAutocomit,
+			String codiceSocieta,
+			String codiceUtente,
+			String chiaveEnte,
+			String codiceFiscale
+	) throws DaoException {
+	//fine LP 20240912 - PGNTBIPECA-1
 		Connection connection = null;
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
@@ -57,10 +70,10 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		try	{
 			connection = getConnection();
 			AnagraficaBollettino res=null;
-			//inizio LP 20240828 PGNTCORE-24/PGNTPROR-5
+			//inizio LP 20240912 - PGNTCORE-24/PGNTPROR-5/PGNTBIPECA-1
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYECASP_SEL.routine());
-			callableStatement = prepareCall(Routines.PYECASP_SEL.routine());
-			//fine LP 20240828 PGNTCORE-24/PGNTPROR-5
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.PYECASP_SEL.routine());
+			//fine LP 20240912 - PGNTCORE-24/PGNTPROR-5/PGNTBIPECA-1
 			callableStatement.setString(1, codiceSocieta);
 			callableStatement.setString(2, codiceUtente);
 			callableStatement.setString(3, chiaveEnte);
@@ -89,8 +102,6 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
-			throw new DaoException(x);
-		} catch (ProcedureReflectorException x) {
 			throw new DaoException(x);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -128,6 +139,37 @@ public class AnagraficaBollettinoDAOImpl extends BaseDaoHandler implements Anagr
 			//fine LP PG21XX04 Leak
 		}
 	}
+
+	public CallableStatement callableStatementdoDetail(boolean bFlagUpdateAutocomit) throws DaoException
+	{
+		CallableStatement callableStatement = null;
+		try	{
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.PYECASP_SEL.routine());
+		} catch (SQLException x) {
+			throw new DaoException(x);
+		} catch (IllegalArgumentException x) {
+			throw new DaoException(x);
+		} catch (HelperException x) {
+			throw new DaoException(x);
+		}
+		return callableStatement;
+	}
+
+	public CallableStatement callableStatementUpdateMpec(boolean bFlagUpdateAutocomit)  throws DaoException
+	{
+		CallableStatement callableStatement = null;
+		try	{
+			callableStatement = prepareCall(bFlagUpdateAutocomit, "PYECASP_UPD_MPEC");
+		} catch (SQLException x) {
+			throw new DaoException(x);
+		} catch (IllegalArgumentException x) {
+			throw new DaoException(x);
+		} catch (HelperException x) {
+			throw new DaoException(x);
+		}
+		return callableStatement;
+}
+	//fine LP 20240912 - PGNTBIPECA-1
 
 	//inizio LP PG21XX05 Bug loadPdfFromGeos
 	public AnagraficaBollettino doDetailBatch(
