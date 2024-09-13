@@ -505,7 +505,7 @@ public class EnteDao extends BaseDaoHandler {
 		try {
 			connection = getConnection();
 			callableStatement = prepareCall(Routines.PYEH0SP_UPD_INV.routine());		
-			callableStatement.setString(1, progressivoFlusso.trim());
+			callableStatement.setLong(1, Long.parseLong(progressivoFlusso.trim()));
 			callableStatement.setString(2, flagInviaDovuto);
 			
 			callableStatement.execute();

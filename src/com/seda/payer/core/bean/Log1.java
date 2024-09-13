@@ -10,7 +10,7 @@ import java.sql.Types;
 
 import com.seda.payer.commons.bean.Lifecycle;
 
-public class Log1 extends Lifecycle implements Serializable {
+public class 	Log1 extends Lifecycle implements Serializable {
 
 
 	private static final long serialVersionUID = 1L;

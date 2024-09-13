@@ -260,7 +260,7 @@ public class GruppoDao extends BaseDaoHandler {
 				Routines.PYGRPSP_DEL);
 		try {
 			callableStatement = prepareCall(Routines.PYGRPSP_DEL.routine());
-			callableStatement.setInt(1, chiaveGruppo.intValue());
+			callableStatement.setLong(1, chiaveGruppo.intValue());
 			callableStatement.executeUpdate();
 		} catch (SQLException x) {
 			throw new DaoException(x);

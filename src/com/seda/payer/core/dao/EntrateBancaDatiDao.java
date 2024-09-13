@@ -734,7 +734,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, dto.getNumeroDocumento()!=null?dto.getNumeroDocumento():"");
 			callableStatement.setString(2, dto.getCodiceUtente()!=null?dto.getCodiceUtente():"");
-			callableStatement.setString(3, dto.getProgrFlusso()!=null?dto.getProgrFlusso():"");
+			callableStatement.setLong(3, dto.getProgrFlusso()!=null?Long.parseLong(dto.getProgrFlusso()):0);
 			callableStatement.setString(4, dto.getProgrServ()!=null?dto.getProgrServ():"");
 			callableStatement.setString(5, dto.getCodiceEnte()!=null?dto.getCodiceEnte():"");
 			callableStatement.setString(6, dto.getTipoUfficio()!=null?dto.getTipoUfficio():"");

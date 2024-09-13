@@ -146,7 +146,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			/* we register row start */
 			callableStatement.registerOutParameter(11, Types.INTEGER);
 			callableStatement.execute();
-			int i = callableStatement.getInt(11);
+			int i = (int) callableStatement.getLong(11);
 			return i;
 			
 		} catch (SQLException x) {
@@ -176,7 +176,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;	
 		try	{
 			callableStatement = prepareCall(Routines.ELG_DOUPDATE.routine());
-			callableStatement.setInt(1, prog);
+			callableStatement.setLong(1, prog);
 			callableStatement.setString(2, codiceUtente);
 			callableStatement.setDate(3, dataFlusso);
 			if (progressivo > 0)
@@ -217,11 +217,11 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;	
 		try	
 		{
-			callableStatement = prepareCall(Routines.ELG_DO_ELG_PELGFLUS.routine());	
+			callableStatement = prepareCall(Routines.	ELG_DO_ELG_PELGFLUS.routine());
 			callableStatement.setString(1, nomeFile);
 			callableStatement.registerOutParameter(2, Types.INTEGER);
 			callableStatement.execute();
-			int i = callableStatement.getInt(2);
+			int i = (int) callableStatement.getLong(2);
 			return i;
 			
 		} catch (SQLException x) {
@@ -255,7 +255,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 						callableStatement.setTimestamp(3, inizioElabFase);
 						callableStatement.setTimestamp(4, fineElabFase);
 						callableStatement.setString(5, msgError);
-						callableStatement.setInt(6, progressivoFlusso);
+						callableStatement.setLong(6, progressivoFlusso);
 						/* we register row start */
 						callableStatement.registerOutParameter(7, Types.INTEGER);
 						callableStatement.execute();
@@ -292,8 +292,8 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setTimestamp(4, fineElabFase);
 			callableStatement.setString(5, msgError);
 			if (progressivo > 0)
-				callableStatement.setInt(6, progressivo);
-			else callableStatement.setNull(6, Types.INTEGER);
+				callableStatement.setLong(6, progressivo);
+			else callableStatement.setNull(6, Types.BIGINT);
 			callableStatement.registerOutParameter(7, Types.INTEGER);
 			callableStatement.execute();
 			rowsUpd = callableStatement.getInt(7);
@@ -338,7 +338,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setString(10, auxDigit);
 			callableStatement.setString(11, applicationCode);
 			callableStatement.setString(12, segregationCode);
-			callableStatement.setInt(13, prog);
+			callableStatement.setLong(13, prog);
 			callableStatement.setString(14, carattereServizio);
 			callableStatement.registerOutParameter(15, Types.INTEGER);
 			callableStatement.execute();
@@ -409,7 +409,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setString(29, String.valueOf(flagFattElettronica));
 			callableStatement.setString(30, String.valueOf(codiceIUV));
 			callableStatement.setString(31, String.valueOf(causale));
-			callableStatement.setInt(32, prog);
+			callableStatement.setLong(32, prog);
 			callableStatement.setString(33, String.valueOf(ibanAppoggio));
 			//inizio LP PG200260
 			//callableStatement.registerOutParameter(34, Types.INTEGER);
@@ -473,7 +473,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setDouble(22, notificaPagata);
 			callableStatement.setString(23, String.valueOf(stato));
 			callableStatement.setString(24, codiceIUV);
-			callableStatement.setInt(25, prog);
+			callableStatement.setLong(25, prog);
 			callableStatement.registerOutParameter(26, Types.INTEGER);
 			callableStatement.execute();
 			int i = callableStatement.getInt(26);
@@ -531,7 +531,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 				callableStatement.setString(14, ibanPostale);
 			else
 				callableStatement.setString(14, "");
-			callableStatement.setInt(15, prog);
+			callableStatement.setLong(15, prog);
 			callableStatement.setString(16, String.valueOf(stato));
 			//inizio LP PG22XX05
 			//callableStatement.registerOutParameter(17, Types.INTEGER);
@@ -608,7 +608,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 				callableStatement.setString(17, anno);
 			else
 				callableStatement.setNull(17, Types.VARCHAR);
-			callableStatement.setInt(18, progFlusso);
+			callableStatement.setLong(18, progFlusso);
 			callableStatement.setString(19, String.valueOf(stato));
 			callableStatement.registerOutParameter(20, Types.INTEGER);
 			callableStatement.execute();
@@ -682,7 +682,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setString(22, String.valueOf(canPagamento));
 			callableStatement.setString(23, String.valueOf(tipoPagamento));
 			callableStatement.setString(24, String.valueOf(stato));
-			callableStatement.setInt(25, prog);
+			callableStatement.setLong(25, prog);
 			callableStatement.registerOutParameter(26, Types.INTEGER);
 			callableStatement.execute();
 			int i = callableStatement.getInt(26);
@@ -726,7 +726,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setDouble(11, spesePagate);
 			callableStatement.setDouble(12, mora);
 			callableStatement.setString(13, String.valueOf(stato));
-			callableStatement.setInt(14, prog);
+			callableStatement.setLong(14, prog);
 			callableStatement.registerOutParameter(15, Types.INTEGER);
 			callableStatement.execute();
 			int i = callableStatement.getInt(15);
@@ -771,7 +771,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setString(12, String.valueOf(tipoColl));
 			callableStatement.setString(13, collegamento);
 			callableStatement.setString(14, String.valueOf(stato));
-			callableStatement.setInt(15, progF);
+			callableStatement.setLong(15, progF);
 			callableStatement.registerOutParameter(16, Types.INTEGER);
 			callableStatement.execute();
 			int i = callableStatement.getInt(16);
@@ -814,7 +814,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setString(10, servizio);
 			callableStatement.setString(11, descrizione);
 			callableStatement.setString(12, String.valueOf(stato));
-			callableStatement.setInt(13, prog);
+			callableStatement.setLong(13, prog);
 			callableStatement.registerOutParameter(14, Types.INTEGER);
 			callableStatement.execute();
 			int i = callableStatement.getInt(14);
@@ -871,7 +871,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setDouble(15, importoPagatoPiuSgravi);
 			callableStatement.setString(16, noteTributo);
 			callableStatement.setString(17, String.valueOf(stato));
-			callableStatement.setInt(18, progressivoFlusso);
+			callableStatement.setLong(18, progressivoFlusso);
 			callableStatement.setString(19, codiceCapitolo);
 			callableStatement.setString(20, accertamento);
 			//inizio LP PG210130
@@ -958,7 +958,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setString(17, String.valueOf(stato));
 			callableStatement.setString(18, email);
 			callableStatement.setString(19, emailPec);
-			callableStatement.setInt(20, prog);
+			callableStatement.setLong(20, prog);
 			callableStatement.registerOutParameter(21, Types.INTEGER);
 			callableStatement.execute();
 			int i = callableStatement.getInt(21);
@@ -994,7 +994,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setString(4, tipoServizio);
 			callableStatement.setInt(5, numRec);
 			callableStatement.setString(6, String.valueOf(stato));
-			callableStatement.setInt(7, prog);
+			callableStatement.setLong(7, prog);
 			callableStatement.registerOutParameter(8, Types.INTEGER);
 			callableStatement.execute();
 			int i = callableStatement.getInt(8);
@@ -1085,7 +1085,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;	
 		try {
 			callableStatement = prepareCall(Routines.EHX_DOPROCESSFLOWROLLBACK.routine());
-			callableStatement.setInt(1, progressivoFlusso);
+			callableStatement.setLong(1, progressivoFlusso);
 //			callableStatement.setString(2, "N");
 			callableStatement.execute();
 		} catch (SQLException x) {

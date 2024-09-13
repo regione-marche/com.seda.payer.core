@@ -105,7 +105,7 @@ public class PyUserDao extends BaseDaoHandler{
 		List<String> applicazioni = null;
 
 		try{
-			callableStatement = prepareCall(Routines.USR_GET_PYUSER_AND_APP.routine());
+			callableStatement = prepareCall(Routines.	USR_GET_PYUSER_AND_APP.routine());
 			callableStatement.setLong(1, chiaveUtente);
 			/*
 			 * Recupero il bean dell'utente dal primo resultset 

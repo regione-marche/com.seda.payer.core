@@ -259,7 +259,7 @@ public class Tassonomia extends Lifecycle implements Serializable{
 	 * @see com.seda.payer.commons.bean.Lifecycle#onUpdate(java.sql.CallableStatement)
 	 */
 	public void onUpdate(CallableStatement arg) throws SQLException {
-		arg.setInt(1, this.chiaveTassonomia.intValue());	
+		arg.setLong(1, this.chiaveTassonomia.intValue());
 		arg.setString(2, this.codiceTipoEnteCreditore);	
 		arg.setString(3, this.tipoEnteCreditore);	
 		arg.setString(4, this.progressivoMacroAreaPerEnteCreditore);	
@@ -287,7 +287,7 @@ public class Tassonomia extends Lifecycle implements Serializable{
 	public void onLoad(CallableStatement arg) throws SQLException {
 
 		if (this.chiaveTassonomia != null)
-			arg.setInt(1, this.chiaveTassonomia.intValue());
+			arg.setLong(1, this.chiaveTassonomia.intValue());
 		else
 			throw new SQLException("chiave tassonomia is null");
 			

@@ -36,9 +36,9 @@ public class StatsDaoImpl extends BaseDaoHandler implements StatsDao   {
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSTSSP_UPD.routine());
             callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSTSSP_UPD.routine());
 			//fine LP PGNTCORE-24 
-			callableStatement.setInt(1, stats.getId());
-			callableStatement.setInt(2, stats.getPagamentoNbollettino());
-			callableStatement.setInt(3, stats.getPagamentoNavviso());				
+			callableStatement.setLong(1, stats.getId());
+			callableStatement.setLong(2, stats.getPagamentoNbollettino());
+			callableStatement.setLong(3, stats.getPagamentoNavviso());
 			callableStatement.execute();
 			ret=1;
 		} catch (SQLException e) {

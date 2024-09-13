@@ -308,8 +308,8 @@ public class NodoSpcDao extends BaseDaoHandler {
 			callableStatement.setString(16, nodoSpcRpt.getIdPSP());					//31012017 GG PG160130_02X
 			callableStatement.setString(17, nodoSpcRpt.getIdIntermediarioPSP());	//31012017 GG PG160130_02X	
 			callableStatement.setString(18, nodoSpcRpt.getIdCanalePSP());			//31012017 GG PG160130_02X
-			callableStatement.registerOutParameter(19, Types.INTEGER);
-			callableStatement.registerOutParameter(20, Types.INTEGER);				//29072016 GG PG160130
+			callableStatement.registerOutParameter(19, Types.BIGINT);
+			callableStatement.registerOutParameter(20, Types.BIGINT);				//29072016 GG PG160130
 			//inizio LP PG21XX08_1
 			if(Iuv.equals("") && bCuteCute)
 				callableStatement.registerOutParameter(21, Types.VARCHAR);
@@ -317,10 +317,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 
 			callableStatement.execute();
 			//recupero id
-			int id = callableStatement.getInt(19);
+			int id = (int) callableStatement.getLong(19);
 			System.out.println("ID dopo INS = " + id);
 			
-			int progIuv = callableStatement.getInt(20);
+			int progIuv = (int) callableStatement.getLong(20);
 			System.out.println("PROG IUV dopo INS = " + progIuv);
 			
 			//inizio LP PG21XX08_1
@@ -362,7 +362,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 				}
 				//fine LP PG21XX04 Leak
 				callableStatement = prepareCall(Routines.PYRPTSP_UPD.routine());
-				callableStatement.setInt(1, id);
+				callableStatement.setLong(1, id);
 				callableStatement.setNull(2, Types.VARCHAR);
 				callableStatement.setNull(3, Types.CHAR);
 				callableStatement.setNull(4, Types.CHAR);

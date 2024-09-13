@@ -301,7 +301,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 	    callableStatement.setBigDecimal(21, tx_importo_a_bd);
 		callableStatement.setString(22,tx_data_da == null ? "" : tx_data_da);
 		callableStatement.setString(23,tx_data_a == null ? "" : tx_data_a);
-		callableStatement.setInt(24, chiaveQuadratura);
+		callableStatement.setLong(24, chiaveQuadratura);
 		callableStatement.setString(25,tx_id_Terminale_Atm == null ? "" : tx_id_Terminale_Atm);
 		callableStatement.setString(26,tx_id_Transazione_Atm == null ? "" : tx_id_Transazione_Atm);
 		callableStatement.setString(27,tx_chiave_rendicontazione == null ? "" : tx_chiave_rendicontazione);
@@ -375,7 +375,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 		    callableStatement.setBigDecimal(17, tx_importo_a_bd);
 			callableStatement.setString(18,tx_data_da == null ? "" : tx_data_da);
 			callableStatement.setString(19,tx_data_a == null ? "" : tx_data_a);
-			callableStatement.setInt(20, chiaveQuadratura);
+			callableStatement.setLong(20, chiaveQuadratura);
 			callableStatement.setString(21,tx_id_Terminale_Atm == null ? "" : tx_id_Terminale_Atm);
 			callableStatement.setString(22,tx_id_Transazione_Atm == null ? "" : tx_id_Transazione_Atm);
 			callableStatement.setString(23,chiaveRendicontazione == null ? "" : chiaveRendicontazione);
@@ -475,7 +475,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 		    callableStatement.setBigDecimal(17, tx_importo_a_bd);
 			callableStatement.setString(18,tx_data_da == null ? "" : tx_data_da);
 			callableStatement.setString(19,tx_data_a == null ? "" : tx_data_a);
-			callableStatement.setInt(20, chiaveQuadratura);
+			callableStatement.setLong(20, chiaveQuadratura);
 			callableStatement.setString(21,tx_id_Terminale_Atm == null ? "" : tx_id_Terminale_Atm);
 			callableStatement.setString(22,tx_id_Transazione_Atm == null ? "" : tx_id_Transazione_Atm);
 			callableStatement.setString(23,chiaveRendicontazione == null ? "" : chiaveRendicontazione);
@@ -1813,7 +1813,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(17, dataPagamentoA == null ? "" : dataPagamentoA);
 			callableStatement.setString(18, dataTransazioneDa ==  null ? "" : dataTransazioneDa);
 			callableStatement.setString(19, dataTransazioneA == null ? "" : dataTransazioneA);
-			callableStatement.setInt(20, chiaveMovimento);
+			callableStatement.setLong(20, chiaveMovimento);
 			callableStatement.registerOutParameter(21, Types.VARCHAR);
 			callableStatement.registerOutParameter(22, Types.INTEGER);
 			callableStatement.registerOutParameter(23, Types.INTEGER);
@@ -1956,7 +1956,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 		    callableStatement.setBigDecimal(17, tx_importo_a_bd);
 			callableStatement.setString(18,tx_data_da == null ? "" : tx_data_da);
 			callableStatement.setString(19,tx_data_a == null ? "" : tx_data_a);
-			callableStatement.setInt(20, chiaveQuadratura);
+			callableStatement.setLong(20, chiaveQuadratura);
 			callableStatement.setString(21,tx_id_Terminale_Atm == null ? "" : tx_id_Terminale_Atm);
 			callableStatement.setString(22,tx_id_Transazione_Atm == null ? "" : tx_id_Transazione_Atm);
 			callableStatement.setString(23,chiaveRendicontazione == null ? "" : chiaveRendicontazione);

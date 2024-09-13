@@ -285,7 +285,7 @@ public class TassonomiaDao extends BaseDaoHandler {
 				Routines.PYTASSP_DEL);
 		try {
 			callableStatement = prepareCall(Routines.PYTASSP_DEL.routine());
-			callableStatement.setInt(1, chiaveTassonomia.intValue());
+			callableStatement.setLong(1, chiaveTassonomia.intValue());
 			callableStatement.executeUpdate();
 		} catch (SQLException x) {
 			throw new DaoException(x);
