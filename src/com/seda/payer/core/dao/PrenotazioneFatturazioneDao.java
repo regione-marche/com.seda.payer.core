@@ -32,19 +32,24 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
             callableStatement.setInt(1, prenotazione.getPageNumber());
             callableStatement.setInt(2, prenotazione.getRowsPerPage());
             callableStatement.setString(3, prenotazione.getOrder());
+
+
             callableStatement.setString(4, prenotazione.getCodiceSocieta() != null ? prenotazione.getCodiceSocieta() : "");
             callableStatement.setString(5, prenotazione.getCodiceUtente() != null ?prenotazione.getCodiceUtente() : "");
             callableStatement.setString(6, prenotazione.getCodiceEnte() != null ? prenotazione.getCodiceEnte() : "");
             callableStatement.setString(7, prenotazione.getDataPeriodoDa() != null ? prenotazione.getDataPeriodoDa() : "");
             callableStatement.setString(8, prenotazione.getDataPeriodoA() != null ? prenotazione.getDataPeriodoA() : "");
             callableStatement.setString(9, prenotazione.getFlagFatturazione() != null ? prenotazione.getFlagFatturazione() : "");
+
+
             callableStatement.setString(10, prenotazione.getDataRichiestaDa() != null ? prenotazione.getDataRichiestaDa() : "");
             callableStatement.setString(11, prenotazione.getDataRichiestaA() != null ? prenotazione.getDataRichiestaA() : "");
-            callableStatement.registerOutParameter(12, Types.VARCHAR);
-            callableStatement.registerOutParameter(13, Types.INTEGER);
+            callableStatement.setString(12, prenotazione.getTipologiRichiesta() != null ? prenotazione.getTipologiRichiesta() : "");
+            callableStatement.registerOutParameter(13, Types.VARCHAR);
             callableStatement.registerOutParameter(14, Types.INTEGER);
             callableStatement.registerOutParameter(15, Types.INTEGER);
-            callableStatement.registerOutParameter(16, Types.SMALLINT);
+            callableStatement.registerOutParameter(16, Types.INTEGER);
+            callableStatement.registerOutParameter(17, Types.SMALLINT);
 
             PageInfo pageInfo = null;
 
@@ -52,10 +57,10 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
                 pageInfo = new PageInfo();
                 pageInfo.setPageNumber(prenotazione.getPageNumber());
                 pageInfo.setRowsPerPage(prenotazione.getRowsPerPage());
-                pageInfo.setFirstRow(callableStatement.getInt(13));
-                pageInfo.setLastRow(callableStatement.getInt(14));
-                pageInfo.setNumRows(callableStatement.getInt(15));
-                pageInfo.setNumPages(callableStatement.getInt(16));
+                pageInfo.setFirstRow(callableStatement.getInt(14));
+                pageInfo.setLastRow(callableStatement.getInt(15));
+                pageInfo.setNumRows(callableStatement.getInt(16));
+                pageInfo.setNumPages(callableStatement.getInt(17));
                 ResultSet data = callableStatement.getResultSet();
                 this.loadWebRowSet(data);
 
@@ -92,7 +97,7 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
             callableStatement.setString(4, prenotazione.getCodiceEnte() != null ? prenotazione.getCodiceEnte() : "");
             callableStatement.setString(5, new Timestamp(System.currentTimeMillis()).toString());
             callableStatement.setString(6, cfOperatore != null ? cfOperatore : "");
-            callableStatement.setString(7, "FAT");
+            callableStatement.setString(7, prenotazione.getTipologiRichiesta()==null ? "FAT" : prenotazione.getTipologiRichiesta());
             callableStatement.setString(8, prenotazione.getDataRichiestaDa() != null ? prenotazione.getDataRichiestaDa() : "");
             callableStatement.setString(9, prenotazione.getDataRichiestaA() != null ? prenotazione.getDataRichiestaA() : "" );
             callableStatement.setString(10, "1"); // in attesa
@@ -167,4 +172,27 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
         }
         return null;
     }
+
+
+    public boolean cancellaPrenotazione(String chiave) {
+      try {
+          Connection connection = getConnection();
+          CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DODELETE.routine());
+
+          callableStatement.setString(1, chiave);
+
+          if (callableStatement.execute()) {
+              return true;
+          } else {
+              return false;
+          }
+      }catch (Throwable e) {
+          e.printStackTrace();
+          return false;
+      }
+
+    }
+
+
+
 }

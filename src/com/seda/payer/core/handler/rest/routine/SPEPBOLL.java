@@ -104,6 +104,7 @@ public class SPEPBOLL extends ARestRoutine {
 		outParameterMap.put(p++, "data_ou_ibanb_out");
 		outParameterMap.put(p++, "data_ou_tassonomia_out");
 		outParameterMap.put(p++, "data_ou_causale_out");
+		outParameterMap.put(p++, "data_ou_pagopa_out"); //SB PGNTCORE-49
 		outParameterMap.put(p++, "data_ou_message_out");
 		
 		return outParameterMap;
@@ -145,6 +146,7 @@ public class SPEPBOLL extends ARestRoutine {
 		resultSetMap2.put(p++, "BEN_TIPOSERV");
 		resultSetMap2.put(p++, "BEN_KEYTRIBU");
 		resultSetMap2.put(p++, "BEN_VALTRIBU");
+		resultSetMap2.put(p++, "BEN_TASSONOM");
 
 		p = 1;
 		

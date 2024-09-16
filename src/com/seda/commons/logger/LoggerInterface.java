@@ -42,7 +42,8 @@ public interface LoggerInterface {
         UserLoginIP("UserLoginIP"),
         UserLoginTimestamp("UserLoginTimestamp"),
         UserName("UserName"),
-        UserPrincipalName("UserPrincipalName")
+        UserPrincipalName("UserPrincipalName"),
+        Direction("Direction")
         ;
 
 

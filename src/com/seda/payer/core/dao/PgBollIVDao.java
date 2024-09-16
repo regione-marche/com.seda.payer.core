@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
 
+import com.seda.commons.event.Event;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.PgBollIV;
 import com.seda.payer.core.exception.DaoException;
@@ -101,7 +102,8 @@ public class PgBollIVDao extends RestBaseDaoHandler {
 		    //OU_CAUSALE 
 		    //callableStatement.registerOutParameter(37, Types.VARCHAR);
 		    callableStatement.registerOutParameter(37, Types.VARCHAR);	//causale per preavvisi BRAV
-		    callableStatement.registerOutParameter(38, Types.VARCHAR);
+			callableStatement.registerOutParameter(38, Types.VARCHAR); //Pagamento PagoPA per Pre-verbali ZTL
+		    callableStatement.registerOutParameter(39, Types.VARCHAR);
 		    //fine LP EP22405X
 		    //fine LP PG200360
 
