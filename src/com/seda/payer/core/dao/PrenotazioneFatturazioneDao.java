@@ -2,8 +2,7 @@ package com.seda.payer.core.dao;
 
 import com.seda.commons.security.TokenGenerator;
 import com.seda.commons.string.Convert;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+import com.seda.data.helper.HelperException;
 import com.seda.data.spi.DaoHandler;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.PrenotazioneFatturazione;
@@ -18,6 +17,11 @@ import java.util.List;
 
 public class PrenotazioneFatturazioneDao extends DaoHandler {
 
+    //inizio LP 20240912 - PAGONET-604
+	private CallableStatement callableStatementGetPrenotazione = null;
+	private CallableStatement callableStatementAggiornaPrenotazione = null;
+    //fine LP 20240912 - PAGONET-604
+
     public PrenotazioneFatturazioneDao(Connection connection, String schema) {
         super(connection, schema);
     }
@@ -26,11 +30,11 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
         String[] prenotazioneList = new String[2];
 
         try {
-            Connection connection = getConnection();
-			//inizio LP PGNTCORE-24 
+            //inizio LP 20240912 - PAGONET-604
+            //Connection connection = getConnection();
             //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOLIST.routine());
-            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PRE_DOLIST.routine());
-			//fine LP PGNTCORE-24 
+            CallableStatement callableStatement = prepareCall(Routines.PRE_DOLIST.routine());
+            //fine LP 20240912 - PAGONET-604
 
             callableStatement.setInt(1, prenotazione.getPageNumber());
             callableStatement.setInt(2, prenotazione.getRowsPerPage());
@@ -82,25 +86,20 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
             return new PrenotazioneFatturazionePagelist(pageInfo, "00", "", prenotazioneList);
         } catch (SQLException e) {
             throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-        //} catch (HelperException e) {
-        //    throw new RuntimeException(e);
-        //}
-	    } catch (ProcedureReflectorException e) {
-	        throw new RuntimeException(e);
-	    }
-		//fine LP PGNTCORE-24 
+        } catch (HelperException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     public EsitoRisposte inserisciPrenotazione(PrenotazioneFatturazione prenotazione, String cfOperatore) throws DaoException {
         EsitoRisposte esitoRisposte = new EsitoRisposte();
 
         try {
-            Connection connection = getConnection();
-			//inizio LP PGNTCORE-24 
+            //inizio LP 20240912 - PAGONET-604
+            //Connection connection = getConnection();
             //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOSAVE.routine());
-            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PRE_DOSAVE.routine());
-			//fine LP PGNTCORE-24 
+            CallableStatement callableStatement = prepareCall(Routines.PRE_DOSAVE.routine());
+            //fine LP 20240912 - PAGONET-604
 
             callableStatement.setString(1, TokenGenerator.generateUUIDToken());
             callableStatement.setString(2, prenotazione.getCodiceSocieta() != null ? prenotazione.getCodiceSocieta() : "");
@@ -123,21 +122,34 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
         } catch (Exception e) {
             e.printStackTrace();
         }
-
         return esitoRisposte;
     }
 
+    //inizio LP 20240912 - PAGONET-604
     public List<PrenotazioneFatturazione> getPrenotazioni() throws DaoException {
+    	return getPrenotazioniTail(true);
+    }
+    	
+    public List<PrenotazioneFatturazione> getPrenotazioniTail(boolean bFlagUpdateAutocomit) throws DaoException {
+    	CallableStatement callableStatement = null;
+    	ResultSet data = null;
+    //fine LP 20240912 - PAGONET-604
         List<PrenotazioneFatturazione> list = new ArrayList<>();
 
         try {
-            Connection connection = getConnection();
-			//inizio LP PGNTCORE-24 
+            //inizio LP 20240912 - PAGONET-604
+            //Connection connection = getConnection();
             //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOSELECT_REQ.routine());
-            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PRE_DOSELECT_REQ.routine());
-			//fine LP PGNTCORE-24 
+        	if(callableStatementGetPrenotazione == null) {
+        		callableStatementGetPrenotazione = prepareCall(bFlagUpdateAutocomit, Routines.PRE_DOSELECT_REQ.routine());
+        		callableStatement = callableStatementGetPrenotazione; 
+        	}
+            //fine LP 20240912 - PAGONET-604
             if (callableStatement.execute()) {
-                ResultSet data = callableStatement.getResultSet();
+                //inizio LP 20240912 - PAGONET-604
+                //ResultSet data = callableStatement.getResultSet();
+                data = callableStatement.getResultSet();
+                //fine LP 20240912 - PAGONET-604
                 while (data.next()){
                     list.add(new PrenotazioneFatturazione(callableStatement.getResultSet()));
                 }
@@ -145,22 +157,38 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
             return list;
         } catch (SQLException e) {
             throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-        //} catch (HelperException e) {
-        //    throw new RuntimeException(e);
-        //}
-	    } catch (ProcedureReflectorException e) {
-	        throw new RuntimeException(e);
+        } catch (HelperException e) {
+            throw new RuntimeException(e);
+        //inizio LP 20240912 - PAGONET-604
+        } finally {
+			if (data != null) {
+				try {
+					data.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				data = null;
+			}
+        //fine LP 20240912 - PAGONET-604
 	    }
-		//fine LP PGNTCORE-24 
     }
 
+    //inizio LP 20240912 - PAGONET-604
     public boolean aggiornaPrenotazione(String chiavePrenotazione, String flagElaborazione, String nomeFile) throws DaoException {
-        Connection connection = getConnection();
+    	return aggiornaPrenotazioneTail(true, chiavePrenotazione, flagElaborazione, nomeFile);
+    }
+    
+    public boolean aggiornaPrenotazioneTail(boolean bFlagUpdateAutocomit, String chiavePrenotazione, String flagElaborazione, String nomeFile) throws DaoException {
+    	CallableStatement callableStatement = null;
+    //fine LP 20240912 - PAGONET-604
+        //Connection connection = getConnection(); //LP 20240912 - PAGONET-604
         try {
 			//inizio LP PGNTCORE-24 
             //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DOUPDATE.routine());
-            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PRE_DOUPDATE.routine());
+        	if(callableStatementAggiornaPrenotazione == null) {
+        		callableStatementAggiornaPrenotazione = prepareCall(bFlagUpdateAutocomit, Routines.PRE_DOUPDATE.routine());
+        		callableStatement = callableStatementAggiornaPrenotazione;
+        	}
 			//fine LP PGNTCORE-24 
             callableStatement.setString(1, chiavePrenotazione);
             callableStatement.setString(2, flagElaborazione);
@@ -170,55 +198,63 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
             return true;
         } catch (SQLException e) {
             throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-        //} catch (HelperException e) {
-        //    throw new RuntimeException(e);
-        //}
-	    } catch (ProcedureReflectorException e) {
-	        throw new RuntimeException(e);
+        } catch (HelperException e) {
+            throw new RuntimeException(e);
 	    }
-		//fine LP PGNTCORE-24 
     }
 
     public RegolaFatturazione getRegolaFatturazione(Date dataInizioValidita) throws DaoException {
+    //inizio LP 20240912 - PGNTCORE-24/PGNTFATT-5
+    	return getRegolaFatturazioneTail(true, dataInizioValidita);
+    }
+    	
+    public RegolaFatturazione getRegolaFatturazioneTail(boolean bFlagUpdateAutocomit, Date dataInizioValidita) throws DaoException {
+    	ResultSet data = null;
+    //fine LP 20240912 - PGNTCORE-24/PGNTFATT-5
         try {
-            Connection connection = getConnection();
-			//inizio LP PGNTCORE-24 
+            //inizio LP 20240912 - PGNTCORE-24/PGNTFATT-5
+            //Connection connection = getConnection();
             //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.REG_DOSELECT.routine());
-            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.REG_DOSELECT.routine());
-			//fine LP PGNTCORE-24 
+            CallableStatement callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.REG_DOSELECT.routine());
+            //fine LP 20240912 - PGNTCORE-24/PGNTFATT-5
             callableStatement.setDate(1, dataInizioValidita);
 
             if (callableStatement.execute()) {
-                ResultSet data = callableStatement.getResultSet();
+                //inizio LP 20240912 - PGNTCORE-24/PGNTFATT-5
+                //ResultSet data = callableStatement.getResultSet();
+                data = callableStatement.getResultSet();
+                //fine LP 20240912 - PGNTCORE-24/PGNTFATT-5
                 if (data.next()){
                     return new RegolaFatturazione(callableStatement.getResultSet());
                 }
             }
         } catch (SQLException e) {
             throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-        //} catch (HelperException e) {
-        //    throw new RuntimeException(e);
-        //}
-	    } catch (ProcedureReflectorException e) {
-	        throw new RuntimeException(e);
+        } catch (HelperException e) {
+            throw new RuntimeException(e);
+        //inizio LP 20240912 - PAGONET-604/PGNTFATT-5
+        } finally {
+			if (data != null) {
+				try {
+					data.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				data = null;
+			}
+        //fine LP 20240912 - PAGONET-604/PGNTFATT-5
 	    }
-		//fine LP PGNTCORE-24 
         return null;
     }
 
-
     public boolean cancellaPrenotazione(String chiave) {
       try {
-          Connection connection = getConnection();
-          //inizio LP PGNTCORE-24 
+          //inizio LP 20240912 - PAGONET-604
+          //Connection connection = getConnection();
           //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PRE_DODELETE.routine());
-          CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PRE_DODELETE.routine());
-          //fine LP PGNTCORE-24 
-
+          CallableStatement callableStatement = prepareCall(Routines.PRE_DODELETE.routine());
+          //fine LP 20240912 - PAGONET-604
           callableStatement.setString(1, chiave);
-
           if (callableStatement.execute()) {
               return true;
           } else {
@@ -228,9 +264,28 @@ public class PrenotazioneFatturazioneDao extends DaoHandler {
           e.printStackTrace();
           return false;
       }
-
     }
 
-
+    //inizio LP 20240912 - PAGONET-604
+    public void closeCallableStatementS()  {
+	    if(callableStatementGetPrenotazione!= null) {
+			try {
+				callableStatementGetPrenotazione.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementGetPrenotazione = null;
+	    	
+	    }
+	    if(callableStatementAggiornaPrenotazione != null) {
+			try {
+				callableStatementAggiornaPrenotazione.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementAggiornaPrenotazione = null;
+		}
+    }
+    //fine LP 20240912 - PAGONET-604
 
 }

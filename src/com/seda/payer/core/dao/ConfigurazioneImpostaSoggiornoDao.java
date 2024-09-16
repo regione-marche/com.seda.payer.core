@@ -19,6 +19,10 @@ import com.seda.payer.core.messages.Messages;
 
 public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 
+	//inizio LP 20240909 - PGNTBOLDER-1
+	CallableStatement callableStatementDetail = null;
+	//fin LP 20240909 - PGNTBOLDER-1
+
 	public ConfigurazioneImpostaSoggiornoDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
@@ -37,12 +41,29 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 
 	public ConfigurazioneImpostaSoggiorno doDetail(String codiceBelfiore) throws DaoException
 	{
+	//inizio LP 20240909 - PGNTBOLDER-1
+		return	doDetailTail(true, true, codiceBelfiore);
+	}
+
+	public ConfigurazioneImpostaSoggiorno doDetailBatch(boolean bUpdateFlagAutocommit, boolean bCloseStat, String codiceBelfiore) throws DaoException
+	{
+		return	doDetailTail(bUpdateFlagAutocommit, bCloseStat, codiceBelfiore);
+	}
+
+	private ConfigurazioneImpostaSoggiorno doDetailTail(boolean bUpdateFlagAutocommit, boolean bCloseStat, String codiceBelfiore) throws DaoException
+	{
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		try	{
-			callableStatement = prepareCall(Routines.SRG_DODETAIL.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.SRG_DODETAIL.routine());
+			if(callableStatementDetail == null) {
+				callableStatementDetail = prepareCall(bUpdateFlagAutocommit, Routines.SRG_DODETAIL.routine());
+				callableStatement = callableStatementDetail;
+			}
+			//fine LP 20240909 - PGNTBOLDER-1
 			callableStatement.setString(1, codiceBelfiore);
-			
 			if (callableStatement.execute()) {
 				data = callableStatement.getResultSet();
 				if (data.next())
@@ -68,13 +89,21 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240909 - PGNTBOLDER-1
+			if(bCloseStat) {
+			//fine LP 20240909 - PGNTBOLDER-1
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240909 - PGNTBOLDER-1
+				callableStatement = null;
+				callableStatementDetail = null;
 			}
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 		}
 	}
@@ -373,5 +402,18 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
+
+    //inizio LP 20240912 - PAGONET-604
+    public void closeCallableStatementS()  {
+	    if(callableStatementDetail != null) {
+			try {
+				callableStatementDetail.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementDetail = null;
+	    }
+    }
+    //fine LP 20240912 - PAGONET-604
 
 }

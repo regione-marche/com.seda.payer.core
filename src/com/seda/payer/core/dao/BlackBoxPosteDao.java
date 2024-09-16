@@ -8,8 +8,8 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.seda.data.helper.HelperException;
 import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.bean.ConfigurazioneBlackBox;
 import com.seda.payer.core.bean.ConfigurazionePosteBlackBoxPos;
 import com.seda.payer.core.bean.PosteBlackBoxTes;
@@ -19,19 +19,45 @@ import com.seda.payer.core.wallet.bean.EsitoRisposte;
 
 public class BlackBoxPosteDao extends BaseDaoHandler {
 
+	//inizio LP 20240911 - PGNTBIPOS-1
+	private CallableStatement callableStatementCnfPstLst =  null;
+	private CallableStatement callableStatementDocPstIns =  null;
+	private CallableStatement callableStatementPstIns =  null;
+	private CallableStatement callableStatementDocDel =  null;
+	private CallableStatement callableStatementDocPstSel =  null;
+	private CallableStatement callableStatementDocPstLst =  null;
+	private CallableStatement callableStatementDocPstUpd =  null;
+	//fine LP 20240911 - PGNTBIPOS-1
+
 	public BlackBoxPosteDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
 
+	//inizio LP 20240911 - PGNTBIPOS-1
 	public List<ConfigurazioneBlackBox> configurazionePosteBlackBoxList() throws DaoException {
+		return configurazionePosteBlackBoxListTail(true, true);
+	}
+
+	public List<ConfigurazioneBlackBox> configurazionePosteBlackBoxListBatch(boolean bFlagUpdateAutocomit, boolean bCloseStat) throws DaoException {
+		return configurazionePosteBlackBoxListTail(bFlagUpdateAutocomit, bCloseStat);
+	}
+
+	public List<ConfigurazioneBlackBox> configurazionePosteBlackBoxListTail(boolean bFlagUpdateAutocomit, boolean bCloseStat) throws DaoException {
+	//fine LP 20240911 - PGNTBIPOS-1
 		List<ConfigurazioneBlackBox> result = new ArrayList<ConfigurazioneBlackBox>();
-		Connection connection = getConnection();
+		//Connection connection = getConnection(); //LP 20240911 - PGNTBIPOS-1
 		CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
 		try {
 			//PGNTCORE-24 - inizio
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNCNFSP_PST_LST.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNCNFSP_PST_LST.routine());
+			//inizio LP 20240911 - PGNTBIPOS-1
+			//callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNCNFSP_PST_LST.routine());
+			if(callableStatementCnfPstLst == null) {
+				callableStatementCnfPstLst = prepareCall(bFlagUpdateAutocomit, Routines.CNCNFSP_PST_LST.routine());
+				callableStatement = callableStatementCnfPstLst;
+			}
+			//fine LP 20240911 - PGNTBIPOS-1
 			//PGNTCORE-24 - fine
 			//inizio LP 20240811 - PGNTCORE-24
 			//resultSet = callableStatement.executeQuery();
@@ -54,7 +80,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			//fine LP 20240811 - PGNTCORE-24
 		} catch (SQLException e) {
 			throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) { //LP 20240911 - PGNTBIPOS-1
 			throw new DaoException(e);
 		} finally {
 			if (resultSet != null) {
@@ -64,27 +90,49 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240911 - PGNTBIPOS-1
+			if(bCloseStat) {
+			//fine LP 20240911 - PGNTBIPOS-1
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240911 - PGNTBIPOS-1
+				callableStatement = null;
+				callableStatementCnfPstLst = null;
 			}
+			//fine LP 20240911 - PGNTBIPOS-1
 		}
 		return result;
 	}
 
+	//inizio LP 20240911 - PGNTBIPOS-1
 	public Integer insert(ConfigurazionePosteBlackBoxPos blackboxpos) throws DaoException {
-		
-		Connection connection = getConnection();
+		return insertTail(true, true, blackboxpos);
+	}
+
+	public Integer insertBatch(boolean bFlagUpdateAutocomit, boolean bCloseStat, ConfigurazionePosteBlackBoxPos blackboxpos) throws DaoException {
+		return insertTail(bFlagUpdateAutocomit, bCloseStat, blackboxpos);
+	}
+
+	private Integer insertTail(boolean bFlagUpdateAutocomit, boolean bCloseStat, ConfigurazionePosteBlackBoxPos blackboxpos) throws DaoException {
+	//fine LP 20240911 - PGNTBIPOS-1
+		//Connection connection = getConnection(); //LP 20240911 - PGNTBIPOS-1
 		int ret = 0;
 		CallableStatement callableStatement = null;
-		
 		try {
 			//PGNTCORE-24 - inizio
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_INS.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_INS.routine());
+			//inizio LP 20240911 - PGNTBIPOS-1
+			//callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_INS.routine());
+			if(callableStatementDocPstIns == null) {
+				callableStatementDocPstIns = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_PST_INS.routine());
+				callableStatement = callableStatementDocPstIns;
+			}	
+			//fine LP 20240911 - PGNTBIPOS-1
 			//PGNTCORE-24 - fine
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
@@ -102,25 +150,21 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			callableStatement.setString(14, blackboxpos.getLocalitaContribuente());
 			callableStatement.setString(15, blackboxpos.getProvinciaContribuente());
 			callableStatement.setString(16, blackboxpos.getFlagAnnullamento());
-			callableStatement.setDate(17,
-					new java.sql.Date(blackboxpos.getDataAggiornamentoRecord().getTimeInMillis()));
+			callableStatement.setDate(17, new java.sql.Date(blackboxpos.getDataAggiornamentoRecord().getTimeInMillis()));
 			callableStatement.setString(18, blackboxpos.getCodiceIbanAccredito());
 			callableStatement.setString(19, blackboxpos.getCodiceIuv());
 			callableStatement.setString(20, blackboxpos.getFlagPagato());
 			callableStatement.setDouble(21, blackboxpos.getImportoPagato());
 			callableStatement.setString(22, blackboxpos.getCodiceTipologiaServizio());
 			callableStatement.setString(23, blackboxpos.getCodiceIBAN2() == null ? "" : blackboxpos.getCodiceIBAN2());
-			callableStatement.setString(24,
-					blackboxpos.getCausaleServizio() == null ? "" : blackboxpos.getCausaleServizio());
+			callableStatement.setString(24, blackboxpos.getCausaleServizio() == null ? "" : blackboxpos.getCausaleServizio());
 			callableStatement.setString(25, blackboxpos.getCespite() == null ? "" : blackboxpos.getCespite());
 			callableStatement.setString(26, blackboxpos.getAnnoRif() == null ? "" : blackboxpos.getAnnoRif());
 			callableStatement.setString(27, blackboxpos.getCittaCAP() == null ? "" : blackboxpos.getCittaCAP());
 			callableStatement.setString(28, blackboxpos.getCodiceUtente() == null ? "" : blackboxpos.getCodiceUtente());
-			callableStatement.setString(29,
-					blackboxpos.getCodiceSocieta() == null ? "" : blackboxpos.getCodiceSocieta());
+			callableStatement.setString(29, blackboxpos.getCodiceSocieta() == null ? "" : blackboxpos.getCodiceSocieta());
 			callableStatement.setString(30, blackboxpos.getChiaveEnte() == null ? "" : blackboxpos.getChiaveEnte());
-			callableStatement.setString(31,
-					(blackboxpos.getTassonomia() != null ? blackboxpos.getTassonomia().trim() : ""));
+			callableStatement.setString(31,(blackboxpos.getTassonomia() != null ? blackboxpos.getTassonomia().trim() : ""));
 			callableStatement.setInt(32, blackboxpos.getChiaveTestata());
 			callableStatement.setString(33, blackboxpos.getFlagPoste() ? "Y" : "N");
 			callableStatement.setString(34, blackboxpos.getFlagInviato() ? "Y" : "N");
@@ -135,31 +179,54 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {//LP 20240911 - PGNTBIPOS-1
 			e.printStackTrace();
 			throw new DaoException(e);
 		} finally {
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240911 - PGNTBIPOS-1
+			if(bCloseStat) {
+			//fine LP 20240911 - PGNTBIPOS-1
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240911 - PGNTBIPOS-1
+				callableStatement = null;
+				callableStatementDocPstIns = null;
 			}
+			//fine LP 20240911 - PGNTBIPOS-1
 		}
-
 		return ret;
 	}
 
+	//inizio LP 20240911 - PGNTBIPOS-1
 	public List<ConfigurazionePosteBlackBoxPos> configurazionePosteBlackBoxPos(String idDominio, String codiceEnte, boolean inviato) throws DaoException {
+		return configurazionePosteBlackBoxPosTail(true, true, idDominio, codiceEnte, inviato);
+	}
+
+	public List<ConfigurazionePosteBlackBoxPos> configurazionePosteBlackBoxPosBatch(boolean bFlagUpdateAutocomit, boolean bCloseStat, String idDominio, String codiceEnte, boolean inviato) throws DaoException {
+		return configurazionePosteBlackBoxPosTail(bFlagUpdateAutocomit, bCloseStat, idDominio, codiceEnte, inviato);
+	}
+
+	private List<ConfigurazionePosteBlackBoxPos> configurazionePosteBlackBoxPosTail(boolean bFlagUpdateAutocomit, boolean bCloseStat, String idDominio, String codiceEnte, boolean inviato) throws DaoException {
+	//fine LP 20240911 - PGNTBIPOS-1
 		List<ConfigurazionePosteBlackBoxPos> result = new ArrayList<ConfigurazionePosteBlackBoxPos>();
-		Connection connection = getConnection();
+		//Connection connection = getConnection(); //LP 20240911 - PGNTBIPOS-1
 		CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
 		try {
 			//PGNTCORE-24 - inizio
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_LST.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_LST.routine());
+			//inizio LP 20240911 - PGNTBIPOS-1
+			//callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_LST.routine());
+			if(callableStatementDocPstLst == null) {
+				callableStatementDocPstLst = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_PST_LST.routine());
+				callableStatement = callableStatementDocPstLst;
+			}
+			//fine LP 20240911 - PGNTBIPOS-1
 			//PGNTCORE-24 - fine
 			callableStatement.setString(1, idDominio);
 			callableStatement.setString(2, codiceEnte);
@@ -180,7 +247,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			//fine LP 20240811 - PGNTCORE-24
 		} catch (SQLException e) {
 			throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) { //LP 20240911 - PGNTBIPOS-1
 			throw new DaoException(e);
 		} finally {
 			if (resultSet != null) {
@@ -190,26 +257,50 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240911 - PGNTBIPOS-1
+			if(bCloseStat) {
+			//fine LP 20240911 - PGNTBIPOS-1
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+				//inizio LP 20240911 - PGNTBIPOS-1
+				callableStatement = null;
+				callableStatementDocPstLst = null;
 			}
+			//fine LP 20240911 - PGNTBIPOS-1
 		}
 		return result;
 	}
 
+	//inizio LP 20240911 - PGNTBIPOS-1
 	public ConfigurazionePosteBlackBoxPos select(String codiceIdentificativoDominio, String codiceEnte, String numeroAvviso) throws DaoException {
+		return selectTail(true, true, codiceIdentificativoDominio, codiceEnte, numeroAvviso);
+	}
+
+	public ConfigurazionePosteBlackBoxPos selectBatch(boolean bFlagUpdateAutocomit, boolean bCloseStat, String codiceIdentificativoDominio, String codiceEnte, String numeroAvviso) throws DaoException {
+		return selectTail(bFlagUpdateAutocomit, bCloseStat, codiceIdentificativoDominio, codiceEnte, numeroAvviso);
+	}
+
+	private ConfigurazionePosteBlackBoxPos selectTail(boolean bFlagUpdateAutocomit, boolean bCloseStat, String codiceIdentificativoDominio, String codiceEnte, String numeroAvviso) throws DaoException {
+	//fine LP 20240911 - PGNTBIPOS-1
 		ConfigurazionePosteBlackBoxPos blackboxpos = null;
-		Connection connection = getConnection();
+		//Connection connection = getConnection(); //LP 20240911 - PGNTBIPOS-1
 		CallableStatement callableStatement = null;
 		ResultSet resultSet =  null;
 		try {
 			//PGNTCORE-24 - inizio
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_SEL.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_SEL.routine());
+			//inizio LP 20240911 - PGNTBIPOS-1
+			//callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_SEL.routine());
+			if(callableStatementDocPstSel == null) {
+				callableStatementDocPstSel = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_PST_SEL.routine());
+				callableStatement = callableStatementDocPstSel;
+			}
+			//fineo LP 20240911 - PGNTBIPOS-1
 			//PGNTCORE-24 - fine
 			callableStatement.setString(1, codiceIdentificativoDominio);
 			callableStatement.setString(2, codiceEnte);
@@ -231,7 +322,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) { //LP 20240911 - PGNTBIPOS-1
 			throw new DaoException(e);
 		} finally {
 			if (resultSet != null) {
@@ -241,25 +332,49 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240911 - PGNTBIPOS-1
+			if(bCloseStat) {
+			//fine LP 20240911 - PGNTBIPOS-1
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240911 - PGNTBIPOS-1
+				callableStatement = null;
+				callableStatementDocPstSel = null;
 			}
+			//fine LP 20240911 - PGNTBIPOS-1
 		}
 		return blackboxpos;
 	}
 
+	//inizio LP 20240911 - PGNTBIPOS-1
 	public Integer insert(PosteBlackBoxTes testata) throws DaoException {
-		Connection connection = getConnection();
+		return insertTail(true, true, testata); 
+	}
+
+	public Integer insertBatch(boolean bFlagUpdateAutocomit, boolean bCloseStat, PosteBlackBoxTes testata) throws DaoException {
+		return insertTail(bFlagUpdateAutocomit, bCloseStat, testata); 
+	}
+
+	private Integer insertTail(boolean bFlagUpdateAutocomit, boolean bCloseStat, PosteBlackBoxTes testata) throws DaoException {
+	//fine LP 20240911 - PGNTBIPOS-1
+		//Connection connection = getConnection(); //LP 20240911 - PGNTBIPOS-1
 		int ret = 0;
 		CallableStatement callableStatement = null;
 		try {
 			//PGNTCORE-24 - inizio
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNPSTSP_INS.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNPSTSP_INS.routine());
+			//inizio LP 20240911 - PGNTBIPOS-1
+			//callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNPSTSP_INS.routine());
+			if(callableStatementPstIns == null) {
+				callableStatementPstIns = prepareCall(bFlagUpdateAutocomit, Routines.CNPSTSP_INS.routine());
+				callableStatement = callableStatementPstIns;
+			}
+			//fine LP 20240911 - PGNTBIPOS-1
 			//PGNTCORE-24 - fine
 			callableStatement.setString(1, testata.getTipoFlusso());
 			callableStatement.setString(2, testata.getCodiceIdDominio());
@@ -274,30 +389,53 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) { //LP 20240911 - PGNTBIPOS-1
 			e.printStackTrace();
 			throw new DaoException(e);
 		} finally {
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240911 - PGNTBIPOS-1
+			if(bCloseStat) {
+			//fine LP 20240911 - PGNTBIPOS-1
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240911 - PGNTBIPOS-1
+				callableStatement = null;
+				callableStatementPstIns = null;
 			}
+			//fine LP 20240911 - PGNTBIPOS-1
 		}
 		return ret;
 	}
 
+	//inizio LP 20240911 - PGNTBIPOS-1
 	public EsitoRisposte delete(ConfigurazionePosteBlackBoxPos configurazionePosteBlackBoxpos) throws DaoException {
-		
-		Connection connection = getConnection();
+		return deleteTail(true, true, configurazionePosteBlackBoxpos);
+	}
+
+	public EsitoRisposte deleteBatch(boolean bFlagUpdateAutocomit, boolean bCloseStat, ConfigurazionePosteBlackBoxPos configurazionePosteBlackBoxpos) throws DaoException {
+		return deleteTail(bFlagUpdateAutocomit, bCloseStat, configurazionePosteBlackBoxpos);
+	}
+
+	private EsitoRisposte deleteTail(boolean bFlagUpdateAutocomit, boolean bCloseStat, ConfigurazionePosteBlackBoxPos configurazionePosteBlackBoxpos) throws DaoException {
+	//fine LP 20240911 - PGNTBIPOS-1
+		//Connection connection = getConnection(); //LP 20240911 - PGNTBIPOS-1
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		CallableStatement callableStatement = null;
 		try {
 			//PGNTCORE-24 - inizio
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_DEL.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_DEL.routine());
+			//inizio LP 20240911 - PGNTBIPOS-1
+			//callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_DEL.routine());
+			if(callableStatementDocDel == null) {
+				callableStatementDocDel = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_DEL.routine());
+				callableStatement = callableStatementDocDel;
+			}
+			//fine LP 20240911 - PGNTBIPOS-1
 			//PGNTCORE-24 - fine
 			callableStatement.setString(1, configurazionePosteBlackBoxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, configurazionePosteBlackBoxpos.getCodiceEnte());
@@ -313,19 +451,26 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) { //LP 20240911 - PGNTBIPOS-1
 			e.printStackTrace();
 			throw new DaoException(e);
 		} finally {
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240911 - PGNTBIPOS-1
+			if(bCloseStat) {
+			//fine LP 20240911 - PGNTBIPOS-1
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240911 - PGNTBIPOS-1
+				callableStatement = null;
+				callableStatementDocDel = null;
 			}
+			//fine LP 20240911 - PGNTBIPOS-1
 		}
-		
 		return esitoRisposte;
 	}
 	
@@ -337,15 +482,27 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 	 * 
 	 */
 	public boolean aggiornaPosizioneDebitoria(ConfigurazionePosteBlackBoxPos posizioneDebitoria) throws DaoException {
+	//inizio LP 20240912 - PAGONET-604
+		return aggiornaPosizioneDebitoriaTail(true, true, posizioneDebitoria);
+	}
+	
+	public boolean aggiornaPosizioneDebitoriaBatch(boolean bFlagUpdateAutocomit, boolean bCloseStat, ConfigurazionePosteBlackBoxPos posizioneDebitoria) throws DaoException {
+		return aggiornaPosizioneDebitoriaTail(bFlagUpdateAutocomit, bCloseStat, posizioneDebitoria);
+	}
 
+	private boolean aggiornaPosizioneDebitoriaTail(boolean bFlagUpdateAutocomit, boolean bCloseStat, ConfigurazionePosteBlackBoxPos posizioneDebitoria) throws DaoException {
+	//fine LP 20240912 - PAGONET-604
 		boolean updated = false;
 		CallableStatement stat = null;
 		try {
-			Connection connection = getConnection();
-			//PGNTCORE-24 - inizio
+			//inizio LP 20240912 - PAGONET-604
+			//Connection connection = getConnection();
 			//stat = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_UPD.routine());
-			stat = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_UPD.routine());
-			//PGNTCORE-24 - fine
+			if(callableStatementDocPstUpd == null) {
+				callableStatementDocPstUpd = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_PST_UPD.routine());
+				stat = callableStatementDocPstUpd;
+			}
+			//fine LP 20240912 - PAGONET-604
 			stat.setString(1, posizioneDebitoria.getCodiceIdentificativoDominio());
 			stat.setString(2, posizioneDebitoria.getCodiceEnte());
 			stat.setString(3, posizioneDebitoria.getNumeroAvviso());
@@ -356,15 +513,76 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			ex.printStackTrace();
 			throw new DaoException(ex);
 		} finally {
-			if (stat != null) {
-				try {
-					stat.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240911 - PGNTBIPOS-1
+			if(bCloseStat) {
+			//fine LP 20240911 - PGNTBIPOS-1
+				if (stat != null) {
+					try {
+						stat.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+		//inizio LP 20240911 - PGNTBIPOS-1
+				stat = null;
+				callableStatementDocDel = null;
 			}
+		//fine LP 20240911 - PGNTBIPOS-1
 		}
 		return updated;
 	}
-	
+
+	//inizio LP 20240912 - PAGONET-604
+    public void closeCallableStatementS()  {
+	    if(callableStatementCnfPstLst != null) {
+			try {
+				callableStatementCnfPstLst.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementCnfPstLst = null;
+	    }
+	    if(callableStatementDocPstIns != null) {
+			try {
+				callableStatementDocPstIns.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementDocPstIns = null;
+	    }
+	    if(callableStatementPstIns != null) {
+			try {
+				callableStatementPstIns.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementPstIns = null;
+	    }
+	    if(callableStatementDocDel != null) {
+			try {
+				callableStatementDocDel.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementDocDel = null;
+	    }
+	    if(callableStatementDocPstSel != null) {
+			try {
+				callableStatementDocPstSel.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementDocPstSel = null;
+	    }
+		if(callableStatementDocPstUpd != null) {
+			try {
+				callableStatementDocPstUpd.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementDocPstUpd = null;
+		}
+    }
+    //fine LP 20240912 - PAGONET-604
+
 }

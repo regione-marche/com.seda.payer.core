@@ -16,6 +16,10 @@ import com.seda.payer.core.messages.Messages;
 
 public class EnteDao extends BaseDaoHandler {
 	
+	//inizio LP 20240907 - PGNTBIMAIO-1
+	private CallableStatement callableStatementDoDetailCodFis = null;
+	//fine LP 20240907 - PGNTBIMAIO-1
+	
 	public EnteDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
@@ -87,6 +91,14 @@ public class EnteDao extends BaseDaoHandler {
 	}
 
 	public Ente doDetailToCodFisTail(boolean bFlagUpdateAutocomit, String userCode, String codFis, String dbSchemaCodSocieta) throws DaoException {
+		return doDetailToCodFisTail2(bFlagUpdateAutocomit, true, userCode, codFis, dbSchemaCodSocieta);
+	}
+
+	public Ente doDetailToCodFisBatch(boolean bFlagUpdateAutocomit, boolean bCloseStat, String userCode, String codFis, String dbSchemaCodSocieta) throws DaoException {
+		return doDetailToCodFisTail2(bFlagUpdateAutocomit, bCloseStat, userCode, codFis, dbSchemaCodSocieta);
+	}
+
+	private Ente doDetailToCodFisTail2(boolean bFlagUpdateAutocomit, boolean bCloseStat, String userCode, String codFis, String dbSchemaCodSocieta) throws DaoException {
 	//fine LP 20240907 - PGNTBIMAIO-1
 	//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
@@ -98,7 +110,10 @@ public class EnteDao extends BaseDaoHandler {
 			//CallableStatement callableStatement = prepareCall(Routines.ENT_DODETAIL_CODFIS.routine());
 			//inizio LP 20240907 - PGNTBIMAIO-1
 			//callableStatement = prepareCall(Routines.ENT_DODETAIL_CODFIS.routine());
-			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.ENT_DODETAIL_CODFIS.routine());
+			if(callableStatementDoDetailCodFis == null) {
+				callableStatementDoDetailCodFis = prepareCall(bFlagUpdateAutocomit, Routines.ENT_DODETAIL_CODFIS.routine());
+				callableStatement = callableStatementDoDetailCodFis;  
+			}
 			//fine LP 20240907 - PGNTBIMAIO-1
 			//fine LP PG21XX04 Leak
 			//inizio LP PG200060
@@ -138,13 +153,19 @@ public class EnteDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240907 - PGNTBIMAIO-1
+			if(bCloseStat) {
+			//fine LP 20240907 - PGNTBIMAIO-1
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240907 - PGNTBIMAIO-1
 			}
+			//fine LP 20240907 - PGNTBIMAIO-1
 		}
 		//fine LP PG21XX04 Leak
 	}
@@ -534,5 +555,18 @@ public class EnteDao extends BaseDaoHandler {
 		}
 	}
 	// fine SR PGNTCORE-11
+
+	//inizio LP 20240912 - PAGONET-604
+    public void closeCallableStatementS()  {
+	    if(callableStatementDoDetailCodFis != null) {
+			try {
+				callableStatementDoDetailCodFis.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementDoDetailCodFis = null;
+	    }
+    }
+    //fine LP 20240912 - PAGONET-604
 
 }

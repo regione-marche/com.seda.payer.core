@@ -18,17 +18,29 @@ import com.seda.data.helper.HelperException;
  *
  */
 public class AnagProvComDao extends BaseDaoHandler {
-	
+
+	//inizio LP 20240909 - PGNTBOLDER-1
+	private CallableStatement callableStatementDetail = null;  
+	//fine LP 20240909 - PGNTBOLDER-1
+
 	public AnagProvComDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
 
-	//inizio LP 20240909 - PGNTBOLDER-1
 	public AnagProvCom doDetail(String codiceBelfiore) throws DaoException {
-		return doDetailTail(true, codiceBelfiore);
+	//inizio LP 20240909 - PGNTBOLDER-1
+		return doDetailTail2(true, codiceBelfiore, true);
 	}
 
+	public AnagProvCom doDetailBatch(boolean bFlagUpdateAutocomit, String codiceBelfiore) throws DaoException {
+		return doDetailTail2(bFlagUpdateAutocomit, codiceBelfiore, false);
+	}	
+
 	public AnagProvCom doDetailTail(boolean bFlagUpdateAutocomit, String codiceBelfiore) throws DaoException {
+		return doDetailTail2(bFlagUpdateAutocomit, codiceBelfiore, true);
+	}
+
+	private AnagProvCom doDetailTail2(boolean bFlagUpdateAutocomit, String codiceBelfiore, boolean bCloseStat) throws DaoException {
 	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
@@ -39,7 +51,10 @@ public class AnagProvComDao extends BaseDaoHandler {
 			//CallableStatement callableStatement = prepareCall(Routines.APC_DODETAIL.routine());
 			//inizio LP 20240909 - PGNTBOLDER-1
 			//callableStatement = prepareCall(Routines.APC_DODETAIL.routine());
-			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.APC_DODETAIL.routine());
+			if(callableStatementDetail == null) {
+				callableStatementDetail = prepareCall(bFlagUpdateAutocomit, Routines.APC_DODETAIL.routine());
+				callableStatement = callableStatementDetail; 
+			}
 			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1,codiceBelfiore);
@@ -68,12 +83,20 @@ public class AnagProvComDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240912 - PGNTBOLDER-1
+			if(bCloseStat) {
+			//fine LP 20240909 - PGNTBOLDER-1
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+				//inizio LP 20240912 - PGNTBOLDER-1
+				callableStatement = null;
+				callableStatementDetail = null;
+				//fine LP 20240909 - PGNTBOLDER-1
 			}
 		}
 		//fine LP PG21XX04 Leak
@@ -245,4 +268,19 @@ public class AnagProvComDao extends BaseDaoHandler {
 		}
 		//fine LP PG21XX04 Leak
 	}
+
+    //inizio LP 20240912 - PAGONET-604
+    public void closeCallableStatementS()  {
+	    if(callableStatementDetail != null) {
+			try {
+				callableStatementDetail.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementDetail = null;
+	    	
+	    }
+    }
+    //fine LP 20240912 - PAGONET-604
+
 }

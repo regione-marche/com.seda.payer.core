@@ -33,6 +33,10 @@ import com.seda.payer.core.wallet.bean.EsitoRisposte;
 public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements ConfigurazioneModello3Dao   {
 	private static final long serialVersionUID = 1L;
 	
+	//inizio LP 20240911 - PGNTBIPOS-1
+	CallableStatement callableStatementMdtSel = null;
+	//fine LP 20240911 - PGNTBIPOS-1
+	
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -43,21 +47,33 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		super(connection, schema);
 	}
 	
-	
 	public ConfigurazioneModello3 select(ConfigurazioneModello3 configurazioneModello3) throws DaoException {
-		CallableStatement callableStatement=null;
-		ResultSet resultSet=null;
+	//inizio LP 20240911 - PGNTBIPOS-1	
+		return selectTail2(true, true, configurazioneModello3);
+	}
+
+	public ConfigurazioneModello3 selectBatch(boolean bFlagUpdateAutocomit, boolean bCloseConn, ConfigurazioneModello3 configurazioneModello3) throws DaoException {
+		return selectTail2(bFlagUpdateAutocomit, bCloseConn, configurazioneModello3);
+	}
+
+	private ConfigurazioneModello3 selectTail2(boolean bFlagUpdateAutocomit, boolean bCloseConn, ConfigurazioneModello3 configurazioneModello3) throws DaoException {
+	//fine LP 20240911 - PGNTBIPOS-1	
+		CallableStatement callableStatement = null;
+		ResultSet resultSet = null;
 		Connection connection = null;
 		//inizio LP PG21XX04 Leak
 		//CachedRowSet rowSet = null;
 		//fine LP PG21XX04 Leak
 		try {
-			connection = getConnection();
 			//PG180080 modificare SP e parametri da passare
-			//inizio LP 20240907 - PGNTCORE-24
+			//inizio LP 20240911 - PGNTCORE-24/PGNTBIPOS-1
+			//connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_SEL.routine());
-			callableStatement = prepareCall(Routines.PYMDTSP_SEL.routine());
-			//fine LP 20240907 - PGNTCORE-24 
+			if(callableStatementMdtSel == null) {
+				callableStatementMdtSel = prepareCall(bFlagUpdateAutocomit, Routines.PYMDTSP_SEL.routine());
+				callableStatement = callableStatementMdtSel;
+			}
+			//fine LP 20240911 - PGNTCORE-24/PGNTBIPOS-1 
 			callableStatement.setString(1, configurazioneModello3.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneModello3.getCodiceUtente());
 			callableStatement.setString(3, configurazioneModello3.getChiaveEnte());
@@ -66,14 +82,11 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(6, configurazioneModello3.getCodiceSegregazione());
 			callableStatement.setString(7, configurazioneModello3.getCarattereDiServizio()); //SVILUPPO_002_SB
 			callableStatement.setString(8, configurazioneModello3.getTipologiaServizio()==null ? "" :  configurazioneModello3.getTipologiaServizio()); //SB PG210140
-
 			callableStatement.execute();
-
 			resultSet=callableStatement.getResultSet();
 			if(resultSet.next()) {
 				configurazioneModello3 = new ConfigurazioneModello3(resultSet);
 			}
-			
 //			loadWebRowSet(resultSet);
 //			String selectXml = getWebRowSetXml();
 //			try {
@@ -126,7 +139,7 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//	DAOHelper.closeIgnoringException(callableStatement);
 			//	DAOHelper.closeIgnoringException(connection);
@@ -137,20 +150,28 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 					e.printStackTrace();
 				}
 			}
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240911 - PGNTBIPOS-1
+			if(bCloseConn) {
+			//fine LP 20240911 - PGNTBIPOS-1
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					callableStatement = null;
+					callableStatementMdtSel = null;
 				}
-			}
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+				if (connection != null) {
+					try {
+						connection.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240911 - PGNTBIPOS-1
 			}
+			//fine LP 20240911 - PGNTBIPOS-1
 			//fine LP PG21XX04 Leak
 		}
 		return configurazioneModello3;
@@ -524,4 +545,18 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		return configurazioneModello3ListTail(configurazioneModello3, rowsPerPage, pageNumber, OrderBy, true);
 	}
 	//fine LP PG21XX09
+
+	//inizio LP 20240912 - PAGONET-604
+    public void closeCallableStatementS()  {
+	    if(callableStatementMdtSel != null) {
+			try {
+				callableStatementMdtSel.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementMdtSel = null;
+	    }
+    }
+    //fine LP 20240912 - PAGONET-604
+
 }
