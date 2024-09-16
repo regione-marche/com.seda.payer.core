@@ -34,7 +34,7 @@ public class PagamentiScartatiDao extends BaseDaoHandler {
 			callableStatement.setString(3, recordScartato);
 			callableStatement.setString(4, tipologiaRecord);
 			callableStatement.setString(5, String.valueOf(stato));
-			callableStatement.registerOutParameter(6, Types.INTEGER);
+			callableStatement.registerOutParameter(6, Types.BIGINT);
 			callableStatement.execute();
 			int i = callableStatement.getInt(6);
 			return i;
@@ -68,7 +68,7 @@ public class PagamentiScartatiDao extends BaseDaoHandler {
 			callableStatement.setString(3, recordScartato);
 			callableStatement.setString(4, tipologiaRecord);
 			callableStatement.setString(5, String.valueOf(stato));
-			callableStatement.setInt(6, pKey);
+			callableStatement.setLong(6, pKey);
 			callableStatement.registerOutParameter(7, Types.INTEGER);
 			callableStatement.execute();
 			int i = callableStatement.getInt(7);
@@ -101,7 +101,7 @@ public class PagamentiScartatiDao extends BaseDaoHandler {
 		try	{
 			callableStatement = prepareCall(Routines.SCA_DOASSIGN.routine());	
 			callableStatement.setString(1, " ");
-			callableStatement.setInt(2, 0);
+			callableStatement.setLong(2, 0);
 			//inizio LP PG21XX04 Leak
 			//ResultSet resultSet = callableStatement.executeQuery();
 			//inizio LP 20240811 - PGNTCORE-24

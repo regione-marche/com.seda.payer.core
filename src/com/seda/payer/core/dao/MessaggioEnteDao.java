@@ -34,7 +34,7 @@ public class MessaggioEnteDao extends BaseDaoHandler {
 			callableStatement.setString(2, messaggio.getIdDominio());
 			callableStatement.setString(3, messaggio.getTipologiaServizio());
 			callableStatement.setString(4, messaggio.getTimestampParsingFile());
-			callableStatement.setInt(5, messaggio.getPosizione());
+			callableStatement.setLong(5, messaggio.getPosizione());
 			callableStatement.setString(6, messaggio.getCodiceFiscale());
 			callableStatement.setString(7, messaggio.getOggettoMessaggio());
 			callableStatement.setString(8, messaggio.getCorpoMessaggio());

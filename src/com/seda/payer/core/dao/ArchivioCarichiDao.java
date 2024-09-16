@@ -1064,7 +1064,7 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement = prepareCall(Routines.PYPRGSP_NXT.routine());
 			callableStatement.setString(1, codiceEnte);
 			callableStatement.setString(2, auxDigit);
-			callableStatement.setInt(3, dayOfYear);
+			callableStatement.setLong(3, dayOfYear);
 			callableStatement.registerOutParameter(4, Types.INTEGER);
 			
 			callableStatement.execute(); 

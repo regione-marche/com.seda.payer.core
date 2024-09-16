@@ -1130,7 +1130,7 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_DEL_RPT");                 
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYRMTSP_DEL_RPT");
+            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "	PYRMTSP_DEL_RPT");
 			//fine LP PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
 			callableStatement.setLong(2, idTransazione);

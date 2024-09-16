@@ -1565,7 +1565,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 		try {
 			callableStatement = prepareCall(Routines.TMG_UPDATE_RIF_MOVIMENTO.routine());
 			callableStatement.setString(1, codiceTransazione);
-			callableStatement.setInt(2, rifMovimento);
+			callableStatement.setLong(2, rifMovimento);
 			callableStatement.setString(3, user);
 			callableStatement.registerOutParameter(4, Types.INTEGER);
 			callableStatement.executeUpdate();
@@ -1887,7 +1887,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 //			callableStatement.setString(16, dataTransazioneA == null ? "" : dataTransazioneA);
 //			callableStatement.setInt(17, chiaveMovimento);
 			callableStatement = prepareCall(Routines.TMG_RIEPILOGO_QUADRATURA.routine());
-			callableStatement.setInt(1, chiaveMovimento);
+			callableStatement.setLong(1, chiaveMovimento);
 			callableStatement.registerOutParameter(2, Types.DECIMAL);
 			callableStatement.registerOutParameter(3, Types.DECIMAL);
 			callableStatement.registerOutParameter(4, Types.DECIMAL);

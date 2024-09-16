@@ -480,7 +480,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			//callableStatement = prepareCall(Routines.PYRPTSP_UPD.routine());
 			callableStatement = prepareCall(bFlagAutocommitUpdate, Routines.PYRPTSP_UPD.routine());
 			//fine LP 20240826 - PGNTBNPE-1
-			callableStatement.setInt(1, id);
+			callableStatement.setLong(1, id);
 			if(nodoSpcRpt.getChiaveTra() != null &&  !nodoSpcRpt.getChiaveTra().equalsIgnoreCase(""))
 				callableStatement.setString(2, nodoSpcRpt.getChiaveTra());
 			else
@@ -789,7 +789,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			callableStatement = prepareCall(bFlagAutocommitUpdate,  Routines.PYRPTSP_SEL.routine());
 			//fine LP 20240826 - PGNTBNPE-1
 			if (id != null && id.longValue()>0)
-				callableStatement.setInt(1, id.intValue());
+				callableStatement.setLong(1, id.longValue());
 			else
 				callableStatement.setNull(1, Types.BIGINT);
 			if (chiaveTra != null && !chiaveTra.equals(""))
@@ -939,7 +939,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 		try	{
 			//Update RT
 			callableStatement = prepareCall(Routines.PYRPTSP_UPD.routine());
-			callableStatement.setInt(1, paymentId);
+			callableStatement.setLong(1, paymentId);
 			callableStatement.setNull(2, Types.VARCHAR);
 			callableStatement.setNull(3, Types.CHAR);
 			callableStatement.setNull(4, Types.CHAR);
@@ -1047,7 +1047,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			//Update RT
 			System.out.println("paymentId id = " + paymentId);
 			callableStatement = prepareCall(Routines.PYRPTSP_UPD.routine());
-			callableStatement.setInt(1, paymentId);
+			callableStatement.setLong(1, paymentId);
 			callableStatement.setNull(2, Types.VARCHAR);
 			callableStatement.setNull(3, Types.CHAR);
 			callableStatement.setNull(4, Types.CHAR);
@@ -1149,7 +1149,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 		try	{
 			//Update RT
 			callableStatement = prepareCall(Routines.PYRPTSP_UPD.routine());
-			callableStatement.setInt(1, paymentId);
+			callableStatement.setLong(1, paymentId);
 			callableStatement.setNull(2, Types.VARCHAR);
 			callableStatement.setNull(3, Types.CHAR);
 			callableStatement.setNull(4, Types.CHAR);

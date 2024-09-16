@@ -245,7 +245,7 @@ public class RuoliBancaDatiDao extends BaseDaoHandler {
 			callableStatement = prepareCall(Routines.PYRRUSP_S_SEL.routine());
 			//fine LP PG21XX04 Leak
 
-			callableStatement.setBigDecimal(1, new java.math.BigDecimal(dto.getProgrFlusso()));
+			callableStatement.setLong(1, Long.parseLong(dto.getProgrFlusso()));
 			callableStatement.setString(2, dto.getCodiceSocieta());
 			callableStatement.setString(3, dto.getCodiceUtente());
 			callableStatement.setString(4, dto.getCodiceEnte());
@@ -305,7 +305,7 @@ public class RuoliBancaDatiDao extends BaseDaoHandler {
 			callableStatement = prepareCall(Routines.PYRRUSP_S_SEL.routine());
 			//fine LP PG21XX04 Leak
 
-			callableStatement.setBigDecimal(1, new java.math.BigDecimal(dto.getProgrFlusso()));
+			callableStatement.setLong(1, Long.parseLong(dto.getProgrFlusso()));
 			callableStatement.setString(2, dto.getCodiceSocieta());
 			callableStatement.setString(3, dto.getCodiceUtente());
 			callableStatement.setString(4, dto.getCodiceEnte());
@@ -614,14 +614,14 @@ public class RuoliBancaDatiDao extends BaseDaoHandler {
 			callableStatement = prepareCall(Routines.PYRPASP_SEL.routine());
 			//fine LP PG21XX04 Leak
 
-			callableStatement.setBigDecimal(1, new java.math.BigDecimal(dto.getProgrFlusso()));
+			callableStatement.setLong(1, Long.parseLong(dto.getProgrFlusso()));
 			callableStatement.setString(2, dto.getCodiceSocieta());
 			callableStatement.setString(3, dto.getCodiceUtente());
 			callableStatement.setString(4, dto.getCodiceEnte());
 			callableStatement.setString(5, dto.getConcessione());
 			callableStatement.setString(6, dto.getAnnoRuolo());
 			callableStatement.setString(7, dto.getNumeroRuolo());
-			callableStatement.setBigDecimal(8, new java.math.BigDecimal(dto.getCodicePartita()));
+			callableStatement.setLong(8, Long.parseLong(dto.getCodicePartita()));
 			callableStatement.setString(9, dto.getCodiceTomb());
 /*
 			RPA_CSOCCSOC,RPA_CUTECUTE,ANE_CANECENT,RAR_CRARCCAR,RPA_NRPAANNO,RPA_NRPANUME,
@@ -1183,7 +1183,7 @@ SUM(RAR_IRARRESI) RESIDUO,RRU_GRRUGRUO
 			callableStatement = prepareCall(Routines.PYRANSP_SEL.routine());
 			//fine LP PG21XX04 Leak
 
-			callableStatement.setBigDecimal(1, new java.math.BigDecimal(dto.getProgrFlusso()));
+			callableStatement.setLong(1, Long.parseLong(dto.getProgrFlusso()));
 			callableStatement.setString(2, dto.getCodiceSocieta());
 			callableStatement.setString(3, dto.getCodiceUtente());
 			callableStatement.setString(4, dto.getCodiceEnte());

@@ -208,7 +208,7 @@ public class QuadratureDao  extends BaseDaoHandler{
 		try{
 			//			callableStatement = prepareCall(PYQUASP_RNINCA_SEARCH);
 			callableStatement = prepareCall(Routines.QUA_RNINCA_TRARIC.routine());
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2, chiaveTransazione);
 			callableStatement.setBigDecimal(3, importo);
 			callableStatement.setString(4, operatore);
@@ -245,7 +245,7 @@ public class QuadratureDao  extends BaseDaoHandler{
 		CallableStatement callableStatement = null;
 		try{
 			callableStatement = prepareCall(Routines.QUA_UNICREDIT_TRARIC.routine());
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2, chiaveTransazione);
 			callableStatement.setBigDecimal(3, importo);
 			callableStatement.setString(4, operatore);
@@ -286,7 +286,7 @@ public class QuadratureDao  extends BaseDaoHandler{
 		{
 			//			callableStatement = prepareCall(PYQUASP_RNINCA_END);
 			callableStatement = prepareCall(Routines.QUA_RNINCA_QUAEND.routine());
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2, quadrareMovimentiSquadrati);
 			callableStatement.registerOutParameter(3, Types.INTEGER);
 			callableStatement.executeUpdate();
@@ -317,7 +317,7 @@ public class QuadratureDao  extends BaseDaoHandler{
 		try
 		{
 			callableStatement = prepareCall(Routines.QUA_UNICREDIT_QUAEND.routine());
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2, quadrareMovimentiSquadrati);
 			callableStatement.registerOutParameter(3, Types.INTEGER);
 			callableStatement.executeUpdate();
@@ -411,7 +411,7 @@ public class QuadratureDao  extends BaseDaoHandler{
 		CallableStatement callableStatement = null;
 		try{
 			callableStatement = prepareCall(Routines.QUA_PAYPAL_TRARIC.routine());
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2, chiaveTransazione);
 			callableStatement.setBigDecimal(3, importo);
 			callableStatement.setBigDecimal(4, spese);
@@ -451,7 +451,7 @@ public class QuadratureDao  extends BaseDaoHandler{
 		try
 		{
 			callableStatement = prepareCall(Routines.QUA_PAYPAL_QUAEND.routine());
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2, quadrareMovimentiSquadrati);
 			callableStatement.registerOutParameter(3, Types.INTEGER);
 			callableStatement.executeUpdate();
@@ -515,7 +515,7 @@ public class QuadratureDao  extends BaseDaoHandler{
 			callableStatement.setInt(1, pageNumber);
 			callableStatement.setInt(2, rowsPerPage);
 			callableStatement.setString(3, order == null ? "" : order);
-			callableStatement.setInt(4, chiaveMovimento);
+			callableStatement.setLong(4, chiaveMovimento);
 			callableStatement.setString(5, (tx_societa == null) || (tx_societa.equals(StoredProcConf.SOCIETA_ALL_VALUE.getParam())) ? "" :  tx_societa);
 			callableStatement.setString(6, (tx_provincia == null) || (tx_provincia.equals(StoredProcConf.PROVINCIA_ALL_VALUE.getParam())) ? "" :  tx_provincia);
 			callableStatement.setString(7, (tx_utente == null) || (tx_utente.equals(StoredProcConf.UTENTE_ALL_VALUE.getParam())) ? "" :  tx_utente);
@@ -593,7 +593,7 @@ public class QuadratureDao  extends BaseDaoHandler{
 			if((importo_da != null)&&(!importo_da.equals("")))importo_da_bd = new BigDecimal(importo_da);
 			if((importo_a != null)&&(!importo_a.equals("")))importo_a_bd = new BigDecimal(importo_a);
 			callableStatement = prepareCall(Routines.TMG_RECUPERA_MOVIMENTI_GROUPED.routine());
-			callableStatement.setInt(1, chiaveMovimento);
+			callableStatement.setLong(1, chiaveMovimento);
 			callableStatement.setString(2, (tx_societa == null) || (tx_societa.equals(StoredProcConf.SOCIETA_ALL_VALUE.getParam())) ? "" :  tx_societa);
 			callableStatement.setString(3, (tx_provincia == null) || (tx_provincia.equals(StoredProcConf.PROVINCIA_ALL_VALUE.getParam())) ? "" :  tx_provincia);
 			callableStatement.setString(4, (tx_utente == null) || (tx_utente.equals(StoredProcConf.UTENTE_ALL_VALUE.getParam())) ? "" :  tx_utente);
@@ -683,7 +683,7 @@ public class QuadratureDao  extends BaseDaoHandler{
 		boolean risultato = false;
 		try{
 			callableStatement = prepareCall(Routines.TMG_CHIUDI_MOVIMENTO.routine());
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2,user);
 			callableStatement.execute();
 			risultato = true;

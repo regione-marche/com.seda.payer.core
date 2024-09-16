@@ -135,7 +135,7 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		
 		try{
 			callableStatement = prepareCall(Routines.QUN_NODO_TRARIC.routine());
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2, chiaveTransazione);
 			callableStatement.setBigDecimal(3, importo);
 			callableStatement.setBigDecimal(4, spese);
@@ -190,7 +190,7 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		
 		try{
 			callableStatement = prepareCall("PYQUNSP_NODO_SEARCHM");
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2, chiaveTransazione);
 			callableStatement.setBigDecimal(3, importo);
 			callableStatement.setBigDecimal(4, spese);
@@ -229,10 +229,10 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		try
 		{
 			callableStatement = prepareCall(Routines.QUN_NODO_QUNEND.routine());
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2, quadrareMovimentiSquadrati);
 			callableStatement.setString(3, chiaveTransazione); //PG170300 - 30/1/2018 - INIZIO - gestione multibollettino 
-			callableStatement.setInt(4, txRecuperate);  //PG190240_001 SB
+			callableStatement.setLong(4, txRecuperate);  //PG190240_001 SB
 			callableStatement.registerOutParameter(5, Types.INTEGER);
 			callableStatement.executeUpdate();
 			scritture = callableStatement.getInt(5);
@@ -518,7 +518,7 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		boolean risultato = false;
 		try{
 			callableStatement = prepareCall(Routines.QUN_CHIUDI_MOVIMENTO_NODO.routine());
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2,user);
 			callableStatement.execute();
 			risultato = true;
@@ -956,7 +956,7 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		try
 		{
 			callableStatement = prepareCall("PYQUNSP_UPN");
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.registerOutParameter(2, Types.INTEGER);
 			callableStatement.executeUpdate();
 			scritture = callableStatement.getInt(2);

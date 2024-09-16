@@ -24,7 +24,7 @@ public class TransazioneFreccia extends Lifecycle implements Serializable, Trans
     private java.lang.String codiceTipologiaServizio;              
     private java.lang.String codiceImpostaServizio;                
     private java.lang.String codiceServizio;                       
-    private java.lang.String tipoBollettino;                       
+    private java.lang.String tipoBollettino;
     private java.lang.String descrizioneIntestatarioContocorrente; 
     private java.lang.String denominazioneContribuente;            
     private java.lang.String codiceCap;                            
