@@ -285,7 +285,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			if(Iuv.equals("") && bCuteCute)
 				callableStatement = prepareCall("PYRPTSP_INS_CDSE");
 			else
-				callableStatement = prepareCall(Routines.PYRPTSP_INS.routine());
+				callableStatement = prepareCall(Routines.	PYRPTSP_INS.routine());
 			//fine LP PG21XX08_1
 			callableStatement.setString(1, nodoSpcRpt.getChiaveTra());
 			callableStatement.setString(2, nodoSpcRpt.getCodSocieta());
