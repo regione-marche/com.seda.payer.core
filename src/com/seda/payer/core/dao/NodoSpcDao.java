@@ -370,10 +370,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 				callableStatement.setNull(6, Types.CHAR);
 				callableStatement.setNull(7, Types.VARCHAR);
 				callableStatement.setNull(8, Types.DECIMAL);
-				callableStatement.setNull(9, Types.BINARY);
+				callableStatement.setNull(9, Types.VARCHAR);
 				callableStatement.setNull(10, Types.VARCHAR);
 				callableStatement.setNull(11, Types.VARCHAR);
-				callableStatement.setNull(12, Types.BINARY);
+				callableStatement.setNull(12, Types.VARCHAR);
 				callableStatement.setNull(13, Types.VARCHAR);
 				callableStatement.setNull(14, Types.VARCHAR);
 				callableStatement.setNull(15, Types.VARCHAR);
@@ -405,7 +405,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 				callableStatement.setNull(30, Types.VARCHAR);//Esito Inivio Email Revoca Notifica Contribuente
 				callableStatement.setNull(31, Types.TIMESTAMP);//Data Esito Inivio Email Revoca Notifica Contribuente
 //				YLM PG22XX07 INI
-				callableStatement.setNull(32, Types.TIMESTAMP);//XML SEND RT
+				callableStatement.setNull(32, Types.VARCHAR);//XML SEND RT
 //				YLM PG22XX07 FINE
 				callableStatement.registerOutParameter(33, Types.INTEGER);
 				//fine LP PG190220
@@ -519,7 +519,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			if(nodoSpcRpt.getRpt() != null &&  !nodoSpcRpt.getRpt().equalsIgnoreCase(""))
 				callableStatement.setString(9, nodoSpcRpt.getRpt());
 			else
-				callableStatement.setNull(9, Types.BINARY);
+				callableStatement.setNull(9, Types.VARCHAR);
 			
 			if(nodoSpcRpt.getRptEsito() != null &&  !nodoSpcRpt.getRptEsito().equalsIgnoreCase(""))
 				callableStatement.setString(10, nodoSpcRpt.getRptEsito());
@@ -543,7 +543,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			}
 			//fine LP PG190220
 			else
-				callableStatement.setNull(12, Types.BINARY);
+				callableStatement.setNull(12, Types.VARCHAR);
 			
 			if(nodoSpcRpt.getRtEsito() != null && !nodoSpcRpt.getRtEsito().equalsIgnoreCase(""))
 			//inizio LP PG190220
@@ -947,7 +947,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			callableStatement.setNull(6, Types.CHAR);
 			callableStatement.setNull(7, Types.VARCHAR);
 			callableStatement.setNull(8, Types.DECIMAL);
-			callableStatement.setNull(9, Types.BINARY);
+			callableStatement.setNull(9, Types.VARCHAR);
 			callableStatement.setNull(10, Types.VARCHAR);
 			callableStatement.setNull(11, Types.VARCHAR);
 			
@@ -987,7 +987,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			callableStatement.setNull(30, Types.VARCHAR);//Esito Inivio Email Revoca Notifica Contribuente
 			callableStatement.setNull(31, Types.TIMESTAMP);//Data Esito Inivio Email Revoca Notifica Contribuente
 //			YLM PG22XX07 INI
-			callableStatement.setNull(32, Types.TIMESTAMP);//XML SEND RT
+			callableStatement.setNull(32, Types.VARCHAR);//XML SEND RT
 //			YLM PG22XX07 FINE
 			callableStatement.registerOutParameter(33, Types.INTEGER);
 			//fine LP PG190220
@@ -1061,7 +1061,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			//fine LP 20210325
 			callableStatement.setNull(10, Types.VARCHAR);
 			callableStatement.setNull(11, Types.VARCHAR);
-			callableStatement.setNull(12, Types.BINARY);
+			callableStatement.setNull(12, Types.VARCHAR);
 			callableStatement.setNull(13, Types.VARCHAR);
 			callableStatement.setNull(14, Types.VARCHAR);
 			callableStatement.setNull(15, Types.VARCHAR);
@@ -1093,7 +1093,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			callableStatement.setNull(30, Types.VARCHAR);//Esito Inivio Email Revoca Notifica Contribuente
 			callableStatement.setNull(31, Types.TIMESTAMP);//Data Esito Inivio Email Revoca Notifica Contribuente
 //			YLM PG22XX07 INI
-			callableStatement.setNull(32, Types.TIMESTAMP);//XML SEND RT
+			callableStatement.setNull(32, Types.VARCHAR);//XML SEND RT
 //			YLM PG22XX07 FINE
 			callableStatement.registerOutParameter(33, Types.INTEGER);
 			//fine LP PG190220
@@ -1157,10 +1157,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 			callableStatement.setNull(6, Types.CHAR);
 			callableStatement.setNull(7, Types.VARCHAR);
 			callableStatement.setNull(8, Types.DECIMAL);
-			callableStatement.setNull(9, Types.BINARY);
+			callableStatement.setNull(9, Types.VARCHAR);
 			callableStatement.setNull(10, Types.VARCHAR);
 			callableStatement.setNull(11, Types.VARCHAR);
-			callableStatement.setNull(12, Types.BINARY);
+			callableStatement.setNull(12, Types.VARCHAR);
 			callableStatement.setNull(13, Types.VARCHAR);
 			callableStatement.setNull(14, Types.VARCHAR);
 			
@@ -1211,7 +1211,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			callableStatement.setNull(30, Types.VARCHAR);//Esito Inivio Email Revoca Notifica Contribuente
 			callableStatement.setNull(31, Types.TIMESTAMP);//Data Esito Inivio Email Revoca Notifica Contribuente
 //			YLM PG22XX07 INI
-			callableStatement.setNull(32, Types.TIMESTAMP);//XML SEND RT
+			callableStatement.setNull(32, Types.VARCHAR);//XML SEND RT
 //			YLM PG22XX07 FINE
 			callableStatement.registerOutParameter(33, Types.INTEGER);
 			//fine LP PG190220
