@@ -13,7 +13,6 @@ import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
 import com.seda.data.helper.HelperException;
-import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.AnagraficaBollettino;
