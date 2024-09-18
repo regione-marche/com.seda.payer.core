@@ -18,8 +18,6 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 import com.seda.commons.string.Convert;
 import com.seda.data.helper.HelperException;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -35,10 +33,20 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 	protected CallableStatement callableStatementServAnno = null;
 	protected CallableStatement callableStatementOnere = null;
 	protected CallableStatement callableStatementBollettino = null;
-	protected CallableStatement callableStatementBRS = null;
+	protected CallableStatement callableStatementBRSINS = null;
 	protected CallableStatement callableStatementBRSUP = null;
 	protected CallableStatement callableStatementBRSBATCH = null;
-	
+	//inizio LP 20240913 - PAGONET-604
+	protected CallableStatement callableStatementBRSLSTSMSEMAIL = null;
+	protected CallableStatement callableStatementSOLDELSOL = null;
+	protected CallableStatement callableStatementSOLUPDLSTW = null;
+	protected CallableStatement callableStatementBRLSPLST = null;
+	protected CallableStatement callableStatementRCPSEL = null;
+	protected CallableStatement callableStatementBRSSRVLST = null;
+	//fine LP 20240913 - PAGONET-604
+	//inizio LP 20240913 - PAGONET-24/PGNTWPB-3
+	protected CallableStatement callableStatementBRSSEL = null;
+	//fine LP 20240913 - PAGONET-24/PGNTWPB-3
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -66,28 +74,27 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		String errori = "";
 		try { 
 //			connection = getConnection();
-			if (callableStatementBRS == null) {
+			if (callableStatementBRSINS == null) {
 				//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
-				//callableStatementBRS = Helper.prepareCall(getConnection(), getSchema(), Routines.PYBRSSP_INS.routine());
-				callableStatementBRS =  prepareCall(Routines.PYBRSSP_INS.routine());
+				//callableStatementBRSINS = Helper.prepareCall(getConnection(), getSchema(), Routines.PYBRSSP_INS.routine());
+				callableStatementBRSINS =  prepareCall(Routines.PYBRSSP_INS.routine());
 				//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
 			}
-			
-			callableStatementBRS.setString(1, wallet.getCuteCute().trim());
-			callableStatementBRS.setString(2, wallet.getChiaveEnte().trim());
-			callableStatementBRS.setString(3, wallet.getCodiceAnagraficaGenitore().trim());
-			callableStatementBRS.setString(4, wallet.getCodiceFiscaleGenitore().trim());
-			callableStatementBRS.setString(5, wallet.getTipoAnagrafica().trim());
-			callableStatementBRS.setString(6, wallet.getDenominazioneGenitore().trim());
-			callableStatementBRS.setString(7, wallet.getInidirizzoGenitore().trim());
-			callableStatementBRS.setString(8, wallet.getDenominazioneComuneGenitore().trim());
-			callableStatementBRS.setString(9, wallet.getCapComuneGenitore().trim());
-			callableStatementBRS.setString(10, wallet.getProvinciaGenitore().trim());
-			callableStatementBRS.setString(11, wallet.getOperatore());
-			callableStatementBRS.setString(12, wallet.getAnagraficaDaBonificare()); //PG140300
-			callableStatementBRS.registerOutParameter(13, Types.VARCHAR);
-			callableStatementBRS.registerOutParameter(14, Types.VARCHAR);
-			callableStatementBRS.execute();
+			callableStatementBRSINS.setString(1, wallet.getCuteCute().trim());
+			callableStatementBRSINS.setString(2, wallet.getChiaveEnte().trim());
+			callableStatementBRSINS.setString(3, wallet.getCodiceAnagraficaGenitore().trim());
+			callableStatementBRSINS.setString(4, wallet.getCodiceFiscaleGenitore().trim());
+			callableStatementBRSINS.setString(5, wallet.getTipoAnagrafica().trim());
+			callableStatementBRSINS.setString(6, wallet.getDenominazioneGenitore().trim());
+			callableStatementBRSINS.setString(7, wallet.getInidirizzoGenitore().trim());
+			callableStatementBRSINS.setString(8, wallet.getDenominazioneComuneGenitore().trim());
+			callableStatementBRSINS.setString(9, wallet.getCapComuneGenitore().trim());
+			callableStatementBRSINS.setString(10, wallet.getProvinciaGenitore().trim());
+			callableStatementBRSINS.setString(11, wallet.getOperatore());
+			callableStatementBRSINS.setString(12, wallet.getAnagraficaDaBonificare()); //PG140300
+			callableStatementBRSINS.registerOutParameter(13, Types.VARCHAR);
+			callableStatementBRSINS.registerOutParameter(14, Types.VARCHAR);
+			callableStatementBRSINS.execute();
 			//			System.out.println("ins brs");
 			//			System.out.println(wallet.getCuteCute().trim());
 			//			System.out.println(wallet.getChiaveEnte().trim());
@@ -100,59 +107,53 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			//			System.out.println(wallet.getCapComuneGenitore().trim());
 			//			System.out.println(wallet.getProvinciaGenitore().trim());
 			//			System.out.println(wallet.getOperatore());
-
-
-			idWallet = callableStatementBRS.getString(13);
-			errori = callableStatementBRS.getString(14);
+			idWallet = callableStatementBRSINS.getString(13);
+			errori = callableStatementBRSINS.getString(14);
 			wallet.setAttribute("errori", errori);
 			wallet.setIdWallet(idWallet);
-
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
-		} catch (ProcedureReflectorException e) {
-			throw new DaoException(e);
-		//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
 		} finally {
-//			DAOHelper.closeIgnoringException(callableStatementBRS);
-			//			DAOHelper.closeIgnoringException(connection);
+			//DAOHelper.closeIgnoringException(callableStatementBRSINS);
+			//DAOHelper.closeIgnoringException(connection);
 		}
-
 		return wallet;
 	}
 
-	//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
+	//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
 	public Wallet select(Wallet wallet) throws DaoException {
-		return select(wallet, true);
+		return selectTail(true, true, true, wallet);
 	}
 
-	public Wallet select(Wallet wallet, boolean closeConnection) throws DaoException {
-		return selectTail(true, wallet, closeConnection);
+	public Wallet selectBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, boolean bCloseConn, Wallet wallet) throws DaoException {
+		return selectTail(bFlagUpdateAutocommit, bCloseStat, bCloseConn, wallet);
 	}
 	
-	public Wallet selectTail(boolean bFlagUpdateAutocommit, Wallet wallet, boolean closeConnection) throws DaoException {
-	//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
+	private Wallet selectTail(boolean bFlagUpdateAutocommit, boolean bCloseStat, boolean bCloseConn, Wallet wallet) throws DaoException {
+	//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 		CallableStatement callableStatement=null;
 		ResultSet resultSet=null;
 		Connection connection = null;
 		CachedRowSet rowSet = null;
 		try {
-			connection = getConnection();
-			//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
+			//inizio LP 2024916 - PGNTCORE-24/PGNTWPB-3
+			//connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SEL.routine());
-			callableStatement =  prepareCall(bFlagUpdateAutocommit, Routines.PYBRSSP_SEL.routine());
-			//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
+			if(callableStatementBRSSEL == null) {
+				callableStatementBRSSEL = prepareCall(bFlagUpdateAutocommit, Routines.PYBRSSP_SEL.routine());
+				callableStatement = callableStatementBRSSEL;
+			}
+			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			callableStatement.setString(1, wallet.getIdWallet());
 			callableStatement.setString(2, wallet.getCodiceFiscaleGenitore());
 			callableStatement.setString(3, wallet.getCodiceSocieta());
 			callableStatement.setString(4, wallet.getCuteCute());
 			callableStatement.setString(5, wallet.getChiaveEnte());
 			callableStatement.execute();
-
 			resultSet=callableStatement.getResultSet();
 			loadWebRowSet(resultSet);
 			String selectXml = getWebRowSetXml();
@@ -161,7 +162,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-
 			if (rowSet.next() ) {
 				String IdWallet = rowSet.getString(1);
 				String codiceSocieta = rowSet.getString(2);
@@ -190,7 +190,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 				String denominazione = rowSet.getString(14);
 				Calendar dataCaricamentoCal=Calendar.getInstance();
 				dataCaricamentoCal.setTime(dataCaricamento);
-
 				String denominazioneGenitore = rowSet.getString(15);
 				String indirizzoGenitore = rowSet.getString(16);
 				String denominazioneComuneGenitore = rowSet.getString(17);
@@ -200,7 +199,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 				Boolean  FlagEsclusioneSMSSollecito = rowSet.getString(21).equals("Y")?true:false;
 				Boolean  FlagEsclusioneSollecitoCartaceo = rowSet.getString(22).equals("Y")?true:false;
 				Boolean  FlagEsclusioneEvoluzioneIntimazione = rowSet.getString(23).equals("Y")?true:false;
-
 				String sollecitiSmsCortesiaInviati = rowSet.getString(24);
 				String sollecitiSmsSollecitiInviati = rowSet.getString(25);
 				String emailSollecitoInviate = rowSet.getString(26);
@@ -251,10 +249,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		} catch (ProcedureReflectorException e) {
-			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//if (closeConnection) {
@@ -274,14 +268,23 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
+			if(bCloseStat) {
+			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+				//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
+				callableStatement = null;
+				callableStatementBRSSEL = null;
 			}
-			if (closeConnection) {
+			if(bCloseConn) {
+				connection = getConnection();
+			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 				if(connection != null) {
 					try {
 						connection.close();
@@ -290,7 +293,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 					}
 				}
 				//fine LP PG21XX04 Leak
+			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
+				connection = null;
 			}
+			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 		}
 		return wallet;
 	}
@@ -302,25 +308,21 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 
 	public Wallet selectBatchTail(boolean bFlagUpdateAutocommit, Wallet wallet) throws DaoException {
 	//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
-		ResultSet resultSet=null;
+		ResultSet resultSet = null;
 		try {
-			
 			if (callableStatementBRSBATCH == null) {
 				//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
 				//callableStatementBRSBATCH  = Helper.prepareCall(getConnection(), getSchema(), Routines.PYBRSSP_SEL.routine());
 				callableStatementBRSBATCH =  prepareCall(bFlagUpdateAutocommit, Routines.PYBRSSP_SEL.routine());
 				//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
 			}
-			
 			callableStatementBRSBATCH.setString(1, wallet.getIdWallet());
 			callableStatementBRSBATCH.setString(2, wallet.getCodiceFiscaleGenitore());
 			callableStatementBRSBATCH.setString(3, wallet.getCodiceSocieta());
 			callableStatementBRSBATCH.setString(4, wallet.getCuteCute());
 			callableStatementBRSBATCH.setString(5, wallet.getChiaveEnte());
 			callableStatementBRSBATCH.execute();
-
-			resultSet=callableStatementBRSBATCH.getResultSet();
-
+			resultSet = callableStatementBRSBATCH.getResultSet();
 			if (resultSet.next() ) {
 				String IdWallet = resultSet.getString(1);
 				String codiceSocieta = resultSet.getString(2);
@@ -383,10 +385,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		} catch (ProcedureReflectorException e) {
-			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			if(resultSet != null) {
@@ -401,7 +399,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		return wallet;
 	}
 
-
 	//----------------------------------------------------------------------------------
 
 	public Wallet select_anag(Wallet wallet) throws DaoException {
@@ -411,10 +408,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SEL_ANA.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_SEL_ANA.routine());
-			//fine LP PGNTCORE-24
+			callableStatement =  prepareCall(Routines.PYBRSSP_SEL_ANA.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1, ""); // non passiamo il borsellino
 			callableStatement.setString(2, wallet.getCodiceAnagraficaGenitore());
 			callableStatement.setString(3, wallet.getCodiceSocieta());
@@ -467,7 +464,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 				String ImportoOneriStampatiCaricati = rowSet.getString(29);
 				String ImportoOneriStampatiPagati = rowSet.getString(30);
 
-
 				wallet = new Wallet(IdWallet,codiceSocieta,cuteCute,chiaveEnte,codiceAnagraficaGenitore, 
 						codiceFiscaleGenitore,tipoAnagrafica,numeroCell,indirizzoEmail,flagAttivazione, 
 						dataCaricamentoCal,importo,flagPrimoAccesso, denominazioneGenitore, indirizzoGenitore,
@@ -485,20 +481,14 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 				wallet.setAttribute(WalletDAO.IMPORTOONERISTAMPACARICATI, ImportoOneriStampatiCaricati);
 				wallet.setAttribute(WalletDAO.IMPORTOONERISTAMPAPAGATI, ImportoOneriStampatiPagati);
 
-
-
 				wallet.setAttribute(WalletDAO.SELECT_XML, selectXml);
 			}
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -536,7 +526,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		return wallet;
 	}
 
-
 	public String select_id(Wallet wallet) throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
@@ -545,10 +534,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			connection = getConnection();
 			//inizio LP PG21XX04 Leak
 			//callableStatement = Helper.prepareCall(getConnection(), getSchema(), Routines.PYBRSSP_SEL_ID.routine());
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SEL_ID.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_SEL_ID.routine());
-			//fine LP PGNTCORE-24
+			callableStatement =  prepareCall(Routines.PYBRSSP_SEL_ID.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			//inizio LP PG21XX04 Leak
 			callableStatement.setString(1, wallet.getCodiceAnagraficaGenitore());
 			callableStatement.setString(2, wallet.getCodiceSocieta());
@@ -561,12 +550,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -589,6 +574,7 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		}
 		return idWallet;
 	}		
+
 	//----------------------------------------------------------------------------------
 
 	public void update(Wallet wallet) throws DaoException {
@@ -604,24 +590,21 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 	//fine LP PG21XX04 Leak
 	//inizio LP 20240828 - PGNTCORE-24/PAGONET-604/PGNTWPB-3
 	public void update(Wallet wallet, boolean closeConnection) throws DaoException {
-		updateTail(true, wallet,closeConnection);
+		updateTail(true, wallet, closeConnection);
 	}
-		
+
 	public void updateTail(boolean bFlagUpdateAutocommit, Wallet wallet, boolean closeConnection) throws DaoException {
 	//fine LP 20240828 - PGNTCORE-24/PAGONET-604/PGNTWPB-3
-		CallableStatement callableStatement=null;
+		//CallableStatement callableStatement=null; //LP 20240828 - PGNTCORE-24/PAGONET-604/PGNTWPB-3
 		Connection connection = null;
-		
 		try { 
-//			connection = getConnection();
-			
-			if (callableStatementBRSUP==null) {
-				connection = getConnection();
+			//connection = getConnection();
+			if (callableStatementBRSUP == null) {
 				//inizio LP PGNTCORE-24
 				//callableStatementBRSUP = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_UPD.routine());
 				//inizio LP 20240828 - PGNTCORE-24/PAGONET-604/PGNTWPB-3
-				//callableStatementBRSUP =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_UPD.routine());
-				callableStatementBRSUP =  prepareCall(bFlagUpdateAutocommit, Routines.PYBRSSP_UPD.routine());
+				connection = getConnection();
+				callableStatementBRSUP = prepareCall(bFlagUpdateAutocommit, Routines.PYBRSSP_UPD.routine());
 				//fine LP 20240828 - PGNTCORE-24/PAGONET-604/PGNTWPB-3
 				//fine LP PGNTCORE-24
 			}
@@ -631,7 +614,7 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			callableStatementBRSUP.setString(4, wallet.getCodiceFiscaleGenitore());
 			callableStatementBRSUP.setString(5, wallet.getCodiceRid()==null?"":wallet.getCodiceRid());
 			//PG180040 - inizio
-			if (wallet.getImportoOnDemand()==null) 
+			if (wallet.getImportoOnDemand() == null) 
 				callableStatementBRSUP.setNull(6, Types.DECIMAL);
 			else 
 				callableStatementBRSUP.setBigDecimal(6, wallet.getImportoOnDemand());
@@ -644,10 +627,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		} catch (ProcedureReflectorException e) {
-			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			if (closeConnection)
 			//inizio LP PG21XX04 Leak
@@ -689,10 +668,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			//			7	IN I_BRS_CBRSCCAP VARCHAR(5),
 			//			8	IN I_BRS_CBRSCPRV VARCHAR(2),
 			//			9	IN I_BRS_CBRSCOPE VARCHAR(50),
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_UPD_ANA.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_UPD_ANA.routine());
-			//fine LP PGNTCORE-24
+			callableStatement =  prepareCall(Routines.PYBRSSP_UPD_ANA.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1, wallet.getCodiceSocieta());
 			callableStatement.setString(2, wallet.getCuteCute());
 			callableStatement.setString(3, wallet.getChiaveEnte());
@@ -717,12 +696,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -746,7 +721,7 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 
 	}
 
-	public StringBuffer  walletListCsv(Wallet wallet,String tipoServizio,String tipoSollecito,String flagrendicontato,String presenzaOneri, int rowsPerPage, int pageNumber, String OrderBy)	throws DaoException {
+	public StringBuffer walletListCsv(Wallet wallet,String tipoServizio,String tipoSollecito,String flagrendicontato,String presenzaOneri, int rowsPerPage, int pageNumber, String OrderBy)	throws DaoException {
 		CallableStatement callableStatement=null;
 		CallableStatement callableStatementsrv = null;
 		Connection connection = null;
@@ -758,10 +733,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		StringBuffer file = new StringBuffer();
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST.routine());
-			//fine LP PGNTCORE-24
+			callableStatement =  prepareCall(Routines.PYBRSSP_LST.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,OrderBy);
@@ -896,10 +871,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 						dataDett = null;
 						//fine LP PG21XX04 Leak
 						if (callableStatementsrv == null) {
-							//inizio LP PGNTCORE-24
+							//inizio LP 20240913 - PGNTCORE-24
 							//callableStatementsrv = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_SRV_MG.routine());
-							callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_SRV_MG.routine());
-							//fine LP PGNTCORE-24
+							callableStatement =  prepareCall(Routines.PYBRSSP_LST_SRV_MG.routine());
+							//fine LP 20240913 - PGNTCORE-24
 						}
 						callableStatementsrv.setString(1,soc);
 						callableStatementsrv.setString(2,ute);
@@ -955,25 +930,17 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 						}
 						callableStatementsrv.close();
 						// fine produzione dettaglio
-
-
 					} while(data.next());
 					data.close();
 					callableStatement.close();
 				}
-
 			}
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -1025,10 +992,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		StringBuffer file = new StringBuffer();
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_DWN_MG.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_DWN_MG.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRSSP_LST_DWN_MG.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,OrderBy);
 			callableStatement.setString(2,wallet.getCodiceSocieta());
 			callableStatement.setString(3,wallet.getCuteCute());
@@ -1199,12 +1166,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -1246,10 +1209,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		String[] brsLst  = new String[2];
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRSSP_LST.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,OrderBy);
@@ -1335,14 +1298,9 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -1389,10 +1347,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		String selectXml = "";
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_RIEP.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_RIEP.routine());
-			//fine LP PGNTCORE-24
+			callableStatement =  prepareCall(Routines.PYBRSSP_LST_RIEP.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,wallet.getCodiceSocieta());
 			callableStatement.setString(2,wallet.getCuteCute());
 			callableStatement.setString(3,wallet.getChiaveEnte());
@@ -1437,12 +1395,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -1482,10 +1436,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			connection = getConnection();
 			// IMPLEMENTARE la SP !!!!!!!!!!!!!!!!!!!
 			// GC_2013_06_26
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SRV_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_SRV_LST.routine());
-			//fine LP PGNTCORE-24
+			callableStatement =  prepareCall(Routines.PYBRSSP_SRV_LST.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,OrderBy);
@@ -1562,12 +1516,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -1609,10 +1559,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			connection = getConnection();
 			// IMPLEMENTARE la SP !!!!!!!!!!!!!!!!!!!
 			// GC_2013_06_26
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_PGB_ADB_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_PGB_ADB_LST.routine());
-			//fine LP PGNTCORE-24
+			callableStatement =  prepareCall(Routines.PYBRSSP_PGB_ADB_LST.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,OrderBy);
@@ -1690,12 +1640,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -1725,8 +1671,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		return file;
 	}
 
-
-
 	public StringBuffer walletListAnagraficaContribuentiCsv(Wallet wallet, int rowsPerPage, int pageNumber, String OrderBy)	throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
@@ -1737,10 +1681,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			connection = getConnection();
 			// IMPLEMENTARE la SP !!!!!!!!!!!!!!!!!!!
 			// GC_2013_06_26
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_ANA.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_ANA.routine());
-			//fine LP PGNTCORE-24
+			callableStatement =  prepareCall(Routines.PYBRSSP_LST_ANA.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,wallet.getCodiceSocieta());
 			callableStatement.setString(2,wallet.getCuteCute());
 			callableStatement.setString(3,wallet.getChiaveEnte());
@@ -1836,12 +1780,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -1881,10 +1821,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			connection = getConnection();
 			// IMPLEMENTARE la SP !!!!!!!!!!!!!!!!!!!
 			// GC_2013_06_26
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SRV_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_SRV_LST.routine());
-			//fine LP PGNTCORE-24
+			callableStatement =  prepareCall(Routines.PYBRSSP_SRV_LST.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,OrderBy);
@@ -1932,14 +1872,9 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "02", Routines.PYBRSSP_SRV_LST.routine() + "Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "03",Routines.PYBRSSP_SRV_LST.routine() + "Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "03",Routines.PYBRSSP_SRV_LST.routine() + "Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -2000,60 +1935,43 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		WalletPageList walletPageList = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_SRV.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_SRV.routine());
-			//fine LP PGNTCORE-24
+			callableStatement =  prepareCall(Routines.PYBRSSP_LST_SRV.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			/* page number*/
 			callableStatement.setString(1,wallet.getIdWallet());                 //I_BRS_KBRSKBRS
 			callableStatement.setString(2,wallet.getCodiceFiscaleGenitore());    //I_BRS_CFISCGEN
 			callableStatement.setString(3, wallet.getCuteCute());                //I_BRS_CUTECUTE 
 			callableStatement.setString(4, wallet.getChiaveEnte());              //I_BRS_KANEKENT
 			callableStatement.setString(5, wallet.getCodiceSocieta());           //I_BRS_CSOCCSOC
-
-
 			/* we execute procedure */
 			if(callableStatement.execute())	{
 				data = callableStatement.getResultSet();
-
-
-
 				loadWebRowSet(data);
 				//walletHomePageList = new WalletHomePageList(pageInfo, "00","",getWebRowSetXml(),"","","");
-
 				String selectXml = getWebRowSetXml();
 				//inizio LP PG21XX04 Leak
 				//CachedRowSet rowSet = Convert.stringToWebRowSet(selectXml);
 				rowSet = Convert.stringToWebRowSet(selectXml);
 				//fine LP PG21XX04 Leak
-
 				if (rowSet.next()) {
 					if (rowSet.getString(1)==null){
 						return null;	
 					}
 				} 
 				walletPageList = new WalletPageList(pageInfo, "00","",selectXml);
-
-
-
-
 				return walletPageList;
 			}
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} catch (IOException e) {
 			e.printStackTrace();
 		} finally {
@@ -2101,10 +2019,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		WalletPageList walletPageList = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_SRV_MG.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_SRV_MG.routine());
-			//fine LP PGNTCORE-24
+			callableStatement =  prepareCall(Routines.PYBRSSP_LST_SRV_MG.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,wallet.getCodiceSocieta());
 			callableStatement.setString(2,wallet.getCuteCute());
 			callableStatement.setString(3,wallet.getChiaveEnte());
@@ -2114,8 +2032,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			callableStatement.setString(6,(String)wallet.getAttribute("PERIDOCARICO_DA")==null?"":(String)wallet.getAttribute("PERIDOCARICO_DA"));
 			callableStatement.setString(7,(String)wallet.getAttribute("PERIDOCARICO_A")==null?"":(String)wallet.getAttribute("PERIDOCARICO_A"));
 			//Tk 2017033088000055 20170403 - fine
-
-
 			/* we execute procedure */
 			if(callableStatement.execute())	{
 				data = callableStatement.getResultSet();
@@ -2123,23 +2039,15 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 				walletPageList = new WalletPageList(null, "00","",getWebRowSetXml());
 				return walletPageList;
 			}
-
-
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -2175,10 +2083,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		int ret=0;
 		try { 
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_UPD_FESC.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_UPD_FESC.routine());
-			//fine LP PGNTCORE-24
+			callableStatement =  prepareCall(Routines.PYBRSSP_UPD_FESC.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1, wallet.getCodiceSocieta());
 			callableStatement.setString(2, wallet.getCuteCute());
 			callableStatement.setString(3, wallet.getChiaveEnte());
@@ -2191,17 +2099,12 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			callableStatement.registerOutParameter(10, Types.INTEGER);
 			callableStatement.execute();
 			ret = callableStatement.getInt(10);
-
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -2234,10 +2137,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		tipologiaServizio[1]="";
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCFESP_SEL_TBOLL.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCFESP_SEL_TBOLL.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYCFESP_SEL_TBOLL.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,codUte);           //I_RCP_CUTECUTE
 			callableStatement.setString(2,chiaveEnt);        //I_RCP_KANEKENT
 			callableStatement.setString(3,codSoc);           //I_RCP_CSOCCSOC		 
@@ -2254,12 +2157,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -2297,7 +2196,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		WalletPageList walletPageList = null;
 		try {
 			connection = getConnection();
-
 			//			CREATE PROCEDURE PYBRSSP_LST_ANA (	
 			//				1	IN I_BRS_CSOCCSOC VARCHAR(5),
 			//				2	IN I_BRS_CUTECUTE VARCHAR(5),
@@ -2312,10 +2210,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			//				11	OUT O_ROWEND INTEGER ,
 			//				12	OUT O_TOTROWS INTEGER, 
 			//				13	OUT O_TOTPAGES SMALLINT ) 
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_ANA.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_ANA.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRSSP_LST_ANA.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,wallet.getCodiceSocieta());
 			callableStatement.setString(2,wallet.getCuteCute());
 			callableStatement.setString(3,wallet.getChiaveEnte());
@@ -2364,14 +2262,9 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "02", Routines.PYBRSSP_LST_ANA.routine() + "Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "03",Routines.PYBRSSP_LST_ANA.routine() + "Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "03",Routines.PYBRSSP_LST_ANA.routine() + "Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -2412,10 +2305,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		PageInfo pageInfo = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SRV_RIEP.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_SRV_RIEP.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRSSP_SRV_RIEP.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,wallet.getCodiceSocieta());
 			callableStatement.setString(2,wallet.getCuteCute());
 			callableStatement.setString(3,wallet.getChiaveEnte());
@@ -2428,33 +2321,22 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			callableStatement.setString(9 , (String)wallet.getAttribute(WalletDAO.PERIDOCARICO_A));
 			callableStatement.setString(10, flagrendicontato);
 			/* we select */
-
-
 			/* we execute procedure */
 			if(callableStatement.execute())	{
-
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
 				walletRiepilogoListXml = getWebRowSetXml();
 				//return walletRiepilogoListXml;
 			}
-
-
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01", Routines.PYBRSSP_SRV_RIEP.routine() + "Sql-Exception","");
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "02", Routines.PYBRSSP_SRV_RIEP.routine() + "Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "03",Routines.PYBRSSP_SRV_RIEP.routine() + "Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "03",Routines.PYBRSSP_SRV_RIEP.routine() + "Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -2483,6 +2365,7 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		}
 		return walletRiepilogoListXml;
 	}
+
 	public String selectDetSrv(String idWallet,String codServ,String tributo, String amcar)  throws DaoException {
 		String walletDetSrvListXml="";
 		CallableStatement callableStatement=null;
@@ -2490,10 +2373,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		ResultSet data = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SRV_DETT.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_SRV_DETT.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRSSP_SRV_DETT.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,idWallet);
 			callableStatement.setString(2,codServ);
 			callableStatement.setString(3,tributo);
@@ -2504,19 +2387,12 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 				loadWebRowSet(data);
 				walletDetSrvListXml = getWebRowSetXml();
 			}
-
-
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -2543,7 +2419,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			}
 			//fine LP PG21XX04 Leak
 		}
-
 		return walletDetSrvListXml;
 	}
 
@@ -2554,30 +2429,22 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		ResultSet data = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRLSP_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRLSP_LST.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRLSP_LST.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,idWallet);
-
 			if(callableStatement.execute())	{
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
 				walletlistBollettiniXml = getWebRowSetXml();
 			}
-
-
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -2604,57 +2471,39 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			}
 			//fine LP PG21XX04 Leak
 		}
-
 		return walletlistBollettiniXml;
 	}
 
 	public String listBollettiniForQuaryHost(String idWallet)  throws DaoException {
-
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		ResultSet data = null;
 		String arrayListBRL ="'"+ idWallet+"'";
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRLSP_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRLSP_LST.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRLSP_LST.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,idWallet);
-
 			if(callableStatement.execute())	{
 				data = callableStatement.getResultSet();
-
 				if ( data.next() ) {
 					do {
-
 						String bollettino = data.getString(2);
 						arrayListBRL = arrayListBRL + ",'" + bollettino + "'";
-
-
-
 					} while(data.next());
 					data.close();
 					callableStatement.close();
-
 				}
-
 			}
-
-
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
-
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -2682,56 +2531,44 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			//fine LP PG21XX04 Leak
 		}
 		return arrayListBRL;
-
 	}
 
-	public String listBollettiniForQuaryHostBatch(String idWallet)  throws DaoException {
-
+	//inizio LP 20240913 - PGNTCORE-24
+	//public String listBollettiniForQuaryHostBatch(String idWallet)  throws DaoException {
+	public String listBollettiniForQuaryHostBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String idWallet)  throws DaoException {
+	//fine LP 20240913 - PGNTCORE-24
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		ResultSet data = null;
 		String arrayListBRL ="'"+ idWallet+"'";
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRLSP_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRLSP_LST.routine());
-			//fine LP PGNTCORE-24
+			if(callableStatementBRLSPLST == null) {
+				callableStatementBRLSPLST = prepareCall(Routines.PYBRLSP_LST.routine());
+				callableStatement = callableStatementBRLSPLST; 
+			}
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,idWallet);
-
 			if(callableStatement.execute())	{
 				data = callableStatement.getResultSet();
-
 				if ( data.next() ) {
 					do {
-
 						String bollettino = data.getString(2);
 						arrayListBRL = arrayListBRL + ",'" + bollettino + "'";
-
-
-
 					} while(data.next());
 					data.close();
 					callableStatement.close();
-
 				}
-
 			}
-
-
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
-
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
 			if(data != null) {
@@ -2741,19 +2578,24 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240913 - PAGONET-604
+			if(bCloseStat) {
+			//fine LP 20240913 - PAGONET-604
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+				//fine LP PG21XX04 Leak
+			//inizio LP 20240913 - PAGONET-604
 			}
-			//fine LP PG21XX04 Leak
+			//fine LP 20240913 - PAGONET-604
 		}
 		return arrayListBRL;
 
 	}
-
 
 	public String listPagamenti(Wallet wallet)  throws DaoException {
 		String walletlistBollettiniXml="";
@@ -2762,32 +2604,24 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		ResultSet data = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPGBTB_LST_MG.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGBTB_LST_MG.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYPGBTB_LST_MG.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,wallet.getIdWallet());
 			callableStatement.setString(2, (String)wallet.getAttribute("PGBDATA_PAGAMENTO_DA"));
 			callableStatement.setString(3, (String)wallet.getAttribute("PGBDATA_PAGAMENTO_A"));
-
 			if(callableStatement.execute())	{
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
 				walletlistBollettiniXml = getWebRowSetXml();
 			}
-
-
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -2814,7 +2648,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			}
 			//fine LP PG21XX04 Leak
 		}
-
 		return walletlistBollettiniXml;
 	}
 
@@ -2825,35 +2658,27 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		ResultSet data = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST_ANNO.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST_ANNO.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYSOLSP_LST_ANNO.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,wallet.getIdWallet());
 			callableStatement.setString(2, (String)wallet.getAttribute("PGBDATA_PAGAMENTO_DA"));
 			callableStatement.setString(3, (String)wallet.getAttribute("PGBDATA_PAGAMENTO_A"));
 			callableStatement.setString(4, (String)wallet.getAttribute("PGBDATADIS_PAGAMENTO_DA"));
 			callableStatement.setString(5, (String)wallet.getAttribute("PGBDATADIS_PAGAMENTO_A"));
 			callableStatement.setInt(6, prog);
-
 			if(callableStatement.execute())	{
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
 				walletlistSollecitiXml = getWebRowSetXml();
 			}
-
-
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -2880,10 +2705,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			}
 			//fine LP PG21XX04 Leak
 		}
-
 		return walletlistSollecitiXml;
 	}
-
 
 	public List<String> getSollecitoAsList(Wallet wallet)  throws DaoException {
 		List<String> sollecitoAsString= new ArrayList<String>();
@@ -2893,10 +2716,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		ResultSet data = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST_ANNO.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST_ANNO.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYSOLSP_LST_ANNO.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,wallet.getIdWallet());
 			callableStatement.setString(2, (String)wallet.getAttribute("PGBDATA_PAGAMENTO_DA"));
 			callableStatement.setString(3, (String)wallet.getAttribute("PGBDATA_PAGAMENTO_A"));
@@ -2933,19 +2756,12 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 					sollecitoAsString.add(data.getString(24)); //SOL_CSOLOPER
 				}
 			}
-
-
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//DAOHelper.closeIgnoringException(connection);
 			//inizio LP PG21XX04 Leak
@@ -2972,7 +2788,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			}
 			//fine LP PG21XX04 Leak
 		}
-
 		return sollecitoAsString;
 	}
 
@@ -2983,10 +2798,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		String errori = "";
 		try { 
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSOLSP_INS.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSOLSP_INS.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYSOLSP_INS.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1, sollecitoAsList.get(0).trim());
 			callableStatement.setString(2, sollecitoAsList.get(1).trim());
 			java.util.Date dataSollecito=df.parse(sollecitoAsList.get(2).trim());
@@ -3029,22 +2844,13 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			callableStatement.setTimestamp(23, new java.sql.Timestamp(currentTime.getTime()));
 			//User Id collegato
 			callableStatement.setString(24, sollecitoAsList.get(23).trim());
-
 			callableStatement.execute();
-
-
-
-
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} catch (ParseException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
@@ -3068,7 +2874,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			}
 			//fine LP PG21XX04 Leak
 		}
-
 		return "";
 	}
 
@@ -3079,10 +2884,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		String errori = "";
 		try { 
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSOLSP_INS.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSOLSP_INS.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYSOLSP_INS.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1, sollecitoAsList.get(0).trim());
 			callableStatement.setString(2, sollecitoAsList.get(1).trim());
 			java.util.Date dataSollecito=df.parse(sollecitoAsList.get(2).trim());
@@ -3125,22 +2930,13 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			callableStatement.setTimestamp(23, new java.sql.Timestamp(currentTime.getTime()));
 			//User Id collegato
 			callableStatement.setString(24, sollecitoAsList.get(23).trim());
-
 			callableStatement.execute();
-
-
-
-
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} catch (ParseException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
@@ -3164,10 +2960,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			}
 			//fine LP PG21XX04 Leak
 		}
-
 		return "";
 	}
-
 
 	public ArrayList<String> getAutorizzazione(String societa,String cutecute, String ente)  throws DaoException {		
 		CallableStatement callableStatement=null;
@@ -3176,10 +2970,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		ArrayList<String> autorizzazioni = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYRCPSP_SEL.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYRCPSP_SEL.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYRCPSP_SEL.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,societa);
 			callableStatement.setString(2,cutecute);
 			callableStatement.setString(3,ente);
@@ -3198,12 +2992,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -3233,17 +3023,21 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 
 		return autorizzazioni;
 	}
+
 	public ArrayList<String> getAutorizzazioneBatch(String societa,String cutecute, String ente)  throws DaoException {		
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		ResultSet data = null;
 		ArrayList<String> autorizzazioni = null;
 		try {
-			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
+			//connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYRCPSP_SEL.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYRCPSP_SEL.routine());
-			//fine LP PGNTCORE-24
+			if(callableStatementRCPSEL == null) {
+				callableStatementRCPSEL = prepareCall(false, Routines.PYRCPSP_SEL.routine());
+				callableStatement = callableStatementRCPSEL;
+			}
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,societa);
 			callableStatement.setString(2,cutecute);
 			callableStatement.setString(3,ente);
@@ -3257,17 +3051,12 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 					autorizzazioni.add(data.getString(8));
 				}			
 			}
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -3278,16 +3067,17 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
+			//inizio LP 20240913 - PGNTCORE-24
+			//if(callableStatement != null) {
+			//	try {
+			//		callableStatement.close();
+			//	} catch (SQLException e) {
+			//		e.printStackTrace();
+			//	}
+			//}
 			//fine LP PG21XX04 Leak
+			//fine LP 20240913 - PGNTCORE-24
 		}
-
 		return autorizzazioni;
 	}
 
@@ -3298,29 +3088,26 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 //	public CallableStatement  listWalletforSmsEmailBatch(String cutecute, String tipoInvio,String idWallet,String IdFlusso)	throws DaoException {
 		CallableStatement callableStatement=null;
 		try {
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(getConnection(), getSchema(), Routines.PYBRSSP_LST_SMSEMAIL.routine());
-			callableStatement =  MetaProcedure.prepareCall(getConnection(), getSchema(), Routines.PYBRSSP_LST_SMSEMAIL.routine());
-			//fine LP PGNTCORE-24
+			if(callableStatementBRSLSTSMSEMAIL == null) {
+				callableStatementBRSLSTSMSEMAIL = prepareCall(false, Routines.PYBRSSP_LST_SMSEMAIL.routine());
+				callableStatement = callableStatementBRSLSTSMSEMAIL;
+			}
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1, cutecute);                          
 			callableStatement.setString(2, tipoInvio);                         
 			callableStatement.setString(3, idWallet);                          
 			callableStatement.setString(4, IdFlusso);                          
 			callableStatement.setString(5, flagRivestizione);
 			callableStatement.setString(6, borselliniAttivi);	//PG150310_001 GG
-
 			callableStatement.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
-		} finally {
 		}
 		return callableStatement;
 	}	
@@ -3328,13 +3115,26 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 	//inizio LP PG21XX04 Leak
 	//Nota. Metodo usato solo da procedure batch
 	//fine LP PG21XX04 Leak
-	public void  updateSollecitiConIdflusso(String idWallet, String tipoOperazione,String dataoperazione,String idFlusso )	throws DaoException {
+	//inizio LP 20240913 - PAGONET-604
+	public void  updateSollecitiConIdflusso(String idWallet, String tipoOperazione,String dataoperazione,String idFlusso)	throws DaoException {
+		updateSollecitiConIdflussoTail(true, true, idWallet, tipoOperazione, dataoperazione, idFlusso);
+	}
+
+	public void  updateSollecitiConIdflussoBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String idWallet, String tipoOperazione,String dataoperazione,String idFlusso )	throws DaoException {
+		updateSollecitiConIdflussoTail(bFlagUpdateAutocommit, bCloseStat, idWallet, tipoOperazione, dataoperazione, idFlusso);
+	}
+
+	private void  updateSollecitiConIdflussoTail(boolean bFlagUpdateAutocommit, boolean bCloseStat, String idWallet, String tipoOperazione,String dataoperazione,String idFlusso )	throws DaoException {
+	//fine LP 20240913 - PAGONET-604
 		CallableStatement callableStatement=null;
 		try {
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(getConnection(), getSchema(), Routines.PYSOLSP_UPD_LSTW.routine());
-			callableStatement =  MetaProcedure.prepareCall(getConnection(), getSchema(), Routines.PYSOLSP_UPD_LSTW.routine());
-			//fine LP PGNTCORE-24
+			if(callableStatementSOLUPDLSTW == null) {
+				callableStatementSOLUPDLSTW = prepareCall(bFlagUpdateAutocommit, Routines.PYSOLSP_UPD_LSTW.routine());
+				callableStatement = callableStatementSOLUPDLSTW;
+			}
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1, idWallet);                         
 			callableStatement.setString(2, tipoOperazione);                   
 			callableStatement.setString(3, dataoperazione);                     
@@ -3345,35 +3145,52 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
-			//inizio LP PG21XX04 Leak
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240913 - PAGONET-604
+			if(bCloseStat) {
+			//fine LP 20240913 - PAGONET-604
+				//inizio LP PG21XX04 Leak
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+				//fine LP PG21XX04 Leak
+			//inizio LP 20240913 - PAGONET-604
+				callableStatement = null;
+				callableStatementSOLUPDLSTW = null;
 			}
-			//fine LP PG21XX04 Leak
+			//fine LP 20240913 - PAGONET-604
 		}
 	}
 
 	//inizio LP PG21XX04 Leak
 	//Nota. Metodo usato solo da procedure batch
 	//fine LP PG21XX04 Leak
-	public void  cancellaSollecitopagAcq(String idWallet, String tipoOperazione,String dataoperazione,String NumeroTelefono )	throws DaoException {
+	//inizio LP 20240913 - PGNTCORE-24
+	public void  cancellaSollecitopagAcq(String idWallet, String tipoOperazione,String dataoperazione,String NumeroTelefono)	throws DaoException {
+		cancellaSollecitopagAcqTail(true, true, idWallet, tipoOperazione, dataoperazione, NumeroTelefono);
+	}
+
+	public void  cancellaSollecitopagAcqBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String idWallet, String tipoOperazione,String dataoperazione,String NumeroTelefono )	throws DaoException {
+		cancellaSollecitopagAcqTail(bFlagUpdateAutocommit, bCloseStat, idWallet, tipoOperazione, dataoperazione, NumeroTelefono);
+	}
+
+	private void cancellaSollecitopagAcqTail(boolean bFlagUpdateAutocommit, boolean bCloseStat, String idWallet, String tipoOperazione,String dataoperazione,String NumeroTelefono )	throws DaoException {
+	//fine LP 20240913 - PGNTCORE-24
 		CallableStatement callableStatement=null;
 		try {
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(getConnection(), getSchema(), Routines.PYSOLSP_DEL_SOL.routine());
-			callableStatement =  MetaProcedure.prepareCall(getConnection(), getSchema(), Routines.PYSOLSP_DEL_SOL.routine());
-			//fine LP PGNTCORE-24
+			if(callableStatementSOLDELSOL == null) {
+				callableStatementSOLDELSOL = prepareCall(Routines.PYSOLSP_DEL_SOL.routine());
+				callableStatement = callableStatementSOLDELSOL;
+			}
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1, idWallet);                         
 			callableStatement.setString(2, tipoOperazione);                   
 			callableStatement.setString(3, dataoperazione);                     
@@ -3384,26 +3201,29 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
-			//inizio LP PG21XX04 Leak
-			if(callableStatement != null) {
-			//fine LP PG21XX04 Leak
-			try {
-				callableStatement.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+			//inizio LP 20240913 - PGNTCORE-24
+			if(bCloseStat) {
+			//fine LP 20240913 - PGNTCORE-24
+				//inizio LP PG21XX04 Leak
+				if(callableStatement != null) {
+				//fine LP PG21XX04 Leak
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				//inizio LP PG21XX04 Leak
+				}
+				//fine LP PG21XX04 Leak
+			//inizio LP 20240913 - PGNTCORE-24
+				callableStatement = null;
+				callableStatementSOLDELSOL = null;
 			}
-			//inizio LP PG21XX04 Leak
-			}
-			//fine LP PG21XX04 Leak
+			//fine LP 20240913 - PGNTCORE-24
 		}
-
 	}
 
 	//inizio LP PG21XX04 Leak
@@ -3411,17 +3231,27 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 	//fine LP PG21XX04 Leak
 	private CallableStatement callableStatementEsitiSMS = null;  
 
-	public Integer  updateSollecitiConEsitoSMS(String numerocellulare, String Esito,String DescrizioneEsito,String IdFlusso,java.util.Date dataFile) throws DaoException {
+	public Integer updateSollecitiConEsitoSMS(String numerocellulare, String Esito,String DescrizioneEsito,String IdFlusso, java.util.Date dataFile) throws DaoException {
+	//inizio LP 20240913 - PGNTCORE-24/PGNTWPB-3
+		return updateSollecitiConEsitoSMSTail(true, numerocellulare, Esito, DescrizioneEsito, IdFlusso, dataFile);
+	}
+
+	public Integer updateSollecitiConEsitoSMSBatch(boolean bFlagUpdateAutocommit, String numerocellulare, String Esito,String DescrizioneEsito,String IdFlusso,java.util.Date dataFile) throws DaoException {
+		return updateSollecitiConEsitoSMSTail(bFlagUpdateAutocommit, numerocellulare, Esito, DescrizioneEsito, IdFlusso, dataFile);
+	}
+
+	private Integer updateSollecitiConEsitoSMSTail(boolean bFlagUpdateAutocommit, String numerocellulare, String Esito,String DescrizioneEsito,String IdFlusso,java.util.Date dataFile) throws DaoException {
+	//fine LP 20240913 - PGNTCORE-24/PGNTWPB-3
 		//CallableStatement callableStatement=null;
 		int ret=0;
 		try {
 
 			//callableStatement = Helper.prepareCall(getConnection(), getSchema(), Routines.PYSOLSP_UPD_ESITOSMS.routine());
 			if(callableStatementEsitiSMS == null){
-				//inizio LP PGNTCORE-24
+				//inizio LP 20240913 - PGNTCORE-24/PGNTWPB-3
 				//callableStatementEsitiSMS = Helper.prepareCall(getConnection(), getSchema(), Routines.PYSOLSP_UPD_ESITOSMS.routine());
-				callableStatementEsitiSMS =  MetaProcedure.prepareCall(getConnection(), getSchema(), Routines.PYSOLSP_UPD_ESITOSMS.routine());
-				//fine LP PGNTCORE-24
+				callableStatementEsitiSMS = prepareCall(bFlagUpdateAutocommit, Routines.PYSOLSP_UPD_ESITOSMS.routine());
+				//fine LP 20240913 - PGNTCORE-24/PGNTWPB-3
 			}
 			callableStatementEsitiSMS.setString(1, numerocellulare);                         
 			callableStatementEsitiSMS.setString(2, IdFlusso);                   
@@ -3436,29 +3266,21 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
-		} finally {
-			//DAOHelper.closeIgnoringException(getConnection()); 
 		}
 		return ret;
 	}
 
-
-	public CallableStatement  walletServListEmailBatch(Wallet wallet,int rowsPerPage, int pageNumber, String OrderBy)	throws DaoException {
-		CallableStatement callableStatement=null;
-		Connection connection = null;
-
+	public CallableStatement walletServListEmailBatch(Wallet wallet,int rowsPerPage, int pageNumber, String OrderBy)	throws DaoException {
+		CallableStatement callableStatement = null;
+		//Connection connection = null; //LP 20240913 - PGNTCORE-24
 		try {
-			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
+			//connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SRV_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_SRV_LST.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(false, Routines.PYBRSSP_SRV_LST.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,OrderBy);
@@ -3486,28 +3308,65 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
-		} finally {
 		}
 		return callableStatement;
 	}
 
-	public ResultSet  walletServListEmailBatchAnno(Wallet wallet,int rowsPerPage, int pageNumber, String OrderBy)	throws DaoException {
-		//CallableStatement callableStatement=null;
-		Connection connection = null;
+	//inizio LP 20240913 - PGNTCORE-24
+	public ResultSet walletServListEmailBatchRes(Wallet wallet, int rowsPerPage, int pageNumber, String OrderBy) throws DaoException
+	{
 		ResultSet res = null;
 		try {
-			connection = getConnection();
+			if(callableStatementBRSSRVLST == null) {
+				callableStatementBRSSRVLST = prepareCall(false, Routines.PYBRSSP_SRV_LST.routine());
+			}
+			callableStatementBRSSRVLST.setInt(1, pageNumber); /* rows per page */
+			callableStatementBRSSRVLST.setInt(2, rowsPerPage); /* page number*/
+			callableStatementBRSSRVLST.setString(3,OrderBy);
+			callableStatementBRSSRVLST.setString(4,wallet.getCodiceSocieta());
+			callableStatementBRSSRVLST.setString(5,wallet.getCuteCute());
+			callableStatementBRSSRVLST.setString(6,wallet.getChiaveEnte());
+			callableStatementBRSSRVLST.setString(7,wallet.getCodiceFiscaleGenitore());
+			callableStatementBRSSRVLST.setString(8,wallet.getIdWallet());
+			callableStatementBRSSRVLST.setString(9,"");
+			callableStatementBRSSRVLST.setString(10,"");
+			callableStatementBRSSRVLST.setString(11, "");
+			callableStatementBRSSRVLST.setString(12, "");
+			callableStatementBRSSRVLST.setString(13, "");
+			/* we register row start */
+			callableStatementBRSSRVLST.registerOutParameter(14, Types.INTEGER);
+			/* we register row end */
+			callableStatementBRSSRVLST.registerOutParameter(15, Types.INTEGER);
+			/* we register total rows */
+			callableStatementBRSSRVLST.registerOutParameter(16, Types.INTEGER);
+			/* we register total pages */
+			callableStatementBRSSRVLST.registerOutParameter(17, Types.SMALLINT);
+			callableStatementBRSSRVLST.execute();
+			res = callableStatementBRSSRVLST.getResultSet();
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (IllegalArgumentException e) {
+			e.printStackTrace();
+		} catch (HelperException e) {
+			e.printStackTrace();
+		}
+		return res;
+	}
+
+	public ResultSet walletServListEmailBatchAnno(Wallet wallet,int rowsPerPage, int pageNumber, String OrderBy)	throws DaoException {
+		//CallableStatement callableStatement=null;
+		//Connection connection = null;//LP 20240913 - PGNTCORE-24
+		ResultSet res = null;
+		try {
+			//connection = getConnection(); //LP 20240913 - PGNTCORE-24
 			if (callableStatementServAnno == null) {
-				//inizio LP PGNTCORE-24
+				//inizio LP 20240913 - PGNTCORE-24
 				//callableStatementServAnno = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SRV_LST_ANNO.routine());
-				callableStatementServAnno =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_SRV_LST_ANNO.routine());
-				//fine LP PGNTCORE-24
+				callableStatementServAnno = prepareCall(false, Routines.PYBRSSP_SRV_LST_ANNO.routine());
+				//fine LP 20240913 - PGNTCORE-24
 			}
 			callableStatementServAnno.setInt(1, pageNumber);                          /* rows per page */
 			callableStatementServAnno.setInt(2, rowsPerPage);                        /* page number*/
@@ -3532,21 +3391,14 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			callableStatementServAnno.registerOutParameter(17, Types.SMALLINT);
 
 			callableStatementServAnno.execute();
-			res=callableStatementServAnno.getResultSet();
-
-
+			res = callableStatementServAnno.getResultSet();
 
 		} catch (SQLException e) {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
-		} finally {
 		}
 		return res;
 	}
@@ -3554,17 +3406,17 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 	//inizio LP PG21XX04 Leak
 	//Nota. Metodo usato solo da procedure batch
 	//fine LP PG21XX04 Leak
-	public ResultSet  walletOneriNonPagati(Wallet wallet,int rowsPerPage, int pageNumber, String OrderBy)	throws DaoException {
+	public ResultSet walletOneriNonPagati(Wallet wallet,int rowsPerPage, int pageNumber, String OrderBy)	throws DaoException {
 		//CallableStatement callableStatement=null;
 		Connection connection = null;
 		ResultSet res = null;
 		try {
 			connection = getConnection();
-			if (callableStatementOnere==null) {
-				//inizio LP PGNTCORE-24
+			if (callableStatementOnere == null) {
+				//inizio LP 20240913 - PGNTCORE-24
 				//callableStatementOnere = Helper.prepareCall(connection, getSchema(), Routines.PYSOLSP_ONE_NOP.routine());
-				callableStatementOnere = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSOLSP_ONE_NOP.routine());
-				//fine LP PGNTCORE-24
+				callableStatementOnere = prepareCall(Routines.PYSOLSP_ONE_NOP.routine());
+				//fine LP 20240913 - PGNTCORE-24
 			}
 			callableStatementOnere.setString(1,wallet.getIdWallet());
 			callableStatementOnere.execute();
@@ -3573,13 +3425,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
-		} finally {
 		}
 		return res;
 	}
@@ -3594,10 +3441,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		boolean presente = true; 
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_REP_VER_CAR.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_REP_VER_CAR.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRSSP_REP_VER_CAR.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1, fattureRep.getIdWallet());  
 			callableStatement.setString(2, fattureRep.getNumeroFattura());
 
@@ -3612,14 +3459,9 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -3651,10 +3493,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		String[] brsLst  = new String[2];
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_PGB_ADB_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_PGB_ADB_LST.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRSSP_PGB_ADB_LST.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,OrderBy);
@@ -3711,14 +3553,9 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -3768,10 +3605,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		ArrayList<String> arrayApp  = new ArrayList<String>();
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_PGB_ADB_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_PGB_ADB_LST.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRSSP_PGB_ADB_LST.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,OrderBy);
@@ -3821,22 +3658,15 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 
 			}
 
-
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -3866,7 +3696,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		return arrayApp;
 	} 
 
-
 	public ArrayList<String>  arraySollecitiList(Wallet wallet,int rowsPerPage, int pageNumber, String OrderBy)	throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
@@ -3877,13 +3706,12 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		String[] brsLst2  = new String[2];
 		ArrayList<String> arrayApp  = new ArrayList<String>();
 
-
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYBRSSP_SOL_LSTSOL.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_SOL_LSTSOL.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRSSP_SOL_LSTSOL.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,OrderBy);
@@ -3939,14 +3767,9 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -3992,10 +3815,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			//inizio LP PG21XX04 Leak
 			connection = getConnection();
 			//fine LP PG21XX04 Leak
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_NEWIDBRL.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_NEWIDBRL.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRSSP_NEWIDBRL.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1, societa);
 			callableStatement.setString(2, cutecute);                        /* page number*/
 			callableStatement.setString(3,ente);
@@ -4012,12 +3835,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} catch (Throwable e) {
 			System.out.println(e);
 			e.printStackTrace();
@@ -4042,20 +3861,20 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		//fine LP PG21XX04 Leak
 		return bollettino;
 	}
-	public String  getBollettinoBatch(String societa, String cutecute,String ente,String idWallet, Double importod, String tipoBoll , String tipoGener,String utente) {
+
+	public String  getBollettinoBatch(String societa, String cutecute,String ente,String idWallet, Double importod, String tipoBoll, String tipoGener,String utente) {
 		String bollettino = "";
 		String nuovo  ="";
 		//CallableStatement callableStatement=null;
-
 		try {
-			if (callableStatementBollettino==null) {
-				//inizio LP PGNTCORE-24
+			if (callableStatementBollettino == null) {
+				//inizio LP 20240913 - PGNTCORE-24
 				//callableStatementBollettino = Helper.prepareCall(getConnection(), getSchema(), Routines.PYBRSSP_NEWIDBRL.routine());
-				callableStatementBollettino =  MetaProcedure.prepareCall(getConnection(), getSchema(), Routines.PYBRSSP_NEWIDBRL.routine());
-				//fine LP PGNTCORE-24
+				callableStatementBollettino = prepareCall(false, Routines.PYBRSSP_NEWIDBRL.routine());
+				//fine LP 20240913 - PGNTCORE-24
 			}
 			callableStatementBollettino.setString(1, societa);
-			callableStatementBollettino.setString(2, cutecute);                        /* page number*/
+			callableStatementBollettino.setString(2, cutecute);  /* page number*/
 			callableStatementBollettino.setString(3,ente);
 			callableStatementBollettino.setString(4,idWallet);
 			callableStatementBollettino.setDouble(5,importod);
@@ -4067,21 +3886,17 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			callableStatementBollettino.execute();
 			nuovo = callableStatementBollettino.getString(9);
 			bollettino = callableStatementBollettino.getString(10);
-
 		} catch (SQLException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} catch (Throwable e) {
 			System.out.println(e);
 			e.printStackTrace();
 		}
 		return bollettino;
 	}
+
 	public WalletPageList walletSollecitoList(Wallet wallet,int rowsPerPage,
 			int pageNumber, String OrderBy) throws DaoException {
 		CallableStatement callableStatement=null;
@@ -4095,10 +3910,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYBRSSP_SOL_LSTSOL.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_SOL_LSTSOL.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRSSP_SOL_LSTSOL.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,OrderBy);
@@ -4167,15 +3982,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+			walletPageList = new WalletPageList(pageInfo, "01","IllegalArgument-Exception","");
+		} catch (HelperException e) {
 			e.printStackTrace();
-			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
+			walletPageList = new WalletPageList(pageInfo, "01","Helper-Exception","");
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -4221,14 +4031,11 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			connection = getConnection();
 			//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_SEL_NORID.routine());
-			//Nota. Mi fido del vecchio me se la procedura è usataa solo da batch flagUpdateAutocommit ==> false
-			callableStatement =  prepareCall(false, Routines.PYBRSSP_SEL_NORID.routine());
+			//Nota. Mi fido del vecchio me se la procedura e' usata solo da batch flagUpdateAutocommit ==> false
+			callableStatement = prepareCall(false, Routines.PYBRSSP_SEL_NORID.routine());
 			//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
 			callableStatement.setString(1, cuteCute);
-
 			callableStatement.execute();
-
-			
 			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet data = callableStatement.getResultSet();
@@ -4241,19 +4048,14 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 					result.add(wallet);
 				}
 			}
-
 		} catch (SQLException e) {
 			System.out.println(e);
 		} catch (IllegalArgumentException e) {
 			System.out.println(e);
 		} catch (HelperException e) {
 			System.out.println(e);
-		//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
-		} catch (ProcedureReflectorException e) {
-			System.out.println(e);
-		//fine LP 20240828 - PGNTCORE-24/PAGONET-604
 		} finally {
-			//			DAOHelper.closeIgnoringException(connection);
+			//DAOHelper.closeIgnoringException(connection);
 			//inizio LP PG21XX04 Leak
 			if (data != null) {
 				try {
@@ -4271,7 +4073,6 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			}
 			//fine LP PG21XX04 Leak
 		}
-
 		return result;
 	}
 	
@@ -4285,10 +4086,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		//fine LP PG21XX04 Leak
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCBNSP_SEL.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCBNSP_SEL.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYCBNSP_SEL.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1, idWallet);
 			callableStatement.setString(2, anno);
 			callableStatement.setString(3, mese);
@@ -4343,10 +4144,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		Connection connection = null; 
 		try { 
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCBNSP_INS.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCBNSP_INS.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYCBNSP_INS.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1, certBonusNido.getNumeroProtocollo());
 			callableStatement.setString(2, certBonusNido.getIdWallet());
 			callableStatement.setString(3, certBonusNido.getAnno());
@@ -4378,12 +4179,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -4415,10 +4212,10 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		ResultSet data = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240913 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_CSV.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYBRSSP_LST_CSV.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYBRSSP_LST_CSV.routine());
+			//fine LP 20240913 - PGNTCORE-24
 			callableStatement.setString(1,OrderBy);
 			callableStatement.setString(2,wallet.getCodiceSocieta());
 			callableStatement.setString(3,wallet.getCuteCute());
@@ -4485,12 +4282,8 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -4513,4 +4306,122 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		return brsLst;
 	}
 
+	//inizio LP 20240913 - PAGONET-604
+    public void closeCallableStatementS()  {
+	    if(callableStatementServAnno != null) {
+			try {
+				callableStatementServAnno.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementServAnno = null;
+	    }
+	    if(callableStatementOnere != null) {
+			try {
+				callableStatementOnere.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementOnere = null;
+	    }
+	    if(callableStatementBollettino != null) {
+			try {
+				callableStatementBollettino.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementBollettino = null;
+	    }
+	    if(callableStatementBRSINS != null) {
+			try {
+				callableStatementBRSINS.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementBRSINS = null;
+	    }
+	    if(callableStatementBRSUP != null) {
+			try {
+				callableStatementBRSUP.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementBRSUP = null;
+	    }
+	    if(callableStatementBRSBATCH != null) {
+			try {
+				callableStatementBRSBATCH.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementBRSBATCH = null;
+	    }
+	    if(callableStatementEsitiSMS != null) {
+			try {
+				callableStatementEsitiSMS.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementEsitiSMS = null;
+	    }
+		if(callableStatementSOLDELSOL != null) {
+			try {
+				callableStatementSOLDELSOL.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementSOLDELSOL = null;
+		}
+		if(callableStatementBRSLSTSMSEMAIL != null) {
+			try {
+				callableStatementBRSLSTSMSEMAIL.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementBRSLSTSMSEMAIL = null;
+		}
+		if(callableStatementSOLUPDLSTW != null) {
+			try {
+				callableStatementSOLUPDLSTW.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementSOLUPDLSTW = null;
+		}
+		if(callableStatementBRLSPLST != null) {
+			try {
+				callableStatementBRLSPLST.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementBRLSPLST = null;
+		}
+		if(callableStatementRCPSEL == null) {
+			try {
+				callableStatementRCPSEL.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementRCPSEL = null;
+		}
+		if(callableStatementBRSSRVLST == null) {
+			try {
+				callableStatementBRSSRVLST.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementBRSSRVLST = null;
+		}
+		//inizio LP 20240913 - PAGONET-24/PGNTWPB-3
+		if(callableStatementBRSSEL == null) {
+			try {
+				callableStatementBRSSEL.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementBRSSEL = null;
+		}
+		//fine LP 20240913 - PAGONET-24/PGNTWPB-3
+    }
+    //fine LP 20240913 - PAGONET-604
 }

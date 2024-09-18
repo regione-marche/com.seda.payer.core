@@ -15,8 +15,7 @@ import java.util.Properties;
 import javax.sql.DataSource;
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.logger.LoggerWrapper;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+import com.seda.data.helper.HelperException;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.wallet.bean.StatisticheForCruscotto;
@@ -56,10 +55,12 @@ public class CruscottoDAOImpl   extends BaseDaoHandler  implements CruscottoDAO 
 	public CruscottoDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	public CruscottoDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
-	public  StatisticheForCruscotto generaFlussoStatistiche(String cutecute,String filePathWork) throws DaoException {
+
+	public  StatisticheForCruscotto generaFlussoStatistiche(String cutecute, String filePathWork) throws DaoException {
 		StatisticheForCruscotto statisticheForCruscotto = new StatisticheForCruscotto();
 		Connection connection = null;
 		//inizio LP PG21XX04 Leak
@@ -68,24 +69,21 @@ public class CruscottoDAOImpl   extends BaseDaoHandler  implements CruscottoDAO 
 		//fine LP PG21XX04 Leak
 		try {
 			connection = getConnection();
-			
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), STATISTICHE_CRUSCOTTO);
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//callableStatement = Helper.prepareCall(connection, getSchema(), STATISTICHE_CRUSCOTTO);
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), STATISTICHE_CRUSCOTTO);
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(STATISTICHE_CRUSCOTTO);
+			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, cutecute);
 			callableStatement.registerOutParameter(2, Types.INTEGER);
 			callableStatement.registerOutParameter(3, Types.VARCHAR);
 			callableStatement.execute();
-
 			// save output parameters as attributes
 			attributes = new Properties();
 			attributes.setProperty("RETURNCODE", callableStatement.getString(2));
 			attributes.setProperty("RETURNMESSAGE", callableStatement.getString(3));
-			
 			attributes.setProperty("nomeFileScuole", defineFile(filePathWork,"/Scuole.txt"));
 			attributes.setProperty("nomeFileBorsellini", defineFile(filePathWork,"/Borsellini.txt"));
 			attributes.setProperty("nomeFileRicariche", defineFile(filePathWork,"/Ricariche.txt"));
@@ -95,7 +93,6 @@ public class CruscottoDAOImpl   extends BaseDaoHandler  implements CruscottoDAO 
 			attributes.setProperty("nomeFileSolleciti", defineFile(filePathWork,"/Solleciti.txt"));
 			attributes.setProperty("nomeFileConsumiForfettari", defineFile(filePathWork,"/Consumi_forfettari.txt"));
 			attributes.setProperty("nomeFileConsumiGiornalieri", defineFile(filePathWork,"/Consumi_giornalieri.txt"));
-					
 			do {
 				//inizio LP PG21XX04 Leak
 				//ResultSet resultSet = callableStatement.getResultSet();
@@ -103,7 +100,7 @@ public class CruscottoDAOImpl   extends BaseDaoHandler  implements CruscottoDAO 
 				//fine LP PG21XX04 Leak
 				if (resultSet != null && resultSet.next()) {
 					do {					
-						scriviFlusso(statisticheForCruscotto,resultSet.getString(1), resultSet.getString(2));
+						scriviFlusso(statisticheForCruscotto, resultSet.getString(1), resultSet.getString(2));
 					} while(resultSet.next());
 				}
 			} while (callableStatement.getMoreResults());
@@ -111,12 +108,8 @@ public class CruscottoDAOImpl   extends BaseDaoHandler  implements CruscottoDAO 
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeFile();

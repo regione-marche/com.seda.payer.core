@@ -71,25 +71,36 @@ public class SepaDAOImpl extends RestBaseDaoHandler implements SepaDAO  {
 	//Nota. La chiusura della connection è affidata al chiamante.
 	//fine LP PG21XX04
 	public Wallet selectSepa(Wallet wallet) throws DaoException {
-		//		CallableStatement callableStatement=null;
-		ResultSet rs = null; 
-		//		Connection connection = null;
+	//inizio LP 20240913 - PGNTCORE-24
+		return selectSepaTail(true, wallet);
+	}
 
+	public Wallet selectSepaBatch(boolean bFlagUpdateAutocommit, Wallet wallet) throws DaoException {
+		return selectSepaTail(bFlagUpdateAutocommit, wallet);
+	}
+
+	private Wallet selectSepaTail(boolean bFlagUpdateAutocommit, Wallet wallet) throws DaoException {
+	//fine LP 20240913 - PGNTCORE-24
+		//CallableStatement callableStatement=null;
+		ResultSet rs = null; 
+		//Connection connection = null;
 
 		System.out.println("cutecute - " + wallet.getCuteCute());
 		if(wallet.getCodiceRid()!=null) {
 			System.out.println("rid05 - " + wallet.getCodiceRid().substring(0, 5));
 			System.out.println("rid56 - " + wallet.getCodiceRid().substring(5,6));
 			System.out.println("rid6 - " + wallet.getCodiceRid().substring(6));
-		}else{
+		} else {
 			System.out.println("codiceRid = null");
 		}
 
 		try {
-			//			connection = getConnection();
-			if (callableStatementRIDSEL==null) {
-			//	callableStatementRIDSEL = Helper.prepareCall(getConnection(), getSchema(), Routines.SDDAUSP_SEL_BRS.routine());
-                callableStatementRIDSEL = prepareCall(Routines.SDDAUSP_SEL_BRS.routine(), "PUT","SEPA");
+			//connection = getConnection();
+			if (callableStatementRIDSEL == null) {
+				//inizio LP 20240913 - PGNTCORE-24
+				//callableStatementRIDSEL = Helper.prepareCall(getConnection(), getSchema(), Routines.SDDAUSP_SEL_BRS.routine());
+                callableStatementRIDSEL = prepareCall(bFlagUpdateAutocommit, Routines.SDDAUSP_SEL_BRS.routine(), "PUT","SEPA");
+				//fine LP 20240913 - PGNTCORE-24
 			}
 			callableStatementRIDSEL.setString(1, wallet.getCuteCute());
 			callableStatementRIDSEL.setString(2, wallet.getCodiceRid().substring(0,5));
@@ -103,7 +114,7 @@ public class SepaDAOImpl extends RestBaseDaoHandler implements SepaDAO  {
 
 			callableStatementRIDSEL.execute();
 
-			rs=callableStatementRIDSEL.getResultSet();
+			rs = callableStatementRIDSEL.getResultSet();
 			
 			//PG22XX09_SB2 - inizio
 			
@@ -117,8 +128,6 @@ public class SepaDAOImpl extends RestBaseDaoHandler implements SepaDAO  {
 			wallet.setAttribute("voceIncasso", callableStatementRIDSEL.getString(5));
 			wallet.setAttribute("codiceABI", callableStatementRIDSEL.getString(6));
 			//PG22XX09_SB2 - fine
-			
-
 		} catch (SQLException e) {
 			//System.out.println(e);
 			throw new DaoException(e);
@@ -132,7 +141,7 @@ public class SepaDAOImpl extends RestBaseDaoHandler implements SepaDAO  {
 			//System.out.println(e);
 			throw new DaoException(e);
 		} finally {
-			//			DAOHelper.closeIgnoringException(connection);
+			//DAOHelper.closeIgnoringException(connection);
 			//inizio LP PG21XX04 Leak
 			if (rs != null) {
 				try {
@@ -143,9 +152,7 @@ public class SepaDAOImpl extends RestBaseDaoHandler implements SepaDAO  {
 			}
 			//fine LP PG21XX04 Leak
 		}
-
 		System.out.println("ritorno wallet SDDAUSP_SEL_BRS" + wallet.toString());
-
 		return wallet;
 	}
 
@@ -344,31 +351,26 @@ public class SepaDAOImpl extends RestBaseDaoHandler implements SepaDAO  {
 	//inizio LP PG21XX04
 	//Nota. La chiusura della connection è affidata al chiamante.
 	//fine LP PG21XX04
-	//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
+	//inizio LP 20240828 - PGNTCORE-24/PGNTCORE-24
 	public String selectNewRid(Wallet wallet) throws DaoException, SQLException, HelperException {
 		return selectNewRidTail(true, wallet);
 	}
 
 	public String selectNewRidTail(boolean bFlagUpdateAutocommit, Wallet wallet) throws DaoException, SQLException, HelperException {
-	//fine LP 20240828 - PGNTCORE-24/PAGONET-604
-		//		CallableStatement callableStatement=null;
+	//fine LP 20240828 - PGNTCORE-24/PGNTCORE-24
+		//CallableStatement callableStatement=null;
 		String rid = "";
-
-		//		Connection connection = null;
-
+		//Connection connection = null;
 		System.out.println("cutecute - " + wallet.getCuteCute());
 		System.out.println("idWallet - " + wallet.getIdWallet());
 		System.out.println("operatore - " + wallet.getOperatore());
-
-
-
 		try {
-			//			connection = getConnection();
+			//connection = getConnection();
 			if (callableStatementRID == null) {
-				//inizio LP 20240828 - PGNTCORE-24/PAGONET-604
+				//inizio LP 20240828 - PGNTCORE-24/PGNTCORE-24
 				//callableStatementRID = Helper.prepareCall(getConnection(), getSchema(), Routines.SDDDESP_INS_BRS.routine());
 				callableStatementRID = prepareCall(bFlagUpdateAutocommit, Routines.SDDDESP_INS_BRS.routine(), "POST","SEPA");				
-				//fine LP 20240828 - PGNTCORE-24/PAGONET-604
+				//fine LP 20240828 - PGNTCORE-24/PGNTCORE-24
 			}
 			callableStatementRID.setString(1, wallet.getCuteCute());
 			callableStatementRID.setString(2, "");
@@ -385,13 +387,11 @@ public class SepaDAOImpl extends RestBaseDaoHandler implements SepaDAO  {
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw e;
-		}
-		 finally {
-			//			DAOHelper.closeIgnoringException(connection);
+		} finally {
+			//DAOHelper.closeIgnoringException(connection);
 		}
 		return rid;
 	}
-	
 	
 	//inizio PG22XX09_SB2
 		public Integer insertSepaWeb(Autorizzazione autorizzazione ) throws DaoException {
@@ -609,4 +609,26 @@ public class SepaDAOImpl extends RestBaseDaoHandler implements SepaDAO  {
 			return sepaXml;
 		}
 		//fine PG22XX09_SB2
+
+		//inizio LP 20240913 - PGNTCORE-24
+	    public void closeCallableStatementS()  {
+		    if(callableStatementRID != null) {
+				try {
+					callableStatementRID.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				callableStatementRID = null;
+		    }
+		    if(callableStatementRIDSEL != null) {
+				try {
+					callableStatementRIDSEL.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				callableStatementRIDSEL = null;
+		    }
+	    }
+	    //fine LP 20240913 - PGNTCORE-24
+
 }

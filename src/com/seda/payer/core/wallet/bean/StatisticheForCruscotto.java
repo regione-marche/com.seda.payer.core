@@ -89,11 +89,9 @@ public class StatisticheForCruscotto extends ModelAttributes implements Serializ
 		this.recordsPresenzeGiornaliere = recordsPresenzeGiornaliere;
 		this.recordsPresenzeForfettarie = recordsPresenzeForfettarie;
 	}
-	
+
 	public StatisticheForCruscotto() {
 		super();
-		// TODO Auto-generated constructor stub
 	}
-	
-		
+
 }

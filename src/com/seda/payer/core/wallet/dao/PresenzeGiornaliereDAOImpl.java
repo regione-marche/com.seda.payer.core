@@ -13,6 +13,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import javax.sql.DataSource;
+
+import com.seda.data.helper.HelperException;
 import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.dao.Routines;
@@ -21,8 +23,12 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.wallet.bean.PresenzeGiornaliere;
 import com.seda.payer.core.wallet.bean.Wallet;
 
-public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements PresenzeGiornaliereDAO  { 
+public class PresenzeGiornaliereDAOImpl extends BaseDaoHandler implements PresenzeGiornaliereDAO  { 
 	private static final long serialVersionUID = 1L;
+	//inizio LP 20240918 - PGNTCORE-24/PGNTWPB-3
+	private CallableStatement callableStatementPRM_INS = null;
+	private CallableStatement callableStatementSEL_CFI = null;
+	//fineo LP 20240918 - PGNTCORE-24/PGNTWPB-3
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -172,17 +178,25 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 	//inizio LP PG21XX04
 	//Nota. La chiusura della connection è affidata al chiamante.
 	//fine LP PG21XX04
+	//inizio LP 20240918 - PGNTCORE-24/PGNTWPB-3
 	public PresenzeGiornaliere insertBatch(PresenzeGiornaliere presenzeGiornaliere) throws Exception  {
-		CallableStatement callableStatement=null;
-		Connection connection = null;
+		return insertBatchTail(true, true, presenzeGiornaliere);
+	}
+
+	public PresenzeGiornaliere insertBatchTail(boolean bflagUpdateCommit, boolean bCloseStat, PresenzeGiornaliere presenzeGiornaliere) throws Exception  {
+	//fine LP 20240918 - PGNTCORE-24/PGNTWPB-3
+		CallableStatement callableStatement = null;
+		//Connection connection = null; //LP 20240918 - PGNTCORE-24/PGNTWPB-3
 		String errori = "";
 		try {
-			   
-			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240918 - PGNTCORE-24/PGNTWPB-3
+			//connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPRMSP_INS.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPRMSP_INS.routine());
-			//fine LP PGNTCORE-24
+			if(callableStatementPRM_INS == null) {
+				callableStatementPRM_INS = prepareCall(bflagUpdateCommit, Routines.PYPRMSP_INS.routine());
+				callableStatement = callableStatementPRM_INS;
+			}
+			//fine LP 20240918 - PGNTCORE-24/PGNTWPB-3
 			callableStatement.setString(1, presenzeGiornaliere.getCuteCute()); 
 			callableStatement.setString(2, presenzeGiornaliere.getCodiceEnte());
 			callableStatement.setString(3, presenzeGiornaliere.getCodiceAnagraficaFiglio());
@@ -196,16 +210,12 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 			callableStatement.setString(11, presenzeGiornaliere.getChiaveMovimento());
 			callableStatement.setString(12, presenzeGiornaliere.getCodiceScuola());
 			Timestamp dataPresenza =  new Timestamp(presenzeGiornaliere.getPresenzaScuola().getTimeInMillis());
-			
 			callableStatement.setTimestamp(13,dataPresenza);
 			callableStatement.setString(14,presenzeGiornaliere.getIdentificativoRecord());
-			
-			
 			callableStatement.registerOutParameter(15, Types.VARCHAR);
 			callableStatement.execute();
 			errori = callableStatement.getString(15);
 			presenzeGiornaliere.setAttribute("errori", errori);
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new Exception(e);
@@ -218,16 +228,23 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240918 - PGNTCORE-24/PGNTWPB-3
+			if(bCloseStat) {
+			//fine LP 20240918 - PGNTCORE-24/PGNTWPB-3
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240918 - PGNTCORE-24/PGNTWPB-3
+				callableStatement = null;
+				callableStatementPRM_INS = null;
 			}
+			//fine LP 20240918 - PGNTCORE-24/PGNTWPB-3
 			//fine LP PG21XX04 Leak
 		}
-		
 		return presenzeGiornaliere;
 	}
 	
@@ -530,18 +547,27 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 	//inizio LP PG21XX04
 	//Nota. La chiusura della connection è affidata al chiamante.
 	//fine LP PG21XX04
+	//inizio LP 20240918 - PGNTCORE-24/PGNTWPB-3
 	public ArrayList<String> getCodiciFiscali(PresenzeGiornaliere presenzeGiornaliere) throws DaoException {
+		return getCodiciFiscaliBatch(true, true, presenzeGiornaliere);
+	}
+		
+	public ArrayList<String> getCodiciFiscaliBatch(boolean bflagUpdateCommit, boolean bCloseStat, PresenzeGiornaliere presenzeGiornaliere) throws DaoException {
+	//fine LP 20240918 - PGNTCORE-24/PGNTWPB-3
 		ArrayList<String>codiciFiscaliGenitoreFiglio=null;
 		CallableStatement callableStatement=null;
-		Connection connection = null;
+		//Connection connection = null; //LP 20240918 - PGNTCORE-24/PGNTWPB-3
 		String codiceFiscaleGenitore = "";
 		String codiceFiscaleFiglio = "";
 		try {
-			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240918 - PGNTCORE-24/PGNTWPB-3
+			//connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAFMSP_SEL_CFIS.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYAFMSP_SEL_CFIS.routine());
-			//fine LP PGNTCORE-24
+			if(callableStatementSEL_CFI == null) {
+				callableStatementSEL_CFI = prepareCall(bflagUpdateCommit, Routines.PYAFMSP_SEL_CFIS.routine());
+				callableStatement = callableStatementSEL_CFI; 
+			}
+			//fine LP 20240918 - PGNTCORE-24/PGNTWPB-3
 			callableStatement.setString(1, presenzeGiornaliere.getCuteCute());
 			callableStatement.setString(2, presenzeGiornaliere.getCodiceEnte());
 			callableStatement.setString(3, presenzeGiornaliere.getCodiceAnagraficaGenitore());
@@ -559,26 +585,51 @@ public class PresenzeGiornaliereDAOImpl   extends BaseDaoHandler  implements Pre
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240918 - PGNTCORE-24/PGNTWPB-3
+			if(bCloseStat) {
+			//fine LP 20240918 - PGNTCORE-24/PGNTWPB-3
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240918 - PGNTCORE-24/PGNTWPB-3
+				callableStatement = null;
+				callableStatementSEL_CFI = null;
 			}
+			//fine LP 20240918 - PGNTCORE-24/PGNTWPB-3
 			//fine LP PG21XX04 Leak
 		}
 		return codiciFiscaliGenitoreFiglio;
 	}		
 	//PG150310_001 GG - fine
-	
+
+	//inizio LP 20240918 - PGNTCORE-24/PGNTWPB-3
+    public void closeCallableStatementS()  {
+	    if(callableStatementPRM_INS != null) {
+			try {
+				callableStatementPRM_INS.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementPRM_INS = null;
+	    }
+	    if(callableStatementSEL_CFI != null) {
+			try {
+				callableStatementSEL_CFI.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementSEL_CFI = null;
+	    }
+    }
+    //fine LP 20240918 - PGNTCORE-24/PGNTWPB-3
+
 }

@@ -15,6 +15,7 @@ import java.util.Calendar;
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 import com.seda.commons.string.Convert;
+import com.seda.data.helper.HelperException;
 import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
@@ -29,7 +30,10 @@ public class AnagraficaFiglioMenseDAOImpl extends BaseDaoHandler  implements Ana
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	protected CallableStatement callableStatementAFM = null;
+	protected CallableStatement callableStatementAFM_INS = null;
+	//inizio LP 20240918 - PGNTWPB-3
+	protected CallableStatement callableStatementUPD_FSO = null;
+	//fine LP 20240918 - PGNTWPB-3
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -166,35 +170,40 @@ public class AnagraficaFiglioMenseDAOImpl extends BaseDaoHandler  implements Ana
 		return figlio;
 	}
 
+	//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
+	public AnagraficaFiglioMense insertBatch(AnagraficaFiglioMense anagraficaFiglioMense) throws DaoException {
+		return insertBatchTail(true, anagraficaFiglioMense);
+	}
 
-	public AnagraficaFiglioMense insertBatch(AnagraficaFiglioMense anagraficaFiglioMense)	throws DaoException {
+	public AnagraficaFiglioMense insertBatchTail(boolean bflagUpdateAutocommit, AnagraficaFiglioMense anagraficaFiglioMense) throws DaoException {
+	//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 		String errori;
 		try {
-			if (callableStatementAFM == null) {
-				//inizio LP PGNTCORE-24
-				//callableStatementAFM = Helper.prepareCall(getConnection(), getSchema(), Routines.PYAFMSP_INS.routine());
-	            callableStatementAFM = MetaProcedure.prepareCall(getConnection(), getSchema(), Routines.PYAFMSP_INS.routine());
-				//fine LP PGNTCORE-24
+			if (callableStatementAFM_INS == null) {
+				//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
+				//callableStatementAFM_INS = Helper.prepareCall(getConnection(), getSchema(), Routines.PYAFMSP_INS.routine());
+	            callableStatementAFM_INS = prepareCall(bflagUpdateAutocommit, Routines.PYAFMSP_INS.routine());
+	        	//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			}
-			callableStatementAFM.setString(1, (String)anagraficaFiglioMense.getAttribute("cutecute"));
-			callableStatementAFM.setString(2, (String)anagraficaFiglioMense.getAttribute("codente"));
-			callableStatementAFM.setString(3, anagraficaFiglioMense.getCodiceAnagraficaFiglio());
-			callableStatementAFM.setString(4, anagraficaFiglioMense.getCodiceFiscaleFiglio());
-			callableStatementAFM.setString(5, anagraficaFiglioMense.getCodiceAnagraficaGenitore());
-			callableStatementAFM.setString(6, anagraficaFiglioMense.getCodiceFiscaleGenitore());
-			callableStatementAFM.setString(7, anagraficaFiglioMense.getDenominazioneFiglio());
-			callableStatementAFM.setString(8, anagraficaFiglioMense.getCodiceScuola());
-			callableStatementAFM.setDate(9 , new Date(anagraficaFiglioMense.getDataValidita().getTimeInMillis()));
-			callableStatementAFM.setBigDecimal(10, anagraficaFiglioMense.getImportoTariffa());
-			callableStatementAFM.setBigDecimal(11, anagraficaFiglioMense.getImportoIsee());			
-			callableStatementAFM.setString(12, anagraficaFiglioMense.getTipologiaTariffa());
-			callableStatementAFM.setString(13, anagraficaFiglioMense.getClasseSezione());
-			callableStatementAFM.setString(14, anagraficaFiglioMense.getFlagAttivazione()); 
-			callableStatementAFM.setDate(15, new Date(anagraficaFiglioMense.getDataNascitaFiglio().getTimeInMillis()));
-			callableStatementAFM.setString(16, anagraficaFiglioMense.getFlagSospensione());	//PG150310_001 GG
-			callableStatementAFM.registerOutParameter(17, Types.VARCHAR);
-			callableStatementAFM.execute();
-			errori = callableStatementAFM.getString(17);
+			callableStatementAFM_INS.setString(1, (String)anagraficaFiglioMense.getAttribute("cutecute"));
+			callableStatementAFM_INS.setString(2, (String)anagraficaFiglioMense.getAttribute("codente"));
+			callableStatementAFM_INS.setString(3, anagraficaFiglioMense.getCodiceAnagraficaFiglio());
+			callableStatementAFM_INS.setString(4, anagraficaFiglioMense.getCodiceFiscaleFiglio());
+			callableStatementAFM_INS.setString(5, anagraficaFiglioMense.getCodiceAnagraficaGenitore());
+			callableStatementAFM_INS.setString(6, anagraficaFiglioMense.getCodiceFiscaleGenitore());
+			callableStatementAFM_INS.setString(7, anagraficaFiglioMense.getDenominazioneFiglio());
+			callableStatementAFM_INS.setString(8, anagraficaFiglioMense.getCodiceScuola());
+			callableStatementAFM_INS.setDate(9 , new Date(anagraficaFiglioMense.getDataValidita().getTimeInMillis()));
+			callableStatementAFM_INS.setBigDecimal(10, anagraficaFiglioMense.getImportoTariffa());
+			callableStatementAFM_INS.setBigDecimal(11, anagraficaFiglioMense.getImportoIsee());			
+			callableStatementAFM_INS.setString(12, anagraficaFiglioMense.getTipologiaTariffa());
+			callableStatementAFM_INS.setString(13, anagraficaFiglioMense.getClasseSezione());
+			callableStatementAFM_INS.setString(14, anagraficaFiglioMense.getFlagAttivazione()); 
+			callableStatementAFM_INS.setDate(15, new Date(anagraficaFiglioMense.getDataNascitaFiglio().getTimeInMillis()));
+			callableStatementAFM_INS.setString(16, anagraficaFiglioMense.getFlagSospensione());	//PG150310_001 GG
+			callableStatementAFM_INS.registerOutParameter(17, Types.VARCHAR);
+			callableStatementAFM_INS.execute();
+			errori = callableStatementAFM_INS.getString(17);
 			anagraficaFiglioMense.setAttribute("errori", errori);
 		} catch (SQLException e) {
 			System.out.println(e);
@@ -202,14 +211,9 @@ public class AnagraficaFiglioMenseDAOImpl extends BaseDaoHandler  implements Ana
 		} catch (IllegalArgumentException e) {
 			System.out.println(e);
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	System.out.println(e);
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			System.out.println(e);
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 //			DAOHelper.closeIgnoringException(callableStatement);
 		}
@@ -567,16 +571,25 @@ public class AnagraficaFiglioMenseDAOImpl extends BaseDaoHandler  implements Ana
 	//inizio LP PG21XX04 Leak
 	//Nota. Metodo usato solo da procedure batch
 	//fine LP PG21XX04 Leak
+	//inizio LP 20240918 - PGNTWPB-3
 	public ArrayList<AnagraficaFiglioMense> updateFlagSospensione(AnagraficaFiglioMense figlio) throws  DaoException {
-		CallableStatement callableStatement=null;
+		return updateFlagSospensioneBatch(true, true, figlio);
+	}
+
+	public ArrayList<AnagraficaFiglioMense> updateFlagSospensioneBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, AnagraficaFiglioMense figlio) throws  DaoException {
+	//fine LP 20240918 - PGNTWPB-3
+		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		ArrayList<AnagraficaFiglioMense> anagraficaFiglioMenseList = null;
 		int recordsAggiornati=0;
 		try {
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240918 - PGNTWPB-3
 			//callableStatement = Helper.prepareCall(getConnection(), getSchema(), Routines.PYAFMSP_UPD_FSOS.routine());
-            callableStatement = MetaProcedure.prepareCall(getConnection(), getSchema(), Routines.PYAFMSP_UPD_FSOS.routine());
-			//fine LP PGNTCORE-24
+			if(callableStatementUPD_FSO == null) {
+				callableStatementUPD_FSO = prepareCall(bFlagUpdateAutocommit, Routines.PYAFMSP_UPD_FSOS.routine());
+				callableStatement = callableStatementUPD_FSO;
+			}	
+        	//fine LP 20240918 - PGNTWPB-3
 			callableStatement.setString(1, figlio.getCodiceFiscaleGenitore());
 			callableStatement.setString(2, figlio.getCodiceFiscaleFiglio());
 			callableStatement.setString(3, figlio.getFlagSospensione());
@@ -597,18 +610,12 @@ public class AnagraficaFiglioMenseDAOImpl extends BaseDaoHandler  implements Ana
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DaoException(01,"Problemi generici nell'aggiornamento del flag sospensione: " + e.getMessage() + " ErrorCode: " + e.getErrorCode() + "SQLState: " + e.getSQLState(),e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(01,"Problemi generici nell'aggiornamento del flag sospensione: "+ e.getMessage(),e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(01,"Problemi generici nell'aggiornamento del flag sospensione: "+ e.getMessage(),e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
-			////TODO verificare se serve chiudere il resultset ma attenzione perchè trattasi di batch
 			if (data != null) {
 				try {
 					data.close();
@@ -616,15 +623,41 @@ public class AnagraficaFiglioMenseDAOImpl extends BaseDaoHandler  implements Ana
 					e.printStackTrace();
 				}
 			}
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			if(bCloseStat) {
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+				callableStatement = null;
+				callableStatementUPD_FSO = null;
 			}
 			//fine LP PG21XX04 Leak
 		}
 		return anagraficaFiglioMenseList;
 	}
+
+	//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
+    public void closeCallableStatementS()  {
+	    if(callableStatementAFM_INS != null) {
+			try {
+				callableStatementAFM_INS.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementAFM_INS = null;
+	    }
+	    if(callableStatementUPD_FSO != null) {
+			try {
+				callableStatementUPD_FSO.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+			callableStatementUPD_FSO = null;
+	    }
+    }
+    //fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
+	
 }
