@@ -66,7 +66,7 @@ public class ApiClient {
 
     private SSLParameters sslParameters;
 
-    private Integer timeout = 5000;
+    private Integer timeout = 60000;
 
     private boolean logAttivo = true;
 
