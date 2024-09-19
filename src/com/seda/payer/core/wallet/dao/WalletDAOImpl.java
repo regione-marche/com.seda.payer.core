@@ -3823,12 +3823,12 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 			callableStatement.setString(2, cutecute);                        /* page number*/
 			callableStatement.setString(3,ente);
 			callableStatement.setString(4,idWallet);
-			callableStatement.setDouble(5,importod);
+			callableStatement.setBigDecimal(5,new BigDecimal(importod));
 			callableStatement.setString(6,tipoBoll);
 			callableStatement.setString(7,tipoGener);
 			callableStatement.setString(8,utente);
 			callableStatement.registerOutParameter(9, Types.CHAR);
-			callableStatement.registerOutParameter(10, Types.CHAR);
+			callableStatement.registerOutParameter(10, Types.VARCHAR);
 			callableStatement.execute();
 			nuovo = callableStatement.getString(9);
 			bollettino = callableStatement.getString(10);
