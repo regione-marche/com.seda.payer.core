@@ -9,50 +9,45 @@ import java.util.Calendar;
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 import com.seda.commons.string.Convert;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+import com.seda.data.helper.HelperException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class SostaDAOImpl extends BaseDaoHandler implements SostaDAO  { 
 	private static final long serialVersionUID = 1L;
-	
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
 	public SostaDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	public SostaDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}	
-	
-	
+
 	public long calcolaSosta(String codiceUtente, String ente, String targa,
 			String matricola, String nomevia, String numerocivico,
 			Calendar dataorainiziososta, Calendar dataorafinesosta,
 			long identificativoagevolazione) throws DaoException {
-
-
 		CallableStatement callableStatement=null;
 		ResultSet resultSet=null;
 		Connection connection = null;
 		CachedRowSet rowSet = null;
-		
 		String orario = String.valueOf(dataorainiziososta.get(Calendar.HOUR_OF_DAY));
 		long tariffaOraria = 0;
 		long importoSosta = 0;
 		long milliSosta = (dataorafinesosta.getTimeInMillis() - dataorainiziososta.getTimeInMillis());
 		long minutiSosta = milliSosta / (1000 * 60);
 		//TODO: gestire eventuale arrotondamento per eccesso dei minuti
-		
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240919 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSATSP_SEL.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSATSP_SEL.routine());
-			//fine LP PGNTCORE-24
+            callableStatement = prepareCall(Routines.PYSATSP_SEL.routine());
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setString(1, codiceUtente);
 			callableStatement.setString(2, ente);
 			callableStatement.setString(3, matricola);
@@ -72,27 +67,25 @@ public class SostaDAOImpl extends BaseDaoHandler implements SostaDAO  {
 				e.printStackTrace();
 			}
 			if (rowSet.next() ) {
-				String zonaTariffaria = rowSet.getString(1);
-				String matricolaTar = rowSet.getString(2);
-				String nomeviaTar= rowSet.getString(3);
-				String orarioTar= rowSet.getString(4);
+				//inizio LP 20240919 - PGNTCORE-24
+				//String zonaTariffaria = rowSet.getString(1);
+				//String matricolaTar = rowSet.getString(2);
+				//String nomeviaTar= rowSet.getString(3);
+				//String orarioTar= rowSet.getString(4);
+				//tariffaOraria = rowSet.getLong(5);
+				//String municipio = rowSet.getString(6);
+				//String ambito = rowSet.getString(7);
+				//String tratto = rowSet.getString(8);
+				//String agevolazioniTariffarie = rowSet.getString(9);
 				tariffaOraria = rowSet.getLong(5);
-				String municipio = rowSet.getString(6);
-				String ambito = rowSet.getString(7);
-				String tratto = rowSet.getString(8);
-				String agevolazioniTariffarie = rowSet.getString(9);
-				
+				//fine LP 20240919 - PGNTCORE-24
 			}
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//if (closeConnection) {
 				//inizio LP PG21XX04 Leak
@@ -129,10 +122,8 @@ public class SostaDAOImpl extends BaseDaoHandler implements SostaDAO  {
 				//fine LP PG21XX04 Leak
 			//}
 		}
-		
-		importoSosta =  (long)(tariffaOraria / 60f * minutiSosta); 
+		importoSosta =  (long) (tariffaOraria / 60f * minutiSosta); 
 		//TODO: gestire eventuale arrotondamento
-		
 		return importoSosta;
 	}
 //

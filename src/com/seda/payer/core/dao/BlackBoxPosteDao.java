@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.seda.data.helper.HelperException;
-import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.payer.core.bean.ConfigurazioneBlackBox;
 import com.seda.payer.core.bean.ConfigurazionePosteBlackBoxPos;
 import com.seda.payer.core.bean.PosteBlackBoxTes;

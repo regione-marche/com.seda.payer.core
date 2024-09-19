@@ -13,10 +13,7 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.BlackBoxPagelist;
 import com.seda.payer.core.bean.BlackBoxPosLog;
@@ -33,9 +30,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 
 	Properties attributes = new Properties();
 
-	// inizio LP PG21XX04 Leak
+	//inizio LP PG21XX04 Leak
 	@Deprecated
-	// fine LP PG21XX04 Leak
+	//fine LP PG21XX04 Leak
 	public ConfigurazioneBlackBoxDaoImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
@@ -52,9 +49,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-			//PGNTCORE-24 - inizio
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNCNFSP_SEL.routine());
-			//PGNTCORE-24 - fine
+			//inizio LP 20240919 PGNTCORE-24
+			callableStatement = prepareCall(Routines.CNCNFSP_SEL.routine());
+			//fine LP 20240919 PGNTCORE-24
 			callableStatement.setString(1, blackbox.getCodiceEnte());
 			callableStatement.setString(2, blackbox.getCodiceIdentificativoDominio());
 			callableStatement.setString(3, blackbox.getCodiceApplicationCode());
@@ -69,10 +66,8 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
 			if (rowSet.next()) {
 				String codicEnte = rowSet.getString(1);
 				String codiceIdentificativoDominio = rowSet.getString(2);
@@ -100,7 +95,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
 		} finally {
 			// inizio LP PG21XX04 Leak
@@ -146,10 +141,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		int ret = 0;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNCNFSP_UPD.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNCNFSP_UPD.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNCNFSP_UPD.routine());
+			//fine LP 20240919 PGNTCORE-24
 
 //			     IN I_CNF_CCNFCENT VARCHAR(5), 	
 //				 IN I_CNF_CCNFCIDD VARCHAR(16),		
@@ -196,14 +191,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(connection);
@@ -233,10 +223,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNCNFSP_DEL.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNCNFSP_DEL.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNCNFSP_DEL.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, configurazioneBlackBox.getCodiceEnte());
 			callableStatement.setString(2, configurazioneBlackBox.getCodiceApplicationCode());
 			callableStatement.setString(3, configurazioneBlackBox.getCodiceSegregazione());
@@ -253,14 +243,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(connection);
@@ -290,10 +275,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24			
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNCNFSP_INS.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNCNFSP_INS.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNCNFSP_INS.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, configurazioneBlackBox.getCodiceEnte());
 			callableStatement.setString(2, configurazioneBlackBox.getCodiceIdentificativoDominio());
 			callableStatement.setString(3, configurazioneBlackBox.getCodiceApplicationCode());
@@ -322,14 +307,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(connection);
@@ -366,10 +346,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNCNFSP_LST.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNCNFSP_LST.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNCNFSP_LST.routine());
+			//fine LP 20240919 PGNTCORE-24 
 
 			callableStatement.setString(1, blackbox.getCodiceEnte());
 			callableStatement.setString(2, blackbox.getCodiceIdentificativoDominio());
@@ -426,12 +406,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			blackboxPagelist = new BlackBoxPagelist(pageInfo, "01", "Sql-Exception", "");
-		}
-		// inizio LP PGNTCORE-24
-		catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			blackboxPagelist = new BlackBoxPagelist(pageInfo, "01", "Sql-Exception", "");
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(callableStatement);
@@ -466,7 +443,6 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 	@Override
 	public BlackBoxPosPagelist blackboxposList(ConfigurazioneBlackBoxPos blackboxpos, int rowsPerPage, int pageNumber,
 			String OrderBy) throws DaoException {
-		// TODO Auto-generated method stub
 		CallableStatement callableStatement = null;
 		Connection connection = null;
 		ResultSet data = null;
@@ -475,10 +451,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		String[] blackboxLst = new String[2];
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_LST.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_LST.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNDOCSP_LST.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
 			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
@@ -531,11 +507,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			blackBoxPosPagelist = new BlackBoxPosPagelist(pageInfo, "01", "Sql-Exception", "");
-		//inizio LP PGNTCORE-24
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			blackBoxPosPagelist = new BlackBoxPosPagelist(pageInfo, "01", "Sql-Exception", "");
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(callableStatement);
@@ -564,22 +538,19 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			// fine LP PG21XX04 Leak
 		}
 		return blackBoxPosPagelist;
-
-		// return null;
 	}
 
 	@Override
 	public EsitoRisposte delete(ConfigurazioneBlackBoxPos configurazioneBlackBoxpos) throws DaoException {
-		// TODO Auto-generated method stub
 		CallableStatement callableStatement = null;
 		Connection connection = null;
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_DEL.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_DEL.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNDOCSP_DEL.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, configurazioneBlackBoxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, configurazioneBlackBoxpos.getCodiceEnte());
 			callableStatement.setString(3, configurazioneBlackBoxpos.getNumeroAvviso());
@@ -594,14 +565,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(connection);
@@ -627,17 +593,15 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 
 	@Override
 	public ConfigurazioneBlackBoxPos select(ConfigurazioneBlackBoxPos blackboxpos) throws DaoException {
-
 		CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
 		Connection connection = null;
-
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_SEL.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_SEL.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNDOCSP_SEL.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
 			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
@@ -651,14 +615,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(callableStatement);
@@ -687,9 +646,6 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			// fine LP PG21XX04 Leak
 		}
 		return blackboxpos;
-
-		// TODO Auto-generated method stub
-		// return null;
 	}
 
 	@Override
@@ -700,10 +656,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		try {
 
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_UPD.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_UPD.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNDOCSP_UPD.routine());
+			//fine LP 20240919 PGNTCORE-24 
 
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
@@ -747,14 +703,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(connection);
@@ -791,10 +742,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			// cancellando dal DB e da GIT la SP CNDOCSP_UPD_PAG3
 			// callableStatement = Helper.prepareCall(connection, getSchema(),
 			// "CNDOCSP_UPD_PAG3");
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_UPD_PAG.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_UPD_PAG.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNDOCSP_UPD_PAG.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			// fine LP PG200370
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
@@ -819,14 +770,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(connection);
@@ -851,7 +797,6 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 	@Override
 	public BlackBoxPosLogPagelist blackboxposlogList(BlackBoxPosLog blackboxpos, int rowsPerPage, int pageNumber,
 			String OrderBy) throws DaoException {
-		// TODO Auto-generated method stub
 		CallableStatement callableStatement = null;
 		Connection connection = null;
 		ResultSet data = null;
@@ -860,10 +805,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		String[] blackboxLst = new String[2];
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOLSP_LST.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOLSP_LST.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNDOLSP_LST.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
 			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
@@ -909,15 +854,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			blackBoxPosLogPagelist = new BlackBoxPosLogPagelist(pageInfo, "01", "Sql-Exception", "");
-		}
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	blackBoxPosLogPagelist = new BlackBoxPosLogPagelist(pageInfo, "01", "Sql-Exception", "");
-		catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			blackBoxPosLogPagelist = new BlackBoxPosLogPagelist(pageInfo, "01", "Sql-Exception", "");
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(callableStatement);
@@ -946,22 +885,19 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			// fine LP PG21XX04 Leak
 		}
 		return blackBoxPosLogPagelist;
-
-		// return null;
 	}
 
 	@Override
 	public EsitoRisposte delete(BlackBoxPosLog configurazioneBlackBoxPosLog) throws DaoException {
-		// TODO Auto-generated method stub
 		CallableStatement callableStatement = null;
 		Connection connection = null;
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOLSP_DEL.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOLSP_DEL.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNDOLSP_DEL.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setInt(1, configurazioneBlackBoxPosLog.getIdLog());
 			callableStatement.registerOutParameter(2, Types.VARCHAR);
 			callableStatement.registerOutParameter(3, Types.VARCHAR);
@@ -974,14 +910,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(connection);
@@ -1002,7 +933,6 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			// fine LP PG21XX04 Leak
 		}
 		return esitoRisposte;
-		// return null;
 	}
 
 	@Override
@@ -1012,15 +942,14 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		int esito = -1;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOLSP_INS.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOLSP_INS.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNDOLSP_INS.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, configurazioneBlackBoxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, configurazioneBlackBoxpos.getCodiceEnte());
 			callableStatement.setString(3, configurazioneBlackBoxpos.getNumeroAvviso());
-			callableStatement.setDate(4,
-					new java.sql.Date(configurazioneBlackBoxpos.getDataInserimento().getTimeInMillis()));
+			callableStatement.setDate(4, new java.sql.Date(configurazioneBlackBoxpos.getDataInserimento().getTimeInMillis()));
 			callableStatement.setString(5, configurazioneBlackBoxpos.getOperazioneEseguita());
 			callableStatement.registerOutParameter(6, Types.INTEGER);
 			callableStatement.execute();
@@ -1031,14 +960,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(connection);
@@ -1071,10 +995,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		try {
 
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNKEYSP.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNKEYSP.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNKEYSP.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, codiceEnte);
 			callableStatement.setString(2, code);
 			callableStatement.registerOutParameter(3, ret);
@@ -1089,14 +1013,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(connection);
@@ -1116,7 +1035,6 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			}
 			// fine LP PG21XX04 Leak
 		}
-
 		return ret;
 	}
 
@@ -1128,10 +1046,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		int ret = 0;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_INS.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_INS.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNDOCSP_INS.routine());
+			//fine LP 20240919 PGNTCORE-24 
 
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
@@ -1199,14 +1117,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(connection);
@@ -1240,10 +1153,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		try {
 
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNKEYSP_GG.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNKEYSP_GG.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNKEYSP_GG.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, codiceEnte);
 			callableStatement.setString(2, code);
 			callableStatement.registerOutParameter(3, ret);
@@ -1258,14 +1171,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24 
 		} finally {
 			// inizio LP PG21XX04 Leak
 			// DAOHelper.closeIgnoringException(connection);
@@ -1285,21 +1193,20 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			}
 			// fine LP PG21XX04 Leak
 		}
-
 		return ret;
 	}
 	
-	// inizio SR PAGONET-11
+	//inizio SR PAGONET-11
 	public void aggiornaFlagInviaDovuto(String codiceIdentificativoDominio, String numeroAvviso, String flagInviaDovuto) throws Exception {
 		CallableStatement callableStatement = null;
 		Connection connection = null;
 		
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(),  Routines.CNDOCSP_UPD_INV.routine());		
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_UPD_INV.routine());
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall(Routines.CNDOCSP_UPD_INV.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, codiceIdentificativoDominio.trim());
 			callableStatement.setString(2, numeroAvviso.trim());
 			callableStatement.setString(3, flagInviaDovuto);
@@ -1308,14 +1215,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			throw new Exception(x);
 		} catch (IllegalArgumentException x) {
 			throw new Exception(x);
-		//inizio LP PGNTCORE-24 
-		//} catch (HelperException x) {
-		//	e.printStackTrace();
-		//	throw new DaoException(x);
-		} catch (ProcedureReflectorException x) {
+		} catch (HelperException x) {
 			x.printStackTrace();
 			throw new DaoException(x);
-		//fine LP PGNTCORE-24 
 		} finally {
 			if (callableStatement != null) {
 				try {
@@ -1324,7 +1226,6 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 					e.printStackTrace();
 				}
 			}
-			
 			if (connection != null) {
 				try {
 					connection.close();

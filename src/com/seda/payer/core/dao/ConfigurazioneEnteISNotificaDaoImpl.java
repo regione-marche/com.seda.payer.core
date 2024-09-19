@@ -13,11 +13,7 @@ import javax.sql.DataSource;
 import javax.sql.rowset.WebRowSet;
 
 import com.seda.commons.string.Convert;
-//inizio LP PG21XX04 Leak
-//import com.seda.data.dao.DAOHelper;
-//fine LP PG21XX04 Leak
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.ConfigurazioneEnteISNotifica;
 import com.seda.payer.core.bean.ConfigurazioneEnteISNotificaPagelist;
@@ -46,10 +42,10 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 		try {
 			connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_SEL.routine()); //TODO
-			//inizio LP PGNTCORE-24 
+			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYENOSP_SEL");
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYENOSP_SEL");
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall("PYENOSP_SEL");
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, configurazioneEnteISNotifica.getCodiceUtente());
 			callableStatement.setString(2, configurazioneEnteISNotifica.getChiaveEnte());
 			callableStatement.setString(3, configurazioneEnteISNotifica.getCodiceImpostaServizio());
@@ -64,14 +60,9 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//	DAOHelper.closeIgnoringException(callableStatement);
@@ -110,10 +101,10 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 		try {
 			connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_SEL.routine());
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240919 PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYENOSP_SEL2");
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYENOSP_SEL2");
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall("PYENOSP_SEL2");
+			//fine LP 20240919 PGNTCORE-24 
 			System.out.println("PYENOSP_SEL2 - cutecute: " + cutecute);
 			System.out.println("PYENOSP_SEL2 - ente: " + ente);
 			System.out.println("PYENOSP_SEL2 - codiceIS: " + codiceIS);
@@ -132,14 +123,9 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//		DAOHelper.closeIgnoringException(callableStatement);
@@ -176,11 +162,11 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 		int ret=0;
 		try {
 			connection = getConnection();
-			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_UPD.routine()); //TODO
-			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_UPD.routine());
+			//inizio LP 20240919 PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYENOSP_UPD");
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYENOSP_UPD");
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall("PYENOSP_UPD");
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, configurazioneEnteISNotifica.getCodiceUtente());
 			callableStatement.setString(2, configurazioneEnteISNotifica.getChiaveEnte());
 			callableStatement.setString(3, configurazioneEnteISNotifica.getCodiceImpostaServizio());
@@ -195,14 +181,9 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -232,10 +213,10 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 		try {
 			connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_DEL.routine());
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240919 PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYENOSP_DEL");
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYENOSP_DEL");
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall("PYENOSP_DEL");
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, configurazioneEnteISNotifica.getCodiceUtente());
 			callableStatement.setString(2, configurazioneEnteISNotifica.getChiaveEnte());
 			callableStatement.setString(3, configurazioneEnteISNotifica.getCodiceImpostaServizio());
@@ -250,14 +231,9 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -286,10 +262,10 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 		try {
 			connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_INS.routine());
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240919 PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYENOSP_INS");
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYENOSP_INS");
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall("PYENOSP_INS");
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, configurazioneEnteISNotifica.getCodiceUtente());
 			callableStatement.setString(2, configurazioneEnteISNotifica.getChiaveEnte());
 			callableStatement.setString(3, configurazioneEnteISNotifica.getCodiceImpostaServizio());
@@ -306,14 +282,9 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -352,10 +323,10 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 		try {
 			connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYMDTSP_LST.routine());
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240919 PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(),"PYENOSP_LST2"); 
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYENOSP_LST2");
-			//fine LP PGNTCORE-24 
+			callableStatement = prepareCall("PYENOSP_LST2");
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1,configurazioneEnteISNotifica.getCodiceUtente());
 			callableStatement.setString(2,configurazioneEnteISNotifica.getChiaveEnte());
 			callableStatement.setString(3,configurazioneEnteISNotifica.getCodiceImpostaServizio());
@@ -422,14 +393,9 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			configurazioneEnteISNotificaPagelist = new ConfigurazioneEnteISNotificaPagelist(pageInfo, "01","Sql-Exception","", null);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	configurazioneEnteISNotificaPagelist = new ConfigurazioneEnteISNotificaPagelist(pageInfo, "01","Sql-Exception","", null);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			configurazioneEnteISNotificaPagelist = new ConfigurazioneEnteISNotificaPagelist(pageInfo, "01","Sql-Exception","", null);
-		//fine LP PGNTCORE-24
 		} catch (IOException e) {
 			e.printStackTrace();
 			configurazioneEnteISNotificaPagelist = new ConfigurazioneEnteISNotificaPagelist(pageInfo, "01","Sql-Exception","", null);

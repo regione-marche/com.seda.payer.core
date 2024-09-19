@@ -3,7 +3,6 @@ package com.seda.payer.core.dao;
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.security.TokenGenerator;
 import com.seda.commons.string.Convert;
-import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.data.spi.DaoHandler;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.ComunicazioneUfficio;
@@ -29,16 +28,13 @@ public class InserisciUfficioDao extends DaoHandler {
     }
 
     public EsitoRisposte insertParametriUfficio(ComunicazioneUfficio parametriUfficio) {
-
         EsitoRisposte esito = new EsitoRisposteUfficio();
-
-        try{
-            Connection connection = getConnection();
-			//inizio LP PGNTCORE-24 
+        try {
+			//inizio LP 20240919 - PGNTCORE-24 
+            //Connection connection = getConnection();
             //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), "PYINFTB_INS");
-            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYINFTB_INS");
-			//fine LP PGNTCORE-24 
-
+            CallableStatement callableStatement = prepareCall("PYINFTB_INS");
+			//fine LP 20240919 - PGNTCORE-24 
             callableStatement.setString(1, TokenGenerator.generateUUIDToken());
             callableStatement.setDate(2, Date.valueOf(parametriUfficio.getDataConferma()));
             callableStatement.setDate(3,Date.valueOf(parametriUfficio.getDataScadenza()));
@@ -46,31 +42,24 @@ public class InserisciUfficioDao extends DaoHandler {
             callableStatement.setString(5,parametriUfficio.getTipoRichiesta());
             callableStatement.setString(6,parametriUfficio.getStato());
             callableStatement.setString(7,parametriUfficio.getOperatore());
-
             callableStatement.execute();
             esito.setCodiceMessaggio("0");
-
         } catch (Throwable e) {
             logger.info("errore inserimento richiesta: " + e.getMessage());
             e.printStackTrace();
             esito.setCodiceMessaggio("1");
         }
-
         return esito;
     }
 
-
-
     public ComunicazioneUfficioPageList getParametriPrenotazione(ComunicazioneUfficio parametriUfficio,String stato) {
         String[] ufficioList = new String[2];
-
-        try{
-            Connection connection = getConnection();
-			//inizio LP PGNTCORE-24 
+        try {
+			//inizio LP 20240919 - PGNTCORE-24
+            //Connection connection = getConnection();
             //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(),"PYINFTB_SEL");
-            CallableStatement callableStatement = MetaProcedure.prepareCall(connection, getSchema(), "PYINFTB_SEL");
-			//fine LP PGNTCORE-24 
-
+            CallableStatement callableStatement = prepareCall("PYINFTB_SEL");
+			//fine LP 20240919 - PGNTCORE-24 
             callableStatement.setInt(1, parametriUfficio.getPageNumber());
             callableStatement.setInt(2, parametriUfficio.getRowsPerPage());
             callableStatement.setString(3, parametriUfficio.getOrder());
@@ -86,9 +75,7 @@ public class InserisciUfficioDao extends DaoHandler {
             callableStatement.registerOutParameter(8, Types.INTEGER);
             callableStatement.registerOutParameter(9, Types.INTEGER);
             callableStatement.registerOutParameter(10, Types.SMALLINT);
-
             PageInfo pageInfo = null;
-
             if (callableStatement.execute()) {
                 pageInfo = new PageInfo();
                 pageInfo.setPageNumber(parametriUfficio.getPageNumber());
@@ -99,7 +86,6 @@ public class InserisciUfficioDao extends DaoHandler {
                 pageInfo.setNumPages(callableStatement.getInt(10));
                 ResultSet data = callableStatement.getResultSet();
                 this.loadWebRowSet(data);
-
                 ufficioList[0] = Convert.webRowSetToString(this.getWebRowSetImpl());
                 if (callableStatement.getMoreResults()) {
                     try {
@@ -113,42 +99,16 @@ public class InserisciUfficioDao extends DaoHandler {
                 }
             }
             return new ComunicazioneUfficioPageList(pageInfo, "00", "", ufficioList);
-
-
         } catch(Throwable e){
             logger.info("errore getParametriPrenotazione" + e.getMessage());
             e.printStackTrace();
         }
-
         return null;
     }
 
-
-
-//PYINFSP_SEL_BATCH
-
-public void getParametriBatch(){
-        Connection connection = getConnection();
+    //PYINFSP_SEL_BATCH
+	public void getParametriBatch(){
+        //Connection connection = getConnection(); //LP 20240919 - PGNTCORE-24 commentata non serve a nulla e fa una getConnection che è meglio evitare 
+	}
 
 }
-
-
-
-
-
-
-
-
-
-
-
-}
-
-
-
-
-
-
-
-
-
