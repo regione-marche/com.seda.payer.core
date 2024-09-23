@@ -40,6 +40,7 @@ public interface WalletDAO extends Serializable {
 
 	public Wallet insertBatch(Wallet wallet) throws  DaoException;
 	public Wallet select(Wallet wallet) throws  DaoException;
+	public Wallet select(Wallet wallet, boolean bCloseConn) throws  DaoException; //LP 20240923 - PAGONET-24/PGNTWPB-3
 	public Wallet selectBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, boolean bCloseConn, Wallet wallet) throws  DaoException; //LP 20240916 - PAGONET-24/PGNTWPB-3
 	public Wallet select_anag(Wallet wallet)throws DaoException;
 	public String select_id( Wallet wallet)throws DaoException;

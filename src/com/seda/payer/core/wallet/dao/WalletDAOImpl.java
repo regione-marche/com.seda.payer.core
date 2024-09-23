@@ -133,8 +133,15 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 		return selectTail(true, true, true, wallet);
 	}
 
+	//inzio LP 20240923 - PAGONET-24/PGNTWPB-3
+	public Wallet select(Wallet wallet, boolean bCloseConn) throws  DaoException
+	{
+		return selectTail(true, true, false, wallet);
+	}
+	//fine LP 20240923 - PAGONET-24/PGNTWPB-3
+
 	public Wallet selectBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, boolean bCloseConn, Wallet wallet) throws DaoException {
-		return selectTail(bFlagUpdateAutocommit, true, bCloseConn, wallet);
+		return selectTail(bFlagUpdateAutocommit, bCloseStat, bCloseConn, wallet);
 	}
 	
 	private Wallet selectTail(boolean bFlagUpdateAutocommit, boolean bCloseStat, boolean bCloseConn, Wallet wallet) throws DaoException {
@@ -3116,7 +3123,7 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 	}
 
 	public void  updateSollecitiConIdflussoBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String idWallet, String tipoOperazione,String dataoperazione,String idFlusso)	throws DaoException {
-		updateSollecitiConIdflussoTail(bFlagUpdateAutocommit, true, idWallet, tipoOperazione, dataoperazione, idFlusso);
+		updateSollecitiConIdflussoTail(bFlagUpdateAutocommit, bCloseStat, idWallet, tipoOperazione, dataoperazione, idFlusso);
 	}
 
 	private void  updateSollecitiConIdflussoTail(boolean bFlagUpdateAutocommit, boolean bCloseStat, String idWallet, String tipoOperazione,String dataoperazione,String idFlusso)	throws DaoException {
@@ -3167,7 +3174,7 @@ public class WalletDAOImpl extends BaseDaoHandler implements WalletDAO  {
 	}
 
 	public void  cancellaSollecitopagAcqBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String idWallet, String tipoOperazione,String dataoperazione,String NumeroTelefono)	throws DaoException {
-		cancellaSollecitopagAcqTail(bFlagUpdateAutocommit, true, idWallet, tipoOperazione, dataoperazione, NumeroTelefono);
+		cancellaSollecitopagAcqTail(bFlagUpdateAutocommit, bCloseStat, idWallet, tipoOperazione, dataoperazione, NumeroTelefono);
 	}
 
 	private void cancellaSollecitopagAcqTail(boolean bFlagUpdateAutocommit, boolean bCloseStat, String idWallet, String tipoOperazione,String dataoperazione,String NumeroTelefono)	throws DaoException {
