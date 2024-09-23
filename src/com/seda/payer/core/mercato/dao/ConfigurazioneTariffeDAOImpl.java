@@ -13,8 +13,7 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -70,7 +69,7 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_LST.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYTAMSP_LST.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_LST.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
@@ -137,14 +136,9 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -184,7 +178,7 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_DEL.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYTAMSP_DEL.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_DEL.routine());
 			//fine LP PGNTCORE-24
 //			IN I_TAM_CSOCCSOC VARCHAR(5), 
 //			IN I_TAM_CUTECUTE VARCHAR(5),
@@ -208,14 +202,9 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -248,7 +237,7 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_INS.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYTAMSP_INS.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_INS.routine());
 			//fine LP PGNTCORE-24
 //					IN I_TAM_KTAMKTAM" VARCHAR(64),
 //					IN I_TAM_CSOCCSOC" CHAR(5),
@@ -309,7 +298,6 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			} else {
 			    callableStatement.setTimestamp(15, new java.sql.Timestamp(configurazioneTariffe.getDataFineValidita().getTimeInMillis()));
 			}
-
 			callableStatement.registerOutParameter(16, Types.VARCHAR);
 			callableStatement.registerOutParameter(17, Types.VARCHAR);			
 			callableStatement.execute();
@@ -322,14 +310,9 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -363,7 +346,7 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_SEL.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYTAMSP_SEL.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_SEL.routine());
 			//fine LP PGNTCORE-24
 //			IN I_TAM_CSOCCSOC VARCHAR(5), 
 //			IN I_TAM_CUTECUTE VARCHAR(5),
@@ -396,7 +379,6 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -432,13 +414,9 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (rowSet != null) {
@@ -484,7 +462,7 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_SLK.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYTAMSP_SLK.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_SLK.routine());
 			//fine LP PGNTCORE-24
 //	IN I_TAM_KTAMKTAM VARCHAR(64) 				
 			callableStatement.setString(1, configurazioneTariffe.getCodiceKeyTariffa());
@@ -495,7 +473,6 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-		// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (rowSet.next() ) {
@@ -530,12 +507,8 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -590,7 +563,7 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_TOT.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYTAMSP_TOT.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_TOT.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneTariffe.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneTariffe.getCuteCute());
@@ -634,12 +607,8 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -685,7 +654,7 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_APA.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYTAMSP_APA.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_APA.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneTariffe.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneTariffe.getCuteCute());
@@ -722,12 +691,8 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -770,7 +735,7 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_APL.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYTAMSP_APL.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_APL.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneTariffe.getCodiceKeyPiazzola());
 			callableStatement.execute();
@@ -805,12 +770,8 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -853,7 +814,7 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_UPD.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYTAMSP_UPD.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_UPD.routine());
 			//fine LP PGNTCORE-24
 //			IN I_TAM_CSOCCSOC VARCHAR(5), 
 //			IN I_TAM_CUTECUTE VARCHAR(5),
@@ -907,14 +868,9 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -947,7 +903,7 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 		connection = getConnection();
 		//inizio LP PGNTCORE-24
 		//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_UPK.routine());
-        callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYTAMSP_UPK.routine());
+        callableStatement = prepareCall(Routines.PYTAMSP_UPK.routine());
 		//fine LP PGNTCORE-24
 //		IN I_TAM_KTAMKTAM VARCHAR(64), 
 //		IN I_TAM_DTAMTRTA DECIMAL(9,5),
@@ -993,14 +949,9 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 	} catch (IllegalArgumentException e) {
 		e.printStackTrace();
 		throw new DaoException(e);
-	//inizio LP PGNTCORE-24
-	//} catch (HelperException e) {
-	//	e.printStackTrace();
-	//	throw new DaoException(e);
-	} catch (ProcedureReflectorException e) {
+	} catch (HelperException e) {
 		e.printStackTrace();
 		throw new DaoException(e);
-	//fine LP PGNTCORE-24
 	} finally {
 		//inizio LP PG21XX04 Leak
 		//DAOHelper.closeIgnoringException(connection);

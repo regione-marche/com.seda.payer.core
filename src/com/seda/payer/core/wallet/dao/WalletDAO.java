@@ -45,7 +45,10 @@ public interface WalletDAO extends Serializable {
 	public String select_id( Wallet wallet)throws DaoException;
 	public void update(Wallet wallet) throws  DaoException;
 	public void update(Wallet wallet,boolean closeConnection) throws  DaoException;
-	public void updateTail(boolean bFlagUpdateAutocommit,Wallet wallet,boolean closeConnection) throws  DaoException;
+	//inizio LP 20240916 - PAGONET-24/PGNTWPB-3
+	//public void updateTail( Wallet wallet, boolean closeConnection) throws  DaoException;
+	public void updateTail(boolean bFlagUpdateAutocommit, boolean bClosesStat, boolean bCloseConnection, Wallet wallet) throws  DaoException;
+	//fine LP 20240916 - PAGONET-24/PGNTWPB-3
 	public Integer updateAnagrafica(Wallet wallet) throws  DaoException;	
 	public WalletPageList walletList(Wallet wallet, String tipoServizio, String tipoSollecito,String flagrendicontato, String presenzaOneri,int rowsPerPage, int pageNumber,String OrderBy) throws  DaoException;
 	public boolean verRepCaricato(FattureRep fattureRep)  throws  DaoException;  
@@ -94,7 +97,4 @@ public interface WalletDAO extends Serializable {
 	public CertificazioneBonusNido getCertificazioneBonusNido(String idWallet, String anno, String mese, String chiavePresenza) throws  DaoException;
 	public void insertCertificazioneBonusNido(CertificazioneBonusNido certBonusNido) throws  DaoException;
 	//PG180180_001 GG 22052019 - fine
-
-	public void closeCallableStatementS(); //LP 20240913 - PAGONET-604
-
 }

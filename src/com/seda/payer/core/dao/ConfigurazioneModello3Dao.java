@@ -12,8 +12,6 @@ import com.seda.payer.core.wallet.bean.EsitoRisposte;
 import com.seda.payer.core.wallet.bean.Wallet;
 
 public interface ConfigurazioneModello3Dao extends Serializable{
-
-	
 	public ConfigurazioneModello3 select(ConfigurazioneModello3 configurazioneModello3) throws  DaoException;
 	public Integer update(ConfigurazioneModello3 configurazioneModello3) throws  DaoException;
 	public ConfigurazioneModello3Pagelist configurazioneModello3List(ConfigurazioneModello3 configurazioneModello3, int rowsPerPage, int pageNumber, String OrderBy) throws  DaoException;

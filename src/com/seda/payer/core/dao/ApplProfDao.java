@@ -25,7 +25,7 @@ public class ApplProfDao extends BaseDaoHandler {
 
 	//inizio LP 20240909 - PGNTBOLDER-1
 	public ApplProf doDetail(String chiaveProfilo) throws DaoException {
-		return doDetailTail(false, chiaveProfilo);
+		return doDetailTail(true, chiaveProfilo);
 	}
 
 	public ApplProf doDetailTail(boolean bFlagUpdateAutocomit, String chiaveProfilo) throws DaoException {
@@ -83,16 +83,13 @@ public class ApplProfDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(ApplProf applProf, int rowsPerPage, int pageNumber) throws DaoException {
-		
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(applProf, rowsPerPage, pageNumber);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(applProf, rowsPerPage, pageNumber);
 	}
+
 	public void rowSets(ApplProf applProf, int rowsPerPage, int pageNumber) throws DaoException {
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
@@ -105,7 +102,6 @@ public class ApplProfDao extends BaseDaoHandler {
 			callableStatement.setString(1, applProf.getChiaveProfilo());
 			callableStatement.setString(2, applProf.getCodiceProfilo());
 			callableStatement.setString(3, applProf.getDescrizioneProfilo());			
-
 			callableStatement.setString(4, "");
 			callableStatement.setInt(5, rowsPerPage);
 			callableStatement.setInt(6, pageNumber);
@@ -131,7 +127,6 @@ public class ApplProfDao extends BaseDaoHandler {
 		} catch (HelperException x) {
 			throw new DaoException(x);
 		//inizio LP PG21XX04 Leak
-		//}
 		} finally {
 			if(callableStatement != null) {
 				try {
@@ -140,8 +135,8 @@ public class ApplProfDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-		}
 		//fine LP PG21XX04 Leak
+		}
 	}
 
 	//inizio LP 20240909 - PGNTBOLDER-1
@@ -149,7 +144,7 @@ public class ApplProfDao extends BaseDaoHandler {
 		doSaveTail(true, applProf, codOp);
 	}
 
-	public void doSaveTail(boolean bFlagUpdateAutocomit, ApplProf applProf,String codOp) throws DaoException {
+	public void doSaveTail(boolean bFlagUpdateAutocomit, ApplProf applProf, String codOp) throws DaoException {
 	//fine LP 20240909 - PGNTBOLDER-1
 	    CallableStatement callableStatement = null;
 		try	{
@@ -216,7 +211,6 @@ public class ApplProfDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			if ((applProf.getChiaveProfilo() == null || applProf.getChiaveProfilo().length() == 0))
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("applProf.chiaveProfilo"));
-			
 			callableStatement.setString(1, applProf.getChiaveProfilo());
 			callableStatement.execute();
 			//commit();

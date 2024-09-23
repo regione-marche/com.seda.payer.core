@@ -6,7 +6,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import com.seda.commons.event.Event;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.PgBollIV;
 import com.seda.payer.core.exception.DaoException;

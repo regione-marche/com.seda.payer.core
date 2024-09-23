@@ -1,6 +1,5 @@
 package com.seda.payer.core.dao;
 
-import java.math.BigInteger;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,14 +8,12 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Calendar;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.bean.InvalidateLog;
 import com.seda.payer.core.bean.Log;
 import com.seda.payer.core.bean.LogPage;
-import com.seda.payer.core.bean.ResponseData;
 import com.seda.payer.core.exception.DaoException;
 
 /**

@@ -24,7 +24,7 @@ public class FlussiRenDao extends BaseDaoHandler{
  * Il carattere usato per separare i campi nei file CSV
  */
 	private final String csvSep = ";";
-	protected CallableStatement callableStatementSelByKeyBatch = null;
+	//protected CallableStatement callableStatementSelByKeyBatch = null; //LP 20240923 - PGNTCORE-24
 	
 	public FlussiRenDao(Connection connection, String schema) {
 		super(connection, schema);
@@ -709,15 +709,17 @@ public class FlussiRenDao extends BaseDaoHandler{
 	public FlussiRen selectByKeyBatch (String chiaveRendicontazione)throws DaoException
 	{
 		ResultSet data = null;
+		CallableStatement callableStatementSelByKeyBatch = null; //LP 20240920 - PGNTECCSV-10
 	
-		try{
-			if (callableStatementSelByKeyBatch == null) {
-				callableStatementSelByKeyBatch = prepareCall(Routines.FLREN_SELBYKEY.routine());
-			} 
+		try {
+			//if (callableStatementSelByKeyBatch == null) { //LP 20240920 - PGNTECCSV-10
+			callableStatementSelByKeyBatch = prepareCall(Routines.FLREN_SELBYKEY.routine());
+			//}  //LP 20240920 - PGNTECCSV-10
 			callableStatementSelByKeyBatch.setString(1, chiaveRendicontazione);
 			if (callableStatementSelByKeyBatch.execute()) {
 				data = callableStatementSelByKeyBatch.getResultSet();
-				if (data.next() && data.getString("REN_KRENKREN") != null) return FlussiRen.getBean(data);
+				if (data.next() && data.getString("REN_KRENKREN") != null)
+					return FlussiRen.getBean(data);
 			}
 			return null;
 		} catch (SQLException x) {
@@ -736,6 +738,16 @@ public class FlussiRenDao extends BaseDaoHandler{
 					e.printStackTrace();
 				}
 			}
+			//inizio LP 20240920 - PGNTECCSV-10
+			if (callableStatementSelByKeyBatch != null) {
+				try {
+					callableStatementSelByKeyBatch.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				callableStatementSelByKeyBatch = null;
+			}
+			//fine LP 20240920 - PGNTECCSV-10
 		}
 	}
 	
@@ -860,31 +872,22 @@ public class FlussiRenDao extends BaseDaoHandler{
 		ResultSet data = null;
 		//fine LP PG21XX04 Leak
 		String codSeda = null;
-		try
-		{
-			
-			{
-				callableStatement = prepareCall(Routines.FLREN_COD_UTE.routine());
-				callableStatement.setString(1, codiceSocieta == null ? "" :  codiceSocieta);
-				callableStatement.setString(2, codiceUtente == null ? "" :  codiceUtente);
-				callableStatement.setString(3, chiaveEnte == null ? "" : chiaveEnte);
-				callableStatement.setString(4, codiceTipologiaServizio == null ? "" : codiceTipologiaServizio);
-				if(callableStatement.execute())
-				{
-					//inizio LP PG21XX04 Leak
-					//ResultSet data = callableStatement.getResultSet();
-					data = callableStatement.getResultSet();
-					//fine LP PG21XX04 Leak
-					if (data.next())
-					{
-						codSeda = data.getString(1);
-					
-						
-					}
+		try {
+			callableStatement = prepareCall(Routines.FLREN_COD_UTE.routine());
+			callableStatement.setString(1, codiceSocieta == null ? "" :  codiceSocieta);
+			callableStatement.setString(2, codiceUtente == null ? "" :  codiceUtente);
+			callableStatement.setString(3, chiaveEnte == null ? "" : chiaveEnte);
+			callableStatement.setString(4, codiceTipologiaServizio == null ? "" : codiceTipologiaServizio);
+			if(callableStatement.execute()) {
+				//inizio LP PG21XX04 Leak
+				//ResultSet data = callableStatement.getResultSet();
+				data = callableStatement.getResultSet();
+				//fine LP PG21XX04 Leak
+				if (data.next()) {
+					codSeda = data.getString(1);
 				}
 			}
-		}
-		catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
 		} catch (SQLException e) {
 			throw new DaoException(e);
@@ -916,9 +919,7 @@ public class FlussiRenDao extends BaseDaoHandler{
 	{
 		CallableStatement callableStatement = null;
 		int numrighe= -1;
-
-
-		try{
+		try {
 			callableStatement = prepareCall(Routines.PYRENSP_UPD_ST_REN_ALL.routine());
 			callableStatement.registerOutParameter(1, Types.INTEGER);
 			callableStatement.executeUpdate();
@@ -931,9 +932,7 @@ public class FlussiRenDao extends BaseDaoHandler{
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally
-		{
+		} finally {
 			if (callableStatement != null) {
 				try {
 					callableStatement.close();
@@ -943,6 +942,4 @@ public class FlussiRenDao extends BaseDaoHandler{
 			}
 		}
 	}
-	
-	
 }

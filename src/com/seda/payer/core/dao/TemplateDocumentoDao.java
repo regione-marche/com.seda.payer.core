@@ -8,7 +8,6 @@ import java.sql.Timestamp;
 
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.logger.LoggerWrapper;
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.TemplateDocumento;
 import com.seda.payer.core.exception.DaoException;

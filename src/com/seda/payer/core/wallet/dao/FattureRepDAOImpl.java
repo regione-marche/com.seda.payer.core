@@ -8,8 +8,8 @@ import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.Calendar;
+
 import com.seda.data.helper.Helper;
-import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler; 
@@ -21,22 +21,21 @@ import com.seda.payer.core.wallet.bean.FattureRep;
  *
  */
 public class FattureRepDAOImpl  extends BaseDaoHandler  implements FattureRepDAO  {  
-	CallableStatement insertBatchCs=null;
-	Connection connection = null;
-	 
-	
+	CallableStatement insertBatchCs = null;
+	//Connection connection = null; //LP PGNTCORE-24
+
 	public FattureRepDAOImpl(Connection connection, String schema) {
 		super(connection, schema); 
 	}
 
-	
-
 	public void openInsertBatch( )	throws DaoException { 
 		try {
-			connection = getConnection();
 			//inizio LP PGNTCORE-24
+			//connection = getConnection();
 			//insertBatchCs = Helper.prepareCall(connection, getSchema(), Routines.PYFTRSP_INS.routine());
-			insertBatchCs = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYFTRSP_INS.routine());
+			if(insertBatchCs == null) {
+				insertBatchCs = prepareCall(Routines.PYFTRSP_INS.routine());
+			}
 			//fine LP PGNTCORE-24
 		} catch (Exception e) {
 			throw new DaoException(e);
@@ -53,6 +52,7 @@ public class FattureRepDAOImpl  extends BaseDaoHandler  implements FattureRepDAO
 */
 	public void closeInsertBatch( ) {
 		Helper.close(insertBatchCs);
+		insertBatchCs = null; //LP PGNTCORE-24
 		//Helper.close(connection); 
 	}
  
@@ -102,7 +102,7 @@ public class FattureRepDAOImpl  extends BaseDaoHandler  implements FattureRepDAO
 		{
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(conn, getSchema(), Routines.PYAFMSP_SEL_SRV.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYAFMSP_SEL_SRV.routine());
+			callableStatement = prepareCall(Routines.PYAFMSP_SEL_SRV.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, idWallet);
 			callableStatement.setString(2, codiceAnagraficaFiglio);
@@ -158,8 +158,8 @@ public class FattureRepDAOImpl  extends BaseDaoHandler  implements FattureRepDAO
 	}
 
 	public AnagraficaFiglioMense getDatiAnagraficaServizio(String idWallet,
-			String codiceAnagraficaFiglio, String codiceFiscaleFiglio,
-			Calendar periodoCompetenza) throws DaoException, Exception {
+		String codiceAnagraficaFiglio, String codiceFiscaleFiglio,
+		Calendar periodoCompetenza) throws DaoException, Exception {
 		return null;
 	}
 

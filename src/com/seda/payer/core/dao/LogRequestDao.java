@@ -390,6 +390,9 @@ public class LogRequestDao extends BaseDaoHandler {
 			//if(callableStatement.getInt(2) == 0) {
 			if(callableStatement.getInt(3) == 0) {
 			//fine LP PG21X007 - 202112
+				//inizio LP 20240923 - PGNTCORE-24
+				callableStatement.close();
+				//fine LP 20240923 - PGNTCORE-24
 				callableStatement = prepareCall(Routines.PGSP_BACKUP_TABLE.routine());
 				//LP PG22XX02 - 20220223 log.debug("LogRequestDao: \n\tOP: Make tab backup\n\t ROUTINE: " + 
 				//LP PG22XX02 - 20220223 		Routines.PGSP_BACKUP_TABLE.routine());
@@ -406,7 +409,7 @@ public class LogRequestDao extends BaseDaoHandler {
 				callableStatement.setString(10, nameSchema);
 				//fine LP PG21X007 - 202112
 				callableStatement.executeUpdate();
-				callableStatement.close();
+				//callableStatement.close(); //LP 20240923 - PGNTCORE-24
 			}
 		} catch (SQLException x) {
 			throw new DaoException(x);
@@ -424,6 +427,7 @@ public class LogRequestDao extends BaseDaoHandler {
 			}
 		}
 	}  
+
 	//	IN CASO DI RECUPERO DEL CODICE CORRENTE RICORDARSI DI INSERIRE LA TABELLA DI BACKUP NEI PARAMETRI DI INPUT
 	//3� versione con le operazioni sul dizionario nel codice java 
 	/*

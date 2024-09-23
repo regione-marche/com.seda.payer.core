@@ -72,15 +72,11 @@ public class ConfigEstrattoContoDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(ConfigEstrattoConto configEstrattoConto, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(configEstrattoConto.getEnte().getUser().getCompany().getCompanyCode(),configEstrattoConto.getEnte().getUser().getUserCode(),configEstrattoConto.getEnte().getAnagEnte().getChiaveEnte() , rowsPerPage, pageNumber);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(configEstrattoConto.getEnte().getUser().getCompany().getCompanyCode(),configEstrattoConto.getEnte().getUser().getUserCode(),configEstrattoConto.getEnte().getAnagEnte().getChiaveEnte() , rowsPerPage, pageNumber);
 	}
 
 	private void rowSets(String companyCode, String userCode, String chiaveEnte,int rowsPerPage, int pageNumber) throws DaoException {

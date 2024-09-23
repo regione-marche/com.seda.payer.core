@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import javax.sql.DataSource;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+
+import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -52,7 +52,7 @@ public class GestioneAvvisiDAOImpl extends BaseDaoHandler implements GestioneAvv
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMSGSP_LST.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMSGSP_LST.routine());
+			callableStatement = prepareCall(Routines.PYMSGSP_LST.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
@@ -82,23 +82,15 @@ public class GestioneAvvisiDAOImpl extends BaseDaoHandler implements GestioneAvv
 				walletPageList = new WalletPageList(pageInfo, "00","",getWebRowSetXml());
 				return walletPageList;
 			}
-
-
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -138,7 +130,7 @@ public class GestioneAvvisiDAOImpl extends BaseDaoHandler implements GestioneAvv
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMSGSP_SEL.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMSGSP_SEL.routine());
+			callableStatement = prepareCall(Routines.PYMSGSP_SEL.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1,avviso.getCuteCute());
 			callableStatement.setString(2,avviso.getCodSoc());
@@ -159,12 +151,8 @@ public class GestioneAvvisiDAOImpl extends BaseDaoHandler implements GestioneAvv
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -205,7 +193,7 @@ public class GestioneAvvisiDAOImpl extends BaseDaoHandler implements GestioneAvv
 		try {
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMSGSP_UPD.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMSGSP_UPD.routine());
+			callableStatement = prepareCall(Routines.PYMSGSP_UPD.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, avviso.getCodSoc());
 			callableStatement.setString(2, avviso.getCuteCute());
@@ -218,14 +206,9 @@ public class GestioneAvvisiDAOImpl extends BaseDaoHandler implements GestioneAvv
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DaoException(01,"Problemi generici nell'aggiornamento dei dati",e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(01,"Problemi generici nell'aggiornamento dei dati",e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(01,"Problemi generici nell'aggiornamento dei dati",e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -248,6 +231,4 @@ public class GestioneAvvisiDAOImpl extends BaseDaoHandler implements GestioneAvv
 		}
 		return recordAggio;
 	}
-
-
 }

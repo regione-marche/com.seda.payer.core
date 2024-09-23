@@ -4,17 +4,7 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
-import com.seda.payer.core.bean.ModuloIntegrazionePagamenti;
-import com.seda.payer.core.bean.ModuloIntegrazionePagamentiContainer;
-import com.seda.payer.core.bean.ModuloIntegrazionePagamentiOneri;
-import com.seda.payer.core.bean.ModuloIntegrazionePagamentiPaymentStatus;
 import com.seda.payer.core.bean.NotificaPagamentiEsterni;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;

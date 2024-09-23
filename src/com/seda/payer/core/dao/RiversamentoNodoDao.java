@@ -10,7 +10,6 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.AvanzamentoStato;
 import com.seda.payer.core.bean.RiversamentoNodo;

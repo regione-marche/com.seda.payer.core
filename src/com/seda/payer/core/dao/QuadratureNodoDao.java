@@ -25,10 +25,6 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 
 	private PageInfo pageInfo = null;
 
-	//inizio LP 20240912 - PGNTFATT-5
-	private CallableStatement callableStatemenSelEnt = null;
-	//fine LP 20240912 - PGNTFATT-5
-	
 	public QuadratureNodoDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
@@ -1066,10 +1062,7 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		{
 			//inizio LP 20240912 - PGNTFATT-5
 			//callableStatement = prepareCall(Routines.PYQUNSP_SEL_ENT.routine());
-			if(callableStatemenSelEnt == null) {
-				callableStatemenSelEnt = prepareCall(bFlagUpdateAutocomit, Routines.PYQUNSP_SEL_ENT.routine());
-				callableStatement = callableStatemenSelEnt;
-			}
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.PYQUNSP_SEL_ENT.routine());
 			//fine LP 20240912 - PGNTFATT-5
 			callableStatement.setString(1, hasFilters ? dataDa : "");
 			callableStatement.setString(2, hasFilters ? dataA : "");
@@ -1116,18 +1109,4 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		}
 		return list;
 	}
-	
-	//inizio LP 20240912 - PGNTFATT-5
-	public void closeCallableStatementS() {
-		if(callableStatemenSelEnt != null) {
-			try {
-				callableStatemenSelEnt.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatemenSelEnt = null;
-		}
-	}
-	//fine LP 20240912 - PGNTFATT-5
-	
 }

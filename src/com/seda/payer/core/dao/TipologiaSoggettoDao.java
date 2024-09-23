@@ -1,12 +1,5 @@
 package com.seda.payer.core.dao;
 
-import java.io.BufferedWriter;
-
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -14,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.commons.bean.TypeRequest;
 import com.seda.payer.core.bean.TipologiaSoggetto;
@@ -36,10 +28,9 @@ public class TipologiaSoggettoDao extends BaseDaoHandler {
 	//}
 	//fine LP PG21XX04 Leak
 	
-	private BufferedWriter getFilePath(String nomeFilePath) throws FileNotFoundException  {
-		// TODO[AA]
-		return  new BufferedWriter( new OutputStreamWriter( new FileOutputStream( new File(nomeFilePath) , true) )  );   // il true finale indica che siamo in append
-	}
+//	private BufferedWriter getFilePath(String nomeFilePath) throws FileNotFoundException  {
+//		return  new BufferedWriter( new OutputStreamWriter( new FileOutputStream( new File(nomeFilePath) , true) )  );   // il true finale indica che siamo in append
+//	}
 	
 	public void doList_Belf(String codiceBelfiore) throws DaoException {
 		CallableStatement callableStatement = null;
@@ -50,7 +41,6 @@ public class TipologiaSoggettoDao extends BaseDaoHandler {
 //			try {
 //				filelog = getFilePath("D:\\Applications\\Pagonet2\\Log\\logDAOWISMANAGER.log");
 //			} catch (FileNotFoundException e1) {
-//				// TODO Auto-generated catch block
 //				e1.printStackTrace();
 //			}
 			callableStatement = prepareCall(Routines.SSG_DOLIST_BELF.routine());
@@ -69,7 +59,6 @@ public class TipologiaSoggettoDao extends BaseDaoHandler {
 //				try {
 //					filelog.write("inizio data = callableStatement.getResultSet();\r\n");
 //				} catch (IOException e1) {
-//					// TODO Auto-generated catch block
 //					e1.printStackTrace();
 //				}
 				data = callableStatement.getResultSet();
@@ -77,7 +66,6 @@ public class TipologiaSoggettoDao extends BaseDaoHandler {
 //				try {
 //					filelog.write("fine data = callableStatement.getResultSet();\r\n");
 //				} catch (IOException e1) {
-//					// TODO Auto-generated catch block
 //					e1.printStackTrace();
 //				}
 				
@@ -86,7 +74,6 @@ public class TipologiaSoggettoDao extends BaseDaoHandler {
 //						filelog.write("RESULTSET POPOLATO PER = " + codiceBelfiore + "\r\n");
 //						filelog.write("CODICE SOGGETTO = " + data.getString("SSG_KSSGKSSG") + "\r\n");
 //					} catch (IOException e) {
-//						// TODO Auto-generated catch block
 //						e.printStackTrace();
 //					}
 //				}
@@ -100,14 +87,12 @@ public class TipologiaSoggettoDao extends BaseDaoHandler {
 //				try {
 //					filelog.write("inizio this.loadWebRowSets(callableStatement);\r\n");
 //				} catch (IOException e) {
-//					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
 				this.loadWebRowSets(callableStatement);
 //				try {
 //					filelog.write("fine this.loadWebRowSets(callableStatement);\r\n");
 //				} catch (IOException e) {
-//					// TODO Auto-generated catch block
 //					e.printStackTrace();
 //				}
 			}
@@ -117,7 +102,6 @@ public class TipologiaSoggettoDao extends BaseDaoHandler {
 //			try {
 //				filelog.write("errore SQL = " + x.getMessage() + "\r\n");
 //			} catch (IOException e) {
-//				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
 			throw new DaoException(x);
@@ -129,7 +113,6 @@ public class TipologiaSoggettoDao extends BaseDaoHandler {
 //			try {
 //				filelog.close();
 //			} catch (IOException e) {
-//				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
 			//inizio LP PG21XX04 Leak
@@ -157,15 +140,11 @@ public class TipologiaSoggettoDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(TipologiaSoggetto tipologiaSoggetto, int rowsPerPage, int pageNumber,String descComune) throws DaoException {
-		
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(tipologiaSoggetto, rowsPerPage, pageNumber,descComune);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(tipologiaSoggetto, rowsPerPage, pageNumber,descComune);
 	}
 	
 	public void rowSets(TipologiaSoggetto tipologiaSoggetto, int rowsPerPage, int pageNumber,String descComune) throws DaoException {
@@ -216,17 +195,12 @@ public class TipologiaSoggettoDao extends BaseDaoHandler {
 	public void doSave(TipologiaSoggetto tipologiaSogetto, String codOp) throws DaoException {
 		CallableStatement callableStatement = null;
 		try	{
-			
 			if (tipologiaSogetto.getCodiceBelfiore() == null)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("tipologiaSoggetto.comune"));
-
 			if (tipologiaSogetto.getChiaveTipologiaSoggetto() == null)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("tipologiaSoggetto.chiaveTipoSogg"));
-
-			
 			if (tipologiaSogetto.getCodiceTipologiaSoggetti() == null)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("tipologiaSoggetto.codiceTipologiaSogg"));
-
 			if (codOp.equals(TypeRequest.ADD_SCOPE.scope()))
 			{
 				callableStatement = prepareCall(Routines.SSG_DOINSERT.routine());
@@ -274,18 +248,14 @@ public class TipologiaSoggettoDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		try	{
 			callableStatement = prepareCall(Routines.SSG_DODELETE.routine());
-			
 			if (tipologiaSogetto.getCodiceBelfiore() == null)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("tipologiaSoggetto.comune"));
-
 			if (tipologiaSogetto.getChiaveTipologiaSoggetto() == null)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("tipologiaSoggetto.chiaveTipoSogg"));
-
 			callableStatement.setString(1, tipologiaSogetto.getChiaveTipologiaSoggetto());
 			callableStatement.setString(2, tipologiaSogetto.getCodiceBelfiore());
 			//callableStatement.registerOutParameter(3, Types.CHAR);
 			callableStatement.execute();
-			
 		} catch (SQLException x) {
 			if(x.getErrorCode()== -532){
 				throw new DaoException(55,"Impossibile effettuare la cancellazione, sono presenti una o più informazioni correlate");

@@ -34,11 +34,9 @@ public class CarrelloVirtualeDao extends DaoHandler {
 			callableStatement.execute();
 			String itemId = callableStatement.getString(13);
 			return itemId;
-		} 
-		catch (Exception x) {
+		} catch (Exception x) {
 			throw new DaoException(x);
-		} 
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DaoUtil.closeStatement(callableStatement);
 			if (callableStatement != null) {
@@ -71,11 +69,9 @@ public class CarrelloVirtualeDao extends DaoHandler {
 				}
 			}
 			return items;
-		} 
-		catch (Exception x) {
+		} catch (Exception x) {
 			throw new DaoException(x);
-		} 
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DaoUtil.closeStatement(callableStatement);
 			if (data != null) {
@@ -103,11 +99,9 @@ public class CarrelloVirtualeDao extends DaoHandler {
 			item.onUpdate(callableStatement);
 			callableStatement.setString(7, securityToken);
 			callableStatement.execute();
-		} 
-		catch (Exception x) {
+		} catch (Exception x) {
 			throw new DaoException(x);
-		} 
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DaoUtil.closeStatement(callableStatement);
 			if (callableStatement != null) {
@@ -128,11 +122,9 @@ public class CarrelloVirtualeDao extends DaoHandler {
 			item.onDelete(callableStatement);
 			callableStatement.setString(3, securityToken);
 			callableStatement.execute();
-		} 
-		catch (Exception x) {
+		} catch (Exception x) {
 			throw new DaoException(x);
-		} 
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DaoUtil.closeStatement(callableStatement);
 			if (callableStatement != null) {
@@ -153,11 +145,9 @@ public class CarrelloVirtualeDao extends DaoHandler {
 			callableStatement.setString(1, shoppingCartId);
 			callableStatement.setString(2, securityToken);
 			callableStatement.execute();
-		} 
-		catch (Exception x) {
+		} catch (Exception x) {
 			throw new DaoException(x);
-		} 
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DaoUtil.closeStatement(callableStatement);
 			if (callableStatement != null) {
@@ -180,11 +170,9 @@ public class CarrelloVirtualeDao extends DaoHandler {
 			callableStatement.setString(3, codiceUtente);
 			callableStatement.setString(4, securityToken);
 			callableStatement.execute();
-		} 
-		catch (Exception x) {
+		} catch (Exception x) {
 			throw new DaoException(x);
-		} 
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DaoUtil.closeStatement(callableStatement);
 			if (callableStatement != null) {
@@ -220,11 +208,9 @@ public class CarrelloVirtualeDao extends DaoHandler {
 					return new ConfigSessioneCarrello(data);
 			}
 			return null;
-		} 
-		catch (Exception x) {
+		} catch (Exception x) {
 			throw new DaoException(x);
-		} 
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DaoUtil.closeStatement(callableStatement);
 			if (data != null) {
@@ -251,11 +237,9 @@ public class CarrelloVirtualeDao extends DaoHandler {
 			callableStatement = prepareCall(Routines.CAV_DOPURGE.routine());
 			callableStatement.setInt(1, 7200);
 			callableStatement.execute();
-		}
-		catch (Exception x) {
+		} catch (Exception x) {
 			throw new DaoException(x);
-		} 
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DaoUtil.closeStatement(callableStatement);
 			if (callableStatement != null) {
@@ -288,11 +272,9 @@ public class CarrelloVirtualeDao extends DaoHandler {
 				}
 			}
 			return items;
-		} 
-		catch (Exception x) {
+		} catch (Exception x) {
 			throw new DaoException(x);
-		} 
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DaoUtil.closeStatement(callableStatement);
 			if (data != null) {
@@ -322,11 +304,9 @@ public class CarrelloVirtualeDao extends DaoHandler {
 			callableStatement.execute();
 			String cartId = callableStatement.getString(6);
 			return cartId;
-		} 
-		catch (Exception x) {
+		} catch (Exception x) {
 			throw new DaoException(x);
-		} 
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DaoUtil.closeStatement(callableStatement);
 			if (callableStatement != null) {
@@ -348,7 +328,6 @@ public class CarrelloVirtualeDao extends DaoHandler {
 		try	{
 			if (shoppingCartId == null || shoppingCartId.length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("cart.shoppingCartId"));
-
 			callableStatement = prepareCall(Routines.CAV_DODETAIL.routine());
 			callableStatement.setString(1, shoppingCartId);
 			if (callableStatement.execute()) {
@@ -360,11 +339,9 @@ public class CarrelloVirtualeDao extends DaoHandler {
 					return new CarrelloVirtuale(data);
 			}
 			return null;
-		} 
-		catch (Exception x) {
+		} catch (Exception x) {
 			throw new DaoException(x);
-		} 
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DaoUtil.closeStatement(callableStatement);
 			if (data != null) {
@@ -390,13 +367,10 @@ public class CarrelloVirtualeDao extends DaoHandler {
 		try	{
 			if (shoppingCartId == null || shoppingCartId.length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("cart.shoppingCartId"));
-
 			callableStatement = prepareCall(Routines.CAV_DODELETE.routine());
 			callableStatement.setString(1, shoppingCartId);
 			callableStatement.execute();
 			//commit();
-			
-								
 		} catch (SQLException x) {
 			throw new DaoException(x.getErrorCode(),x.getMessage(),x);
 		} catch (IllegalArgumentException x) {
@@ -430,11 +404,9 @@ public class CarrelloVirtualeDao extends DaoHandler {
 			//lo stato del carrello non deve cambiare
 			callableStatement.setString(3, null);
 			callableStatement.execute();
-		} 
-		catch (Exception x) {
+		} catch (Exception x) {
 			throw new DaoException(x);
-		} 
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DaoUtil.closeStatement(callableStatement);
 			if (callableStatement != null) {
@@ -447,5 +419,4 @@ public class CarrelloVirtualeDao extends DaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-
 }

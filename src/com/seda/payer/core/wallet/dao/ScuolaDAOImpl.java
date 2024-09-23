@@ -7,22 +7,25 @@ import java.sql.Types;
 import javax.sql.DataSource;
 
 import com.seda.data.helper.HelperException;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.wallet.bean.Scuola;
 
 public class ScuolaDAOImpl  extends  BaseDaoHandler  implements ScuolaDAO  {
 	private static final long serialVersionUID = 1L;
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
+
 	public ScuolaDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	public ScuolaDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
+
 	//inizio LP PG21XX04
 	//Nota. La chiusura della connection è affidata al chiamante.
 	//fine LP PG21XX04
@@ -73,9 +76,6 @@ public class ScuolaDAOImpl  extends  BaseDaoHandler  implements ScuolaDAO  {
 		} catch (HelperException e) {
 			System.out.println(e);
 			message = e.getMessage();
-		} catch (ProcedureReflectorException e) {
-			System.out.println(e);
-			message = e.getMessage();
 		} finally {
 //			DAOHelper.closeIgnoringException(connection);
 			//inizio LP PG21XX04 Leak
@@ -88,7 +88,6 @@ public class ScuolaDAOImpl  extends  BaseDaoHandler  implements ScuolaDAO  {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return message;
 	}
 }

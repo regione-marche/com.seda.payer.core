@@ -37,6 +37,4 @@ public interface SepaDAO extends Serializable {
 	public String selectSepaEC(String cuteCute, String rid) throws  DaoException;
 	//PG22XX09_SB2 - fine
 	
-	public void closeCallableStatementS(); //LP 20240913 - PGNTCORE-24/PAGONET-604
-	
 }

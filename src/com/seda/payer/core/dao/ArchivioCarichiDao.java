@@ -26,7 +26,7 @@ import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class ArchivioCarichiDao extends BaseDaoHandler {
-	
+
 	public ArchivioCarichiDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
@@ -34,10 +34,16 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	//PYEH1SP_SE2
 	//inizio LP 20240828 - PGNTACWS-22
 	public ArchivioCarichiDocumento getDocumento(ArchivioCarichiDocumento dto) throws DaoException {
-		return getDocumentoTail(true, dto);
+		//inizio LP 20240920 - PGNTECCSV-10
+		//return getDocumentoTail(true, dto);
+		return getDocumentoBatch(true, true, dto);
+		//fine LP 20240920 - PGNTECCSV-10
 	}
 
-	public ArchivioCarichiDocumento getDocumentoTail(boolean bFlagUpdateAutocommit, ArchivioCarichiDocumento dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+	//public ArchivioCarichiDocumento getDocumentoTail(boolean bFlagUpdateAutocommit, ArchivioCarichiDocumento dto) throws DaoException {
+	public ArchivioCarichiDocumento getDocumentoBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiDocumento dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 	//fine LP 20240828 - PGNTACWS-22
 		CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
@@ -56,13 +62,12 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(6, dto.getImpostaServizio());
 			callableStatement.setString(7, dto.getNumeroDocumento());
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet rs = callableStatement.getResultSet();
 				rs = callableStatement.getResultSet();
 				//fine LP PG21XX04 Leak
-				if(rs.next()){
+				if(rs.next()) {
 					dto.setProgressivoFlusso(rs.getLong(1));
 					dto.setTipoRecord(rs.getString(2));
 					dto.setDataCreazioneFlusso(java.sql.Date.valueOf(rs.getString(4)));
@@ -106,13 +111,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 		return dto;
@@ -120,12 +132,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	
 	//PYEH8SP_SE2
 	public ArchivioCarichiAnagrafica getAnagrafica(ArchivioCarichiAnagrafica dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return getAnagraficaBatch(true, true, dto);
+	}
+	public ArchivioCarichiAnagrafica getAnagraficaBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiAnagrafica dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
 		ResultSet rs = null;
 		//fine LP PG21XX04 Leak
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH8SP_SE2.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEH8SP_SE2.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH8SP_SE2.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, dto.getCodiceUtente());
 			callableStatement.setString(2, dto.getTipoServizio());
 			callableStatement.setString(3, dto.getCodiceEnte());			
@@ -134,13 +154,12 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(6, dto.getImpostaServizio());
 			callableStatement.setString(7, dto.getCodiceFiscale());
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet rs = callableStatement.getResultSet();
 				rs = callableStatement.getResultSet();
 				//fine LP PG21XX04 Leak
-				if(rs.next()){
+				if(rs.next()) {
 					dto.setProgressivoFlusso(rs.getLong(1));
 					dto.setTipoRecord(rs.getString(2));
 					dto.setDataCreazioneFlusso(java.sql.Date.valueOf(rs.getString(4)));
@@ -172,40 +191,54 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
-		
 		return dto;
 	}
 	
 	//PYEH1SP_SEL3
 	public DatiMailGeos getAnagMail(DatiMailGeos dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return getAnagMailBatch(true, true, dto);
+	}	
+
+	public DatiMailGeos getAnagMailBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, DatiMailGeos dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
 		ResultSet rs = null;
 		//fine LP PG21XX04 Leak
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH1SP_SEL3.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEH1SP_SEL3.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH1SP_SEL3.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, dto.getCutecute());
 			callableStatement.setString(2, dto.getSocieta());
 			callableStatement.setString(3, dto.getEnte());			
 			callableStatement.setString(4, dto.getNumeroDoc());
 			callableStatement.setString(5, dto.getCodFiscale());
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet rs = callableStatement.getResultSet();
 				rs = callableStatement.getResultSet();
 				//fine LP PG21XX04 Leak
-				if(rs.next()){
+				if(rs.next()) {
 					dto.setAnnoDocumento(rs.getString(1));
 					dto.setDescrizioneImpostServizio(rs.getString(2));
 					dto.setImportoBollettino(rs.getBigDecimal(3));
@@ -239,26 +272,42 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
-		
 		return dto;
 	}
+
 	//PYEH6SP_SE2
 	public ArchivioCarichiRuolo getRuolo(ArchivioCarichiRuolo dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return getRuoloBatch(true, true, dto);
+	}
+
+	public ArchivioCarichiRuolo getRuoloBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiRuolo dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
 		ResultSet rs = null;
 		//fine LP PG21XX04 Leak
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH6SP_SE2.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEH6SP_SE2.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH6SP_SE2.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, dto.getCodiceUtente());
 			callableStatement.setString(2, dto.getTipoServizio());
 			callableStatement.setString(3, dto.getCodiceEnte());			
@@ -266,13 +315,12 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(5, dto.getCodiceUfficio());
 			callableStatement.setString(6, dto.getImpostaServizio());
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet rs = callableStatement.getResultSet();
 				rs = callableStatement.getResultSet();
 				//fine LP PG21XX04 Leak
-				if(rs.next()){
+				if(rs.next()) {
 					dto.setProgressivoFlusso(rs.getLong(1));
 					dto.setTipoRecord(rs.getString(2));
 					dto.setDataCreazioneFlusso(java.sql.Date.valueOf(rs.getString(4)));
@@ -298,13 +346,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 		return dto;
@@ -312,12 +367,21 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	
 	//PYEH2SP_SE2
 	public ArchivioCarichiScadenza getScadenza(ArchivioCarichiScadenza dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return getScadenzaBatch(true, true, dto);
+	}
+
+	public ArchivioCarichiScadenza getScadenzaBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiScadenza dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
 		ResultSet rs = null;
 		//fine LP PG21XX04 Leak
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH2SP_SE2.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEH2SP_SE2.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH2SP_SE2.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, dto.getCodiceUtente());
 			callableStatement.setString(2, dto.getTipoServizio());
 			callableStatement.setString(3, dto.getCodiceEnte());			
@@ -327,8 +391,7 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(7, dto.getNumeroDocumento());
 			callableStatement.setInt(8, dto.getNumeroRata());
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet rs = callableStatement.getResultSet();
 				rs = callableStatement.getResultSet();
@@ -369,13 +432,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 		return dto;
@@ -486,11 +556,21 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 
 	public String getCodiceFiscaleEnte(String cutecute, String codiceEnte, String tipoUfficio, String codiceUfficio) throws DaoException
 	{
+	//inizio LP 20240920 - PGNTECCSV-10
+		return getCodiceFiscaleEnteBatch(true, true, cutecute, codiceEnte, tipoUfficio, codiceUfficio);
+	}
+
+	public String getCodiceFiscaleEnteBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String cutecute, String codiceEnte, String tipoUfficio, String codiceUfficio) throws DaoException
+	{
+	//fine LP 20240920 - PGNTECCSV-10
 		String codiceFisEnte = "";
 		CallableStatement callableStatement = null;
 		ResultSet rs = null;
 		try	{
-			callableStatement = prepareCall("PYANESP_SEL_ENT3");
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall("PYANESP_SEL_ENT3");
+			callableStatement = prepareCall(bFlagUpdateAutocommit, "PYANESP_SEL_ENT3");
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, cutecute);
 			callableStatement.setString(2, codiceEnte);
 			callableStatement.setString(3, tipoUfficio);			
@@ -519,13 +599,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 		}
 		return codiceFisEnte;
 	}
@@ -534,10 +621,16 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	//inizio LP 20240907 - PAGONET-604
 	public String getKeyEnteEC(String idDominio) throws Exception
 	{
-		return getKeyEnteECTail(true, idDominio);
+		//inizio LP 20240920 - PGNTECCSV-10
+		//return getKeyEnteECTail(true, idDominio);
+		return getKeyEnteECBatch(true, true, idDominio);
+		//fine LP 20240920 - PGNTECCSV-10
 	}
 
-	public String getKeyEnteECTail(boolean bFlagUpdateAutocomit, String idDominio) throws Exception
+	//inizio LP 20240920 - PGNTECCSV-10
+	//public String getKeyEnteECTail(boolean bFlagUpdateAutocomit, String idDominio) throws Exception
+	public String getKeyEnteECBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String idDominio) throws Exception 
+	//fine LP 20240920 - PGNTECCSV-10
 	//fine LP 20240907 - PAGONET-604
 	{
 		String keyEnte = null;
@@ -546,12 +639,14 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		try{
 			//inizio LP 20240907 - PAGONET-604
 			//callableStatement = prepareCall(Routines.PYANESP_SEL_DOMINIO.routine());
-			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.PYANESP_SEL_DOMINIO.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.PYANESP_SEL_DOMINIO.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYANESP_SEL_DOMINIO.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP 20240907 - PAGONET-604
 			callableStatement.setString(1, idDominio);
 			callableStatement.execute();
 			listanagEnte = callableStatement.getResultSet();
-			
 			if (listanagEnte.next()) {
 				keyEnte = listanagEnte.getString("ANE_KANEKENT");
 				//inizio LP PG210130 Step04
@@ -570,13 +665,27 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} catch (HelperException e) {
 			throw new Exception(e);
 		} finally {
-			if (callableStatement != null) {
+			//inizio LP 20240920 - PGNTECCSV-10
+			if (listanagEnte != null) {
 				try {
-					callableStatement.close();
+					listanagEnte.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
+			}
+			//fine LP 20240920 - PGNTECCSV-10
 		}
 		return keyEnte;
 	}
@@ -650,10 +759,16 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	//PYEH7SP_SE2
 	//inizio LP 20240828 - PGNTACWS-22
 	public ArchivioCarichiTributo getTributo(ArchivioCarichiTributo dto) throws DaoException {
-		return getTributoTail(true, dto);
+		//inizio LP 20240920 - PGNTECCSV-10
+		//return getTributoTail(true, dto);
+		return getTributoBatch(true, true, dto);
+		//fine LP 20240920 - PGNTECCSV-10
 	}
 
-	public ArchivioCarichiTributo getTributoTail(boolean bFlagUpdateAutocommit, ArchivioCarichiTributo dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+	//public ArchivioCarichiTributo getTributoTail(boolean bFlagUpdateAutocommit, ArchivioCarichiTributo dto) throws DaoException {
+	public ArchivioCarichiTributo getTributoBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiTributo dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 	//fine LP 20240828 - PGNTACWS-22
 		CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
@@ -662,7 +777,10 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		try	{		
 			//inizio LP 20240828 - PGNTACWS-22
 			//callableStatement = prepareCall(Routines.PYEH7SP_SE2.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH7SP_SE2.routine());
 			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH7SP_SE2.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP 20240828 - PGNTACWS-22
 			callableStatement.setString(1, dto.getCodiceUtente());
 			callableStatement.setString(2, dto.getTipoServizio());
@@ -675,8 +793,7 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(9, dto.getAnnoTributo());
 			callableStatement.setInt(10, dto.getProgressivoTributo());
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet rs = callableStatement.getResultSet();
 				rs = callableStatement.getResultSet();
@@ -711,13 +828,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 		return dto;
@@ -725,12 +849,21 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	
 	//PYEH3SP_SE2
 	public ArchivioCarichiMovimento getMovimento(ArchivioCarichiMovimento dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return getMovimentoBatch(true, true, dto);
+	}
+
+	public ArchivioCarichiMovimento getMovimentoBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiMovimento dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
 		ResultSet rs = null;
 		//fine LP PG21XX04 Leak
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH3SP_SE2.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEH3SP_SE2.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH3SP_SE2.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, dto.getCodiceUtente());
 			callableStatement.setString(2, dto.getTipoServizio());
 			callableStatement.setString(3, dto.getCodiceEnte());			
@@ -740,10 +873,8 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(7, dto.getNumeroDocumento());
 			callableStatement.setInt(8, dto.getProgressivoPagamento());
 			callableStatement.setString(9, dto.getTipoMovimento());
-			
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet rs = callableStatement.getResultSet();
 				rs = callableStatement.getResultSet();
@@ -785,25 +916,40 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
-		
 		return dto;
 	}
-	
+
 	//PYEH1SP_DE2
 	public String deleteDocumento (ArchivioCarichiDocumento dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return deleteDocumentoBatch(true, true, dto);
+	}
+
+	public String deleteDocumentoBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiDocumento dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		String retMessage = "";
 		CallableStatement callableStatement = null;
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH1SP_DE2.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEH1SP_DE2.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH1SP_DE2.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, dto.getCodiceUtente());
 			callableStatement.setString(2, dto.getTipoServizio());
 			callableStatement.setString(3, dto.getCodiceEnte());			
@@ -824,23 +970,40 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
-			}
 			//fine LP PG21XX04 Leak
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
+			}
+			//fine LP 20240920 - PGNTECCSV-10
 		}
 		return retMessage;
 	}
 	
 	//PYEH6SP_UP2
-	public void updateRuolo (ArchivioCarichiRuolo dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+	public void updateRuolo(ArchivioCarichiRuolo dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		updateRuoloBatch(true, true, dto);
+	}
+
+	public void updateRuoloBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiRuolo dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
-		try	{		
-			callableStatement = prepareCall(Routines.PYEH6SP_UP2.routine());
+		try	{
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEH6SP_UP2.routine());	
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH6SP_UP2.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setLong(1, dto.getProgressivoFlusso());
 			callableStatement.setString(2, dto.getTipoRecord());
 			callableStatement.setString(3, dto.getCodiceUtente());
@@ -854,10 +1017,8 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(11, dto.getCodTipologiaServizio());
 			callableStatement.setString(12, dto.getDescTipologiaServizio());
 			callableStatement.setString(13, dto.getTombstoned());
-			
 			/* we execute procedure */
 			callableStatement.execute();
-
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -867,22 +1028,38 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 	}
 	
 	//PYEH8SP_UP2
 	public void updateAnagrafica (ArchivioCarichiAnagrafica dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		updateAnagraficaBatch(true, true, dto);
+	}
+
+	public void updateAnagraficaBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiAnagrafica dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH8SP_UP2.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEH8SP_UP2.routine());	
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH8SP_UP2.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setLong(1, dto.getProgressivoFlusso());
 			callableStatement.setString(2, dto.getTipoRecord());
 			callableStatement.setString(3, dto.getCodiceUtente());
@@ -903,10 +1080,8 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(18, dto.getTombstoned());
 			callableStatement.setString(19, dto.getEmail());
 			callableStatement.setString(20, dto.getEmailPec());
-						
 			/* we execute procedure */
 			callableStatement.execute();
-
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -916,13 +1091,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 	}
@@ -930,16 +1112,25 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	//PYEHXSP_DIS
 	//inizio LP 20240828 - PGNTACWS-22
 	public void applicaDiscarico(ArchivioCarichiTributo dto) throws DaoException {
-		applicaDiscaricoTail(true, dto);
+		//inizio LP 20240920 - PGNTECCSV-10
+		//applicaDiscaricoTail(true, dto);
+		applicaDiscaricoBatch(true, true, dto);
+		//fine LP 20240920 - PGNTECCSV-10
 	}
 
-	public void applicaDiscaricoTail(boolean bFlagUpdateAutocommit, ArchivioCarichiTributo dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+	//public void applicaDiscaricoTail(boolean bFlagUpdateAutocommit, ArchivioCarichiTributo dto) throws DaoException {
+	public void applicaDiscaricoBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiTributo dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 	//fine LP 20240828 - PGNTACWS-22
 		CallableStatement callableStatement = null;
 		try	{		
 			//inizio LP 20240828 - PGNTACWS-22
 			//callableStatement = prepareCall(Routines.PYEHXSP_DIS.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEHXSP_DIS.routine());
 			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEHXSP_DIS.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP 20240828 - PGNTACWS-22
 			callableStatement.setLong(1, dto.getProgressivoFlusso());
 			callableStatement.setString(2, dto.getCodiceUtente());
@@ -953,10 +1144,8 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(10, dto.getAnnoTributo());
 			callableStatement.setInt(11, dto.getProgressivoTributo());
 			callableStatement.setBigDecimal(12, dto.getImpPagatoCompresiSgravi());
-					
 			/* we execute procedure */
 			callableStatement.execute();
-
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -966,21 +1155,37 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	public void doRollbackArchivioCarichi(String codiceUtente, String tipoServizio, String codiceEnte, String tipoUfficio, String codiceUfficio, String impostaServizio, String numeroDocumento) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		doRollbackArchivioCarichiBatch(true, true, codiceUtente, tipoServizio, codiceEnte, tipoUfficio, codiceUfficio, impostaServizio, numeroDocumento);
+	}
+
+	public void doRollbackArchivioCarichiBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String codiceUtente, String tipoServizio, String codiceEnte, String tipoUfficio, String codiceUfficio, String impostaServizio, String numeroDocumento) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;	
 		try {
-			callableStatement = prepareCall(Routines.EHX_DOACROLLBACK.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.EHX_DOACROLLBACK.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.EHX_DOACROLLBACK.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, codiceUtente);
 			callableStatement.setString(2, tipoServizio);
 			callableStatement.setString(3, codiceEnte);
@@ -998,31 +1203,46 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}	
 	}
-	
+
 	//PYEH3SP_SEL_PPAG
 	//inizio LP 20240828 - PGNTACWS-22
 	public int getProgressivoPagamento(ArchivioCarichiDocumento dto) throws DaoException {
-		return getProgressivoPagamentoTail(true, dto);
+		//inizio LP 20240920 - PGNTECCSV-10
+		//return getProgressivoPagamentoTail(true, dto);
+		return getProgressivoPagamentoBatch(true, true, dto);
+		//fine LP 20240920 - PGNTECCSV-10
 	}
 
-	public int getProgressivoPagamentoTail(boolean bFlagUpdateAutocommit, ArchivioCarichiDocumento dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+	//public int getProgressivoPagamentoTail(boolean bFlagUpdateAutocommit, ArchivioCarichiDocumento dto) throws DaoException {
+	public int getProgressivoPagamentoBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiDocumento dto) throws DaoException {
 	//fine LP 20240828 - PGNTACWS-22
 		int progressivoPagamento = 0;
 		CallableStatement callableStatement = null;
 		try	{		
 			//inizio LP 20240828 - PGNTACWS-22
 			//callableStatement = prepareCall(Routines.PYEH3SP_SEL_PPAG.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH3SP_SEL_PPAG.routine());
 			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH3SP_SEL_PPAG.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP 20240828 - PGNTACWS-22
 			callableStatement.setString(1, dto.getCodiceUtente());
 			callableStatement.setString(2, dto.getTipoServizio());
@@ -1032,7 +1252,6 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(6, dto.getImpostaServizio());
 			callableStatement.setString(7, dto.getNumeroDocumento());
 			callableStatement.registerOutParameter(8, Types.INTEGER);
-			
 			/* we execute procedure */
 			callableStatement.execute();
 			progressivoPagamento = callableStatement.getInt(8);
@@ -1045,30 +1264,44 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
-		
 		return progressivoPagamento;
 	}
-	
+
 	public String getProgressivoIuv(String codiceEnte, String auxDigit, int dayOfYear) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return getProgressivoIuvBatch(true, true, codiceEnte, auxDigit, dayOfYear);
+	}
+
+	public String getProgressivoIuvBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String codiceEnte, String auxDigit, int dayOfYear) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		try	{
-			callableStatement = prepareCall(Routines.PYPRGSP_NXT.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYPRGSP_NXT.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYPRGSP_NXT.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, codiceEnte);
 			callableStatement.setString(2, auxDigit);
 			callableStatement.setLong(3, dayOfYear);
 			callableStatement.registerOutParameter(4, Types.INTEGER);
-			
 			callableStatement.execute(); 
-			Integer progressivo=callableStatement.getInt(4);
+			Integer progressivo = callableStatement.getInt(4);
 			return String.valueOf(progressivo);
 		} catch (SQLException x) {
 			throw new DaoException(x);
@@ -1079,28 +1312,43 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 	}
 	
 	public int checkExistIUV(String codiceEnte, String identificativoUnivocoVersamento, String numeroDocumento, Integer numeroRata, String flagOperazione) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return checkExistIUVBatch(true, true, codiceEnte, identificativoUnivocoVersamento, numeroDocumento, numeroRata, flagOperazione);
+	}
+
+	public int checkExistIUVBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String codiceEnte, String identificativoUnivocoVersamento, String numeroDocumento, Integer numeroRata, String flagOperazione) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		try	{
-			callableStatement = prepareCall(Routines.PYEHXSP_CHK_IUV.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEHXSP_CHK_IUV.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEHXSP_CHK_IUV.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, codiceEnte);
 			callableStatement.setString(2, identificativoUnivocoVersamento);
 			callableStatement.setString(3, numeroDocumento);
 			callableStatement.setInt(4, numeroRata);
 			callableStatement.setString(5, flagOperazione);
 			callableStatement.registerOutParameter(6, Types.INTEGER);
-			
 			callableStatement.execute(); 
 			int count=callableStatement.getInt(6);
 			return count;
@@ -1113,24 +1361,39 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 	}
 
 	public boolean checkExistTassonomia(String tassonomia) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return checkExistTassonomiaBatch(true, true, tassonomia);
+	}
+
+	public boolean checkExistTassonomiaBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String tassonomia) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		try	{
-			callableStatement = prepareCall(Routines.PYTASSP_CHK.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYTASSP_CHK.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYTASSP_CHK.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, tassonomia);
 			callableStatement.registerOutParameter(2, Types.INTEGER);
-			
 			callableStatement.execute(); 
 			int count = callableStatement.getInt(2);
 			return (count == 1);
@@ -1143,24 +1406,39 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 	}
 
 	public String getFlagElabStampaAvviso(String identificativoFlusso) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return getFlagElabStampaAvvisoBatch(true, true, identificativoFlusso);
+	}
+
+	public String getFlagElabStampaAvvisoBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String identificativoFlusso) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		try	{
-			callableStatement = prepareCall(Routines.PYELGSP_SEL_FELGESTA.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYELGSP_SEL_FELGESTA.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYELGSP_SEL_FELGESTA.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, identificativoFlusso);
 			callableStatement.registerOutParameter(2, Types.CHAR);
-			
 			callableStatement.execute(); 
 			String flagElabStampaAvviso=callableStatement.getString(2);
 			return flagElabStampaAvviso.trim();
@@ -1173,36 +1451,50 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	//PYEH6SP_SE2
 	public ArchivioCarichiLogFlussi getLogFlusso(String identificativoFlusso) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return getLogFlussoBatch(true, true, identificativoFlusso);
+	}
+
+	public ArchivioCarichiLogFlussi getLogFlussoBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String identificativoFlusso) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		ArchivioCarichiLogFlussi dto = null;
 		CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
 		ResultSet rs = null;
 		//fine LP PG21XX04 Leak
 		try	{		
-			callableStatement = prepareCall(Routines.PYELGSP_SE2.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYELGSP_SE2.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYELGSP_SE2.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, identificativoFlusso);
-			
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet rs = callableStatement.getResultSet();
 				rs = callableStatement.getResultSet();
 				//fine LP PG21XX04 Leak
-				if(rs.next()){
+				if(rs.next()) {
 					dto = new ArchivioCarichiLogFlussi();
 					dto.setProgressivoFlusso(rs.getLong(1));
 					dto.setCodiceUtente(rs.getString(2));
@@ -1233,13 +1525,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 		return dto;
@@ -1247,21 +1546,29 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	
 	//PYEH0SP_SE2
 	public ArchivioCarichiTesta getTesta(ArchivioCarichiTesta dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return getTestaBatch(true, true, dto);
+	}
+
+	public ArchivioCarichiTesta getTestaBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiTesta dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement =null;
 		//inizio LP PG21XX04 Leak
 		ResultSet rs = null;
 		//fine LP PG21XX04 Leak
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH0SP_SE2.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEH0SP_SE2.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH0SP_SE2.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setLong(1, dto.getProgressivoFlusso());
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet rs = callableStatement.getResultSet();
 				rs = callableStatement.getResultSet();
 				//fine LP PG21XX04 Leak
-				if(rs.next()){
+				if(rs.next()) {
 					dto.setTipoRecord(rs.getString(2));
 					dto.setDataCreazioneFlusso(java.sql.Date.valueOf(rs.getString(4)));
 					dto.setProceduraGestione(rs.getString(5));
@@ -1291,13 +1598,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 		return dto;
@@ -1305,16 +1619,24 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	
 	//PYEH9SP_SE2
 	public ArchivioCarichiCoda getCoda(ArchivioCarichiCoda dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return getCodaBatch(true, true, dto);
+	}
+
+	public ArchivioCarichiCoda getCodaBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiCoda dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement =null;
 		//inizio LP PG21XX04 Leak
 		ResultSet rs = null;
 		//fine LP PG21XX04 Leak
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH9SP_SE2.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEH9SP_SE2.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH9SP_SE2.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setLong(1, dto.getProgressivoFlusso());
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet rs = callableStatement.getResultSet();
 				rs = callableStatement.getResultSet();
@@ -1343,23 +1665,38 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 		return dto;
 	}
 	
 	//PYEH0SP_UP2
-	public void updateTesta (ArchivioCarichiTesta dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+	public void updateTesta(ArchivioCarichiTesta dto) throws DaoException {
+		updateTestaBatch(true, true, dto);
+	}
+
+	public void updateTestaBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiTesta dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH0SP_UP2.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH0SP_UP2.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setLong(1, dto.getProgressivoFlusso());
 			callableStatement.setString(2, dto.getTipoRecord());
 			callableStatement.setString(3, dto.getCodiceUtente());
@@ -1373,10 +1710,8 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(11, dto.getAuxDigit());
 			callableStatement.setString(12, dto.getApplicationCode());
 			callableStatement.setString(13, dto.getSegregationCode());
-			
 			/* we execute procedure */
 			callableStatement.execute();
-
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -1386,22 +1721,38 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	//PYEH9SP_UP2
-	public void updateCoda (ArchivioCarichiCoda dto) throws DaoException {
+	public void updateCoda(ArchivioCarichiCoda dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		updateCodaBatch(true, true, dto);
+	}
+
+	public void updateCodaBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiCoda dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		try	{		
-			callableStatement = prepareCall(Routines.PYEH9SP_UP2.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEH9SP_UP2.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH9SP_UP2.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setLong(1, dto.getProgressivoFlusso());
 			callableStatement.setString(2, dto.getTipoRecord());
 			callableStatement.setString(3, dto.getCodiceUtente());
@@ -1409,10 +1760,8 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(5, dto.getTipoServizio());
 			callableStatement.setInt(6, dto.getNumeroRecordFlusso());
 			callableStatement.setString(7, dto.getTombstoned());
-			
 			/* we execute procedure */
 			callableStatement.execute();
-
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -1422,24 +1771,40 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 	}
 	
 	//Inserimento pagamento ed aggiornamento importo pagato su avviso e scadenze
 	public String inserisciPagamentoEcDifferito(String codTransazione) throws DaoException {
+		//inizio LP 20240920 - PGNTECCSV-10
+		return inserisciPagamentoEcDifferitoBatch(true, true, codTransazione);
+	}
+
+	public String inserisciPagamentoEcDifferitoBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String codTransazione) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		String codiceRitorno = "";
 		System.out.println("inizio inserisciPagamentoEcDifferito dentro core");
 		try {
-			callableStatement = prepareCall(Routines.PYEHXSP_PAG.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEHXSP_PAG.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEHXSP_PAG.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, codTransazione); 
 			callableStatement.execute();
 		} catch (SQLException x) {
@@ -1454,13 +1819,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 		System.out.println("fine inserisciPagamentoEcDifferito codiceRitorno = " + codiceRitorno);
@@ -1470,11 +1842,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	//inizio LP PG190220
 	//Annulla pagamento ed aggiornamento importo pagato su avviso e scadenze
 	public boolean annullaPagamentoEcDifferito(String codTransazione) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return annullaPagamentoEcDifferitoBatch(true, true, codTransazione);
+	}
+
+	public boolean annullaPagamentoEcDifferitoBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String codTransazione) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		boolean bOk = false;
-
 		try {
 			callableStatement = prepareCall("PYEHXSP_ANN");
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall("PYEHXSP_ANN");
+			callableStatement = prepareCall(bFlagUpdateAutocommit, "PYEHXSP_ANN");
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, codTransazione); 
 			callableStatement.execute();
 			bOk = true;
@@ -1487,13 +1868,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 		return bOk;
@@ -1502,10 +1890,18 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 	
 	//Verifica presenza in PYELGTB di flussi con identico nome in date differenti 
 	public int getProgFlussoPerNomeAltraData(String nomeFile, Date dataFlusso) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return getProgFlussoPerNomeAltraDataBatch(true, true, nomeFile, dataFlusso);
+	}
+
+	public int getProgFlussoPerNomeAltraDataBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String nomeFile, Date dataFlusso) throws DaoException { 
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
-		
 		try {
-			callableStatement = prepareCall(Routines.ELG_CHECK_PELGFLUS_BY_NAME.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.ELG_CHECK_PELGFLUS_BY_NAME.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.ELG_CHECK_PELGFLUS_BY_NAME.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, nomeFile);
 			callableStatement.setDate(2, dataFlusso);
 			callableStatement.registerOutParameter(3, Types.INTEGER);
@@ -1521,22 +1917,38 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 	}
 	
 	//29012021 GG - inserita verifica su documento in stampa/stampato
 	public String getFlagStampa(ArchivioCarichiDocumento dto) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return getFlagStampaBatch(true, true, dto);
+	}
+
+	public String getFlagStampaBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, ArchivioCarichiDocumento dto) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		try	{
-			callableStatement = prepareCall(Routines.PYEH1SP_SEL_FELGESTA.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEH1SP_SEL_FELGESTA.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEH1SP_SEL_FELGESTA.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, dto.getCodiceUtente());
 			callableStatement.setString(2, dto.getTipoServizio());
 			callableStatement.setString(3, dto.getCodiceEnte());			
@@ -1545,7 +1957,6 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			callableStatement.setString(6, dto.getImpostaServizio());
 			callableStatement.setString(7, dto.getNumeroDocumento());
 			callableStatement.registerOutParameter(8, Types.CHAR);
-			
 			callableStatement.execute(); 
 			String flagStampa=callableStatement.getString(8);
 			return flagStampa.trim();
@@ -1558,18 +1969,31 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeCallableStatement(callableStatement);
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 	}
 	
 	public List<DatiFlussoIO> doList(DettaglioFlussoOttico dettaglioFlussoOttico) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		return doListBatch(true, true, dettaglioFlussoOttico);
+	}
+
+	public List<DatiFlussoIO> doListBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, DettaglioFlussoOttico dettaglioFlussoOttico) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
 		ResultSet data = null;
@@ -1577,14 +2001,16 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		List<DatiFlussoIO> list = null;
 		try	{
 			// we prepare callableStatement
-			callableStatement = prepareCall(Routines.PYEHXSP_FIO.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYEHXSP_FIO.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYEHXSP_FIO.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, dettaglioFlussoOttico.getCodiceSocieta());
 			callableStatement.setString(2, dettaglioFlussoOttico.getCodiceUtente());
 			callableStatement.setString(3, dettaglioFlussoOttico.getCodiceEnte());	
 			callableStatement.setString(4, dettaglioFlussoOttico.getNumeroDocumento());
 			callableStatement.setString(5, dettaglioFlussoOttico.getCodicFiscaleDebitore());
 			callableStatement.setString(6, "");	//Qui dovrò mettere codiceimpostaservizio
-			
 			list = new ArrayList<DatiFlussoIO>();
 			// we execute callableStatement
 			if (callableStatement.execute()) {
@@ -1615,13 +2041,20 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 		return list;
@@ -1637,9 +2070,18 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 
 	// inizio SR PGNTCORE-17
 	public void doRollbackArchivioCarichiELG(String fileNameToElab, int progressivoFlusso) throws DaoException {
+	//inizio LP 20240920 - PGNTECCSV-10
+		doRollbackArchivioCarichiELGBatch(true, true, fileNameToElab, progressivoFlusso);
+	}
+
+	public void doRollbackArchivioCarichiELGBatch(boolean bFlagUpdateAutocommit, boolean bCloseStat, String fileNameToElab, int progressivoFlusso) throws DaoException {
+	//fine LP 20240920 - PGNTECCSV-10
 		CallableStatement callableStatement = null;	
 		try {
-			callableStatement = prepareCall(Routines.PYELGSP_DEL.routine());
+			//inizio LP 20240920 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.PYELGSP_DEL.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.PYELGSP_DEL.routine());
+			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, fileNameToElab);
 			callableStatement.setLong(2, progressivoFlusso);
 			callableStatement.execute();
@@ -1650,16 +2092,21 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 		} catch (HelperException x) {
 			throw new DaoException(x);
 		} finally {
-			if(callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240920 - PGNTECCSV-10
+			if(bCloseStat) {
+			//fine LP 20240920 - PGNTECCSV-10
+				if(callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240920 - PGNTECCSV-10
+				callableStatement = null;
 			}
+			//fine LP 20240920 - PGNTECCSV-10
 		}	
 	}
 	//fine SR PGNTCORE-17
-
-	
 }

@@ -141,10 +141,8 @@ public class FlussiRivDao extends BaseDaoHandler {
 				}
 			}
 			//fine LP PG21XX04 Leak
-			
 		}
 		// salvo il file csv e l'equivalente zippato
-		
 		try {
 			FileOutputStream file = new FileOutputStream(filePath+".csv");
 			PrintStream output = new PrintStream(file);

@@ -71,15 +71,11 @@ public class CostiTransazioneBancaDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(String descrizioneSocieta, String descrizioneUtente, String descrizioneGateway, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(descrizioneSocieta, descrizioneUtente, descrizioneGateway, rowsPerPage, pageNumber);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(descrizioneSocieta, descrizioneUtente, descrizioneGateway, rowsPerPage, pageNumber);
 	}
 
 	public void rowSets(String descrizioneSocieta, String descrizioneUtente, String descrizioneGateway, int rowsPerPage, int pageNumber) throws DaoException {

@@ -15,7 +15,6 @@ public class BlackBoxDAOFactory {
 		BLACKBOX_CLASS=ConfigurazioneBlackBoxDaoImpl.class.getName();
 	}
 	
-	
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak

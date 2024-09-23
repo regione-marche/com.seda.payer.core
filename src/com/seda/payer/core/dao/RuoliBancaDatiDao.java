@@ -11,16 +11,7 @@ import java.sql.Types;
 import java.text.SimpleDateFormat;
 
 import javax.sql.rowset.WebRowSet;
-//import java.util.ArrayList;
-//import java.util.Calendar;
-//import java.util.Date;
-
-//import javax.sql.rowset.WebRowSet;
-
-//import com.ibm.icu.math.BigDecimal;
 import com.seda.data.helper.HelperException;
-//import com.seda.payer.core.bean.EccedenzaDetailPage;
-//import com.seda.payer.core.bean.EccedenzaDettaglioBean;
 import com.seda.payer.core.bean.AnagraficaPartitaRuolo;
 import com.seda.payer.core.bean.RuoliArticoliPage;
 import com.seda.payer.core.bean.RuoliPagamentiCSV;
@@ -30,11 +21,9 @@ import com.seda.payer.core.bean.PartitePage;
 import com.seda.payer.core.bean.RuoliAnagrafichePage;
 import com.seda.payer.core.bean.RuoliPage;
 import com.seda.payer.core.bean.Ruolo;
-//import com.seda.payer.core.bean.EccedenzePage;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 
-//@SuppressWarnings("unchecked")
 public class RuoliBancaDatiDao extends BaseDaoHandler {
 
 /*	

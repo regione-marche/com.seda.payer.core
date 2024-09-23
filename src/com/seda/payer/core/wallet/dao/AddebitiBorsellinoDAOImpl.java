@@ -9,8 +9,8 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import javax.sql.DataSource;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+
+import com.seda.data.helper.HelperException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -41,10 +41,10 @@ public class AddebitiBorsellinoDAOImpl extends BaseDaoHandler  implements Addebi
 		ArrayList<AddebitiBorsellino> addebitiBorsellinoList = null;
 		try {
 			connection = getConnection();											
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240921 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYADBSP_LST.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYADBSP_LST.routine());
-			//fine LP PGNTCORE-24
+            callableStatement = prepareCall(Routines.PYADBSP_LST.routine());
+			//fine LP 20240921 - PGNTCORE-24
 			callableStatement.setString(1,wallet.getIdWallet());
 			callableStatement.setString(2,wallet.getCodiceSocieta());
 			callableStatement.setString(3,wallet.getCuteCute());
@@ -118,12 +118,8 @@ public class AddebitiBorsellinoDAOImpl extends BaseDaoHandler  implements Addebi
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();		
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} finally {
@@ -165,10 +161,10 @@ public class AddebitiBorsellinoDAOImpl extends BaseDaoHandler  implements Addebi
 		ArrayList<AddebitiBorsellino> addebitiBorsellinoList = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240921 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(),	Routines.PYADBSP_LST_DETT.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYADBSP_LST_DETT.routine());
-			//fine LP PGNTCORE-24
+            callableStatement = prepareCall(Routines.PYADBSP_LST_DETT.routine());
+			//fine LP 20240921 - PGNTCORE-24
 			callableStatement.setString(1, wallet.getIdWallet());
 			callableStatement.setString(2, wallet.getCodiceSocieta());
 			callableStatement.setString(3, wallet.getCuteCute());
@@ -207,12 +203,8 @@ public class AddebitiBorsellinoDAOImpl extends BaseDaoHandler  implements Addebi
 			e.printStackTrace();
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} finally {
@@ -253,10 +245,10 @@ public class AddebitiBorsellinoDAOImpl extends BaseDaoHandler  implements Addebi
 		ArrayList<AddebitiPopup> addebitiPopup = null;
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240921 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(),	Routines.PYADBSP_POPUP.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYADBSP_POPUP.routine());
-			//fine LP PGNTCORE-24
+            callableStatement = prepareCall(Routines.PYADBSP_POPUP.routine());
+			//fine LP 20240921 - PGNTCORE-24
 			callableStatement.setString(1, wallet.getCodiceSocieta());
 			callableStatement.setString(2, wallet.getCuteCute());
 			callableStatement.setString(3, wallet.getChiaveEnte());
@@ -279,12 +271,8 @@ public class AddebitiBorsellinoDAOImpl extends BaseDaoHandler  implements Addebi
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);

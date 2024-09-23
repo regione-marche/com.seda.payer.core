@@ -18,40 +18,29 @@ public class AnalizzaPagamentoDao  extends BaseDaoHandler{
 		super(connection, schema);
 	}
 	
-	@SuppressWarnings("null")
-	public AnalisiPagamenti getListaTransazioniAnalisiPagamento (int periodoindagine, int maxtentativi) 
-																			throws DaoException  {
-		
+	public AnalisiPagamenti getListaTransazioniAnalisiPagamento (int periodoindagine, int maxtentativi) throws DaoException  {
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		int i = 0;
-		
 		DettaglioAnalisiPagamento risultato ;
 		try {
 			callableStatement = prepareCall(Routines.PYTRA_ANALISI_TENTATIVI.routine());
 			callableStatement.setInt(1, periodoindagine);
 			callableStatement.setInt(2, maxtentativi);
-			
 			List<DettaglioAnalisiPagamento> listaCF = new ArrayList<DettaglioAnalisiPagamento>();
 			List<DettaglioAnalisiPagamento> listaIP = new ArrayList<DettaglioAnalisiPagamento>();
 			List<DettaglioAnalisiPagamento> listaEmail = new ArrayList<DettaglioAnalisiPagamento>();
 			List<DettaglioAnalisiPagamento> listaBollettino = new ArrayList<DettaglioAnalisiPagamento>();
 			List<DettaglioAnalisiPagamento> listaCanale = new ArrayList<DettaglioAnalisiPagamento>();
-			
 			boolean resultsAvailable = callableStatement.execute();
-			
 			while (resultsAvailable) {
 				i++;
 				data = callableStatement.getResultSet();
-				
 				while (data.next()) {
-					
 					risultato=new DettaglioAnalisiPagamento();
 					risultato.setChiaveTrx(data.getString("TRA_KTRAKTRA"));
 					risultato.setData(data.getString("TRA_GTRADTRA"));
-					
-					switch (i)
-					{
+					switch (i) {
 						case (1):
 							listaCF.add(risultato);
 							break;
@@ -68,9 +57,7 @@ public class AnalizzaPagamentoDao  extends BaseDaoHandler{
 							listaCanale.add(risultato);
 							break;
 					}
-					
-					risultato=null;
-
+					risultato = null;
 				}
 				resultsAvailable = callableStatement.getMoreResults();
 			}
@@ -80,9 +67,7 @@ public class AnalizzaPagamentoDao  extends BaseDaoHandler{
 			ListaTotale.setListEmail(listaEmail);
 			ListaTotale.setListBollettino(listaBollettino);
 			ListaTotale.setListCanalePag(listaCanale);
-	
 			return ListaTotale;
-			
 		} catch (Exception e) {
 			throw new DaoException(e);
 		} finally {
@@ -107,4 +92,3 @@ public class AnalizzaPagamentoDao  extends BaseDaoHandler{
 		}
 	}
 }
-

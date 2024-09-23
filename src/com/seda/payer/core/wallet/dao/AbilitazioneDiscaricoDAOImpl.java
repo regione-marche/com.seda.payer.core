@@ -8,8 +8,7 @@ import java.sql.Types;
 
 import javax.sql.DataSource;
 
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -53,12 +52,11 @@ public class AbilitazioneDiscaricoDAOImpl extends BaseDaoHandler implements Abil
 //			OUT O_ROWEND INTEGER,
 //			OUT O_TOTROWS INTEGER,
 //			OUT O_TOTPAGES SMALLINT
-			
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240921 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYABDSP_LST.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYABDSP_LST.routine());
-			//fine LP PGNTCORE-24
+            callableStatement = prepareCall(Routines.PYABDSP_LST.routine());
+			//fine LP 20240921 - PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,abilitazioneDiscarico.getCodSoc());
@@ -84,29 +82,20 @@ public class AbilitazioneDiscaricoDAOImpl extends BaseDaoHandler implements Abil
 				pageInfo.setLastRow(callableStatement.getInt(10));
 				pageInfo.setNumRows(callableStatement.getInt(11));
 				pageInfo.setNumPages(callableStatement.getInt(12));
-				
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
 				walletPageList = new WalletPageList(pageInfo, "00","",getWebRowSetXml());
 				return walletPageList;
 			}
-			
-			
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -136,24 +125,22 @@ public class AbilitazioneDiscaricoDAOImpl extends BaseDaoHandler implements Abil
 		return walletPageList;
 	}
 
-	public EsitoRisposte deleteAbilitazione(AbilitazioneDiscarico abilitazioneDiscarico)
-			throws DaoException {
+	public EsitoRisposte deleteAbilitazione(AbilitazioneDiscarico abilitazioneDiscarico) throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240921 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYABDSP_DEL.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYABDSP_DEL.routine());
-			//fine LP PGNTCORE-24
+            callableStatement = prepareCall(Routines.PYABDSP_DEL.routine());
+			//fine LP 20240921 - PGNTCORE-24
 //			IN I_ABD_CSOCCSOC VARCHAR(5),
 //			IN I_ABD_CUTECUTE VARCHAR(5),
 //			IN I_ABD_KANEKENT CHAR(10),  
 //			IN I_ABD_CTRBCODI VARCHAR(5),
 //			OUT O_SLI_CODESITO VARCHAR(2),
 //			OUT O_SLI_MSGESITO VARCHAR(100)		
-
 			callableStatement.setString(1, abilitazioneDiscarico.getCodSoc());
 			callableStatement.setString(2, abilitazioneDiscarico.getCuteCute());
 			callableStatement.setString(3, abilitazioneDiscarico.getChiaveEnte());
@@ -169,14 +156,9 @@ public class AbilitazioneDiscaricoDAOImpl extends BaseDaoHandler implements Abil
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -197,20 +179,18 @@ public class AbilitazioneDiscaricoDAOImpl extends BaseDaoHandler implements Abil
 			//fine LP PG21XX04 Leak
 		}
 		return esitoRisposte;
-
 	}
 
-	public  String insertAbilitazione(AbilitazioneDiscarico abilitazioneDiscarico)
-			throws DaoException {
-		CallableStatement callableStatement=null;
+	public  String insertAbilitazione(AbilitazioneDiscarico abilitazioneDiscarico) throws DaoException {
+		CallableStatement callableStatement = null;
 		Connection connection = null;	
 		connection = getConnection();
-		String esito="";
+		String esito= "";
 		try {
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240921 - PGNTCORE-24
 			///callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYABDSP_INS.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYABDSP_INS.routine());
-			//fine LP PGNTCORE-24
+            callableStatement = prepareCall(Routines.PYABDSP_INS.routine());
+			//fine LP 20240921 - PGNTCORE-24
 			callableStatement.setString(1, abilitazioneDiscarico.getCodSoc());
 			callableStatement.setString(2, abilitazioneDiscarico.getCuteCute());
 			callableStatement.setString(3, abilitazioneDiscarico.getChiaveEnte());
@@ -220,23 +200,14 @@ public class AbilitazioneDiscaricoDAOImpl extends BaseDaoHandler implements Abil
 			callableStatement.setString(7, abilitazioneDiscarico.getOperatoreInserimento());
 			callableStatement.registerOutParameter(8, Types.VARCHAR);
 			callableStatement.registerOutParameter(9, Types.VARCHAR);
-			
 			callableStatement.execute();
 			esito=callableStatement.getString(8);
-			
-			
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DaoException(01,"Problemi generici nell'inserimento dei dati",e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(01,"Problemi generici nell'inserimento dei dati",e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(01,"Problemi generici nell'inserimento dei dati",e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -257,26 +228,20 @@ public class AbilitazioneDiscaricoDAOImpl extends BaseDaoHandler implements Abil
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return esito;
-		
-
 	}
-
-	
 
 	public int  updateAbilitazione(AbilitazioneDiscarico abilitazioneDiscarico)
 			throws DaoException {
-		// TODO Auto-generated method stub
 		CallableStatement callableStatement=null;
 		Connection connection = null;	
 		connection = getConnection();
 		int recordInseriti=0;
 		try {
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240921 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYABDSP_UPD.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYABDSP_UPD.routine());
-			//fine LP PGNTCORE-24
+            callableStatement = prepareCall(Routines.PYABDSP_UPD.routine());
+			//fine LP 20240921 - PGNTCORE-24
 			callableStatement.setString(1, abilitazioneDiscarico.getCodSoc());
 			callableStatement.setString(2, abilitazioneDiscarico.getCuteCute());
 			callableStatement.setString(3, abilitazioneDiscarico.getChiaveEnte());
@@ -289,14 +254,9 @@ public class AbilitazioneDiscaricoDAOImpl extends BaseDaoHandler implements Abil
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DaoException(01,"Problemi generici nell'aggiornamneto dei dati",e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(01,"Problemi generici nell'aggiornamneto dei dati",e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(01,"Problemi generici nell'aggiornamneto dei dati",e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
