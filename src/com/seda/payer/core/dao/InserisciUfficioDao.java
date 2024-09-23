@@ -28,13 +28,14 @@ public class InserisciUfficioDao extends DaoHandler {
     }
 
     public EsitoRisposte insertParametriUfficio(ComunicazioneUfficio parametriUfficio) {
+
         EsitoRisposte esito = new EsitoRisposteUfficio();
         try {
-			//inizio LP 20240919 - PGNTCORE-24 
+			//inizio LP 20240919 - PGNTCORE-24
             //Connection connection = getConnection();
             //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), "PYINFTB_INS");
             CallableStatement callableStatement = prepareCall("PYINFTB_INS");
-			//fine LP 20240919 - PGNTCORE-24 
+			//fine LP 20240919 - PGNTCORE-24
             callableStatement.setString(1, TokenGenerator.generateUUIDToken());
             callableStatement.setDate(2, Date.valueOf(parametriUfficio.getDataConferma()));
             callableStatement.setDate(3,Date.valueOf(parametriUfficio.getDataScadenza()));
@@ -42,13 +43,16 @@ public class InserisciUfficioDao extends DaoHandler {
             callableStatement.setString(5,parametriUfficio.getTipoRichiesta());
             callableStatement.setString(6,parametriUfficio.getStato());
             callableStatement.setString(7,parametriUfficio.getOperatore());
+
             callableStatement.execute();
             esito.setCodiceMessaggio("0");
-        } catch (Throwable e) {
+
+        }catch (Throwable e) {
             logger.info("errore inserimento richiesta: " + e.getMessage());
             e.printStackTrace();
             esito.setCodiceMessaggio("1");
         }
+
         return esito;
     }
 
@@ -59,7 +63,7 @@ public class InserisciUfficioDao extends DaoHandler {
             //Connection connection = getConnection();
             //CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(),"PYINFTB_SEL");
             CallableStatement callableStatement = prepareCall("PYINFTB_SEL");
-			//fine LP 20240919 - PGNTCORE-24 
+			//fine LP 20240919 - PGNTCORE-24
             callableStatement.setInt(1, parametriUfficio.getPageNumber());
             callableStatement.setInt(2, parametriUfficio.getRowsPerPage());
             callableStatement.setString(3, parametriUfficio.getOrder());
@@ -108,7 +112,16 @@ public class InserisciUfficioDao extends DaoHandler {
 
     //PYINFSP_SEL_BATCH
 	public void getParametriBatch(){
-        //Connection connection = getConnection(); //LP 20240919 - PGNTCORE-24 commentata non serve a nulla 
+        //Connection connection = getConnection(); //LP 20240919 - PGNTCORE-24 commentata non serve a nulla
 	}
 
 }
+
+
+
+
+
+
+
+
+
