@@ -74,8 +74,7 @@ public class ConfigurazioneEasyBridgeDaoImpl extends BaseDaoHandler implements C
 		}
 		return esitoRisposte;
 	}
-	
-	
+
 	public ConfigurazioneEasyBridge select(ConfigurazioneEasyBridge configurazioneEasyBridge )	throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;

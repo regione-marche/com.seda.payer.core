@@ -111,14 +111,11 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 			callableStatement.setString(1, cutecute);
 			callableStatement.setString(2, ente);
 			callableStatement.setString(3, codiceIS);
-
 			callableStatement.execute();
-
 			resultSet=callableStatement.getResultSet();
 			if(resultSet.next()) {
 				configurazioneEnteISNotifica = new ConfigurazioneEnteISNotifica(resultSet);
 			}
-			
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
@@ -157,7 +154,7 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 	}
 	
 	public Integer update(ConfigurazioneEnteISNotifica configurazioneEnteISNotifica )	throws DaoException {
-		CallableStatement callableStatement=null;
+		CallableStatement callableStatement = null;
 		Connection connection = null;
 		int ret=0;
 		try {
@@ -207,7 +204,7 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 	}
 	
 	public EsitoRisposte delete(ConfigurazioneEnteISNotifica configurazioneEnteISNotifica)throws DaoException {
-		CallableStatement callableStatement=null;
+		CallableStatement callableStatement = null;
 		Connection connection = null;
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
@@ -256,7 +253,7 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 		return esitoRisposte;
 	}
 	public EsitoRisposte insert(ConfigurazioneEnteISNotifica configurazioneEnteISNotifica )	throws DaoException {
-		CallableStatement callableStatement=null;
+		CallableStatement callableStatement = null;
 		Connection connection = null;
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
@@ -309,8 +306,7 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 	
 	public ConfigurazioneEnteISNotificaPagelist configurazioneEnteISNotificaList(ConfigurazioneEnteISNotifica configurazioneEnteISNotifica,int rowsPerPage,
 			int pageNumber, String OrderBy) throws DaoException {
-		CallableStatement callableStatement=null;
-
+		CallableStatement callableStatement = null;
 		Connection connection = null;
 		ResultSet data = null;
 		//inizio LP PG21XX04 Leak
@@ -352,11 +348,9 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 				pageInfo.setLastRow(callableStatement.getInt(9));
 				pageInfo.setNumRows(callableStatement.getInt(10));
 				pageInfo.setNumPages(callableStatement.getInt(11));
-
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
 				configurazioneEnteISNotificaLst[0] = getWebRowSetXml();
-
 				//inizio LP PG21XX04 Leak
 				//WebRowSet tmpRowSet = Convert.stringToWebRowSet(configurazioneEnteISNotificaLst[0]);
 				tmpRowSet = Convert.stringToWebRowSet(configurazioneEnteISNotificaLst[0]);
@@ -366,7 +360,6 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 					ConfigurazioneEnteISNotifica item = new ConfigurazioneEnteISNotifica(tmpRowSet);
 					listConfigurazioneEnteISNotifica.add(item);
 				}
-				
 				if(callableStatement.getMoreResults()){
 					//inizio LP PG21XX04 Leak
 					if (data != null) {
@@ -381,12 +374,9 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 					loadWebRowSet(data);
 					configurazioneEnteISNotificaLst[1] = getWebRowSetXml();
 				}
-
-				
 			}
 			configurazioneEnteISNotificaPagelist = new ConfigurazioneEnteISNotificaPagelist(pageInfo, "00","",configurazioneEnteISNotificaLst, listConfigurazioneEnteISNotifica);
 			return configurazioneEnteISNotificaPagelist;
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			configurazioneEnteISNotificaPagelist = new ConfigurazioneEnteISNotificaPagelist(pageInfo, "01","Sql-Exception","", null);
@@ -435,5 +425,4 @@ public class ConfigurazioneEnteISNotificaDaoImpl extends BaseDaoHandler implemen
 		}
 		return configurazioneEnteISNotificaPagelist;
 	}
-
 }

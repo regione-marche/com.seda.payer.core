@@ -21,18 +21,6 @@ import com.seda.payer.core.wallet.bean.AnagraficaRivestizione512;
 public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements AnagraficaRivestizioneDAO  {
 	private static final long serialVersionUID = 1L;
 	
-	//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-	//protected CallableStatement callableStatement512 = null;
-	protected CallableStatement callableStatementANARIV512ONE = null;
-	protected CallableStatement callableStatementANARIV = null;
-	protected CallableStatement callableStatementANARIV511 = null;
-	protected CallableStatement callableStatementANARIV350 = null;
-	protected CallableStatement callableStatementANARIVCSI = null;
-	protected CallableStatement callableStatementANARIV500 = null;
-	protected CallableStatement callableStatementANARIV512 = null;
-	protected CallableStatement callableStatementANARIV512Ec = null;
-	//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
-	
 	Properties attributes = new Properties();
 	
 	public int getIntegerAttribute(String name) {
@@ -77,10 +65,7 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 			//CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE);
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE);
-			if(callableStatementANARIV == null) {
-				callableStatementANARIV = prepareCall(bFlagUpdateAutocommit, ANAGRAFICA_RIVESTIZIONE);
-				callableStatement = callableStatementANARIV;
-			}
+			callableStatement = prepareCall(bFlagUpdateAutocommit, ANAGRAFICA_RIVESTIZIONE);
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//fine LP PG21XX04 Leak
 			callableStatement.registerOutParameter(1, Types.INTEGER);
@@ -111,8 +96,6 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 				}
 				//fine LP PG21XX04 Leak
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-				callableStatement = null;
-				callableStatementANARIV = null;
 			}
 			if(bCloseConn) {
 				connection = getConnection();
@@ -135,11 +118,11 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 	}
 	
 	public int seqAnagraficaRivestizioneSolleciti() throws DaoException {
-		Connection connection = null;
+		//Connection connection = null; //LP 20240916 - PGNTCORE-24/PGNTWPB-3
 		CallableStatement callableStatement = null ;
 		try {
-			connection = getConnection();
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
+			//connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE);
 			callableStatement = prepareCall(ANAGRAFICA_RIVESTIZIONE);
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
@@ -199,10 +182,7 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 			//CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_350);
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_350);
-			if(callableStatementANARIV350 == null) {
-				callableStatementANARIV350 = prepareCall(bFlagUpdateAutocommit, ANAGRAFICA_RIVESTIZIONE_350);
-				callableStatement = callableStatementANARIV350;
-			}
+			callableStatement = prepareCall(bFlagUpdateAutocommit, ANAGRAFICA_RIVESTIZIONE_350);
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, welcomeKit);
@@ -275,8 +255,6 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 				}
 			//fine LP PG21XX04 Leak
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-				callableStatement = null;
-				callableStatementANARIV350 = null;
 			}
 			if(bCloseConn) {
 				connection = getConnection();
@@ -323,10 +301,7 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 			//CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_CSI);
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_CSI);
-			if(callableStatementANARIVCSI == null) {
-				callableStatementANARIVCSI = prepareCall(bFlagUpdateAutocommit, ANAGRAFICA_RIVESTIZIONE_CSI);
-				callableStatement = callableStatementANARIVCSI;
-			}
+			callableStatement = prepareCall(bFlagUpdateAutocommit, ANAGRAFICA_RIVESTIZIONE_CSI);
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, welcomeKit);
@@ -380,8 +355,6 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 				}
 			//fine LP PG21XX04 Leak
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-				callableStatement =  null;
-				callableStatementANARIVCSI =  null;
 			}
 			if(bCloseConn) {
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
@@ -393,7 +366,6 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 					}
 				}
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-				connection = null;
 			}
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//inizio LP PG21XX04 Leak
@@ -427,10 +399,7 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_500);
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-			if(callableStatementANARIV500 == null) {
-				callableStatementANARIV500 = prepareCall(ANAGRAFICA_RIVESTIZIONE_500);
-				callableStatement = callableStatementANARIV500;
-			}
+			callableStatement = prepareCall(ANAGRAFICA_RIVESTIZIONE_500);
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//fine LP PG21XX04 Leak
@@ -502,8 +471,6 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 				}
 			//fine LP PG21XX04 Leak
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-				callableStatement =  null;
-				callableStatementANARIV500 =  null;
 			}
 			if(bCloseConn) {
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
@@ -515,7 +482,6 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 					}
 				}
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-				connection = null;
 			}
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//inizio LP PG21XX04 Leak
@@ -536,16 +502,13 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 
 	private void updateAnagraficaRivestizione511Tail(boolean bFlagUpdateAutocommit, boolean bCloseStat, String codiceFiscale, String cap, String indirizzo, String provincia, String comune) throws DaoException {
 	//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
-		Connection connection = null;
+		//Connection connection = null; //LP 20240916 - PGNTCORE-24/PGNTWPB-3
 		CallableStatement callableStatement = null;
 		try {
-			connection = getConnection();
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
+			//connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_511);
-			if(callableStatementANARIV511 == null) {
-				callableStatementANARIV511 =  prepareCall(bFlagUpdateAutocommit, ANAGRAFICA_RIVESTIZIONE_511);
-				callableStatement = callableStatementANARIV511; 
-			}
+			callableStatement =  prepareCall(bFlagUpdateAutocommit, ANAGRAFICA_RIVESTIZIONE_511);
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			callableStatement.setString(1, codiceFiscale);
 			callableStatement.setString(2, cap);
@@ -604,8 +567,6 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 					}
 				}
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-				callableStatement = null;
-				callableStatementANARIV511 = null;
 			}
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//fine LP PG21XX04 Leak
@@ -635,10 +596,7 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 			//CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512);
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512);
-			if(callableStatementANARIV512 == null) {
-				callableStatementANARIV512 = prepareCall(bFlagUpdateAutocommit, ANAGRAFICA_RIVESTIZIONE_512);
-				callableStatement = callableStatementANARIV512;
-			}
+			callableStatement = prepareCall(bFlagUpdateAutocommit, ANAGRAFICA_RIVESTIZIONE_512);
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, welcomeKit);
@@ -710,8 +668,6 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 				}
 			//fine LP PG21XX04 Leak
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-				callableStatement =  null;
-				callableStatementANARIV512 =  null;
 			}
 			if(bCloseConn) {
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
@@ -723,7 +679,6 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 					}
 				}
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-				connection = null;
 			}
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//inizio LP PG21XX04 Leak
@@ -759,10 +714,7 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 			//CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512_EC);
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//callableStatement = Helper.prepareCall(connection, getSchema(), ANAGRAFICA_RIVESTIZIONE_512_EC);
-			if(callableStatementANARIV512Ec == null) {
-				callableStatementANARIV512Ec = prepareCall(bFlagUpdateAutocommit, ANAGRAFICA_RIVESTIZIONE_512_EC);
-				callableStatement = callableStatementANARIV512Ec;
-			}
+			callableStatement = prepareCall(bFlagUpdateAutocommit, ANAGRAFICA_RIVESTIZIONE_512_EC);
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, welcomeKit);
@@ -831,8 +783,6 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 				}
 			//fine LP PG21XX04 Leak
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-				callableStatement =  null;
-				callableStatementANARIV512Ec =  null;
 			}
 			if(bCloseConn) {
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
@@ -844,7 +794,6 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 					}
 				}
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-				connection = null;
 			}
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//inizio LP PG21XX04 Leak
@@ -859,15 +808,13 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 	//public TreeSet<AnagraficaRivestizione512> AnagraficaRivestizione512OnlyOne(int lunghezzaAnagrafica, String ente,String tipoElab,String codiceIban,String IdWallet,String testaCoda) throws DaoException {
 	public TreeSet<AnagraficaRivestizione512> AnagraficaRivestizione512OnlyOne(int lunghezzaAnagrafica, String ente,String tipoElab,String codiceIban,String IdWallet,String testaCoda, String numeroCC, String intestatarioCC) throws DaoException {
 		TreeSet<AnagraficaRivestizione512> list = new TreeSet<AnagraficaRivestizione512>();
-		Connection connection = null;
-//		CallableStatement callableStatement = null;
+		//Connection connection = null; //LP 20240916 - PGNTCORE-24/PGNTWPB-3
+		//CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
-		
+		CallableStatement callableStatementANARIV512ONE = null; //LP 20240916 - PGNTCORE-24/PGNTWPB-3
 		try {
-			connection = getConnection();
-			if (callableStatementANARIV512ONE == null) {
-				callableStatementANARIV512ONE = prepareCall(ANAGRAFICA_RIVESTIZIONE_512_ONLY_ONE);
-			}
+			//connection = getConnection(); //LP 20240916 - PGNTCORE-24/PGNTWPB-3
+			callableStatementANARIV512ONE = prepareCall(ANAGRAFICA_RIVESTIZIONE_512_ONLY_ONE);
 			callableStatementANARIV512ONE.setInt(1, lunghezzaAnagrafica);
 			callableStatementANARIV512ONE.setString(2, ente);
 			callableStatementANARIV512ONE.setString(3, tipoElab);
@@ -925,6 +872,15 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 					e.printStackTrace();
 				}
 			}
+			//inizioLP 20240916 - PGNTCORE-24/PGNTWPB-3
+			if (callableStatementANARIV512ONE != null) {
+				try {
+					callableStatementANARIV512ONE.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//fine LP PG21XX04 Leak
 //			DAOHelper.closeIgnoringException(callableStatement);
 //			if (connection != null) {
@@ -940,74 +896,4 @@ public class AnagraficaRivestizioneDAOImpl extends BaseDaoHandler implements Ana
 		
 		return list;
 	}	
-
-	//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-	public void closeCallableStatementS()  {
-	    if(callableStatementANARIV512ONE != null) {
-			try {
-				callableStatementANARIV512ONE.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementANARIV512ONE = null;
-	    }
-		if(callableStatementANARIV != null) {
-			try {
-				callableStatementANARIV.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementANARIV = null;
-		}
-	    if(callableStatementANARIV511 != null) {
-			try {
-				callableStatementANARIV511.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementANARIV511 = null;
-	    }
-	    if(callableStatementANARIV350 != null) {
-			try {
-				callableStatementANARIV350.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementANARIV350 = null;
-	    }
-	    if(callableStatementANARIVCSI != null) {
-			try {
-				callableStatementANARIVCSI.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementANARIVCSI = null;
-	    }
-	    if(callableStatementANARIV500 != null) {
-			try {
-				callableStatementANARIV500.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementANARIV500 = null;
-	    }
-	    if(callableStatementANARIV512 != null) {
-			try {
-				callableStatementANARIV512.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementANARIV512 = null;
-	    }
-	    if(callableStatementANARIV512Ec != null) {
-			try {
-				callableStatementANARIV512Ec.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementANARIV512Ec = null;
-	    }
-    }
-    //fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
-
 }

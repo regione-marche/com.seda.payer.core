@@ -128,6 +128,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				connection = null; //LP 20240919 PGNTCORE-24
 			}
 			// fine LP PG21XX04 Leak
 		}
@@ -145,7 +146,6 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNCNFSP_UPD.routine());
 			callableStatement = prepareCall(Routines.CNCNFSP_UPD.routine());
 			//fine LP 20240919 PGNTCORE-24
-
 //			     IN I_CNF_CCNFCENT VARCHAR(5), 	
 //				 IN I_CNF_CCNFCIDD VARCHAR(16),		
 //				 IN I_CNF_CCNFAPPC VARCHAR(34),
@@ -184,7 +184,6 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.registerOutParameter(18, Types.INTEGER);
 			callableStatement.execute();
 			ret = callableStatement.getInt(18);
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
@@ -210,6 +209,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				connection = null; //LP 20240919 PGNTCORE-24
 			}
 			// fine LP PG21XX04 Leak
 		}
@@ -336,21 +336,17 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 	public BlackBoxPagelist blackboxList(ConfigurazioneBlackBox blackbox, int rowsPerPage, int pageNumber,
 			String OrderBy) throws DaoException {
 		CallableStatement callableStatement = null;
-
 		Connection connection = null;
 		ResultSet data = null;
-
 		PageInfo pageInfo = null;
 		BlackBoxPagelist blackboxPagelist = null;
 		String[] blackboxLst = new String[2];
-
 		try {
 			connection = getConnection();
 			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNCNFSP_LST.routine());
 			callableStatement = prepareCall(Routines.CNCNFSP_LST.routine());
-			//fine LP 20240919 PGNTCORE-24 
-
+			//fine LP 20240919 PGNTCORE-24
 			callableStatement.setString(1, blackbox.getCodiceEnte());
 			callableStatement.setString(2, blackbox.getCodiceIdentificativoDominio());
 			callableStatement.setString(3, blackbox.getFlagIuv());
@@ -364,9 +360,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.registerOutParameter(9, Types.INTEGER);
 			/* we register total pages */
 			callableStatement.registerOutParameter(10, Types.SMALLINT);
-
 			/* we execute procedure */
-
 			if (callableStatement.execute()) {
 				pageInfo = new PageInfo();
 				pageInfo.setPageNumber(pageNumber);
@@ -375,12 +369,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 				pageInfo.setLastRow(callableStatement.getInt(8));
 				pageInfo.setNumRows(callableStatement.getInt(9));
 				pageInfo.setNumPages(callableStatement.getInt(10));
-
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
-
 				blackboxLst[0] = getWebRowSetXml();
-
 				if (callableStatement.getMoreResults()) {
 					// inizio LP PG21XX04 Leak
 					if (data != null) {
@@ -395,11 +386,9 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 					loadWebRowSet(data);
 					blackboxLst[1] = getWebRowSetXml();
 				}
-
 			}
 			blackboxPagelist = new BlackBoxPagelist(pageInfo, "00", "", blackboxLst);
 			return blackboxPagelist;
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			blackboxPagelist = new BlackBoxPagelist(pageInfo, "01", "Sql-Exception", "");
@@ -463,7 +452,6 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(6, blackboxpos.getFlagPagato());
 			callableStatement.setDate(7, blackboxpos.getDataCreazione() != null ? new java.sql.Date(blackboxpos.getDataCreazione().getTimeInMillis()) : null);
 			callableStatement.setInt(8, blackboxpos.getAnnoRiferimento());
-
 			callableStatement.setString(9, OrderBy);
 			callableStatement.setInt(10, rowsPerPage);
 			callableStatement.setInt(11, pageNumber);
@@ -471,8 +459,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.registerOutParameter(13, Types.INTEGER);
 			callableStatement.registerOutParameter(14, Types.INTEGER);
 			callableStatement.registerOutParameter(15, Types.SMALLINT);
-
-				if (callableStatement.execute()) {
+			if (callableStatement.execute()) {
 				pageInfo = new PageInfo();
 				pageInfo.setPageNumber(pageNumber);
 				pageInfo.setRowsPerPage(rowsPerPage);
@@ -503,7 +490,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-				blackBoxPosPagelist = new BlackBoxPosPagelist(pageInfo, "01", "Sql-Exception", "");
+			blackBoxPosPagelist = new BlackBoxPosPagelist(pageInfo, "01", "Sql-Exception", "");
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			blackBoxPosPagelist = new BlackBoxPosPagelist(pageInfo, "01", "Sql-Exception", "");
@@ -659,8 +646,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_UPD.routine());
 			callableStatement = prepareCall(Routines.CNDOCSP_UPD.routine());
-			//fine LP 20240919 PGNTCORE-24 
-
+			//fine LP 20240919 PGNTCORE-24
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
 			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
@@ -681,21 +667,17 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(18, blackboxpos.getCodiceIuv());
 			callableStatement.setString(19, blackboxpos.getFlagPagato());
 			// inizio LP PG200370
-			callableStatement.setString(20,
-					(blackboxpos.getTassonomia() != null ? blackboxpos.getTassonomia().trim() : ""));
+			callableStatement.setString(20, (blackboxpos.getTassonomia() != null ? blackboxpos.getTassonomia().trim() : ""));
 			// fine LP PG200370
-
 			// inizio LP PG200370
 			// callableStatement.registerOutParameter(20, Types.INTEGER);
 			callableStatement.registerOutParameter(21, Types.INTEGER);
 			// fine LP PG200370
-
 			callableStatement.execute();
 			// inizio LP PG200370
 			// ret = callableStatement.getInt(20);
 			ret = callableStatement.getInt(21);
 			// fine LP PG200370
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			ret = e.getErrorCode();
@@ -847,7 +829,6 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			}
 			blackBoxPosLogPagelist = new BlackBoxPosLogPagelist(pageInfo, "00", "", blackboxLst);
 			return blackBoxPosLogPagelist;
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			blackBoxPosLogPagelist = new BlackBoxPosLogPagelist(pageInfo, "01", "Sql-Exception", "");
@@ -988,12 +969,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 	// PG200180
 	@Override
 	public int getProgressivoIuv(String codiceEnte, String code) throws DaoException {
-
 		CallableStatement callableStatement = null;
 		Connection connection = null;
 		int ret = 0;
 		try {
-
 			connection = getConnection();
 			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNKEYSP.routine());
@@ -1002,10 +981,8 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(1, codiceEnte);
 			callableStatement.setString(2, code);
 			callableStatement.registerOutParameter(3, ret);
-
 			callableStatement.execute();
 			ret = callableStatement.getInt(3);
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			ret = e.getErrorCode();
@@ -1040,7 +1017,6 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 
 	@Override
 	public Integer insert(ConfigurazioneBlackBoxPos blackboxpos) throws DaoException {
-
 		CallableStatement callableStatement = null;
 		Connection connection = null;
 		int ret = 0;
@@ -1049,8 +1025,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_INS.routine());
 			callableStatement = prepareCall(Routines.CNDOCSP_INS.routine());
-			//fine LP 20240919 PGNTCORE-24 
-
+			//fine LP 20240919 PGNTCORE-24
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
 			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
@@ -1075,34 +1050,26 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setDouble(21, blackboxpos.getImportoPagato());
 			callableStatement.setString(22, blackboxpos.getCodiceTipologiaServizio());
 			callableStatement.setString(23, blackboxpos.getCodiceIBAN2() == null ? "" : blackboxpos.getCodiceIBAN2());
-			callableStatement.setString(24,
-					blackboxpos.getCausaleServizio() == null ? "" : blackboxpos.getCausaleServizio());
+			callableStatement.setString(24, blackboxpos.getCausaleServizio() == null ? "" : blackboxpos.getCausaleServizio());
 			callableStatement.setString(25, blackboxpos.getCespite() == null ? "" : blackboxpos.getCespite());
 			callableStatement.setString(26, blackboxpos.getAnnoRif() == null ? "" : blackboxpos.getAnnoRif());
 			callableStatement.setString(27, blackboxpos.getCittaCAP() == null ? "" : blackboxpos.getCittaCAP());
 			callableStatement.setString(28, blackboxpos.getCodiceUtente() == null ? "" : blackboxpos.getCodiceUtente());
-			callableStatement.setString(29,
-					blackboxpos.getCodiceSocieta() == null ? "" : blackboxpos.getCodiceSocieta());
+			callableStatement.setString(29, blackboxpos.getCodiceSocieta() == null ? "" : blackboxpos.getCodiceSocieta());
 			callableStatement.setString(30, blackboxpos.getChiaveEnte() == null ? "" : blackboxpos.getChiaveEnte());
 			// inizio LP PG200370
 			// callableStatement.registerOutParameter(31, Types.INTEGER);
-			callableStatement.setString(31,
-					(blackboxpos.getTassonomia() != null ? blackboxpos.getTassonomia().trim() : ""));
+			callableStatement.setString(31, (blackboxpos.getTassonomia() != null ? blackboxpos.getTassonomia().trim() : ""));
 			//inizio SB PG210170
-			callableStatement.setString(32,
-					(blackboxpos.getTarga() != null ? blackboxpos.getTarga().trim() : ""));
+			callableStatement.setString(32, (blackboxpos.getTarga() != null ? blackboxpos.getTarga().trim() : ""));
 			System.out.println("Data Verbale: " + blackboxpos.getDataVerbale());
 			if(blackboxpos.getDataVerbale()!=null)
-			callableStatement.setString(33,
-					blackboxpos.getDataVerbale());
+				callableStatement.setString(33, blackboxpos.getDataVerbale());
 			else
 				callableStatement.setNull(33,Types.VARCHAR);
-			callableStatement.setString(34,
-					(blackboxpos.getNumeroVerbale() != null ? blackboxpos.getNumeroVerbale().trim() : ""));
-			callableStatement.setString(35,
-					(blackboxpos.getNumBollettinoCDS() != null ? blackboxpos.getNumBollettinoCDS().trim() : ""));
+			callableStatement.setString(34, (blackboxpos.getNumeroVerbale() != null ? blackboxpos.getNumeroVerbale().trim() : ""));
+			callableStatement.setString(35, (blackboxpos.getNumBollettinoCDS() != null ? blackboxpos.getNumBollettinoCDS().trim() : ""));
 			//fine SB PG210170
-			
 			callableStatement.registerOutParameter(36, Types.INTEGER);
 			// fine LP PG200370
 			callableStatement.execute();
@@ -1146,12 +1113,10 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 
 	@Override
 	public int getProgressivoIuvGiornaliero(String codiceEnte, String code) throws DaoException {
-
 		CallableStatement callableStatement = null;
 		Connection connection = null;
 		int ret = 0;
 		try {
-
 			connection = getConnection();
 			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNKEYSP_GG.routine());
@@ -1160,10 +1125,8 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(1, codiceEnte);
 			callableStatement.setString(2, code);
 			callableStatement.registerOutParameter(3, ret);
-
 			callableStatement.execute();
 			ret = callableStatement.getInt(3);
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			ret = e.getErrorCode();
@@ -1200,7 +1163,6 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 	public void aggiornaFlagInviaDovuto(String codiceIdentificativoDominio, String numeroAvviso, String flagInviaDovuto) throws Exception {
 		CallableStatement callableStatement = null;
 		Connection connection = null;
-		
 		try {
 			connection = getConnection();
 			//inizio LP 20240919 PGNTCORE-24 

@@ -8,17 +8,11 @@ import java.sql.Types;
 import java.util.Vector;
 
 import com.seda.payer.commons.bean.TypeRequest;
-import com.seda.payer.core.bean.AssocImpBen;
 import com.seda.payer.core.bean.ConvenzioneImp;
 import com.seda.payer.core.bean.GatewayPagamento;
-import com.seda.payer.core.bean.TipologiaServizio;
-//import com.seda.payer.core.bean.Ente;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.messages.Messages;
-//inizio LP PG21XX04 Leak
-//import com.seda.data.dao.DAOHelper;
-//fine LP PG21XX04 Leak
 import com.seda.data.helper.HelperException;
 
 public class ConvenzioneImpDao extends BaseDaoHandler {

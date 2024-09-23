@@ -19,10 +19,6 @@ import com.seda.data.helper.HelperException;
  */
 public class AnagProvComDao extends BaseDaoHandler {
 
-	//inizio LP 20240909 - PGNTBOLDER-1
-	private CallableStatement callableStatementDetail = null;  
-	//fine LP 20240909 - PGNTBOLDER-1
-
 	public AnagProvComDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
@@ -51,10 +47,7 @@ public class AnagProvComDao extends BaseDaoHandler {
 			//CallableStatement callableStatement = prepareCall(Routines.APC_DODETAIL.routine());
 			//inizio LP 20240909 - PGNTBOLDER-1
 			//callableStatement = prepareCall(Routines.APC_DODETAIL.routine());
-			if(callableStatementDetail == null) {
-				callableStatementDetail = prepareCall(bFlagUpdateAutocomit, Routines.APC_DODETAIL.routine());
-				callableStatement = callableStatementDetail; 
-			}
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.APC_DODETAIL.routine());
 			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1,codiceBelfiore);
@@ -95,7 +88,6 @@ public class AnagProvComDao extends BaseDaoHandler {
 				}
 				//inizio LP 20240912 - PGNTBOLDER-1
 				callableStatement = null;
-				callableStatementDetail = null;
 				//fine LP 20240909 - PGNTBOLDER-1
 			}
 		}
@@ -107,15 +99,11 @@ public class AnagProvComDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(AnagProvCom anag, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(anag, rowsPerPage, pageNumber);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(anag, rowsPerPage, pageNumber);
 	}
 	
 	public void rowSets(AnagProvCom anag, int rowsPerPage, int pageNumber) throws DaoException {
@@ -164,6 +152,9 @@ public class AnagProvComDao extends BaseDaoHandler {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				//inizio LP 20240912 - PGNTBOLDER-1
+				callableStatement = null;
+				//fine LP 20240909 - PGNTBOLDER-1
 			}
 		}
 		//fine LP PG21XX04 Leak
@@ -180,7 +171,6 @@ public class AnagProvComDao extends BaseDaoHandler {
 		try	{
 			if (anag.getCodiceBelfiore() == null || anag.getCodiceBelfiore().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagProvCom.codiceBelfiore"));
-
 			/*if (anag.getCompany() == null || anag.getCompany().getCompanyCode() == null || anag.getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagProvCom.company.companyCode"));*/
 			//inizio LP 20240909 - PGNTBOLDER-1
@@ -217,6 +207,9 @@ public class AnagProvComDao extends BaseDaoHandler {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				//inizio LP 20240912 - PGNTBOLDER-1
+				callableStatement = null;
+				//fine LP 20240909 - PGNTBOLDER-1
 			}
 		}
 		//fine LP PG21XX04 Leak
@@ -264,23 +257,11 @@ public class AnagProvComDao extends BaseDaoHandler {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				//inizio LP 20240912 - PGNTBOLDER-1
+				callableStatement = null;
+				//fine LP 20240909 - PGNTBOLDER-1
 			}
 		}
 		//fine LP PG21XX04 Leak
 	}
-
-    //inizio LP 20240912 - PAGONET-604
-    public void closeCallableStatementS()  {
-	    if(callableStatementDetail != null) {
-			try {
-				callableStatementDetail.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementDetail = null;
-	    	
-	    }
-    }
-    //fine LP 20240912 - PAGONET-604
-
 }

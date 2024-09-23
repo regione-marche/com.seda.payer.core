@@ -3,7 +3,6 @@ package com.seda.payer.core.wallet.dao;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.wallet.bean.ConfigurazioneSolleciti;
 import com.seda.payer.core.wallet.bean.EsitoRisposte;
-import com.seda.payer.core.wallet.bean.Wallet;
 import com.seda.payer.core.wallet.bean.WalletPageList;
 
 public interface ConfigurazioneSollecitiDAO {

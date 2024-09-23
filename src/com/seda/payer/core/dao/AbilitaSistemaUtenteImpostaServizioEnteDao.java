@@ -70,6 +70,7 @@ public class AbilitaSistemaUtenteImpostaServizioEnteDao extends BaseDaoHandler {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				callableStatement = null; //LP 20240909 - PGNTBOLDER-1
 			}
 		}
 		//fine LP PG21XX04 Leak
@@ -80,17 +81,13 @@ public class AbilitaSistemaUtenteImpostaServizioEnteDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(AbilitaSistemaUtenteImpostaServizioEnte abilita, int rowsPerPage, int pageNumber, String strDescrEnte,String strDescrUtente,String strDescrTipologiaServizio,String strDescrImpostaServizio) throws DaoException {
-		
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(abilita, rowsPerPage, pageNumber,strDescrEnte,strDescrUtente,strDescrTipologiaServizio,strDescrImpostaServizio);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(abilita, rowsPerPage, pageNumber,strDescrEnte,strDescrUtente,strDescrTipologiaServizio,strDescrImpostaServizio);
 	}
-	
+
 	public void rowSets(AbilitaSistemaUtenteImpostaServizioEnte abilita, int rowsPerPage, int pageNumber, String strDescrEnte,String strDescrUtente,String strDescrTipologiaServizio,String strDescrImpostaServizio) throws DaoException {
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
@@ -143,6 +140,7 @@ public class AbilitaSistemaUtenteImpostaServizioEnteDao extends BaseDaoHandler {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				callableStatement = null; //LP 20240909 - PGNTBOLDER-1
 			}
 		}
 		//fine LP PG21XX04 Leak
@@ -153,22 +151,16 @@ public class AbilitaSistemaUtenteImpostaServizioEnteDao extends BaseDaoHandler {
 		try	{
 			if (abilita.getEnte() == null || abilita.getEnte().getUser() == null || abilita.getEnte().getUser().getCompany() == null || abilita.getEnte().getUser().getCompany().getCompanyCode() == null || abilita.getEnte().getUser().getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemaUtenteImpostaServizioEnte.ente.user.company.companyCode"));
-
-			if (                                                                    abilita.getEnte().getUser().getUserCode() == null || abilita.getEnte().getUser().getUserCode().length() == 0)
+			if (abilita.getEnte().getUser().getUserCode() == null || abilita.getEnte().getUser().getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemaUtenteImpostaServizioEnte.ente.user.userCode"));
-			
-			if (                             abilita.getEnte().getAnagEnte() == null || abilita.getEnte().getAnagEnte().getChiaveEnte() == null || abilita.getEnte().getAnagEnte().getChiaveEnte().length() == 0)
+			if (abilita.getEnte().getAnagEnte() == null || abilita.getEnte().getAnagEnte().getChiaveEnte() == null || abilita.getEnte().getAnagEnte().getChiaveEnte().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemaUtenteImpostaServizioEnte.ente.anagEnte.chiaveEnte"));
-						
 			if (abilita.getImpostaServizio() == null || abilita.getImpostaServizio().getTipologiaServizio() == null || abilita.getImpostaServizio().getTipologiaServizio().getCodiceTipologiaServizio() == null || abilita.getImpostaServizio().getTipologiaServizio().getCodiceTipologiaServizio().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemaUtenteImpostaServizioEnte.impostaServizio.tipologiaServizio.codiceTipologiaServizio"));
-
-			if (                                         abilita.getImpostaServizio().getCodiceImpostaServizio() == null || abilita.getImpostaServizio().getCodiceImpostaServizio().length() == 0)
+			if (abilita.getImpostaServizio().getCodiceImpostaServizio() == null || abilita.getImpostaServizio().getCodiceImpostaServizio().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemaUtenteImpostaServizioEnte.impostaServizio.codiceImpostaServizio"));
-						
 			if (abilita.getUrlSistemaEsterno() == null || abilita.getUrlSistemaEsterno().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemaUtenteImpostaServizioEnte.urlSistemaEsterno"));
-
 			AbilitaSistemaUtenteImpostaServizioEnte data = doDetail(abilita.getEnte().getUser().getCompany().getCompanyCode(),abilita.getEnte().getUser().getUserCode(),abilita.getEnte().getAnagEnte().getChiaveEnte(),abilita.getImpostaServizio().getTipologiaServizio().getCodiceTipologiaServizio(),abilita.getImpostaServizio().getCodiceImpostaServizio(),abilita.getUrlSistemaEsterno());
 			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemaUtenteImpostaServizioEnte.saveadd.error"));
 			if (data != null) 
@@ -193,6 +185,7 @@ public class AbilitaSistemaUtenteImpostaServizioEnteDao extends BaseDaoHandler {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				callableStatement = null; //LP 20240909 - PGNTBOLDER-1
 			}
 		}
 		//fine LP PG21XX04 Leak
@@ -209,22 +202,16 @@ public class AbilitaSistemaUtenteImpostaServizioEnteDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			if (abilita.getEnte() == null || abilita.getEnte().getUser() == null || abilita.getEnte().getUser().getCompany() == null || abilita.getEnte().getUser().getCompany().getCompanyCode() == null || abilita.getEnte().getUser().getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemaUtenteImpostaServizioEnte.ente.user.company.companyCode"));
-
 			if (abilita.getEnte().getUser().getUserCode() == null || abilita.getEnte().getUser().getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemaUtenteImpostaServizioEnte.ente.user.userCode"));
-			
 			if (abilita.getEnte().getAnagEnte() == null || abilita.getEnte().getAnagEnte().getChiaveEnte() == null || abilita.getEnte().getAnagEnte().getChiaveEnte().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemaUtenteImpostaServizioEnte.ente.anagEnte.chiaveEnte"));
-						
 			if (abilita.getImpostaServizio() == null || abilita.getImpostaServizio().getTipologiaServizio() == null || abilita.getImpostaServizio().getTipologiaServizio().getCodiceTipologiaServizio() == null || abilita.getImpostaServizio().getTipologiaServizio().getCodiceTipologiaServizio().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemaUtenteImpostaServizioEnte.impostaServizio.tipologiaServizio.codiceTipologiaServizio"));
-
 			if (abilita.getImpostaServizio().getCodiceImpostaServizio() == null || abilita.getImpostaServizio().getCodiceImpostaServizio().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemaUtenteImpostaServizioEnte.impostaServizio.codiceImpostaServizio"));
-						
 			if (abilita.getUrlSistemaEsterno() == null || abilita.getUrlSistemaEsterno().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemaUtenteImpostaServizioEnte.urlSistemaEsterno"));
-
 			callableStatement.setString(1, abilita.getEnte().getUser().getCompany().getCompanyCode());
 			callableStatement.setString(2, abilita.getEnte().getUser().getUserCode());
 			callableStatement.setString(3, abilita.getEnte().getAnagEnte().getChiaveEnte());
@@ -248,6 +235,7 @@ public class AbilitaSistemaUtenteImpostaServizioEnteDao extends BaseDaoHandler {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				callableStatement = null; //LP 20240909 - PGNTBOLDER-1
 			}
 		}
 		//fine LP PG21XX04 Leak

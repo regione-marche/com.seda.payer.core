@@ -6,8 +6,6 @@ import java.sql.Connection;
 import javax.sql.DataSource;
 
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.wallet.dao.ConfigurazioneSollecitiDAO;
-import com.seda.payer.core.wallet.dao.ConfigurazioneSollecitiDAOImpl;
 
 public class ConfigurazioneModello3DAOFactory {
 

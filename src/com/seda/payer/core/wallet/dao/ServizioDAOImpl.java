@@ -6,8 +6,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import javax.sql.DataSource;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+
+import com.seda.data.helper.HelperException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -15,19 +15,22 @@ import com.seda.payer.core.wallet.bean.Servizio;
 
 public class ServizioDAOImpl   extends BaseDaoHandler  implements ServizioDAO  {
 	private static final long serialVersionUID = 1L;
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
 	public ServizioDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	//inizio LP PG21XX04 Leak
 	public ServizioDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
 	//fine LP PG21XX04 Leak
+
 	public ArrayList<Servizio> listServizi() throws DaoException {
-		CallableStatement callableStatement=null;
+		CallableStatement callableStatement = null;
 		ArrayList<Servizio> servizioList = null;
 		Connection connection = null;
 		ResultSet resultSet=null;
@@ -35,7 +38,7 @@ public class ServizioDAOImpl   extends BaseDaoHandler  implements ServizioDAO  {
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSRVSP_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSRVSP_LST.routine());
+			callableStatement = prepareCall(Routines.PYSRVSP_LST.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.execute();
 			resultSet=callableStatement.getResultSet();
@@ -55,12 +58,8 @@ public class ServizioDAOImpl   extends BaseDaoHandler  implements ServizioDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -97,14 +96,14 @@ public class ServizioDAOImpl   extends BaseDaoHandler  implements ServizioDAO  {
 	//fine LP PG21XX04
 	public Servizio selectServizio(String societa, String cutecute, String ente, String codiceServizio) throws DaoException {
 		CallableStatement callableStatement=null;
-		Connection connection = null;
+		//Connection connection = null; //LP PGNTCORE-24
 		ResultSet resultSet=null;
 		Servizio servizio=null;
 		try {
-			connection = getConnection();
 			//inizio LP PGNTCORE-24
+			//connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSRVSP_SEL.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSRVSP_SEL.routine());
+			callableStatement = prepareCall(Routines.PYSRVSP_SEL.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, societa);
 			callableStatement.setString(2, cutecute);
@@ -124,12 +123,8 @@ public class ServizioDAOImpl   extends BaseDaoHandler  implements ServizioDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -157,14 +152,14 @@ public class ServizioDAOImpl   extends BaseDaoHandler  implements ServizioDAO  {
 	//fine LP PG21XX04
 	public ArrayList<String> listServiziFiglio(String idWwallet, String anagGen, String codFiscGen, String anno) throws DaoException {
 		CallableStatement callableStatement=null;
-		Connection connection = null;
+		//Connection connection = null; //LP PGNTCORE-24
 		ResultSet resultSet=null;
 		ArrayList<String> listServiziFiglio;
 		try {
-			connection = getConnection();
 			//inizio LP PGNTCORE-24
+			//connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAFMSP_LST_SRV.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYAFMSP_LST_SRV.routine());
+			callableStatement = prepareCall(Routines.PYAFMSP_LST_SRV.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, idWwallet);
 			callableStatement.setString(2, anagGen);
@@ -187,12 +182,8 @@ public class ServizioDAOImpl   extends BaseDaoHandler  implements ServizioDAO  {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);

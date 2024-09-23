@@ -158,23 +158,19 @@ public class BollettinoDao extends BaseDaoHandler{
 			DAOHelper.closeIgnoringException(callableStatement);
 		}
 	}*/
-	
+
 	public void doRowSets(String tipoBollettino, String anaTipoBollettino) throws DaoException {
 		rowSets(tipoBollettino, anaTipoBollettino, 0, 0);
 	}
 
 	public void doRowSets(String tipoBollettino, String desTipoBollettino, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(tipoBollettino, desTipoBollettino, rowsPerPage, pageNumber);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(tipoBollettino, desTipoBollettino, rowsPerPage, pageNumber);
 	}
-	
+
 	private void rowSets(String tipoBollettino, String desTipoBollettino, int rowsPerPage, int pageNumber) throws DaoException {
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
@@ -265,21 +261,21 @@ public class BollettinoDao extends BaseDaoHandler{
 	*/
 	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doSave(Bollettino bollettino, String codOp) throws DaoException {
-		doSaveTail(true, bollettino,  codOp);
+		doSaveTail(true, bollettino, codOp);
 	}
 
-	public void doSaveTail(boolean bFlagUpdateAutocomit, Bollettino bollettino,String codOp) throws DaoException {
+	public void doSaveTail(boolean bFlagUpdateAutocomit, Bollettino bollettino, String codOp) throws DaoException {
 	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement=null;
 		try	{
 			if (bollettino.getTipoBollettino() == null || bollettino.getTipoBollettino().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("bollettino_bollettinoType"));
-
 			//inizio LP 20240909 - PGNTBOLDER-1
 			//Bollettino data = doDetail(bollettino.getTipoBollettino());
 			Bollettino data = doDetailTail(bFlagUpdateAutocomit, bollettino.getTipoBollettino());
 			//fine LP 20240909 - PGNTBOLDER-1
-			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("bollettino.saveadd.error"));
+			if ((data != null) && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0)
+				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("bollettino.saveadd.error"));
 			if (data != null) {	
 				//inizio LP 20240909 - PGNTBOLDER-1
 				//callableStatement = prepareCall(Routines.BOL_DOUPDATE.routine());
@@ -334,7 +330,6 @@ public class BollettinoDao extends BaseDaoHandler{
 			//fine LP PG21XX04 Leak
 			if (bollettino.getTipoBollettino().length() == 0 || bollettino.getTipoBollettino() == null)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("bollettino.TipoBollettino()"));
-	
 			callableStatement.setString(1, bollettino.getTipoBollettino());
 			callableStatement.execute();
 			//commit();

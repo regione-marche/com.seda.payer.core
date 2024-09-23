@@ -26,7 +26,6 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler implements ImputaPaga
 	//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
 	//CallableStatement callStmt = null; 
 	//Connection connection = null;
-	CallableStatement callStmtSNTAGG = null;
 	//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 
 	Properties attributes = new Properties();
@@ -626,7 +625,7 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler implements ImputaPaga
 	//inizio LP PG21XX04
 	//Nota. La chiusura della connection è affidata al chiamante.
 	//      Andrebbe rivista la procedura del batch che usa il metodo
-	//      per gestire la chiusra della connessione
+	//      per gestire la chiusura della connessione
 	//fine LP PG21XX04
 	public String aggTributiSORINET(String funzione, TributiForSORINET tributiForSORINET)	throws DaoException,HelperException{
 		//ArrayList<TributiForSORINET> list = new ArrayList<TributiForSORINET>(); //LP 20240916 - PGNTCORE-24
@@ -637,10 +636,7 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler implements ImputaPaga
 			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//connection = getConnection();
 			//callStmt = Helper.prepareCall(connection, getSchema(), Routines.PYSNTSP_AGGIORNA.routine());
-			if(callStmtSNTAGG == null) {
-				callStmtSNTAGG = prepareCall(false, Routines.PYSNTSP_AGGIORNA.routine());
-				callStmt = callStmtSNTAGG;
-			}
+			callStmt = prepareCall(false, Routines.PYSNTSP_AGGIORNA.routine());
 			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			callStmt.setString(1, funzione);
 			callStmt.setString(2, tributiForSORINET.getCodUtente());
@@ -673,18 +669,4 @@ public class ImputaPagamentiDAOImpl extends BaseDaoHandler implements ImputaPaga
 		//fine LP PG21XX04 Leak
 		return retCodeMess; 
 	}
-	
-	//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
-	public void closeCallableStatementS()  {
-		if(callStmtSNTAGG != null) {
-			try {
-				callStmtSNTAGG.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callStmtSNTAGG = null;
-		}
-	}
-	//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
-	
 }

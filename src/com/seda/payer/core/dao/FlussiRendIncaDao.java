@@ -49,14 +49,13 @@ public class FlussiRendIncaDao extends BaseDaoHandler {
 	}
 	
 	public String doSave(FlussiRendInca flu/*,String codOp*/) throws DaoException {
-		CallableStatement callableStatement=null;
+		CallableStatement callableStatement = null;
 		try	{
 			//int data = doDetail(flu.getCodiceSocietaMittente());
 			//if ((data != 0) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("FlussiRendInca.saveadd.error"));
 			//if (data != 0) 
 			//callableStatement = prepareCall(Routines.POF_DOUPDATE.routine());
 			callableStatement = prepareCall(Routines.POF_DOINSERT.routine());
-
 			flu.save(callableStatement);
 			callableStatement.execute();
 			return callableStatement.getString(6);

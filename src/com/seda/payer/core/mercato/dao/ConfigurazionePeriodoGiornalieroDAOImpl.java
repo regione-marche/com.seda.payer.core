@@ -12,8 +12,7 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -63,7 +62,7 @@ public class ConfigurazionePeriodoGiornalieroDAOImpl extends BaseDaoHandler  imp
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPEGSP_LST.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPEGSP_LST.routine());
+            callableStatement = prepareCall(Routines.PYPEGSP_LST.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
@@ -105,14 +104,9 @@ public class ConfigurazionePeriodoGiornalieroDAOImpl extends BaseDaoHandler  imp
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -152,7 +146,7 @@ public class ConfigurazionePeriodoGiornalieroDAOImpl extends BaseDaoHandler  imp
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPEGSP_DEL.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPEGSP_DEL.routine());
+            callableStatement = prepareCall(Routines.PYPEGSP_DEL.routine());
 			//fine LP PGNTCORE-24
 //			IN I_PEG_CSOCCSOC VARCHAR(5), 
 //			IN I_PEG_CUTECUTE VARCHAR(5),
@@ -176,14 +170,9 @@ public class ConfigurazionePeriodoGiornalieroDAOImpl extends BaseDaoHandler  imp
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -216,7 +205,7 @@ public class ConfigurazionePeriodoGiornalieroDAOImpl extends BaseDaoHandler  imp
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPEGSP_INS.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPEGSP_INS.routine());
+            callableStatement = prepareCall(Routines.PYPEGSP_INS.routine());
 			//fine LP PGNTCORE-24
 
 //					IN I_PEG_CSOCCSOC VARCHAR(5), 
@@ -250,14 +239,9 @@ public class ConfigurazionePeriodoGiornalieroDAOImpl extends BaseDaoHandler  imp
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -295,7 +279,7 @@ public class ConfigurazionePeriodoGiornalieroDAOImpl extends BaseDaoHandler  imp
 //			IN I_PEG_CPEGCTIP VARCHAR(10)			
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPEGSP_SEL.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPEGSP_SEL.routine());
+            callableStatement = prepareCall(Routines.PYPEGSP_SEL.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazionePeriodoGiornaliero.getCodiceSocieta());
 			callableStatement.setString(2, configurazionePeriodoGiornaliero.getCuteCute());
@@ -309,7 +293,6 @@ public class ConfigurazionePeriodoGiornalieroDAOImpl extends BaseDaoHandler  imp
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -332,13 +315,9 @@ public class ConfigurazionePeriodoGiornalieroDAOImpl extends BaseDaoHandler  imp
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (rowSet != null) {
@@ -388,7 +367,7 @@ public class ConfigurazionePeriodoGiornalieroDAOImpl extends BaseDaoHandler  imp
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPEGSP_TOT.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPEGSP_TOT.routine());
+            callableStatement = prepareCall(Routines.PYPEGSP_TOT.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazionePeriodoGiornaliero.getCodiceSocieta());
 			callableStatement.setString(2, configurazionePeriodoGiornaliero.getCuteCute());
@@ -414,12 +393,8 @@ public class ConfigurazionePeriodoGiornalieroDAOImpl extends BaseDaoHandler  imp
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -462,7 +437,7 @@ public class ConfigurazionePeriodoGiornalieroDAOImpl extends BaseDaoHandler  imp
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPEGSP_UPD.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPEGSP_UPD.routine());
+            callableStatement = prepareCall(Routines.PYPEGSP_UPD.routine());
 			//fine LP PGNTCORE-24
 //			IN I_PEG_CSOCCSOC VARCHAR(5), 
 //			IN I_PEG_CUTECUTE VARCHAR(5),
@@ -492,14 +467,9 @@ public class ConfigurazionePeriodoGiornalieroDAOImpl extends BaseDaoHandler  imp
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);

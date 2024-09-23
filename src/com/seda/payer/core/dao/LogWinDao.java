@@ -170,7 +170,7 @@ public class LogWinDao extends BaseDaoHandler {
 				callableStatement.setString(9, operatore);
 				callableStatement.setString(10, nameSchema);
 				callableStatement.executeUpdate();
-				callableStatement.close();
+				//callableStatement.close();
 			}
 		} catch (SQLException x) {
 			throw new DaoException(x);

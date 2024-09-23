@@ -12,8 +12,7 @@ import java.util.Calendar;
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 import com.seda.commons.string.Convert;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -25,17 +24,20 @@ import com.seda.payer.core.wallet.bean.WalletPageList;
 public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements ConfigurazioneSollecitiDAO  {
 
 	private static final long serialVersionUID = 1L;
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
 	public ConfigurazioneSollecitiDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	//inizio LP PG21XX04 Leak
 	public ConfigurazioneSollecitiDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
 	//fine LP PG21XX04 Leak
+
 	public EsitoRisposte insert(ConfigurazioneSolleciti configurazioneSolleciti )	throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
@@ -44,7 +46,7 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_INS.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCSLSP_INS.routine());
+			callableStatement = prepareCall(Routines.PYCSLSP_INS.routine());
 			//fine LP PGNTCORE-24
 //			IN I_CSL_CSOCCSOC VARCHAR(5), 
 //			IN I_CSL_CUTECUTE VARCHAR(5),
@@ -117,14 +119,9 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -158,7 +155,7 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_DEL.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCSLSP_DEL.routine());
+			callableStatement = prepareCall(Routines.PYCSLSP_DEL.routine());
 			//fine LP PGNTCORE-24
 //				private String codiceSocieta;        		//	"I_CSL_CSOCCSOC" VARCHAR(5)
 //				private String cuteCute;					//	"I_CSL_CUTECUTE" VARCHAR(5)
@@ -181,14 +178,9 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -221,7 +213,7 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_SEL.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCSLSP_SEL.routine());
+			callableStatement = prepareCall(Routines.PYCSLSP_SEL.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneSolleciti.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneSolleciti.getCuteCute());
@@ -280,12 +272,8 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		}
 		finally {
 			//inizio LP PG21XX04 Leak
@@ -332,7 +320,7 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_UPD.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCSLSP_UPD.routine());
+			callableStatement = prepareCall(Routines.PYCSLSP_UPD.routine());
 			//fine LP PGNTCORE-24
 //			IN I_CSL_CSOCCSOC VARCHAR(5), 
 //			IN I_CSL_CUTECUTE VARCHAR(5),
@@ -421,14 +409,9 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -480,7 +463,7 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_LST.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCSLSP_LST.routine());
+			callableStatement = prepareCall(Routines.PYCSLSP_LST.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
@@ -523,14 +506,9 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);

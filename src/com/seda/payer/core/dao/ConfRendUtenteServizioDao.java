@@ -21,6 +21,7 @@ public class ConfRendUtenteServizioDao  extends BaseDaoHandler{
 	public ConfRendUtenteServizioDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
+
 	public ConfRendUtenteServizio doDetail
 	(
 		String codiceSocieta,
@@ -38,26 +39,21 @@ public class ConfRendUtenteServizioDao  extends BaseDaoHandler{
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ConfRendUtenteServizioEnte.codiceUtente"));
 			if (tipologiaServizio == null || tipologiaServizio.equals(""))
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ConfRendUtenteServizioEnte.tipologiaServizio"));
-
 			callableStatement = prepareCall("PYRESSP_SEL");
 			callableStatement.setString(1, codiceSocieta);
 			callableStatement.setString(2, codiceUtente);
 			callableStatement.setString(3, tipologiaServizio);
-			if (callableStatement.execute())
-			{
+			if (callableStatement.execute()) {
 				data = callableStatement.getResultSet();
 				if (data.next()) bean = new  ConfRendUtenteServizio(data);
 			}
-			
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(Integer.parseInt(Messages.ILL_ARG_ERR_CODE.format()),e.getMessage(),e);
 		} catch (SQLException e) {
 			throw new DaoException(e.getErrorCode(),e.getMessage(),e);
 		} catch (HelperException e) {
 			throw new DaoException(Integer.parseInt(Messages.HELPER_ERR_CODE.format()),e.getMessage(),e);
-		}
-		finally
-		{
+		} finally {
 			//inizio LP PG21XX04 Leak
             //DAOHelper.closeIgnoringException(data);
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -106,9 +102,7 @@ public class ConfRendUtenteServizioDao  extends BaseDaoHandler{
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}
-		finally
-		{
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
 			if (callableStatement != null) {
@@ -121,7 +115,6 @@ public class ConfRendUtenteServizioDao  extends BaseDaoHandler{
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
 	
 	public boolean deleteRecord
 	(
@@ -152,9 +145,7 @@ public class ConfRendUtenteServizioDao  extends BaseDaoHandler{
 			throw new DaoException(e.getErrorCode(),e.getMessage(),e);
 		} catch (HelperException e) {
 			throw new DaoException(Integer.parseInt(Messages.HELPER_ERR_CODE.format()),e.getMessage(),e);
-		}
-		finally
-		{
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
 			if (callableStatement != null) {
@@ -168,7 +159,6 @@ public class ConfRendUtenteServizioDao  extends BaseDaoHandler{
 		}
 		return esito;
 	}
-
 
 	public void doRowSetsTail 
 	(
@@ -191,7 +181,6 @@ public class ConfRendUtenteServizioDao  extends BaseDaoHandler{
 			callableStatement.setString(5, descrizioneUtente);
 			callableStatement.setString(6, descrizioneTipologiaServizio);
 			callableStatement.setString(7, codiceTipologiaServizio);
-			
 			/*
 			 * 	OUT O_ROWINI INT
 			 */
@@ -208,21 +197,17 @@ public class ConfRendUtenteServizioDao  extends BaseDaoHandler{
 			 * 	OUT O_TOTPAGES INT
 			 */
 			callableStatement.registerOutParameter(11, Types.SMALLINT);
-			if (callableStatement.execute())
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSet(callableStatement);
 				registerPageInfo(rowsPerPage, pageNumber, callableStatement.getInt(8), callableStatement.getInt(9), callableStatement.getInt(10), callableStatement.getInt(11));
 			}
-
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally
-		{
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
 			if (callableStatement != null) {
@@ -236,19 +221,16 @@ public class ConfRendUtenteServizioDao  extends BaseDaoHandler{
 		}
 	}
 	
-	
 	public void doRowSets 
 	(
-			int pageNumber,
-			int rowsPerPage, 
-			String order,
-			String descrizioneSocieta,
-			String descrizioneUtente,
-			String descrizioneTipologiaServizio
+		int pageNumber,
+		int rowsPerPage, 
+		String order,
+		String descrizioneSocieta,
+		String descrizioneUtente,
+		String descrizioneTipologiaServizio
 	) throws DaoException
 	{
 		this.doRowSetsTail(pageNumber,rowsPerPage,order,descrizioneSocieta,descrizioneUtente,descrizioneTipologiaServizio,"");
 	}
-	
-
 }

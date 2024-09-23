@@ -20,74 +20,77 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class ConfigPagamentoDao extends BaseDaoHandler {
 	
+	//inizio LP 20240921 - PGNTECCSV-10
+	private CallableStatement callableStatementList = null;
+	//fine LP 20240921 - PGNTECCSV-10
+
 	public ConfigPagamentoDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
 	
 	public List<ConfigPagamento> doList(String codSocieta, String codUtente, String chiaveEnte, String canalePagamento) throws DaoException {
+	//inizio LP 20240921 - PGNTECCSV-10
+		return doListBatch(false, false, codSocieta, codUtente, chiaveEnte, canalePagamento);
+	}
+
+	public List<ConfigPagamento> doListBatch(boolean bFlagUpdateAutocommit, boolean bcloseStat, String codSocieta, String codUtente, String chiaveEnte, String canalePagamento) throws DaoException {
+	//fine LP 20240921 - PGNTECCSV-10
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		ResultSet rsRange = null;
 		ResultSet rsTemplFunzPag = null;
 		try	{
-			callableStatement = prepareCall(Routines.CES_DOLIST_CONFIG.routine());
+			//inizio LP 20240921 - PGNTECCSV-10
+			//callableStatement = prepareCall(Routines.CES_DOLIST_CONFIG.routine());
+			if(callableStatementList == null) {
+				callableStatementList = prepareCall(Routines.CES_DOLIST_CONFIG.routine());
+			}
+			callableStatement = callableStatementList;
+			//fine LP 20240921 - PGNTECCSV-10
 			callableStatement.setString(1, codSocieta);
 			callableStatement.setString(2, codUtente);
 			callableStatement.setString(3, chiaveEnte);
 			callableStatement.setString(4, canalePagamento);
-			
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				//resultset 1
 				data = callableStatement.getResultSet();
 				//la chiave è il CTSE (codice tipologia servizio) e il valore è l'oggetto ConfigPagamento
 				//NB: la LinkedHashMap mantiene l'ordine di inserimento
 				LinkedHashMap<String,ConfigPagamento> hmConfig = new LinkedHashMap<String,ConfigPagamento>();
 				ConfigPagamento conf;
-				while (data.next())
-				{
+				while (data.next()) {
 					conf = new ConfigPagamento(data);
 					hmConfig.put(conf.getCodTipologiaServizio(), conf);
 				}
-				
 				//resultset 2: range di validazione (li suddivido per tipologia servizio e li inserisco nell'oggetto ConfigPagamento corretto)
-				if (callableStatement.getMoreResults())
-				{
+				if (callableStatement.getMoreResults()) {
 					rsRange = callableStatement.getResultSet();
 					ValidazioneRange range;
-					while (rsRange.next())
-					{
+					while (rsRange.next()) {
 						range = new ValidazioneRange(rsRange);
-						if (hmConfig.containsKey(range.getCodTipologiaServizio()))
-						{
+						if (hmConfig.containsKey(range.getCodTipologiaServizio())) {
 							ConfigPagamento c = hmConfig.get(range.getCodTipologiaServizio());
 							c.getListValidazioneRange().add(range);
 						}
 					}
 				}
-				
 				//resultset 3: template funzioni pagamento (obbligatorietà campi) 
 				//li suddivido per tipologia servizio e li inserisco nell'oggetto ConfigPagamento corretto
-				if (callableStatement.getMoreResults())
-				{
+				if (callableStatement.getMoreResults()) {
 					rsTemplFunzPag = callableStatement.getResultSet();
 					TemplateFunzioniPagamento templfunzpag;
-					while (rsTemplFunzPag.next())
-					{
+					while (rsTemplFunzPag.next()) {
 						templfunzpag = new TemplateFunzioniPagamento(rsTemplFunzPag);
-						if (hmConfig.containsKey(templfunzpag.getCodTipologiaServizio()))
-						{
+						if (hmConfig.containsKey(templfunzpag.getCodTipologiaServizio())) {
 							ConfigPagamento c = hmConfig.get(templfunzpag.getCodTipologiaServizio());
 							c.getListTemplateFunzioniPagamento().add(templfunzpag);
 						}
 					}
 				}
-				
 				//converto l'hashmap in lista (prendendo solo i valori e tralasciando le chiavi)
 				List<ConfigPagamento> listConf = new ArrayList<ConfigPagamento>();
 				for (ConfigPagamento confRes : hmConfig.values())
 					listConf.add(confRes);
-
 				return listConf;
 			}	
 			return null;
@@ -97,8 +100,7 @@ public class ConfigPagamentoDao extends BaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//if (callableStatement != null)
 			//	DAOHelper.closeIgnoringException(callableStatement);
@@ -129,13 +131,21 @@ public class ConfigPagamentoDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240921 - PGNTECCSV-10
+			if(bcloseStat) {
+			//fine LP 20240921 - PGNTECCSV-10
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240921 - PGNTECCSV-10
+				callableStatement = null;
+				callableStatementList = null;
 			}
+			//fine LP 20240921 - PGNTECCSV-10
 			//fine LP PG21XX04 Leak
 		}
 	}
@@ -151,14 +161,10 @@ public class ConfigPagamentoDao extends BaseDaoHandler {
 			callableStatement.setString(3, chiaveEnte);
 			callableStatement.setString(4, codTipologiaServizio);
 			callableStatement.setString(5, canalePagamento);
-			
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				data = callableStatement.getResultSet();
-				
 				if (data.next())
 					conf = new ConfigPagamento(data);
-				
 				return conf;
 			}	
 			return null;
@@ -168,8 +174,7 @@ public class ConfigPagamentoDao extends BaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//if (callableStatement != null)
 			//	DAOHelper.closeIgnoringException(callableStatement);
@@ -203,14 +208,10 @@ public class ConfigPagamentoDao extends BaseDaoHandler {
 			callableStatement.setString(1, idDominio);
 			callableStatement.setString(2, canalePagamento);
 			callableStatement.setString(3, codiceTipologiaServizio);
-			
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				data = callableStatement.getResultSet();
-				
 				if (data.next())
 					conf = new ConfigPagamento(data);
-				
 				return conf;
 			}	
 			return null;
@@ -220,9 +221,7 @@ public class ConfigPagamentoDao extends BaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
-			
+		} finally {
 			if (data != null) {
 				try {
 					data.close();
@@ -240,6 +239,4 @@ public class ConfigPagamentoDao extends BaseDaoHandler {
 		}
 	}
 	//PAGONET-537 SB - fine
-	
-
 }

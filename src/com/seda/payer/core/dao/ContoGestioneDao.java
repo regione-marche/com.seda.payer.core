@@ -7,10 +7,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 
-import com.seda.payer.commons.bean.TypeRequest;
 import com.seda.payer.core.bean.ContoGestione;
-import com.seda.payer.core.bean.ConvenzioneImp;
-import com.seda.payer.core.bean.EccedenzaTestaBean;
 import com.seda.payer.core.bean.Ente;
 import com.seda.payer.core.bean.ContoGestioneBean;
 import com.seda.payer.core.bean.TransazioneMod21Err;
@@ -38,12 +35,9 @@ public class ContoGestioneDao extends BaseDaoHandler {
 	public void doRowSets(ContoGestione contoGestione, String ordine, int rowsPerPage, int pageNumber) throws DaoException {
 		if (rowsPerPage <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
 		if (pageNumber <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
-
 		CallableStatement callableStatement = null;
-
 		try	{
 			
 			/*

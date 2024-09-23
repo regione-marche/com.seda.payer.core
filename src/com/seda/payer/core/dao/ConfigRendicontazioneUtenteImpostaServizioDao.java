@@ -6,7 +6,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import com.seda.payer.commons.bean.TypeRequest;
 import com.seda.payer.core.bean.ConfigRendicontazioneUtenteImpostaServizio;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -78,15 +77,11 @@ public class ConfigRendicontazioneUtenteImpostaServizioDao extends BaseDaoHandle
 	}
 
 	public void doRowSets(ConfigRendicontazioneUtenteImpostaServizio config, int rowsPerPage, int pageNumber,String strDescrUtente,String strDescrTipologiaServizio,String strDescrImpostaServizio) throws DaoException {
-		
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(config, rowsPerPage, pageNumber,strDescrUtente,strDescrTipologiaServizio,strDescrImpostaServizio);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(config, rowsPerPage, pageNumber,strDescrUtente,strDescrTipologiaServizio,strDescrImpostaServizio);
 	}
 	
 	public void rowSets(ConfigRendicontazioneUtenteImpostaServizio config, int rowsPerPage, int pageNumber,String strDescrUtente,String strDescrTipologiaServizio,String strDescrImpostaServizio) throws DaoException {
@@ -143,9 +138,9 @@ public class ConfigRendicontazioneUtenteImpostaServizioDao extends BaseDaoHandle
 		//fine LP PG21XX04 Leak
 	}
 
-	public void doSave(ConfigRendicontazioneUtenteImpostaServizio config,String codOp) throws DaoException {
-		CallableStatement callableStatement = null;
-		/*try	{
+	public void doSave(ConfigRendicontazioneUtenteImpostaServizio config, String codOp) throws DaoException {
+		/*CallableStatement callableStatement = null;
+		try	{
 
 			if (config.getUser()== null || config.getUser().getUserCode() == null || config.getUser().getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configRendicontazioneUtenteImpostaServizio.userCode"));

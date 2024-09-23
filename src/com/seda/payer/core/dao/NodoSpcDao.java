@@ -996,7 +996,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			
 			//inizio LP PG190220
 			//int recCount = callableStatement.getInt(25);
-			int recCount = callableStatement.getInt(33);
+			//int recCount = callableStatement.getInt(33); //LP 20240923 - PGNTCORE-24
 			//fine LP PG190220
 			
 			//fine LP PG180290
@@ -1102,7 +1102,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			
 			//inizio LP PG190220
 			//int recCount = callableStatement.getInt(25);
-			int recCount = callableStatement.getInt(33);
+			//int recCount = callableStatement.getInt(33); //LP 20240923 - PGNTCORE-24
 			//fine LP PG190220
 			
 			//fine LP PG180290
@@ -1220,7 +1220,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			
 			//inizio LP PG190220
 			//int recCount = callableStatement.getInt(25);
-			int recCount = callableStatement.getInt(33);
+			//int recCount = callableStatement.getInt(33); //LP 20240923 - PGNTCORE-24
 			//fine LP PG190220
 			
 			//fine LP PG180290

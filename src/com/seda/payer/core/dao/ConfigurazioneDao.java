@@ -41,7 +41,6 @@ public class ConfigurazioneDao extends BaseDaoHandler {
 			bean.save(callableStatement);
 			callableStatement.executeUpdate();
 			commit();
-
 		} catch (SQLException x) {
 			rollback();
 			throw new DaoException(x);
@@ -76,7 +75,6 @@ public class ConfigurazioneDao extends BaseDaoHandler {
 			bean.update(callableStatement);			
 			callableStatement.executeUpdate();
 			commit();
-
 		} catch (SQLException x) {
 			rollback();
 			throw new DaoException(x);
@@ -109,7 +107,6 @@ public class ConfigurazioneDao extends BaseDaoHandler {
 			bean.delete(callableStatement);
 			callableStatement.executeUpdate();
 			commit();
-
 		} catch (SQLException x) {
 			rollback();
 			throw new DaoException(x);
@@ -164,7 +161,6 @@ public class ConfigurazioneDao extends BaseDaoHandler {
 				}
 			}
 			return null;
-
 		} catch (SQLException x) {
 			rollback();
 			throw new DaoException(x);
@@ -288,7 +284,6 @@ public class ConfigurazioneDao extends BaseDaoHandler {
 		return list;
 	}
 
-	
 	/**
 	 * @param codiceSocieta
 	 * @param codiceUtente
@@ -347,7 +342,6 @@ public class ConfigurazioneDao extends BaseDaoHandler {
 		}
 	}
 	
-
 	/**
 	 * @param callableStatement
 	 */

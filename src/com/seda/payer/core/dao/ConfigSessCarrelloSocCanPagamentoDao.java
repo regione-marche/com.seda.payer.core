@@ -73,15 +73,11 @@ public class ConfigSessCarrelloSocCanPagamentoDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(ConfigSessCarrelloSocCanPagamento configSessCarrelloSocCanPagamento, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(configSessCarrelloSocCanPagamento, rowsPerPage, pageNumber);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(configSessCarrelloSocCanPagamento, rowsPerPage, pageNumber);
 	}
 
 	public void rowSets(ConfigSessCarrelloSocCanPagamento configSessCarrelloSocCanPagamento, int rowsPerPage, int pageNumber) throws DaoException {
@@ -145,12 +141,12 @@ public class ConfigSessCarrelloSocCanPagamentoDao extends BaseDaoHandler {
 			System.out.println("Company"+ configSessCarrelloSocCanPagamento.getCompany().getCompanyCode());
 			System.out.println("Can Pag"+ configSessCarrelloSocCanPagamento.getCanalePagamento().getChiaveCanalePagamento());
 			ConfigSessCarrelloSocCanPagamento data = doDetail(configSessCarrelloSocCanPagamento.getCompany().getCompanyCode(), configSessCarrelloSocCanPagamento.getCanalePagamento().getChiaveCanalePagamento());
-			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("sesscarrello.saveadd.error"));
+			if ((data != null) && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0)
+				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("sesscarrello.saveadd.error"));
 			if (data != null) {
 				callableStatement = prepareCall(Routines.CAS_DOUPDATE.routine());
 				configSessCarrelloSocCanPagamento.update(callableStatement);
-			}
-			else {
+			} else {
 				callableStatement = prepareCall(Routines.CAS_DOINSERT.routine());
 				configSessCarrelloSocCanPagamento.save(callableStatement);
 			}
@@ -175,7 +171,8 @@ public class ConfigSessCarrelloSocCanPagamentoDao extends BaseDaoHandler {
 		}
 		//fine LP PG21XX04 Leak
 	}
-/*
+
+	/*
 		CallableStatement callableStatement = null;
 		try	{
 			if (configSessCarrelloSocCanPagamento.getCompany().getCompanyCode() == null || configSessCarrelloSocCanPagamento.getCompany().getCompanyCode().length()==0)
@@ -216,13 +213,10 @@ public class ConfigSessCarrelloSocCanPagamentoDao extends BaseDaoHandler {
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configSessCarrelloSocCanPagamento.companyCode"));
 			if (configSessCarrelloSocCanPagamento.getCanalePagamento().getChiaveCanalePagamento() == null)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configSessCarrelloSocCanPagamento.chiaveCanalePagamento"));
-
 			callableStatement.setString(1, configSessCarrelloSocCanPagamento.getCompany().getCompanyCode());
 			callableStatement.setString(2, configSessCarrelloSocCanPagamento.getCanalePagamento().getChiaveCanalePagamento());
 			callableStatement.execute();
 			//commit();
-			
-			
 		} catch (SQLException x) {
 			throw new DaoException(x.getErrorCode(),x.getMessage(),x);
 		} catch (IllegalArgumentException x) {

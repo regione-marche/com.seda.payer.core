@@ -82,15 +82,11 @@ public class CompanyDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(String companyCode, String companyDescription, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(companyCode, companyDescription, rowsPerPage, pageNumber);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(companyCode, companyDescription, rowsPerPage, pageNumber);
 	}
 
 	private void rowSets(String companyCode, String companyDescription, int rowsPerPage, int pageNumber) throws DaoException {
@@ -157,19 +153,17 @@ public class CompanyDao extends BaseDaoHandler {
 		try	{
 			if (company.getCompanyCode() == null || company.getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("company.companyCode"));
-
 			//inizio LP 20240821 - Versione dei metodi per essere usati in autocommit == true o false 
 			//Company data = doDetail(company.getCompanyCode());
 			Company data = doDetailTail(bFlagUpdateAutocommit, company.getCompanyCode());
 			//fine LP 20240821 - Versione dei metodi per essere usati in autocommit == true o false 
-			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("company.saveadd.error"));
-			 
+			if ((data != null) && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0)
+				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("company.saveadd.error"));
 			if (data != null) {	
 			    callableStatement = prepareCall(Routines.COMPANY_DOUPDATE.routine(), bFlagUpdateAutocommit); //LP 20240821
 			} else { 
 				callableStatement = prepareCall(Routines.COMPANY_DOINSERT.routine(), bFlagUpdateAutocommit); //LP 20240821
 			}
-			
 			company.save(callableStatement);
 			callableStatement.execute();
 			//commit();
@@ -213,7 +207,6 @@ public class CompanyDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			if (company.getCompanyCode() == null || company.getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("company.companyCode"));
-	
 			callableStatement.setString(1, company.getCompanyCode());
 			callableStatement.execute();
 			//commit();

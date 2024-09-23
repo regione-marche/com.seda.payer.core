@@ -70,7 +70,7 @@ public class ImuTasiDao extends RestBaseDaoHandler {
 		    callableStatement.registerOutParameter(6, Types.CHAR);
 		    callableStatement.registerOutParameter(7, Types.CHAR);
 			if (callableStatement.execute())
-				this.loadWebRowSets(callableStatement);		//TODO da verificare
+				this.loadWebRowSets(callableStatement); //Da verificare
 		} catch (HelperException x) {
 			throw new DaoException(x);
 		} catch (SQLException x) {

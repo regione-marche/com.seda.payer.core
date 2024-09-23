@@ -16,10 +16,6 @@ import com.seda.payer.core.messages.Messages;
 
 public class EnteDao extends BaseDaoHandler {
 	
-	//inizio LP 20240907 - PGNTBIMAIO-1
-	private CallableStatement callableStatementDoDetailCodFis = null;
-	//fine LP 20240907 - PGNTBIMAIO-1
-	
 	public EnteDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
@@ -110,10 +106,7 @@ public class EnteDao extends BaseDaoHandler {
 			//CallableStatement callableStatement = prepareCall(Routines.ENT_DODETAIL_CODFIS.routine());
 			//inizio LP 20240907 - PGNTBIMAIO-1
 			//callableStatement = prepareCall(Routines.ENT_DODETAIL_CODFIS.routine());
-			if(callableStatementDoDetailCodFis == null) {
-				callableStatementDoDetailCodFis = prepareCall(bFlagUpdateAutocomit, Routines.ENT_DODETAIL_CODFIS.routine());
-				callableStatement = callableStatementDoDetailCodFis;  
-			}
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.ENT_DODETAIL_CODFIS.routine());
 			//fine LP 20240907 - PGNTBIMAIO-1
 			//fine LP PG21XX04 Leak
 			//inizio LP PG200060
@@ -170,6 +163,7 @@ public class EnteDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 	//fine LP 20180629
+
 	public void doRowSetsForAdd(Ente ente) throws DaoException {
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
@@ -185,7 +179,6 @@ public class EnteDao extends BaseDaoHandler {
 			/* we execute procedure */
 			if (callableStatement.execute())
 				this.loadWebRowSets(callableStatement);
-
 			System.out.println("[INFO] - invoke doRowSetsForAdd successfully");
 		} catch (SQLException x) { throw new DaoException(x);
 		} catch (IllegalArgumentException x) { throw new DaoException(x);
@@ -282,13 +275,10 @@ public class EnteDao extends BaseDaoHandler {
 		try	{
 			if (ente.getUser() == null || ente.getUser().getUserCode() == null || ente.getUser().getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ente.user.userCode"));
-
 			if (ente.getUser().getCompany() == null || ente.getUser().getCompany().getCompanyCode() == null || ente.getUser().getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ente.user.company.companyCode"));
-
 			if (ente.getAnagEnte() == null || ente.getAnagEnte().getChiaveEnte() == null || ente.getAnagEnte().getChiaveEnte().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ente.anagEnte.chiaveEnte"));
-
 			//inizio LP 20240909 - PGNTBOLDER-1
 			//Ente data = doDetail(ente.getUser().getCompany().getCompanyCode(), ente.getUser().getUserCode(), ente.getAnagEnte().getChiaveEnte());
 			Ente data = doDetailTail(bFlagUpdateAutocomit, ente.getUser().getCompany().getCompanyCode(), ente.getUser().getUserCode(), ente.getAnagEnte().getChiaveEnte());
@@ -297,7 +287,6 @@ public class EnteDao extends BaseDaoHandler {
 			if (data != null && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0) 
 				throw new IllegalArgumentException(Messages.UNIQUE_CONSTRAINT_VIOLATION.format(data.getUser().getCompany().getCompanyCode() + 
 						" / " + data.getUser().getUserCode() + " / " + data.getAnagEnte().getChiaveEnte()));
-
 			if (data != null) {
 				//inizio LP 20240909 - PGNTBOLDER-1
 				//callableStatement = prepareCall(Routines.ENT_DOUPDATE.routine());
@@ -448,7 +437,6 @@ public class EnteDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		ResultSet res = null;
 		String codiceIpa = "";
-
 		try {
 			if (primoArg.length() <= 5) {
 				// è un codice utente
@@ -485,13 +473,11 @@ public class EnteDao extends BaseDaoHandler {
 			}
 		}
 	}
-	
-	
+
 	public String selezionaFlussoDocumento(String codiceBollettino) throws Exception {
 		CallableStatement callableStatement = null;
 		ResultSet res = null;
 		String progressivoFlusso = "";
-		
 		try {
 			callableStatement = prepareCall(Routines.PYEH1SP_SEL_FLU.routine());		
 			callableStatement.setString(1, codiceBollettino.trim()); // EH1_CEH1CBOL
@@ -501,7 +487,6 @@ public class EnteDao extends BaseDaoHandler {
 				progressivoFlusso = res.getString("EH1_PEH1FLUS");
 			}
 			return progressivoFlusso;
-			
 		} catch (SQLException e) {
 			throw new Exception(e);
 		} catch (IllegalArgumentException e) {
@@ -518,17 +503,15 @@ public class EnteDao extends BaseDaoHandler {
 			}
 		}
 	}
-	
+
 	public void aggiornaFlagInviaDovuto(String progressivoFlusso, String flagInviaDovuto) throws Exception {
 		CallableStatement callableStatement = null;
 		Connection connection = null;
-		
 		try {
 			connection = getConnection();
 			callableStatement = prepareCall(Routines.PYEH0SP_UPD_INV.routine());		
 			callableStatement.setLong(1, Long.parseLong(progressivoFlusso.trim()));
 			callableStatement.setString(2, flagInviaDovuto);
-			
 			callableStatement.execute();
 		} catch (SQLException x) {
 			throw new Exception(x);
@@ -544,7 +527,6 @@ public class EnteDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			
 			if (connection != null) {
 				try {
 					connection.close();
@@ -555,18 +537,5 @@ public class EnteDao extends BaseDaoHandler {
 		}
 	}
 	// fine SR PGNTCORE-11
-
-	//inizio LP 20240912 - PAGONET-604
-    public void closeCallableStatementS()  {
-	    if(callableStatementDoDetailCodFis != null) {
-			try {
-				callableStatementDoDetailCodFis.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementDoDetailCodFis = null;
-	    }
-    }
-    //fine LP 20240912 - PAGONET-604
 
 }

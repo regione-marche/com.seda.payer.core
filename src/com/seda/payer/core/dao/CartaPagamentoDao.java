@@ -82,14 +82,11 @@ public class CartaPagamentoDao extends BaseDaoHandler {
 	}
 	
 	public void doRowSets(CartaPagamento carta,int rowsPerPage, int pageNumber) throws DaoException {
-		
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
-		    
-			rowSets(carta, rowsPerPage, pageNumber);
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(carta, rowsPerPage, pageNumber);
 	}
 
 	public void rowSets(CartaPagamento carta, int rowsPerPage, int pageNumber) throws DaoException {
@@ -156,7 +153,8 @@ public class CartaPagamentoDao extends BaseDaoHandler {
 			//CartaPagamento data = doDetail(carta.getCodiceCartaPagamento());
 			CartaPagamento data = doDetailTail(bFlagUpdateAutocomit, carta.getCodiceCartaPagamento());
 			//fine LP 20240909 - PGNTBOLDER-1
-			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("cartaPagamento.saveadd.error"));
+			if ((data != null) && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0)
+				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("cartaPagamento.saveadd.error"));
 			if (data != null) {
 				//inizio LP 20240909 - PGNTBOLDER-1
 				//callableStatement = prepareCall(Routines.CAR_DOUPDATE.routine());
@@ -211,7 +209,6 @@ public class CartaPagamentoDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			if (carta.getCodiceCartaPagamento() == null || carta.getCodiceCartaPagamento().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("carta.codiceCartaPagamento"));
-
 			callableStatement.setString(1, carta.getCodiceCartaPagamento());
 			callableStatement.execute();
 			//commit();

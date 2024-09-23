@@ -5,7 +5,6 @@ package com.seda.data.procedure;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import com.seda.commons.reflection.MetaClass;
 import com.seda.data.procedure.parameter.CallParameter;

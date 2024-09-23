@@ -74,15 +74,11 @@ public class ConfigRtEnteDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(ConfigRtEnte configRtEnte, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(configRtEnte.getCodiceSocieta(), configRtEnte.getCuteCute(),configRtEnte.getChiaveEnte(), configRtEnte.getCodiceIdpaEnte(), rowsPerPage, pageNumber);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(configRtEnte.getCodiceSocieta(), configRtEnte.getCuteCute(),configRtEnte.getChiaveEnte(), configRtEnte.getCodiceIdpaEnte(), rowsPerPage, pageNumber);
 	}
 
 	private void rowSets(String companyCode, String userCode, String chiaveEnte, String codIdpa, int rowsPerPage, int pageNumber) throws DaoException {
@@ -150,7 +146,6 @@ public class ConfigRtEnteDao extends BaseDaoHandler {
 			if (data != null)	
 			    callableStatement = prepareCall(Routines.PYCFTSP_UPD.routine());
 			else callableStatement = prepareCall(Routines.PYCFTSP_INS.routine());
-			
 			configRtEnte.save(callableStatement);
 			callableStatement.execute();
 			//commit();
@@ -191,7 +186,6 @@ public class ConfigRtEnteDao extends BaseDaoHandler {
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configRtEnte.chiaveEnte"));
 			if (configRtEnte.getCodiceIdpaEnte() == null || configRtEnte.getCodiceIdpaEnte().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configRtEnte.codiceIdpa"));
-			
 			callableStatement.setString(1, configRtEnte.getCodiceSocieta());
 			callableStatement.setString(2, configRtEnte.getCuteCute());
 			callableStatement.setString(3, configRtEnte.getChiaveEnte());

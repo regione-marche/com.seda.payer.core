@@ -12,14 +12,7 @@ import com.seda.payer.core.bean.ImpostaServizio;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.messages.Messages;
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
-
-import com.seda.payer.core.bean.ConfigurazioneImpostaSoggiorno;
-import java.util.ArrayList;
-import java.util.Calendar;
-
-import com.seda.payer.core.bean.TestataComunicazioneImpostaSoggiorno;
 /**
  * 
  * @author mmontisano
@@ -33,11 +26,11 @@ public class ImpostaServizioDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
-	private void closeConnection(CallableStatement callableStatement)
-	{
-		if (callableStatement != null)
-			DAOHelper.closeIgnoringException(callableStatement);
-	}
+//	private void closeConnection(CallableStatement callableStatement)
+//	{
+//		if (callableStatement != null)
+//			DAOHelper.closeIgnoringException(callableStatement);
+//	}
 	
 	public ImpostaServizio doDetail(String companyCode, String codiceTipologiaServizio, String codiceImpostaServizio) throws DaoException {
 		//inizio LP PG21XX04 Leak
@@ -93,18 +86,13 @@ public class ImpostaServizioDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(ImpostaServizio impostaServizio, int rowsPerPage, int pageNumber,String strDescrSocieta,String strDescrTipologiaServizio) throws DaoException {
-		
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(impostaServizio, rowsPerPage, pageNumber,strDescrSocieta,strDescrTipologiaServizio);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(impostaServizio, rowsPerPage, pageNumber,strDescrSocieta,strDescrTipologiaServizio);
 	}
-	
-	
+
 	public void rowSets(ImpostaServizio imp, int rowsPerPage, int pageNumber,String strDescrSocieta,String strDescrTipologiaServizio) throws DaoException {
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
@@ -164,18 +152,16 @@ public class ImpostaServizioDao extends BaseDaoHandler {
 
 			if (imp.getCodiceImpostaServizio() == null || imp.getCodiceImpostaServizio().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("impostaServizio.codiceImpostaServizio"));
-			
 			if (imp.getTipologiaServizio() == null || imp.getTipologiaServizio().getCompany() == null || imp.getTipologiaServizio().getCompany().getCompanyCode() == null || imp.getTipologiaServizio().getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("impostaServizio.tipologiaServizio.company.companyCode"));			
-			
-			if (                                      imp.getTipologiaServizio().getCodiceTipologiaServizio() == null || imp.getTipologiaServizio().getCodiceTipologiaServizio().length() == 0)
+			if (imp.getTipologiaServizio().getCodiceTipologiaServizio() == null || imp.getTipologiaServizio().getCodiceTipologiaServizio().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("impostaServizio.tipologiaServizio.codiceTipologiaServizio"));			
 			ImpostaServizio data = doDetail(imp.getTipologiaServizio().getCompany().getCompanyCode(),imp.getTipologiaServizio().getCodiceTipologiaServizio(), imp.getCodiceImpostaServizio());
-			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("impostaServizio.saveadd.error"));
+			if ((data != null) && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0)
+				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("impostaServizio.saveadd.error"));
 			if (data != null) 
 				callableStatement = prepareCall(Routines.ISE_DOUPDATE.routine());
 			else callableStatement = prepareCall(Routines.ISE_DOINSERT.routine());
-			
 			imp.save(callableStatement);
 			callableStatement.execute();
 			//commit();
@@ -210,10 +196,8 @@ public class ImpostaServizioDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			if (imp.getTipologiaServizio().getCodiceTipologiaServizio() == null || imp.getTipologiaServizio().getCodiceTipologiaServizio().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("tipo.codiceTipologiaServizio"));
-
 			if (imp.getTipologiaServizio().getCompany() == null || imp.getTipologiaServizio().getCompany().getCompanyCode() == null || imp.getTipologiaServizio().getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("tipo.company.companyCode"));
-
 			callableStatement.setString(1, imp.getTipologiaServizio().getCompany().getCompanyCode());
 			callableStatement.setString(2, imp.getTipologiaServizio().getCodiceTipologiaServizio());
 			callableStatement.setString(3, imp.getCodiceImpostaServizio());
@@ -297,7 +281,4 @@ public class ImpostaServizioDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
-	
-	
 }

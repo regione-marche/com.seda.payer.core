@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.InfoCosti;
 import com.seda.payer.core.bean.InfoCostiTransazione;
@@ -93,5 +92,4 @@ public class InfoCostiDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-
 }

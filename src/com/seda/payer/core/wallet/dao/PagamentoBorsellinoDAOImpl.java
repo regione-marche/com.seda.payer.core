@@ -17,8 +17,6 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 import com.seda.commons.string.Convert;
 import com.seda.data.helper.HelperException;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
 import com.seda.payer.core.bean.PgHost;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -32,6 +30,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 	
 	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
@@ -56,7 +55,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPGBSP_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGBSP_LST.routine());
+			callableStatement = prepareCall(Routines.PYPGBSP_LST.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1,pagamento.getIdWallet());
 			callableStatement.setString(2,pagamento.getCodUtente());
@@ -134,12 +133,8 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} finally {
@@ -185,7 +180,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(),	Routines.PYPGBSP_LST_DETT.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGBSP_LST_DETT.routine());
+			callableStatement = prepareCall(Routines.PYPGBSP_LST_DETT.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, pagamento.getIdWallet());
 			callableStatement.setString(2, pagamento.getCodUtente());
@@ -225,12 +220,8 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} finally {
@@ -274,7 +265,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(),	Routines.PYPGHSP_LST_DETT.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGHSP_LST_DETT.routine());
+			callableStatement =  prepareCall(Routines.PYPGHSP_LST_DETT.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, pagamento.getIdWallet());
 			callableStatement.setString(2, pagamento.getCodUtente());
@@ -311,16 +302,11 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
-			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} catch (ParseException e) {
+			e.printStackTrace();
+		} catch (HelperException e) {
 			e.printStackTrace();
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -356,14 +342,14 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 	public boolean listPagamentiPdf(String wallet, String ente, String cutecute, String societa, String annoString , String codAnagGen, String  codiceFiscaleGenitore, Servizio servizio)
 	throws DaoException {
 		CallableStatement callableStatement = null;
-		Connection connection = null;
+		//Connection connection = null; //LP PGNTCORE-24
 		ResultSet data = null;
 		boolean Ok = false;
 		try {
-			connection = getConnection();
 			//inizio LP PGNTCORE-24
+			//connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(),	Routines.PYPGBSP_LST_TRI.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGBSP_LST_TRI.routine());
+			callableStatement = prepareCall(Routines.PYPGBSP_LST_TRI.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, wallet);
 			callableStatement.setString(2, ente);
@@ -388,12 +374,8 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -426,6 +408,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 		}
 		return Ok;
 	}
+
 	//	
 	//	public ArrayList<PresenzeGiornaliere> listAnnoScolastico(PresenzeGiornaliere presenzeGiornaliere) throws DaoException {
 	//
@@ -467,6 +450,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 	//
 	//	}
 	//	
+
 	public String listDdlAnno(Wallet wallet) throws  DaoException{
 		String ddlAnniXml="";
 		CallableStatement callableStatement = null;
@@ -476,7 +460,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(),	Routines.PYPGBSP_LST_ANN.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGBSP_LST_ANN.routine());
+			callableStatement = prepareCall(Routines.PYPGBSP_LST_ANN.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, wallet.getIdWallet());
 			callableStatement.setString(2, wallet.getCodiceSocieta());
@@ -492,15 +476,10 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -531,6 +510,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 		}
 		return ddlAnniXml;
 	}
+
 	public ArrayList<String> listDdlAnnoObject(Wallet wallet) throws  DaoException{
 		CallableStatement callableStatement = null;
 		Connection connection = null;
@@ -540,7 +520,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(),	Routines.PYPGBSP_LST_ANN.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGBSP_LST_ANN.routine());
+			callableStatement = prepareCall(Routines.PYPGBSP_LST_ANN.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, wallet.getIdWallet());
 			callableStatement.setString(2, wallet.getCodiceSocieta());
@@ -560,12 +540,8 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -611,7 +587,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPGBSP_SEL_ACQ.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGBSP_SEL_ACQ.routine());
+			callableStatement = prepareCall(Routines.PYPGBSP_SEL_ACQ.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, pagamento.getCodSocieta());
 			callableStatement.setString(2, pagamento.getCodUtente());
@@ -632,9 +608,6 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 
 			if (rowSet.next() ) {
 				BigDecimal importo = rowSet.getBigDecimal(1);
-
-
-
 				pagamento = new PagamentoBorsellino("","","","","","","",importo,null,null,true);
 				pagamento.setAttribute(PagamentoBorsellinoDAO.SELECT_XML, selectXml);
 			}
@@ -642,12 +615,8 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -746,7 +715,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			//fine LP PG21XX04 Leak
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPGHSP_INS.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGHSP_INS.routine());
+			callableStatement = prepareCall(Routines.PYPGHSP_INS.routine());
 			//fine LP PGNTCORE-24
 			for (int i = 0; i < pagaHost.size(); i++) {
 				callableStatement.setString(1, String.valueOf(i)); //come chiave pagamento inserisco un progressivo per non avere problemi in inserimento con chiave duplicata.
@@ -838,12 +807,8 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//if (callableStatement != null) {
@@ -881,7 +846,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			//fine LP PG21XX04 Leak
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPGHSP_DEL.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGHSP_DEL.routine());
+			callableStatement = prepareCall(Routines.PYPGHSP_DEL.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, pagamento.getCodSocieta());
 			callableStatement.setString(2, pagamento.getCodUtente());
@@ -890,12 +855,8 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			callableStatement.execute();
 		} catch (SQLException e) {
 			e.printStackTrace();
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//if (callableStatement != null) {
@@ -930,7 +891,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPGHSP_LST.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGHSP_LST.routine());
+			callableStatement = prepareCall(Routines.PYPGHSP_LST.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1,pagamento.getIdWallet());
 			callableStatement.setString(2,pagamento.getCodUtente());
@@ -1008,12 +969,8 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} finally {
@@ -1060,7 +1017,7 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPGBSP_SEL_APPL.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPGBSP_SEL_APPL.routine());
+			callableStatement = prepareCall(Routines.PYPGBSP_SEL_APPL.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, pagamento.getCodSocieta());
 			callableStatement.setString(2, pagamento.getCodUtente());
@@ -1082,9 +1039,6 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 
 			if (rowSet.next() ) {
 				BigDecimal importo = rowSet.getBigDecimal(1);
-
-
-
 				pagamento = new PagamentoBorsellino("","","","","","","",importo,null,null,true);
 				pagamento.setAttribute(PagamentoBorsellinoDAO.SELECT_XML, selectXml);
 				pagamento.setAttribute(PagamentoBorsellinoDAO.FLAG_SERVIZI_A_CONSUMO, flagServiziAConsumo);
@@ -1093,12 +1047,8 @@ public class PagamentoBorsellinoDAOImpl extends RestBaseDaoHandler implements Pa
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
