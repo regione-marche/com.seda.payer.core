@@ -461,7 +461,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(4, blackboxpos.getCodiceFiscale());
 			callableStatement.setString(5, blackboxpos.getCodiceIdentificativoDocumento());
 			callableStatement.setString(6, blackboxpos.getFlagPagato());
-			callableStatement.setDate(7, new java.sql.Date(blackboxpos.getDataCreazione().getTimeInMillis()));
+			callableStatement.setDate(7, blackboxpos.getDataCreazione() != null ? new java.sql.Date(blackboxpos.getDataCreazione().getTimeInMillis()) : null);
 			callableStatement.setInt(8, blackboxpos.getAnnoRiferimento());
 
 			callableStatement.setString(9, OrderBy);
@@ -472,7 +472,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.registerOutParameter(14, Types.INTEGER);
 			callableStatement.registerOutParameter(15, Types.SMALLINT);
 
-			if (callableStatement.execute()) {
+				if (callableStatement.execute()) {
 				pageInfo = new PageInfo();
 				pageInfo.setPageNumber(pageNumber);
 				pageInfo.setRowsPerPage(rowsPerPage);
@@ -503,7 +503,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 
 		} catch (SQLException e) {
 			e.printStackTrace();
-			blackBoxPosPagelist = new BlackBoxPosPagelist(pageInfo, "01", "Sql-Exception", "");
+				blackBoxPosPagelist = new BlackBoxPosPagelist(pageInfo, "01", "Sql-Exception", "");
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			blackBoxPosPagelist = new BlackBoxPosPagelist(pageInfo, "01", "Sql-Exception", "");
@@ -665,11 +665,11 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
 			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
 			callableStatement.setString(4, blackboxpos.getCodiceIdentificativoFlusso());
-			callableStatement.setDate(5, new java.sql.Date(blackboxpos.getDataCreazione().getTimeInMillis()));
+			callableStatement.setDate(5, blackboxpos.getDataCreazione()!=null ? new java.sql.Date(blackboxpos.getDataCreazione().getTimeInMillis()) : null);
 			callableStatement.setString(6, blackboxpos.getTipoRecord());
 			callableStatement.setString(7, blackboxpos.getCodiceIdentificativoDocumento());
 			callableStatement.setString(8, blackboxpos.getNumeroRata());
-			callableStatement.setDate(9, new java.sql.Date(blackboxpos.getDataScadenza().getTimeInMillis()));
+			callableStatement.setDate(9, blackboxpos.getDataScadenza()!=null ? new java.sql.Date(blackboxpos.getDataScadenza().getTimeInMillis()) : null);
 			callableStatement.setString(10, blackboxpos.getCodiceFiscale());
 			callableStatement.setDouble(11, blackboxpos.getImporto());
 			callableStatement.setString(12, blackboxpos.getDenominazioneDebitore());
@@ -752,7 +752,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
 			callableStatement.setString(4, blackboxpos.getFlagPagato());
 			callableStatement.setBigDecimal(5, new BigDecimal(blackboxpos.getImportoPagato()));
-			callableStatement.setDate(6, new java.sql.Date(blackboxpos.getDataPagamento().getTimeInMillis()));
+			callableStatement.setDate(6, blackboxpos.getDataPagamento() != null ? new java.sql.Date(blackboxpos.getDataPagamento().getTimeInMillis()) : null);
 			callableStatement.registerOutParameter(7, Types.INTEGER);
 			callableStatement.execute();
 			int nRows = callableStatement.getInt(7);
@@ -949,7 +949,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(1, configurazioneBlackBoxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, configurazioneBlackBoxpos.getCodiceEnte());
 			callableStatement.setString(3, configurazioneBlackBoxpos.getNumeroAvviso());
-			callableStatement.setDate(4, new java.sql.Date(configurazioneBlackBoxpos.getDataInserimento().getTimeInMillis()));
+			callableStatement.setDate(4, configurazioneBlackBoxpos.getDataInserimento() != null ? new java.sql.Date(configurazioneBlackBoxpos.getDataInserimento().getTimeInMillis()) : null);
 			callableStatement.setString(5, configurazioneBlackBoxpos.getOperazioneEseguita());
 			callableStatement.registerOutParameter(6, Types.INTEGER);
 			callableStatement.execute();
@@ -1055,11 +1055,11 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
 			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
 			callableStatement.setString(4, blackboxpos.getCodiceIdentificativoFlusso());
-			callableStatement.setDate(5, new java.sql.Date(blackboxpos.getDataCreazione().getTimeInMillis()));
+			callableStatement.setDate(5, blackboxpos.getDataCreazione() != null ? new java.sql.Date(blackboxpos.getDataCreazione().getTimeInMillis()) : null);
 			callableStatement.setString(6, blackboxpos.getTipoRecord());
 			callableStatement.setString(7, blackboxpos.getCodiceIdentificativoDocumento());
 			callableStatement.setString(8, blackboxpos.getNumeroRata());
-			callableStatement.setDate(9, new java.sql.Date(blackboxpos.getDataScadenza().getTimeInMillis()));
+			callableStatement.setDate(9, blackboxpos.getDataScadenza() !=null ? new java.sql.Date(blackboxpos.getDataScadenza().getTimeInMillis()) : null);
 			callableStatement.setString(10, blackboxpos.getCodiceFiscale());
 			callableStatement.setDouble(11, blackboxpos.getImporto());
 			callableStatement.setString(12, blackboxpos.getDenominazioneDebitore());
@@ -1067,8 +1067,8 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(14, blackboxpos.getLocalitaContribuente());
 			callableStatement.setString(15, blackboxpos.getProvinciaContribuente());
 			callableStatement.setString(16, blackboxpos.getFlagAnnullamento());
-			callableStatement.setDate(17,
-					new java.sql.Date(blackboxpos.getDataAggiornamentoRecord().getTimeInMillis()));
+			callableStatement.setDate(17, blackboxpos.getDataAggiornamentoRecord() != null ?
+					new java.sql.Date(blackboxpos.getDataAggiornamentoRecord().getTimeInMillis()) : null);
 			callableStatement.setString(18, blackboxpos.getCodiceIbanAccredito());
 			callableStatement.setString(19, blackboxpos.getCodiceIuv());
 			callableStatement.setString(20, blackboxpos.getFlagPagato());
