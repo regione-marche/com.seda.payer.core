@@ -108,7 +108,7 @@ public class InserisciUfficioDao extends DaoHandler {
 
     //PYINFSP_SEL_BATCH
 	public void getParametriBatch(){
-        //Connection connection = getConnection(); //LP 20240919 - PGNTCORE-24 commentata non serve a nulla e fa una getConnection che è meglio evitare 
+        //Connection connection = getConnection(); //LP 20240919 - PGNTCORE-24 commentata non serve a nulla 
 	}
 
 }

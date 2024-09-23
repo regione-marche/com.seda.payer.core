@@ -20,33 +20,27 @@ import com.seda.payer.core.messages.Messages;
 
 public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 
-	//inizio LP 20240912 - PAGONET-604
-	CallableStatement callableStatementDetail = null;
-	//fine LP 20240912  - PAGONET-604
-
 	public AnagraficaStrutturaRicettivaDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
-	
+
 	public AnagraficaStrutturaRicettivaDao(Connection connection, String schema, boolean isRest, String baseUrl) {
 		super(connection, schema, isRest, baseUrl);
 	}
-	
+
 	@SuppressWarnings("unused")
 	private void closeConnection(CallableStatement callableStatement)
 	{
 		if (callableStatement != null)
 			DAOHelper.closeIgnoringException(callableStatement);
 	}
-	
+
 	public void doUpdate(AnagraficaStrutturaRicettiva anagStruttura) throws DaoException {
 		CallableStatement callableStatement = null;
 		try	{
 			callableStatement = prepareCall(Routines.SAN_DOUPDATE.routine());
 			anagStruttura.update(callableStatement);
-			
 			callableStatement.execute();
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -73,9 +67,7 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 		try	{
 			callableStatement = prepareCall(Routines.SAN_DOINSERT.routine());
 			anagStruttura.save(callableStatement);
-			
 			callableStatement.execute();
-			
 		} catch (SQLException x) {
 			if(x.getErrorCode()== -803){
 				throw new DaoException(55,"esiste già una anagrafica per i parametri selezionati");
@@ -115,11 +107,9 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			if (anagStruttura == null)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagraficaStruttura.chiaveStruttura"));
-
 			callableStatement.setString(1, anagStruttura);
 			//callableStatement.registerOutParameter(2, Types.CHAR);
 			callableStatement.execute();
-			
 		} catch (SQLException x) {
 			if(x.getErrorCode()== -532){
 				throw new DaoException(55,"Impossibile effettuare la cancellazione, sono presenti una o più informazioni correlate");
@@ -159,10 +149,7 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 		try	{
 			//inizio LP 20240912 - PAGONET-604
 			//callableStatement = prepareCall(Routines.SAN_DODETAIL.routine());
-			if(callableStatementDetail == null) {
-				callableStatementDetail = prepareCall(bFlagUpdateAutocomit, Routines.SAN_DODETAIL.routine());
-				callableStatement = callableStatementDetail;
-			}
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.SAN_DODETAIL.routine());
 			//fine LP 20240912 - PAGONET-604
 			callableStatement.setString(1, chiaveAnagraficaStruttura);
 			if(annoComunicazione==null){
@@ -213,7 +200,6 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 				}
 			//inizio LP 20240912 - PAGONET-604
 				callableStatement = null;
-				callableStatementDetail = null;
 			}
 			//fine LP 20240912 - PAGONET-604
 			//fine LP PG21XX04 Leak
@@ -227,7 +213,6 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 			callableStatement = prepareCall(Routines.SAN_DODETAIL_AUT.routine());
 			callableStatement.setString(1, codiceBelfiore);
 			callableStatement.setString(2, codiceAutorizzazione);
-			
 			if (callableStatement.execute()) {
 				data = callableStatement.getResultSet();
 				if (data.next())
@@ -286,7 +271,6 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 				System.out.println("DATA-IN-TITOLAR: " + anagStruttura.getAnagraficaTitolare());
 				System.out.println("DATA-IN-COFITIT: " + anagStruttura.getCodFiscaleTitolare());				
 			}
-
 			callableStatement = prepareCall(Routines.IS_ANAG_DOSAVE.routine());
 			callableStatement.setString(1, anagStruttura.getCodiceUtente());
 			callableStatement.setString(2, anagStruttura.getCodiceEnteGestionaleEntrate());
@@ -306,31 +290,24 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 				callableStatement.setString(14, anagStruttura.getCodiceContribuenteGestionaleEntrate());
 			else
 				callableStatement.setString(14, " ");
-			
 			callableStatement.setString(15, anagStruttura.getInsegnaStruttura());
 			callableStatement.setString(16, anagStruttura.getAnagraficaTitolare());
 			callableStatement.setString(17, anagStruttura.getCodFiscaleTitolare());
-			
 			//parametri di output
 			callableStatement.registerOutParameter(14, Types.VARCHAR);
 			callableStatement.registerOutParameter(18, Types.VARCHAR);
 			callableStatement.registerOutParameter(19, Types.VARCHAR);
-			
 			callableStatement.execute();
-			
 			ResponseData res = new ResponseData();
 			res.setRetCode(callableStatement.getString(18));
 			res.setRetMessage(callableStatement.getString(19));
 			res.setInfo1(callableStatement.getString(14)); //codice contribuente
-			
 			/****TEST****/
 			/*ResponseData res = new ResponseData();
 			res.setRetCode("OK");
 			res.setRetMessage("");
 			res.setInfo1("COD_TEST");*/
-			
 			return res;
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -351,23 +328,19 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	public void doRowSets(AnagraficaStrutturaRicettiva anagStruttura,String descComune) throws DaoException {
 		rowSets(anagStruttura, 0, 0,descComune);
 	}
 
 	public void doRowSets(AnagraficaStrutturaRicettiva anagStruttura, int rowsPerPage, int pageNumber,String descComune) throws DaoException {
-		
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(anagStruttura, rowsPerPage, pageNumber,descComune);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(anagStruttura, rowsPerPage, pageNumber,descComune);
 	}
-	
+
 	public void rowSets(AnagraficaStrutturaRicettiva anagStruttura, int rowsPerPage, int pageNumber,String descComune) throws DaoException {
 		CallableStatement callableStatement = null;
 		try	{
@@ -388,7 +361,6 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 			OUT O_ROWEND INTEGER ,
 			OUT O_TOTROWS INTEGER, 
 			OUT O_TOTPAGES SMALLINT  */
-			
 			callableStatement.setString(1, descComune);
 			callableStatement.setString(2, anagStruttura.getCodiceAutorizzazione());
 			callableStatement.setString(3, anagStruttura.getPartitaIVAStruttura());
@@ -400,22 +372,18 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 				callableStatement.setTimestamp(7, new java.sql.Timestamp(anagStruttura.getDataValiditaInizio().getTimeInMillis()));
 			else
 				callableStatement.setNull(7, java.sql.Types.TIMESTAMP);
-			
 			if(anagStruttura.getDataValiditaFine()!= null)
 				callableStatement.setTimestamp(8, new java.sql.Timestamp(anagStruttura.getDataValiditaFine().getTimeInMillis()));
 			else
 				callableStatement.setNull(8, java.sql.Types.TIMESTAMP);
-			
 			if(anagStruttura.getDataObbligoComunicazioneInizio()!= null)
 				callableStatement.setTimestamp(9, new java.sql.Timestamp(anagStruttura.getDataObbligoComunicazioneInizio().getTimeInMillis()));
 			else
 				callableStatement.setNull(9, java.sql.Types.TIMESTAMP);
-			
 			if(anagStruttura.getDataObbligoComunicazioneFine()!= null)
 				callableStatement.setTimestamp(10, new java.sql.Timestamp(anagStruttura.getDataObbligoComunicazioneFine().getTimeInMillis()));
 			else
 				callableStatement.setNull(10, java.sql.Types.TIMESTAMP);
-			
 			callableStatement.setInt(11, rowsPerPage);
 			callableStatement.setInt(12, pageNumber);
 			/* we register row start */
@@ -459,7 +427,6 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 		ResultSet data = null;
 		try	{
 			callableStatement = prepareCall(Routines.SAN_DOLIST_CSV.routine());
-			
 			callableStatement.setString(1, descComune);
 			callableStatement.setString(2, anagStruttura.getCodiceAutorizzazione());
 			callableStatement.setString(3, anagStruttura.getPartitaIVAStruttura());
@@ -471,28 +438,23 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 				callableStatement.setTimestamp(7, new java.sql.Timestamp(anagStruttura.getDataValiditaInizio().getTimeInMillis()));
 			else
 				callableStatement.setNull(7, java.sql.Types.TIMESTAMP);
-			
 			if(anagStruttura.getDataValiditaFine()!= null)
 				callableStatement.setTimestamp(8, new java.sql.Timestamp(anagStruttura.getDataValiditaFine().getTimeInMillis()));
 			else
 				callableStatement.setNull(8, java.sql.Types.TIMESTAMP);
-			
 			if(anagStruttura.getDataObbligoComunicazioneInizio()!= null)
 				callableStatement.setTimestamp(9, new java.sql.Timestamp(anagStruttura.getDataObbligoComunicazioneInizio().getTimeInMillis()));
 			else
 				callableStatement.setNull(9, java.sql.Types.TIMESTAMP);
-			
 			if(anagStruttura.getDataObbligoComunicazioneFine()!= null)
 				callableStatement.setTimestamp(10, new java.sql.Timestamp(anagStruttura.getDataObbligoComunicazioneFine().getTimeInMillis()));
 			else
 				callableStatement.setNull(10, java.sql.Types.TIMESTAMP);
-
 			if (callableStatement.execute()) {
 				listCsv = new ArrayList<AnagraficaStrutturaRicettivaCsv>();
 				data = callableStatement.getResultSet();
 				while (data.next())
 					listCsv.add(new AnagraficaStrutturaRicettivaCsv(data));
-				
 				//this.loadWebRowSets(callableStatement);
 			}
 		} catch (SQLException x) {
@@ -532,7 +494,6 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 		ResultSet data = null;
 		try	{
 			callableStatement = prepareCall(Routines.SAN_DOLIST_CSV_TR.routine());
-			
 			callableStatement.setString(1, descComune);
 			callableStatement.setString(2, anagStruttura.getCodiceAutorizzazione());
 			callableStatement.setString(3, anagStruttura.getPartitaIVAStruttura());
@@ -544,28 +505,23 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 				callableStatement.setTimestamp(7, new java.sql.Timestamp(anagStruttura.getDataValiditaInizio().getTimeInMillis()));
 			else
 				callableStatement.setNull(7, java.sql.Types.TIMESTAMP);
-			
 			if(anagStruttura.getDataValiditaFine()!= null)
 				callableStatement.setTimestamp(8, new java.sql.Timestamp(anagStruttura.getDataValiditaFine().getTimeInMillis()));
 			else
 				callableStatement.setNull(8, java.sql.Types.TIMESTAMP);
-			
 			if(anagStruttura.getDataObbligoComunicazioneInizio()!= null)
 				callableStatement.setTimestamp(9, new java.sql.Timestamp(anagStruttura.getDataObbligoComunicazioneInizio().getTimeInMillis()));
 			else
 				callableStatement.setNull(9, java.sql.Types.TIMESTAMP);
-			
 			if(anagStruttura.getDataObbligoComunicazioneFine()!= null)
 				callableStatement.setTimestamp(10, new java.sql.Timestamp(anagStruttura.getDataObbligoComunicazioneFine().getTimeInMillis()));
 			else
 				callableStatement.setNull(10, java.sql.Types.TIMESTAMP);
-
 			if (callableStatement.execute()) {
 				listCsv = new ArrayList<AnagraficaStrutturaRicettivaCsv>();
 				data = callableStatement.getResultSet();
 				while (data.next())
 					listCsv.add(new AnagraficaStrutturaRicettivaCsv(data));
-				
 				//this.loadWebRowSets(callableStatement);
 			}
 		} catch (SQLException x) {
@@ -608,7 +564,6 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 			callableStatement.setString(1, codiceBelfiore);
 			callableStatement.setString(2, partitaIVAStruttura);
 			callableStatement.setString(3, chiaveTipologiaStruttura);
-			
 			if (callableStatement.execute()) {
 				data = callableStatement.getResultSet();
 				if (data.next())
@@ -621,8 +576,7 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			//if (data != null)
@@ -648,19 +602,14 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 	public String getProgressivoComunicazione(String chiave, int anno) throws DaoException {
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
-
 		try	{
 			callableStatement = prepareCall(Routines.PYKEYSP_BY_YEAR.routine());
 			callableStatement.setString(1, chiave);
 			callableStatement.setInt(2, anno);
 			callableStatement.registerOutParameter(3, Types.BIGINT);
-			
 			callableStatement.execute(); 
-			
-			Long key=callableStatement.getLong(3);
-			
+			Long key = callableStatement.getLong(3);
 			return String.valueOf(key);
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -700,11 +649,9 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 			callableStatement = prepareCall(Routines.PYSANSP_LST_ALL.routine());
 			callableStatement.setString(1, partitaIva);
 			callableStatement.setString(2, codiceTipologiaStruttura);
-
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 			}
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -734,19 +681,4 @@ public class AnagraficaStrutturaRicettivaDao extends RestBaseDaoHandler {
 		}
 	}
 	//PG190330 SB - fine
-
-	//inizio LP 20240912 - PAGONET-604
-    public void closeCallableStatementS()  {
-	    if(callableStatementDetail != null) {
-			try {
-				callableStatementDetail.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementDetail = null;
-	    	
-	    }
-    }
-    //fine LP 20240912 - PAGONET-604
-
 }

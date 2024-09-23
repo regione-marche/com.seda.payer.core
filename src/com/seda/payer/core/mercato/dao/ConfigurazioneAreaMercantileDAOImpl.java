@@ -13,8 +13,7 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -63,7 +62,7 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_LST.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMRCSP_LST.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_LST.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
@@ -105,14 +104,9 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -152,7 +146,7 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_DEL.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMRCSP_DEL.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_DEL.routine());
 			//fine LP PGNTCORE-24
 //			IN I_MRC_CSOCCSOC VARCHAR(5), 
 //			IN I_MRC_CUTECUTE VARCHAR(5),
@@ -176,14 +170,9 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -216,7 +205,7 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_INS.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMRCSP_INS.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_INS.routine());
 			//fine LP PGNTCORE-24
 //					IN I_MRC_CSOCCSOC VARCHAR(5), 
 //					IN I_MRC_CUTECUTE VARCHAR(5),
@@ -259,14 +248,9 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -300,7 +284,7 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_SEL.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMRCSP_SEL.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_SEL.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneAreaMercantile.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneAreaMercantile.getCuteCute());
@@ -345,14 +329,9 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -402,7 +381,7 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_APD.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMRCSP_APD.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_APD.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneAreaMercantile.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneAreaMercantile.getCuteCute());
@@ -433,12 +412,8 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -484,7 +459,7 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_TOT.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMRCSP_TOT.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_TOT.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneAreaMercantile.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneAreaMercantile.getCuteCute());
@@ -516,12 +491,8 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -564,7 +535,7 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 			//inizio LP PGNTCORE-24
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_UPD.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYMRCSP_UPD.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_UPD.routine());
 			//fine LP PGNTCORE-24
 //			IN I_MRC_CSOCCSOC VARCHAR(5), 
 //			IN I_MRC_CUTECUTE VARCHAR(5),
@@ -604,14 +575,9 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);

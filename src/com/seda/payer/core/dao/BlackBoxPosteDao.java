@@ -18,16 +18,6 @@ import com.seda.payer.core.wallet.bean.EsitoRisposte;
 
 public class BlackBoxPosteDao extends BaseDaoHandler {
 
-	//inizio LP 20240911 - PGNTBIPOS-1
-	private CallableStatement callableStatementCnfPstLst =  null;
-	private CallableStatement callableStatementDocPstIns =  null;
-	private CallableStatement callableStatementPstIns =  null;
-	private CallableStatement callableStatementDocDel =  null;
-	private CallableStatement callableStatementDocPstSel =  null;
-	private CallableStatement callableStatementDocPstLst =  null;
-	private CallableStatement callableStatementDocPstUpd =  null;
-	//fine LP 20240911 - PGNTBIPOS-1
-
 	public BlackBoxPosteDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
@@ -52,10 +42,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNCNFSP_PST_LST.routine());
 			//inizio LP 20240911 - PGNTBIPOS-1
 			//callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNCNFSP_PST_LST.routine());
-			if(callableStatementCnfPstLst == null) {
-				callableStatementCnfPstLst = prepareCall(bFlagUpdateAutocomit, Routines.CNCNFSP_PST_LST.routine());
-				callableStatement = callableStatementCnfPstLst;
-			}
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CNCNFSP_PST_LST.routine());
 			//fine LP 20240911 - PGNTBIPOS-1
 			//PGNTCORE-24 - fine
 			//inizio LP 20240811 - PGNTCORE-24
@@ -101,7 +88,6 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 				}
 			//inizio LP 20240911 - PGNTBIPOS-1
 				callableStatement = null;
-				callableStatementCnfPstLst = null;
 			}
 			//fine LP 20240911 - PGNTBIPOS-1
 		}
@@ -127,10 +113,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_INS.routine());
 			//inizio LP 20240911 - PGNTBIPOS-1
 			//callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_INS.routine());
-			if(callableStatementDocPstIns == null) {
-				callableStatementDocPstIns = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_PST_INS.routine());
-				callableStatement = callableStatementDocPstIns;
-			}	
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_PST_INS.routine());
 			//fine LP 20240911 - PGNTBIPOS-1
 			//PGNTCORE-24 - fine
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
@@ -194,7 +177,6 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 				}
 			//inizio LP 20240911 - PGNTBIPOS-1
 				callableStatement = null;
-				callableStatementDocPstIns = null;
 			}
 			//fine LP 20240911 - PGNTBIPOS-1
 		}
@@ -221,10 +203,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_LST.routine());
 			//inizio LP 20240911 - PGNTBIPOS-1
 			//callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_LST.routine());
-			if(callableStatementDocPstLst == null) {
-				callableStatementDocPstLst = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_PST_LST.routine());
-				callableStatement = callableStatementDocPstLst;
-			}
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_PST_LST.routine());
 			//fine LP 20240911 - PGNTBIPOS-1
 			//PGNTCORE-24 - fine
 			callableStatement.setString(1, idDominio);
@@ -268,7 +247,6 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 				}
 				//inizio LP 20240911 - PGNTBIPOS-1
 				callableStatement = null;
-				callableStatementDocPstLst = null;
 			}
 			//fine LP 20240911 - PGNTBIPOS-1
 		}
@@ -295,11 +273,8 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_SEL.routine());
 			//inizio LP 20240911 - PGNTBIPOS-1
 			//callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_SEL.routine());
-			if(callableStatementDocPstSel == null) {
-				callableStatementDocPstSel = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_PST_SEL.routine());
-				callableStatement = callableStatementDocPstSel;
-			}
-			//fineo LP 20240911 - PGNTBIPOS-1
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_PST_SEL.routine());
+			//fine LP 20240911 - PGNTBIPOS-1
 			//PGNTCORE-24 - fine
 			callableStatement.setString(1, codiceIdentificativoDominio);
 			callableStatement.setString(2, codiceEnte);
@@ -343,7 +318,6 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 				}
 			//inizio LP 20240911 - PGNTBIPOS-1
 				callableStatement = null;
-				callableStatementDocPstSel = null;
 			}
 			//fine LP 20240911 - PGNTBIPOS-1
 		}
@@ -369,10 +343,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNPSTSP_INS.routine());
 			//inizio LP 20240911 - PGNTBIPOS-1
 			//callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNPSTSP_INS.routine());
-			if(callableStatementPstIns == null) {
-				callableStatementPstIns = prepareCall(bFlagUpdateAutocomit, Routines.CNPSTSP_INS.routine());
-				callableStatement = callableStatementPstIns;
-			}
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CNPSTSP_INS.routine());
 			//fine LP 20240911 - PGNTBIPOS-1
 			//PGNTCORE-24 - fine
 			callableStatement.setString(1, testata.getTipoFlusso());
@@ -404,7 +375,6 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 				}
 			//inizio LP 20240911 - PGNTBIPOS-1
 				callableStatement = null;
-				callableStatementPstIns = null;
 			}
 			//fine LP 20240911 - PGNTBIPOS-1
 		}
@@ -430,10 +400,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_DEL.routine());
 			//inizio LP 20240911 - PGNTBIPOS-1
 			//callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.CNDOCSP_DEL.routine());
-			if(callableStatementDocDel == null) {
-				callableStatementDocDel = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_DEL.routine());
-				callableStatement = callableStatementDocDel;
-			}
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_DEL.routine());
 			//fine LP 20240911 - PGNTBIPOS-1
 			//PGNTCORE-24 - fine
 			callableStatement.setString(1, configurazionePosteBlackBoxpos.getCodiceIdentificativoDominio());
@@ -466,7 +433,6 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 				}
 			//inizio LP 20240911 - PGNTBIPOS-1
 				callableStatement = null;
-				callableStatementDocDel = null;
 			}
 			//fine LP 20240911 - PGNTBIPOS-1
 		}
@@ -497,11 +463,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			//inizio LP 20240912 - PAGONET-604
 			//Connection connection = getConnection();
 			//stat = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_UPD.routine());
-			if(callableStatementDocPstUpd == null) {
-				callableStatementDocPstUpd = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_PST_UPD.routine());
-				stat = callableStatementDocPstUpd;
-			}
-			//fine LP 20240912 - PAGONET-604
+			stat = prepareCall(bFlagUpdateAutocomit, Routines.CNDOCSP_PST_UPD.routine());
 			stat.setString(1, posizioneDebitoria.getCodiceIdentificativoDominio());
 			stat.setString(2, posizioneDebitoria.getCodiceEnte());
 			stat.setString(3, posizioneDebitoria.getNumeroAvviso());
@@ -524,64 +486,9 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 				}
 		//inizio LP 20240911 - PGNTBIPOS-1
 				stat = null;
-				callableStatementDocDel = null;
 			}
 		//fine LP 20240911 - PGNTBIPOS-1
 		}
 		return updated;
 	}
-
-	//inizio LP 20240912 - PAGONET-604
-    public void closeCallableStatementS()  {
-	    if(callableStatementCnfPstLst != null) {
-			try {
-				callableStatementCnfPstLst.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementCnfPstLst = null;
-	    }
-	    if(callableStatementDocPstIns != null) {
-			try {
-				callableStatementDocPstIns.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementDocPstIns = null;
-	    }
-	    if(callableStatementPstIns != null) {
-			try {
-				callableStatementPstIns.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementPstIns = null;
-	    }
-	    if(callableStatementDocDel != null) {
-			try {
-				callableStatementDocDel.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementDocDel = null;
-	    }
-	    if(callableStatementDocPstSel != null) {
-			try {
-				callableStatementDocPstSel.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementDocPstSel = null;
-	    }
-		if(callableStatementDocPstUpd != null) {
-			try {
-				callableStatementDocPstUpd.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementDocPstUpd = null;
-		}
-    }
-    //fine LP 20240912 - PAGONET-604
-
 }

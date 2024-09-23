@@ -79,15 +79,11 @@ public class ConfigRendicontazioneUtenteImpostaServizioEnteDao extends BaseDaoHa
 	}
 
 	public void doRowSets(ConfigRendicontazioneUtenteImpostaServizioEnte config, int rowsPerPage, int pageNumber, String strDescrEnte,String strDescrUtente,String strDescrTipologiaServizio,String strDescrImpostaServizio) throws DaoException {
-		
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(config, rowsPerPage, pageNumber, strDescrEnte,strDescrUtente,strDescrTipologiaServizio,strDescrImpostaServizio);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(config, rowsPerPage, pageNumber, strDescrEnte,strDescrUtente,strDescrTipologiaServizio,strDescrImpostaServizio);
 	}
 	
 	public void rowSets(ConfigRendicontazioneUtenteImpostaServizioEnte config, int rowsPerPage, int pageNumber, String strDescrEnte,String strDescrUtente,String strDescrTipologiaServizio,String strDescrImpostaServizio) throws DaoException {
@@ -203,23 +199,16 @@ public class ConfigRendicontazioneUtenteImpostaServizioEnteDao extends BaseDaoHa
 			//CallableStatement callableStatement = prepareCall(Routines.REE_DODELETE.routine());
 			callableStatement = prepareCall(Routines.REE_DODELETE.routine());
 			//fine LP PG21XX04 Leak
-			
 			if (config.getEnte()== null || config.getEnte().getUser() == null || config.getEnte().getUser().getUserCode() == null || config.getEnte().getUser().getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configRendicontazioneUtenteImpostaServizioEnte.ente.userCode"));
-
-			if (                                                                  config.getEnte().getUser().getCompany() == null || config.getEnte().getUser().getCompany().getCompanyCode() == null || config.getEnte().getUser().getCompany().getCompanyCode().length() == 0)
+			if (config.getEnte().getUser().getCompany() == null || config.getEnte().getUser().getCompany().getCompanyCode() == null || config.getEnte().getUser().getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configRendicontazioneUtenteImpostaServizioEnte.ente.user.company.companyCode"));
-
-			if (                            config.getEnte().getAnagEnte() == null || config.getEnte().getAnagEnte().getChiaveEnte() == null || config.getEnte().getAnagEnte().getChiaveEnte().length() == 0)
+			if (config.getEnte().getAnagEnte() == null || config.getEnte().getAnagEnte().getChiaveEnte() == null || config.getEnte().getAnagEnte().getChiaveEnte().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configRendicontazioneUtenteImpostaServizioEnte.ente.anagEnte.chiaveEnte"));
-
 			if (config.getImpostaServizio() == null || config.getImpostaServizio().getTipologiaServizio() == null || config.getImpostaServizio().getTipologiaServizio().getCodiceTipologiaServizio() == null || config.getImpostaServizio().getTipologiaServizio().getCodiceTipologiaServizio().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configRendicontazioneUtenteImpostaServizioEnte.impostaServizio.tipologiaServizio.codiceTipologiaServizio"));
-
-			if (                                       config.getImpostaServizio().getCodiceImpostaServizio() == null || config.getImpostaServizio().getCodiceImpostaServizio().length() == 0)
+			if (config.getImpostaServizio().getCodiceImpostaServizio() == null || config.getImpostaServizio().getCodiceImpostaServizio().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configRendicontazioneUtenteImpostaServizioEnte.impostaServizio.codiceImpostaServizio"));
-
-
 			callableStatement.setString(1, config.getEnte().getUser().getCompany().getCompanyCode());
 			callableStatement.setString(2, config.getEnte().getUser().getUserCode());
 			callableStatement.setString(3, config.getEnte().getAnagEnte().getChiaveEnte());

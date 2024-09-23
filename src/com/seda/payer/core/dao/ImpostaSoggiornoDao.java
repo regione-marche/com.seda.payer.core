@@ -23,7 +23,7 @@ public class ImpostaSoggiornoDao extends RestBaseDaoHandler {
 
 	static SimpleDateFormat sdfIso = new SimpleDateFormat("yyyy-MM-dd");
 
-	protected CallableStatement callableStatementUPDISBATCH = null;
+	//protected CallableStatement callableStatementUPDISBATCH = null; //LP 20240923 - PGNTCORE-24
 
 	public ImpostaSoggiornoDao(Connection connection, String schema) {
 		super(connection, schema);
@@ -293,16 +293,18 @@ public class ImpostaSoggiornoDao extends RestBaseDaoHandler {
 
 	//	SCT_UPDATE_DOC=PYSCTTB_UPD_DOC
 	public int updateDocFromHOST(TestataComunicazioneImpostaSoggiorno testata, String operatore) throws DaoException {
-	    @SuppressWarnings("unused")
-		CallableStatement callableStatement=null;		
+		//inizio LP 20240923 - PGNTCORE-24
+		//CallableStatement callableStatement=null;		
+		CallableStatement callableStatementUPDISBATCH = null;
+		//fine LP 20240923 - PGNTCORE-24
 	    int retCode = 1;
 	    try	{
-			if (callableStatementUPDISBATCH == null) {
-				//inizio LP PGNTCORE-24 
-				//callableStatementUPDISBATCH  = Helper.prepareCall(getConnection(), getSchema(), Routines.SCT_UPDATE_DOC.routine());
-				callableStatementUPDISBATCH  = prepareCall(Routines.SCT_UPDATE_DOC.routine());
-				//fine LP PGNTCORE-24 
-			}
+			//inizio LP 20240923 - PGNTCORE-24
+			//if (callableStatementUPDISBATCH == null) {
+			//	callableStatementUPDISBATCH  = Helper.prepareCall(getConnection(), getSchema(), Routines.SCT_UPDATE_DOC.routine());
+			//}
+	    	callableStatementUPDISBATCH = prepareCall(Routines.SCT_UPDATE_DOC.routine());
+			//fine LP 20240923 - PGNTCORE-24
 			/*
 			callableStatement = prepareCall(Routines.SCT_UPDATE_DOC.routine());
 			callableStatement.setString(1, testata.getNumeroDocumentoGestionaleEntrate());  // SCT_NSCTNDOC
@@ -326,6 +328,17 @@ public class ImpostaSoggiornoDao extends RestBaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
+		//inizio LP 20240923 - PGNTCORE-24
+		} finally {
+			if (callableStatementUPDISBATCH != null) {
+				try {
+					callableStatementUPDISBATCH.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+				callableStatementUPDISBATCH = null;
+			}
+		//fine LP 20240923 - PGNTCORE-24
 		}
 		return retCode;
 	}

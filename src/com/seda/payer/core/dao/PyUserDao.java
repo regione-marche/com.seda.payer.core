@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.PyUser;
 import com.seda.payer.core.bean.PyUserBean;
@@ -289,26 +288,17 @@ public class PyUserDao extends BaseDaoHandler{
 			callableStatement.setString(12, gruppoAgenzia == null ? "" : gruppoAgenzia); //RE180181_001 SB
 			callableStatement.setInt(13, rowsPerPage);
 			callableStatement.setInt(14, pageNumber);
-			
-			
-			
-			
-
-
 			callableStatement.registerOutParameter(15, Types.INTEGER);
 			callableStatement.registerOutParameter(16, Types.INTEGER);
 			callableStatement.registerOutParameter(17, Types.INTEGER);
 			callableStatement.registerOutParameter(18, Types.SMALLINT);
-
 			callableStatement.registerOutParameter(19, Types.VARCHAR);
-
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				/* we register page info */
 				registerPageInfo(rowsPerPage, pageNumber, callableStatement.getInt(15), callableStatement.getInt(16), 
 								 callableStatement.getInt(17), callableStatement.getInt(18));
 			}
-			
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
 		} catch (SQLException e) {

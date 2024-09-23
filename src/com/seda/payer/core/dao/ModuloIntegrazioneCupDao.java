@@ -8,14 +8,10 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.ModuloIntegrazioneCup;
 import com.seda.payer.core.bean.ModuloIntegrazioneCupContainer;
 import com.seda.payer.core.bean.ModuloIntegrazioneCupStatus;
-import com.seda.payer.core.bean.ModuloIntegrazioneCup;
-import com.seda.payer.core.bean.ModuloIntegrazioneCupContainer;
-//import com.seda.payer.core.bean.ModuloIntegrazioneCupOneri;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.messages.Messages;

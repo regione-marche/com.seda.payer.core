@@ -7,8 +7,8 @@ import java.sql.SQLException;
 import java.sql.Types;
 import javax.sql.DataSource;
 import javax.sql.rowset.WebRowSet;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+
+import com.seda.data.helper.HelperException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -16,12 +16,14 @@ import com.seda.payer.core.wallet.bean.Solleciti;
 
 public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 	private static final long serialVersionUID = 1L;
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
 	public SollecitiDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	public SollecitiDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
@@ -34,10 +36,10 @@ public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 		String storicoXML= "";
 		try {
 			connection = getConnection();
-			//PGNTCORE-24 - inizio
+			//inizio LP 20240921 - PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST.routine());
-			//PGNTCORE-24 - fine
+			callableStatement = prepareCall(Routines.PYSOLSP_LST.routine());
+			//fine LP 20240921 - PGNTCORE-24
 			/* page number*/
 			callableStatement.setString(1,solleciti.getIdWallet());			 
 			/* we execute procedure */
@@ -49,7 +51,6 @@ public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 					String dataStr= storico.getString(3);
 					dataStr=dataStr.replace(".", "/");
 					storico.setString(3, dataStr);
-					
 				}
 				storicoXML = getWebRowSetXml();
 			}	
@@ -57,7 +58,7 @@ public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -103,10 +104,10 @@ public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 		String[] result = new String[2];
 		try {
 			connection = getConnection();
-			//inizio LP PGNTCORE-24
+			//inizio LP 20240921 - PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST_ONE.routine());
-			callableStatement =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST_ONE.routine());
-			//fine LP PGNTCORE-24
+			callableStatement = prepareCall(Routines.PYSOLSP_LST_ONE.routine());
+			//fine LP 20240921 - PGNTCORE-24
             /* page number*/
 			callableStatement.setString(1,solleciti.getIdWallet());			 
 			callableStatement.registerOutParameter(2, Types.VARCHAR);
@@ -138,12 +139,8 @@ public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);

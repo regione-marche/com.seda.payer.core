@@ -72,17 +72,15 @@ public class ConfigBancaDatiDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(ConfigBancaDati configBancaDati, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(configBancaDati.getCompanyCode(),configBancaDati.getCuteCute(),configBancaDati.getIdBancaDati(), configBancaDati.getName(), configBancaDati.getUrl(), rowsPerPage, pageNumber);
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(configBancaDati.getCompanyCode(),configBancaDati.getCuteCute(),configBancaDati.getIdBancaDati(), configBancaDati.getName(), configBancaDati.getUrl(), rowsPerPage, pageNumber);
 
 	}
-//	private void rowSets(String companyCode, String userCode, long idBancaDati,int rowsPerPage, int pageNumber) throws DaoException {
+
+	//private void rowSets(String companyCode, String userCode, long idBancaDati,int rowsPerPage, int pageNumber) throws DaoException {
 	private void rowSets(String companyCode, String userCode, long idBancaDati, String name, String url, int rowsPerPage, int pageNumber) throws DaoException {
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
@@ -149,8 +147,7 @@ public class ConfigBancaDatiDao extends BaseDaoHandler {
 			if (data != null) {
 			    callableStatement = prepareCall(Routines.CBD_DOUPDATE.routine());
 			    configBancaDati.update(callableStatement);
-			}
-			else {
+			} else {
 				callableStatement = prepareCall(Routines.CBD_DOINSERT.routine());
 				configBancaDati.save(callableStatement);
 			}
@@ -187,9 +184,8 @@ public class ConfigBancaDatiDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			if (configBancaDati.getCuteCute() == null || configBancaDati.getCuteCute().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configBancaDati.userCode"));
-//			if (configBancaDati.getIdBancaDati().length() == 0)
-//				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configBancaDati.chiaveEnte"));
-	
+			//if (configBancaDati.getIdBancaDati().length() == 0)
+			//	throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configBancaDati.chiaveEnte"));
 			callableStatement.setString(1, configBancaDati.getCuteCute());
 			callableStatement.setLong(2, configBancaDati.getIdBancaDati());
 			callableStatement.execute();

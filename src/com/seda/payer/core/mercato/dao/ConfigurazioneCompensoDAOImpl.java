@@ -14,8 +14,7 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -53,7 +52,7 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_LST.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCOMSP_LST.routine());
+            callableStatement = prepareCall(Routines.PYCOMSP_LST.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
@@ -119,14 +118,9 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			mercatoPageList = new MercatoPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -166,7 +160,7 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_DEL.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCOMSP_DEL.routine());
+            callableStatement = prepareCall(Routines.PYCOMSP_DEL.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneCompenso.getCodiceKeyCompenso());
 			callableStatement.registerOutParameter(2, Types.VARCHAR);
@@ -180,14 +174,9 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -220,7 +209,7 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_INS.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCOMSP_INS.routine());
+            callableStatement = prepareCall(Routines.PYCOMSP_INS.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneCompenso.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneCompenso.getCuteCute());
@@ -251,14 +240,9 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -292,7 +276,7 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_SEL.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCOMSP_SEL.routine());
+            callableStatement = prepareCall(Routines.PYCOMSP_SEL.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneCompenso.getCodiceKeyCompenso());
 			
@@ -332,14 +316,9 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -385,7 +364,7 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_TOT.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCOMSP_TOT.routine());
+            callableStatement = prepareCall(Routines.PYCOMSP_TOT.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneCompenso.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneCompenso.getCuteCute());
@@ -442,14 +421,9 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -491,7 +465,7 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_UPD.routine());
-            callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYCOMSP_UPD.routine());
+            callableStatement = prepareCall(Routines.PYCOMSP_UPD.routine());
 			//fine LP PGNTCORE-24
 			
 			callableStatement.setString(1, configurazioneCompenso.getCodiceKeyCompenso());
@@ -521,14 +495,9 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);

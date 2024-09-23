@@ -3,9 +3,6 @@ package com.seda.payer.core.dao;
 import java.lang.reflect.Constructor;
 import java.sql.Connection;
 
-import javax.sql.DataSource;
-
-import com.seda.payer.core.dao.LogSepaDao;
 import com.seda.payer.core.exception.DaoException;
 
 public class LogSepaDAOFactory {

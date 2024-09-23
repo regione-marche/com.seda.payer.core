@@ -7,15 +7,14 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import javax.sql.DataSource;
 import com.seda.data.helper.Helper;
-import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler; 
 import com.seda.payer.core.wallet.bean.Rep; 
 
 public class RepDAOImpl extends BaseDaoHandler  implements RepDAO { 
-	CallableStatement insertBatchCs=null;
-	Connection connection = null;
+	CallableStatement insertBatchCs = null;
+	//Connection connection = null; //LP PGNTCORE-24
 	
 	public RepDAOImpl(DataSource ds, String schema) throws SQLException {
 		super(ds.getConnection(), schema);
@@ -27,10 +26,10 @@ public class RepDAOImpl extends BaseDaoHandler  implements RepDAO {
 
 	public void openInsertBatch( )	throws DaoException { 
 		try {
-			connection = getConnection();
 			//inizio LP PGNTCORE-24
+			//connection = getConnection();
 			//insertBatchCs = Helper.prepareCall(connection, getSchema(), Routines.PYREPSP_INS.routine());
-			insertBatchCs =  MetaProcedure.prepareCall(connection, getSchema(), Routines.PYREPSP_INS.routine());
+			insertBatchCs =  prepareCall(Routines.PYREPSP_INS.routine());
 			//fine LP PGNTCORE-24
 		} catch (Exception e) {
 			throw new DaoException(e);
@@ -39,13 +38,13 @@ public class RepDAOImpl extends BaseDaoHandler  implements RepDAO {
 	
 	// public void commitInsertBatch() throws DaoException{}
 
-	public void closeInsertBatch( ) {
+	public void closeInsertBatch() {
 		Helper.close(insertBatchCs);
+		insertBatchCs = null;; //LP PGNTCORE-24
 		//Helper.close(connection); 
 	}
- 
 
-	public void executeInsertBatch( ) throws DaoException {
+	public void executeInsertBatch() throws DaoException {
 		try {
 			insertBatchCs.executeBatch();
 		} catch (SQLException e) {
@@ -53,8 +52,7 @@ public class RepDAOImpl extends BaseDaoHandler  implements RepDAO {
 		}
 	}
 	
-	public void insertBatch(Rep rep)	throws DaoException {
-		  
+	public void insertBatch(Rep rep) throws DaoException {
 		try { 
 			insertBatchCs.setString(1, rep.getIdWallet());
 			insertBatchCs.setString(2, rep.getNumeroProgressivoDisposizione() ); 

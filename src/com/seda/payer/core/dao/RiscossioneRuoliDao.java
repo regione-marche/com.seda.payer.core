@@ -22,7 +22,6 @@ import com.seda.payer.core.bean.PagamentoPartitaRuolo;
 import com.seda.payer.core.bean.AnagraficaPartitaRuolo;
 import java.util.Date;
 import java.sql.Timestamp;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 //import javax.sql.rowset.WebRowSet;

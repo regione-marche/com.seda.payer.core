@@ -86,14 +86,11 @@ public class ConfigUtenteTipoServizioDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(ConfigUtenteTipoServizio config, int rowsPerPage, int pageNumber,String strDescrSocieta,String strDescrUtente,String strDescrTipologiaServizio) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(config, rowsPerPage, pageNumber,strDescrSocieta,strDescrUtente,strDescrTipologiaServizio);
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(config, rowsPerPage, pageNumber,strDescrSocieta,strDescrUtente,strDescrTipologiaServizio);
 	}
 
 	public void rowSets(ConfigUtenteTipoServizio config, int rowsPerPage, int pageNumber,String strDescrSocieta,String strDescrUtente,String strDescrTipologiaServizio) throws DaoException {
@@ -161,7 +158,6 @@ public class ConfigUtenteTipoServizioDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 	        callableStatement.setString(1, companyCode);
 	        callableStatement.setString(2, codiceUtente);
-
 	        /* we execute procedure */
 			if (callableStatement.execute())  
 				this.loadWebRowSets(callableStatement);
@@ -216,7 +212,7 @@ public class ConfigUtenteTipoServizioDao extends BaseDaoHandler {
 		doSaveTail(true, config, codOp);
 	}
 
-	public void doSaveTail(boolean bFlagUpdateAutocomit, ConfigUtenteTipoServizio config,String codOp) throws DaoException {
+	public void doSaveTail(boolean bFlagUpdateAutocomit, ConfigUtenteTipoServizio config, String codOp) throws DaoException {
 	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		try	{
@@ -230,7 +226,8 @@ public class ConfigUtenteTipoServizioDao extends BaseDaoHandler {
 			//ConfigUtenteTipoServizio data = doDetail(config.getUser().getCompany().getCompanyCode(),config.getUser().getUserCode(),config.getTipoServizio().getCodiceTipologiaServizio());
 			ConfigUtenteTipoServizio data = doDetailTail(bFlagUpdateAutocomit, config.getUser().getCompany().getCompanyCode(),config.getUser().getUserCode(),config.getTipoServizio().getCodiceTipologiaServizio());
 			//fine LP 20240909 - PGNTBOLDER-1
-			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configUtenteTipoServizio.saveadd.error"));
+			if ((data != null) && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0)
+				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("configUtenteTipoServizio.saveadd.error"));
 			if (data != null) { 
 				//inizio LP 20240909 - PGNTBOLDER-1
 				callableStatement = prepareCall(Routines.CFS_DOUPDATE.routine());
@@ -283,10 +280,8 @@ public class ConfigUtenteTipoServizioDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			if (config.getUser().getUserCode() == null || config.getUser().getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ente.userCode"));
-
 			if (config.getUser().getCompany() == null || config.getUser().getCompany().getCompanyCode() == null || config.getUser().getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ente.user.company.companyCode"));
-
 			callableStatement.setString(1, config.getUser().getCompany().getCompanyCode());
 			callableStatement.setString(2, config.getUser().getUserCode());
 			callableStatement.setString(3, config.getTipoServizio().getCodiceTipologiaServizio());

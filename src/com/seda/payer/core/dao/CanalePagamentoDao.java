@@ -77,7 +77,6 @@ public class CanalePagamentoDao extends BaseDaoHandler {
 			}
 		}
 		//fine LP PG21XX04 Leak
-		
 	}
 	
 	public void doRowSets(String code, String desc) throws DaoException {
@@ -85,14 +84,11 @@ public class CanalePagamentoDao extends BaseDaoHandler {
 	}
 	
 	public void doRowSets(String code, String desc,int rowsPerPage, int pageNumber) throws DaoException {
-		
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
-		    
-			rowSets(code, desc, rowsPerPage, pageNumber);
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(code, desc, rowsPerPage, pageNumber);
 	}
 
 	public void rowSets(String code, String description,int rowsPerPage, int pageNumber) throws DaoException {
@@ -159,7 +155,8 @@ public class CanalePagamentoDao extends BaseDaoHandler {
 			//CanalePagamento data = doDetail(can.getChiaveCanalePagamento());
 			CanalePagamento data = doDetailTail(bFlagUpdateAutocomit, can.getChiaveCanalePagamento());
 			//fine LP 20240909 - PGNTBOLDER-1
-			if ((data != null) && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("canalePagamento.saveadd.error"));
+			if ((data != null) && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0)
+				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("canalePagamento.saveadd.error"));
 			if (data != null)  {
 				//inizio LP 20240909 - PGNTBOLDER-1
 				//callableStatement = prepareCall(Routines.CAN_DOUPDATE.routine());
@@ -214,7 +211,6 @@ public class CanalePagamentoDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			if (can.getChiaveCanalePagamento() == null || can.getChiaveCanalePagamento().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("canalepagamento.chiaveCanalePagamento"));
-
 			callableStatement.setString(1, can.getChiaveCanalePagamento());
 			callableStatement.execute();
 			//commit();

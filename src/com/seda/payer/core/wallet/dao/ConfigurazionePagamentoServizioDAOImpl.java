@@ -9,8 +9,7 @@ import java.sql.Types;
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 import com.seda.commons.string.Convert;
-import com.seda.data.procedure.reflection.MetaProcedure;
-import com.seda.data.procedure.reflection.ProcedureReflectorException;
+import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -21,12 +20,14 @@ import com.seda.payer.core.wallet.bean.WalletPageList;
 
 public class ConfigurazionePagamentoServizioDAOImpl extends BaseDaoHandler  implements ConfigurazionePagamentoServizioDAO  {
 	private static final long serialVersionUID = 1L;
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
 	public ConfigurazionePagamentoServizioDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	//inizio LP PG21XX04 Leak
 	public ConfigurazionePagamentoServizioDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
@@ -61,7 +62,7 @@ public class ConfigurazionePagamentoServizioDAOImpl extends BaseDaoHandler  impl
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPPSSP_LST.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPPSSP_LST.routine());
+			callableStatement = prepareCall(Routines.PYPPSSP_LST.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
@@ -94,22 +95,15 @@ public class ConfigurazionePagamentoServizioDAOImpl extends BaseDaoHandler  impl
 				return walletPageList;
 			}
 			
-			
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -149,7 +143,7 @@ public class ConfigurazionePagamentoServizioDAOImpl extends BaseDaoHandler  impl
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPPSSP_DEL.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPPSSP_DEL.routine());
+			callableStatement = prepareCall(Routines.PYPPSSP_DEL.routine());
 			//fine LP PGNTCORE-24
 //			IN I_PPS_CSOCCSOC VARCHAR(5), 
 //			IN I_PPS_CUTECUTE VARCHAR(5),
@@ -173,14 +167,9 @@ public class ConfigurazionePagamentoServizioDAOImpl extends BaseDaoHandler  impl
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -213,7 +202,7 @@ public class ConfigurazionePagamentoServizioDAOImpl extends BaseDaoHandler  impl
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPPSSP_INS.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPPSSP_INS.routine());
+			callableStatement = prepareCall(Routines.PYPPSSP_INS.routine());
 			//fine LP PGNTCORE-24
 //					IN I_PPS_CSOCCSOC VARCHAR(5), 
 //					IN I_PPS_CUTECUTE VARCHAR(5),
@@ -250,14 +239,9 @@ public class ConfigurazionePagamentoServizioDAOImpl extends BaseDaoHandler  impl
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -295,7 +279,7 @@ public class ConfigurazionePagamentoServizioDAOImpl extends BaseDaoHandler  impl
 //			IN I_PPS_CPPSCODI CHAR(1)			
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPPSSP_SEL.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPPSSP_SEL.routine());
+			callableStatement = prepareCall(Routines.PYPPSSP_SEL.routine());
 			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazionePagamentoServizio.getCodiceSocieta());
 			callableStatement.setString(2, configurazionePagamentoServizio.getCuteCute());
@@ -332,12 +316,8 @@ public class ConfigurazionePagamentoServizioDAOImpl extends BaseDaoHandler  impl
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			throw new DaoException(e);
-		//fine LP PGNTCORE-24
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -384,7 +364,7 @@ public class ConfigurazionePagamentoServizioDAOImpl extends BaseDaoHandler  impl
 			connection = getConnection();
 			//inizio LP PGNTCORE-24
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPPSSP_UPD.routine());
-			callableStatement = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYPPSSP_UPD.routine());
+			callableStatement = prepareCall(Routines.PYPPSSP_UPD.routine());
 			//fine LP PGNTCORE-24
 //			IN I_PPS_CSOCCSOC VARCHAR(5), 
 //			IN I_PPS_CUTECUTE VARCHAR(5),
@@ -418,11 +398,7 @@ public class ConfigurazionePagamentoServizioDAOImpl extends BaseDaoHandler  impl
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
-		//inizio LP PGNTCORE-24
-		//} catch (HelperException e) {
-		//	e.printStackTrace();
-		//	throw new DaoException(e);
-		} catch (ProcedureReflectorException e) {
+		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
 		//fine LP PGNTCORE-24

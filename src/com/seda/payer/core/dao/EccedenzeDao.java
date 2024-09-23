@@ -12,8 +12,6 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Date;
 
-//import javax.sql.rowset.WebRowSet;
-
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.EccedenzaDettaglioBean;
 import com.seda.payer.core.bean.EccedenzaTestaBean;

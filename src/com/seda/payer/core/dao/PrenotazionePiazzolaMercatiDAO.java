@@ -195,7 +195,6 @@ public class PrenotazionePiazzolaMercatiDAO extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 		List<PrenotazionePiazzolaMercato> piazzole = new ArrayList<PrenotazionePiazzolaMercato>();
 		try	{
-			//TODO: AGGIUNGERE SP A ROUTINES: sul file non posso fare checkout
 			callableStatement = prepareCall("PYPZLSP_LST_AUT");
 			callableStatement.setObject(1, codSocieta, java.sql.Types.CHAR);
 			callableStatement.setObject(2, codUt, java.sql.Types.CHAR);
@@ -325,7 +324,6 @@ public class PrenotazionePiazzolaMercatiDAO extends BaseDaoHandler {
 						//inizio LP PG21XX04 Leak
 						//CallableStatement updatePRNStatement = null;
 						//fine LP PG21XX04 Leak
-						//TODO: PYPRNSP_PAY è da aggiungere a Routines cheal momento dello sviluppo è in checkout da altri utenti
 						updatePRNStatement = prepareCall("PYPRNSP_PAY");
 						updatePRNStatement.setString(1, chiavePrenotazione);
 						updatePRNStatement.setFloat(2, importoPagamento);

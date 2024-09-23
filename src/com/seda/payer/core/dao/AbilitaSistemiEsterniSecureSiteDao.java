@@ -31,7 +31,6 @@ public class AbilitaSistemiEsterniSecureSiteDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, urlAccesso);
 			callableStatement.setString(2, idServizio);
-			
 			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet data = callableStatement.getResultSet();
@@ -63,6 +62,7 @@ public class AbilitaSistemiEsterniSecureSiteDao extends BaseDaoHandler {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				callableStatement = null; //LP 20240909 - PGNTBOLDER-1
 			}
 		}
 		//fine LP PG21XX04 Leak
@@ -73,15 +73,11 @@ public class AbilitaSistemiEsterniSecureSiteDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(String urlAccesso, String descrizione, String idServizio, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(urlAccesso, descrizione, idServizio, rowsPerPage, pageNumber);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(urlAccesso, descrizione, idServizio, rowsPerPage, pageNumber);
 	}
 
 	private void rowSets(String urlAccesso, String descrizione, String idServizio, int rowsPerPage, int pageNumber) throws DaoException {
@@ -129,6 +125,7 @@ public class AbilitaSistemiEsterniSecureSiteDao extends BaseDaoHandler {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				callableStatement = null; //LP 20240909 - PGNTBOLDER-1
 			}
 		}
 		//fine LP PG21XX04 Leak
@@ -139,14 +136,12 @@ public class AbilitaSistemiEsterniSecureSiteDao extends BaseDaoHandler {
 		try	{
 			if (abilita.getUrlAccesso() == null || abilita.getUrlAccesso().length() == 0) {
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemiEsterniSecureSite.urlAccesso"));
-				
 			}
 			//19022011 GG inizio
 			if (abilita.getIdServizio() == null) {
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemiEsterniSecureSite.idServizio"));
 			}
 			//19022011 GG fine
-			
 			//21022011 GG inizio
 			/*
 			AbilitaSistemiEsterniSecureSite data = doDetail(abilita.getUrlAccesso(), abilita.getIdServizio());
@@ -160,17 +155,11 @@ public class AbilitaSistemiEsterniSecureSiteDao extends BaseDaoHandler {
 				callableStatement = prepareCall(Routines.SEC_DOINSERT.routine());
 			}
 			*/
-						
-			if (codOp.equals(TypeRequest.ADD_SCOPE.scope()))
-			{
+			if (codOp.equals(TypeRequest.ADD_SCOPE.scope())) {
 				callableStatement = prepareCall(Routines.SEC_DOINSERT.routine());
-			}
-			else if (codOp.equals(TypeRequest.EDIT_SCOPE.scope()))
-			{
+			} else if (codOp.equals(TypeRequest.EDIT_SCOPE.scope())) {
 				callableStatement = prepareCall(Routines.SEC_DOUPDATE.routine());
-			}
-			else
-			{
+			} else {
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("abilitaSistemiEsterniSecureSite.save.error"));
 			}
 			//21022011 GG fine
@@ -192,6 +181,7 @@ public class AbilitaSistemiEsterniSecureSiteDao extends BaseDaoHandler {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				callableStatement = null; //LP 20240909 - PGNTBOLDER-1
 			}
 		}
 		//fine LP PG21XX04 Leak
@@ -234,6 +224,7 @@ public class AbilitaSistemiEsterniSecureSiteDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
+			callableStatement = null; //LP 20240909 - PGNTBOLDER-1
 		}
 		//fine LP PG21XX04 Leak
 	}

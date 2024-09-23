@@ -13,19 +13,15 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class ProvinciaEnteDao extends BaseDaoHandler {
 
-	//inizio LP 20240912 - PGNTFATT-5
-	private CallableStatement callableStatementDoDetailEnte2 = null;
-	//fine LP 20240912 - PGNTFATT-5
-
 	public ProvinciaEnteDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
 
-	private void closeConnection(CallableStatement callableStatement)
-	{
-		if (callableStatement != null)
-			DAOHelper.closeIgnoringException(callableStatement);
-	}
+//	private void closeConnection(CallableStatement callableStatement)
+//	{
+//		if (callableStatement != null)
+//			DAOHelper.closeIgnoringException(callableStatement);
+//	}
 	
 	public void doListProvince() throws DaoException {
 		CallableStatement callableStatement = null;
@@ -452,10 +448,7 @@ public class ProvinciaEnteDao extends BaseDaoHandler {
 		try	{
 			//inizio LP 20240912 - PGNTFATT-5
 			//callableStatement = prepareCall(Routines.ANE_DODETAIL_ENTE2.routine());
-			if(callableStatementDoDetailEnte2 == null) {
-				callableStatementDoDetailEnte2 = prepareCall(bUpdateFlagAutocommit, Routines.ANE_DODETAIL_ENTE2.routine());
-				callableStatement = callableStatementDoDetailEnte2;
-			}
+			callableStatement = prepareCall(bUpdateFlagAutocommit, Routines.ANE_DODETAIL_ENTE2.routine());
 			callableStatement.setString(1, chiaveEnte);
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);	
@@ -481,7 +474,6 @@ public class ProvinciaEnteDao extends BaseDaoHandler {
 				}
 			//inizio LP 20240912 - PGNTFATT-5
 				callableStatement = null;
-				callableStatementDoDetailEnte2 = null;
 			}
 			//fine LP 20240912 - PGNTFATT-5
 			//fine LP PG21XX04 Leak
@@ -634,18 +626,4 @@ public class ProvinciaEnteDao extends BaseDaoHandler {
 		}
 	}
 	//PG1800XX_017 GG 18122018 - fine
-
-	//inizio LP 20240912 - PGNTFATT-5
-    public void closeCallableStatementS()  {
-	    if(callableStatementDoDetailEnte2 != null) {
-			try {
-				callableStatementDoDetailEnte2.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementDoDetailEnte2 = null;
-	    }
-    }
-    //fine LP 20240912 - PGNTFATT-5
-
 }

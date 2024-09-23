@@ -60,8 +60,8 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			//callableStatement = prepareCall(Routines.SRG_DODETAIL.routine());
 			if(callableStatementDetail == null) {
 				callableStatementDetail = prepareCall(bUpdateFlagAutocommit, Routines.SRG_DODETAIL.routine());
-				callableStatement = callableStatementDetail;
 			}
+			callableStatement = callableStatementDetail;
 			//fine LP 20240909 - PGNTBOLDER-1
 			callableStatement.setString(1, codiceBelfiore);
 			if (callableStatement.execute()) {
@@ -76,8 +76,7 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			//if (data != null)
@@ -107,23 +106,19 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	public void doRowSets(String descComune) throws DaoException {
 		rowSets(0, 0,descComune);
 	}
 
 	public void doRowSets(int rowsPerPage, int pageNumber,String descComune) throws DaoException {
-		
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(rowsPerPage, pageNumber,descComune);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(rowsPerPage, pageNumber,descComune);
 	}
-	
+
 	public void rowSets(int rowsPerPage, int pageNumber,String descComune) throws DaoException {
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
@@ -176,17 +171,14 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 		try	{
 			callableStatement = prepareCall(Routines.SRG_DOUPDATE.routine());
 			configImposta.update(callableStatement);
-			
 			callableStatement.execute();
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			if (callableStatement != null) {
@@ -199,7 +191,7 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	public void doSave(ConfigurazioneImpostaSoggiorno configImposta) throws DaoException {
 		CallableStatement callableStatement = null;
 		try	{
@@ -219,8 +211,7 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-  		}
-		finally {
+  		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			if (callableStatement != null) {
@@ -273,50 +264,41 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 		}
 		//fine LP PG21XX04 Leak
 	}
-	
+
 	public ResponseData doSaveHost(ConfigurazioneImpostaSoggiorno configImposta, String codUtente) throws DaoException {
 		CallableStatement callableStatement = null;
 		try	{
-			
 			if(configImposta != null) {
 				System.out.println("DATA-IN-CODUTEN: " + codUtente);
 				System.out.println("DATA-IN-CODENTE: " + configImposta.getCodiceEnteGestionaleEntrate());
 				System.out.println("DATA-IN-CODIMSE: " + configImposta.getImpostaServizioGestionaleEntrate());
 				System.out.println("DATA-IN-CODTRIB: " + configImposta.getCodiceTributoGestionaleEntrate());
 			}
-			
 			callableStatement = prepareCall(Routines.IS_IMPSOGG_DOSAVE.routine());
 			callableStatement.setString(1, codUtente);
 			callableStatement.setString(2, configImposta.getCodiceEnteGestionaleEntrate());
 			callableStatement.setString(3, configImposta.getImpostaServizioGestionaleEntrate());
 			callableStatement.setString(4, configImposta.getCodiceTributoGestionaleEntrate());
-			
 			//parametri di output
 			callableStatement.registerOutParameter(5, Types.VARCHAR);
 			callableStatement.registerOutParameter(6, Types.VARCHAR);
-			
 			callableStatement.execute();
-			
 			ResponseData res = new ResponseData();
 			res.setRetCode(callableStatement.getString(5));
 			res.setRetMessage(callableStatement.getString(6));
-			
 			/****TEST****/
 			/*ResponseData res = new ResponseData();
 			res.setRetCode("OK");
 			res.setRetMessage("");
 			res.setInfo1("COD_TEST");*/
-			
 			return res;
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			if (callableStatement != null) {
@@ -332,8 +314,7 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 	
 	public void doListEnteBelfiore(String codBelf) throws DaoException {
 		CallableStatement callableStatement = null;
-		try	
-		{
+		try {
 			callableStatement = prepareCall(Routines.ENT_DOLIST_BELF.routine());				
 			callableStatement.setString(1, codBelf);
 			if (callableStatement.execute()) 
@@ -379,8 +360,7 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			//if (data != null)
@@ -402,18 +382,4 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-
-    //inizio LP 20240912 - PAGONET-604
-    public void closeCallableStatementS()  {
-	    if(callableStatementDetail != null) {
-			try {
-				callableStatementDetail.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-			callableStatementDetail = null;
-	    }
-    }
-    //fine LP 20240912 - PAGONET-604
-
 }

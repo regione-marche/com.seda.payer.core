@@ -83,15 +83,11 @@ public class AnagServiziDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(String codiceAnagServizi, String descrizioneAnagServizi, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(codiceAnagServizi, descrizioneAnagServizi, rowsPerPage, pageNumber);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(codiceAnagServizi, descrizioneAnagServizi, rowsPerPage, pageNumber);
 	}
 
 	private void rowSets(String codiceAnagServizi, String descrizioneAnagServizi, int rowsPerPage, int pageNumber) throws DaoException {
@@ -213,7 +209,6 @@ public class AnagServiziDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			if (anagservizi.getCodiceAnagServizi() == null || anagservizi.getCodiceAnagServizi().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagservizi.codiceAnagServizi"));
-	
 			callableStatement.setString(1, anagservizi.getCodiceAnagServizi());
 			callableStatement.execute();
 			//commit();

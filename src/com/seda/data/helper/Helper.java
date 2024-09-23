@@ -11,10 +11,7 @@ import java.sql.Statement;
 import java.util.Properties;
 
 import com.seda.commons.logger.LoggerWrapper;
-import com.seda.data.helper.HelperException;
-import com.seda.data.helper.SpParamCache;
 import com.seda.data.procedure.reflection.DriverType;
-import com.seda.data.procedure.reflection.MetaProcedure;
 import com.seda.data.dao.ConnectionProxyInstance;
 
 /**

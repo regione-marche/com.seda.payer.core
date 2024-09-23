@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.FasciaTariffaImpostaSoggiorno;
 import com.seda.payer.core.bean.TariffaImpostaSoggiorno;
@@ -21,11 +20,11 @@ public class FasciaTariffaImpostaSoggiornoDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
-	private void closeConnection(CallableStatement callableStatement)
-	{
-		if (callableStatement != null)
-			DAOHelper.closeIgnoringException(callableStatement);
-	}
+//	private void closeConnection(CallableStatement callableStatement)
+//	{
+//		if (callableStatement != null)
+//			DAOHelper.closeIgnoringException(callableStatement);
+//	}
 	
 	public FasciaTariffaImpostaSoggiorno doDetail_Web(String chiaveTariffa, String codice) throws DaoException {
 		CallableStatement callableStatement = null;
@@ -322,10 +321,10 @@ public class FasciaTariffaImpostaSoggiornoDao extends BaseDaoHandler {
 		
 		CallableStatement callableStatement = null;
 		try	{
-			Integer p = new Integer(chiaveFasciaTariffa.toString());
+			//Integer p = new Integer(chiaveFasciaTariffa.toString());
 			//A T T E N Z I O N E  A T T E N Z I O N E  A T T E N Z I O N E
 			//
-			//TODO: SP da da definire
+			//SP da da definire
 			//
 			//A T T E N Z I O N E  A T T E N Z I O N E  A T T E N Z I O N E
 			callableStatement = prepareCall(Routines.STF_DOCOUNT_SCT.routine()); //cancellare
@@ -370,7 +369,7 @@ public class FasciaTariffaImpostaSoggiornoDao extends BaseDaoHandler {
 		try	{
 			//A T T E N Z I O N E  A T T E N Z I O N E  A T T E N Z I O N E
 			//
-			//TODO: SP da da definire
+			//SP da da definire
 			//
 			//A T T E N Z I O N E  A T T E N Z I O N E  A T T E N Z I O N E
 			callableStatement = prepareCall(Routines.STF_DOLIST_CSV.routine());
