@@ -10,6 +10,7 @@ import java.sql.Types;
 //import com.seda.data.dao.DAOHelper;
 //fine LP PG21XX04 Leak
 import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.DriverType;
 import com.seda.payer.core.bean.ArchivioCarichiDocumento;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -179,7 +180,17 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setString(9, flussiInElab);
 			callableStatement.setString(10, flagElabStampaAvviso);
 			/* we register row start */
-			callableStatement.registerOutParameter(11, Types.INTEGER);
+			//inizio LP 20240924 - Differenze tra i tipi di dati tra postgres e altri DB (?)
+			if(DriverType.isPostgres(getConnection())) {
+				/* Differenza tra parametro dichiarato su sql (java) bigint == (sql)int8 per postgres */
+				callableStatement.registerOutParameter(11, Types.BIGINT);
+			} else { 	
+				/* Questo corrisponde alla chiamata per la sp in db2 (?) */
+			//fine LP 20240924
+				callableStatement.registerOutParameter(11, Types.INTEGER);
+			//inizio LP 20240924 - Differenze tra i tipi di dati tra postgres e altri DB (?)
+			}
+			//fine LP 20240924
 			callableStatement.execute();
 			int i = (int) callableStatement.getLong(11);
 			return i;
