@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.seda.data.helper.HelperException;
+import com.seda.data.procedure.reflection.DriverType;
 import com.seda.payer.core.bean.ArchivioCarichiAnagrafica;
 import com.seda.payer.core.bean.ArchivioCarichiCoda;
 import com.seda.payer.core.bean.ArchivioCarichiDocumento;
@@ -1298,10 +1299,29 @@ public class ArchivioCarichiDao extends BaseDaoHandler {
 			//fine LP 20240920 - PGNTECCSV-10
 			callableStatement.setString(1, codiceEnte);
 			callableStatement.setString(2, auxDigit);
-			callableStatement.setLong(3, dayOfYear);
-			callableStatement.registerOutParameter(4, Types.INTEGER);
-			callableStatement.execute(); 
-			Integer progressivo = callableStatement.getInt(4);
+			//inizio LP 20240924 - Differenze tra i tipi di dati tra postgres e altri DB (?)
+			if(DriverType.isPostgres(getConnection())) {
+				/* Questo corrisponde ai parametri sulla sp sia postgres che db2 */
+				callableStatement.setInt(3, dayOfYear);
+				callableStatement.registerOutParameter(4, Types.BIGINT);
+			} else {
+				/* Questo corrisponde alla chiamata per la sp in db2 (?) */
+			//fine LP 20240924
+				callableStatement.setLong(3, dayOfYear);
+				callableStatement.registerOutParameter(4, Types.INTEGER);
+			//inizio LP 20240924 - Differenze tra i tipi di dati rta postgres e altri DB (?)
+			}
+			//fine LP 20240924
+			callableStatement.execute();
+			//inizio LP 20240924 - Differenze tra i tipi di dati tra postgres e altri DB (?)
+			//Integer progressivo = callableStatement.getInt(4);
+			Integer progressivo = null;
+			if(DriverType.isPostgres(getConnection())) {
+				progressivo = (int) callableStatement.getLong(4);
+			} else {
+				progressivo = callableStatement.getInt(4);
+			}
+			//fine LP 20240924
 			return String.valueOf(progressivo);
 		} catch (SQLException x) {
 			throw new DaoException(x);
