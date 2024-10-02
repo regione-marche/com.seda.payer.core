@@ -4,7 +4,6 @@
 package com.seda.data.dao;
 
 import java.sql.Connection;
-import java.sql.Driver;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,7 +17,6 @@ import javax.sql.rowset.WebRowSet;
 import com.seda.commons.resource.ResourceManager;
 import com.seda.data.datasource.DataSourceImpl;
 import com.seda.data.datasource.PooledDataSource;
-import com.seda.data.event.DAOEventProxy;
 import com.seda.data.procedure.reflection.DriverType;
 import com.sun.rowset.CachedRowSetImpl;
 import com.sun.rowset.WebRowSetImpl;
@@ -27,6 +25,7 @@ import com.sun.rowset.WebRowSetImpl;
  * @author Seda Lab
  *
  */
+@SuppressWarnings("restriction")
 public class DAOHelper {
 
 	public final static String JDBC_DRIVER = "driver";
@@ -142,7 +141,7 @@ public class DAOHelper {
 		}
 		CachedRowSetImpl cachedRowSetImpl = null;
 		try {		
-			cachedRowSetImpl =  new CachedRowSetImpl();
+			cachedRowSetImpl = new CachedRowSetImpl();
 			cachedRowSetImpl.populate(resultSet);			
 		} catch (SQLException x) {
 			throw new DAORuntimeException(x.getMessage(),x);
@@ -169,7 +168,6 @@ public class DAOHelper {
 			throw new DAORuntimeException(x.getMessage(), x);
 		}
 		return webRowSet;
-		
 	}	
 	
 	/**
@@ -206,6 +204,7 @@ public class DAOHelper {
             + "DB connection : \n" + se);
         }
     }
+
 	public static void closeIgnoringException(Connection connection) {
         try {
             if (connection != null && !connection.isClosed()) {
@@ -219,7 +218,20 @@ public class DAOHelper {
             // ignore exception
         }
 	}
-    /**
+
+	//inizio LP 20241001 - PGNTCORE-24
+	public static void closeIgnoringExceptionBatch(Connection connection) {
+        try {
+            if (connection != null && !connection.isClosed()) {
+	            connection.close();
+            }
+        } catch (Exception x) {
+            // ignore exception
+        }
+	}
+	//fine LP 20241001 - PGNTCORE-24
+
+	/**
      * Closes the result set
      * @param result
      * @throws DAOSysException in case of SQLExeption
