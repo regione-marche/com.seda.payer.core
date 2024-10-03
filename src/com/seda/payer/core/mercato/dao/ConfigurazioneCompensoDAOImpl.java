@@ -215,11 +215,14 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 			callableStatement.setString(2, configurazioneCompenso.getCuteCute());
 			callableStatement.setString(3, configurazioneCompenso.getChiaveEnte());
 			callableStatement.setBigDecimal(4, configurazioneCompenso.getImportoFisso());
-			callableStatement.setDouble(5, configurazioneCompenso.getPercentualeCompenso());
+			//callableStatement.setDouble(5, configurazioneCompenso.getPercentualeCompenso());
+			callableStatement.setBigDecimal(5, new Bigdecimal(configurazioneCompenso.getPercentualeCompenso()));
 			if (configurazioneCompenso.getPercentualeIva()==null){
-				callableStatement.setDouble(6, 0);
+				//callableStatement.setDouble(6, 0);
+				callableStatement.setBigDecimal(6, 0);
 			} else {
-				callableStatement.setDouble(6, configurazioneCompenso.getPercentualeIva());
+				//callableStatement.setDouble(6, configurazioneCompenso.getPercentualeIva());
+				callableStatement.setBigDecimal(6, new Bigdecimal(configurazioneCompenso.getPercentualeIva()));
 			}
 			callableStatement.setTimestamp(7, new java.sql.Timestamp(configurazioneCompenso.getDataInizioValidita().getTimeInMillis()));
 			if (configurazioneCompenso.getDataFineValidita()==null) {
@@ -473,11 +476,14 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 			callableStatement.setString(3, configurazioneCompenso.getCuteCute());
 			callableStatement.setString(4, configurazioneCompenso.getChiaveEnte());
 			callableStatement.setBigDecimal(5, configurazioneCompenso.getImportoFisso());
-			callableStatement.setDouble(6, configurazioneCompenso.getPercentualeCompenso());
+			//callableStatement.setDouble(6, configurazioneCompenso.getPercentualeCompenso());
+			callableStatement.setBigDecimal(6, configurazioneCompenso.getPercentualeCompenso());
 			if (configurazioneCompenso.getPercentualeIva()==null) {
-				callableStatement.setDouble(7, 0);
+				//callableStatement.setDouble(7, 0);
+				callableStatement.setBigDecimal(7, 0);
 			} else {
-				callableStatement.setDouble(7, configurazioneCompenso.getPercentualeIva());
+				//callableStatement.setDouble(7, configurazioneCompenso.getPercentualeIva());
+				callableStatement.setBigDecimal(7, configurazioneCompenso.getPercentualeIva());
 			}
 			callableStatement.setTimestamp(8, new java.sql.Timestamp(configurazioneCompenso.getDataInizioValidita().getTimeInMillis()));
 			if (configurazioneCompenso.getDataFineValidita()==null) {

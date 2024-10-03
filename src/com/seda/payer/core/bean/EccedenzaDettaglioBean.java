@@ -428,10 +428,14 @@ public class EccedenzaDettaglioBean extends Lifecycle implements Serializable {
 		arg.setString(5, this.chiaveAnagrafica);
 		arg.setString(6, this.numeroDocumento);
 		arg.setString(7, this.codiceFiscale);
-		arg.setDouble(8, this.importoTotale);
-		arg.setDouble(9, this.importoPagato);
-		arg.setDouble(10, this.importoDiscaricato);
-		arg.setDouble(11, this.importoDaRimborsare);
+		arg.setBigDecimal(8, new BigDecimal(this.importoTotale));
+		arg.setBigDecimal(9, new BigDecimal(this.importoPagato));
+		arg.setBigDecimal(10, new BigDecimal(this.importoDiscaricato));
+		arg.setBigDecimal(11, new BigDecimal(this.importoDaRimborsare));
+		//arg.setDouble(8, this.importoTotale);
+		//arg.setDouble(9, this.importoPagato);
+		//arg.setDouble(10, this.importoDiscaricato);
+		//arg.setDouble(11, this.importoDaRimborsare);
 		arg.setString(12,this.causale);
 		arg.setString(13, this.denominazione);
 		arg.setString(14, this.tipoAnagrafica);

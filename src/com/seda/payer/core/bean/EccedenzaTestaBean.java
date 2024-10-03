@@ -128,7 +128,8 @@ public class EccedenzaTestaBean extends Lifecycle implements Serializable{
 		arg.setDate(8, this.dataAccredito);
 		arg.setString(9, this.proceduraGestione);
 		arg.setString(10, this.nomeFlusso);
-		arg.setDouble(11, this.numeroRecord);
+		//arg.setDouble(11, this.numeroRecord);
+		arg.setBigDecimal(11, new BigDecimal(this.numeroRecord));
 		arg.setString(12,this.codiceOperatore);
 		arg.registerOutParameter(13, Types.INTEGER);
 	}
