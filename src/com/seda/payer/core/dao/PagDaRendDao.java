@@ -354,14 +354,14 @@ public class PagDaRendDao extends BaseDaoHandler{
 	}
 
 	//inizio LP 20180711
-	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5
 	public boolean aggiornaChiaveRenEvol(String chiaveSpedizione, FlussiRen fr) throws DaoException {
 		return aggiornaChiaveRenEvolTail(true,  chiaveSpedizione, fr);
 	}
 
 	public boolean aggiornaChiaveRenEvolTail(boolean bFlagUpdateAutocommit, String chiaveSpedizione, FlussiRen fr) throws DaoException
 	{
-	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
@@ -436,14 +436,22 @@ public class PagDaRendDao extends BaseDaoHandler{
 		//fine LP PG21XX04 Leak
 	}
 
+	//inizio LP 20241003 - PGNTPROR-5/PGNTCORE-24
 	public boolean aggiornaChiaveRenEvolList(String chiaveSpedizione, String szTipiFlusso, String szKeyRendUpdate) throws DaoException{
+		return aggiornaChiaveRenEvolListTail(true, chiaveSpedizione, szTipiFlusso, szKeyRendUpdate);
+	}
+
+	public boolean aggiornaChiaveRenEvolListTail(boolean bFlagUpdateAutocommit, String chiaveSpedizione, String szTipiFlusso, String szKeyRendUpdate) throws DaoException{
+	//fine LP 20241003 - PGNTPROR-5/PGNTCORE-24
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.FLREN_UPD_GLOBAL_LIST.routine());
-			callableStatement = prepareCall(Routines.FLREN_UPD_GLOBAL_LIST.routine());
+			//inizio LP 20241003 - PGNTPROR-5/PGNTCORE-24
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.FLREN_UPD_GLOBAL_LIST.routine());
+			//fine LP 20241003 - PGNTPROR-5/PGNTCORE-24
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, chiaveSpedizione);
 			callableStatement.setString(2, szTipiFlusso);
