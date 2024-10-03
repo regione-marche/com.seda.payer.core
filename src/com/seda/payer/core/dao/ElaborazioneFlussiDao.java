@@ -1,5 +1,6 @@
 package com.seda.payer.core.dao;
 
+import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.Date;
@@ -510,7 +511,7 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setString(18, String.valueOf(docEntrate));
 			callableStatement.setString(19, bollettino);
 			//callableStatement.setDouble(20, importo);
-			callableStatement.setBigDecimal(20, new BigDecimal(importo));			
+			callableStatement.setBigDecimal(20, new BigDecimal(importo));
 			callableStatement.setString(21, codEnteEntrate);
 			callableStatement.setString(22, String.valueOf(sospensione));
 			callableStatement.setString(23, String.valueOf(procInCorso));
@@ -1201,8 +1202,8 @@ public class ElaborazioneFlussiDao extends BaseDaoHandler {
 			callableStatement.setString(13, String.valueOf(tipoTributo));
 			//callableStatement.setDouble(14, importoTributo);
 			//callableStatement.setDouble(15, importoPagatoPiuSgravi);
-			callableStatement.setBigDecimal(14, new Bigdecimal(importoTributo));
-			callableStatement.setBigDecimal(15, new Bigdecimal(importoPagatoPiuSgravi));
+			callableStatement.setBigDecimal(14, new BigDecimal(importoTributo));
+			callableStatement.setBigDecimal(15, new BigDecimal(importoPagatoPiuSgravi));
 			callableStatement.setString(16, noteTributo);
 			callableStatement.setString(17, String.valueOf(stato));
 			callableStatement.setLong(18, progressivoFlusso);

@@ -7,6 +7,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.math.BigDecimal;
 
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.ConfigurazioneBlackBox;
@@ -127,7 +128,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			callableStatement.setDate(9, new java.sql.Date(blackboxpos.getDataScadenza().getTimeInMillis()));
 			callableStatement.setString(10, blackboxpos.getCodiceFiscale());
 			//callableStatement.setDouble(11, blackboxpos.getImporto());
-			callableStatement.setBigDecimal(11, new Bigdecimal(blackboxpos.getImporto()));
+			callableStatement.setBigDecimal(11, BigDecimal.valueOf(blackboxpos.getImporto()));
 			callableStatement.setString(12, blackboxpos.getDenominazioneDebitore());
 			callableStatement.setString(13, blackboxpos.getIndirizzoContribuente());
 			callableStatement.setString(14, blackboxpos.getLocalitaContribuente());
@@ -138,7 +139,7 @@ public class BlackBoxPosteDao extends BaseDaoHandler {
 			callableStatement.setString(19, blackboxpos.getCodiceIuv());
 			callableStatement.setString(20, blackboxpos.getFlagPagato());
 			//callableStatement.setDouble(21, blackboxpos.getImportoPagato());
-			callableStatement.setBigDecimal(21, new Bigdecimal(blackboxpos.getImportoPagato()));
+			callableStatement.setBigDecimal(21, BigDecimal.valueOf(blackboxpos.getImportoPagato()));
 			callableStatement.setString(22, blackboxpos.getCodiceTipologiaServizio());
 			callableStatement.setString(23, blackboxpos.getCodiceIBAN2() == null ? "" : blackboxpos.getCodiceIBAN2());
 			callableStatement.setString(24, blackboxpos.getCausaleServizio() == null ? "" : blackboxpos.getCausaleServizio());

@@ -1,6 +1,7 @@
 package com.seda.payer.core.bean;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Date;
 import java.sql.ResultSet;

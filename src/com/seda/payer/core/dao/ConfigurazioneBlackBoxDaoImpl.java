@@ -658,7 +658,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setDate(9, blackboxpos.getDataScadenza()!=null ? new java.sql.Date(blackboxpos.getDataScadenza().getTimeInMillis()) : null);
 			callableStatement.setString(10, blackboxpos.getCodiceFiscale());
 			//callableStatement.setDouble(11, blackboxpos.getImporto());
-			callableStatement.setBigDecimal(11, new Bigdecimal(blackboxpos.getImporto()));
+			callableStatement.setBigDecimal(11, new BigDecimal(blackboxpos.getImporto()));
 			callableStatement.setString(12, blackboxpos.getDenominazioneDebitore());
 			callableStatement.setString(13, blackboxpos.getIndirizzoContribuente());
 			callableStatement.setString(14, blackboxpos.getLocalitaContribuente());
@@ -1038,7 +1038,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setDate(9, blackboxpos.getDataScadenza() !=null ? new java.sql.Date(blackboxpos.getDataScadenza().getTimeInMillis()) : null);
 			callableStatement.setString(10, blackboxpos.getCodiceFiscale());
 			//callableStatement.setDouble(11, blackboxpos.getImporto());
-			callableStatement.setBigDecimal(11, new Bigdecimal(blackboxpos.getImporto()));
+			callableStatement.setBigDecimal(11, new BigDecimal(blackboxpos.getImporto()));
 			callableStatement.setString(12, blackboxpos.getDenominazioneDebitore());
 			callableStatement.setString(13, blackboxpos.getIndirizzoContribuente());
 			callableStatement.setString(14, blackboxpos.getLocalitaContribuente());
@@ -1050,7 +1050,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(19, blackboxpos.getCodiceIuv());
 			callableStatement.setString(20, blackboxpos.getFlagPagato());
 			//callableStatement.setDouble(21, blackboxpos.getImportoPagato());
-			callableStatement.setBigDecimal(21, new Bigdecimal(blackboxpos.getImportoPagato()));
+			callableStatement.setBigDecimal(21, new BigDecimal(blackboxpos.getImportoPagato()));
 			callableStatement.setString(22, blackboxpos.getCodiceTipologiaServizio());
 			callableStatement.setString(23, blackboxpos.getCodiceIBAN2() == null ? "" : blackboxpos.getCodiceIBAN2());
 			callableStatement.setString(24, blackboxpos.getCausaleServizio() == null ? "" : blackboxpos.getCausaleServizio());
