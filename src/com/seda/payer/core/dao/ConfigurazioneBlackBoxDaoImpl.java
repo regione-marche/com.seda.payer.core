@@ -59,6 +59,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(5, blackbox.getAuxDigit());
 			callableStatement.setString(6, blackbox.getCodiceServizio());
 			callableStatement.execute();
+
 			resultSet = callableStatement.getResultSet();
 			loadWebRowSet(resultSet);
 			String selectXml = getWebRowSetXml();
@@ -345,7 +346,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNCNFSP_LST.routine());
 			callableStatement = prepareCall(Routines.CNCNFSP_LST.routine());
-			//fine LP 20240919 PGNTCORE-24 
+			//fine LP 20240919 PGNTCORE-24
 			callableStatement.setString(1, blackbox.getCodiceEnte());
 			callableStatement.setString(2, blackbox.getCodiceIdentificativoDominio());
 			callableStatement.setString(3, blackbox.getFlagIuv());
@@ -449,7 +450,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(4, blackboxpos.getCodiceFiscale());
 			callableStatement.setString(5, blackboxpos.getCodiceIdentificativoDocumento());
 			callableStatement.setString(6, blackboxpos.getFlagPagato());
-			callableStatement.setDate(7, new java.sql.Date(blackboxpos.getDataCreazione().getTimeInMillis()));
+			callableStatement.setDate(7, blackboxpos.getDataCreazione() != null ? new java.sql.Date(blackboxpos.getDataCreazione().getTimeInMillis()) : null);
 			callableStatement.setInt(8, blackboxpos.getAnnoRiferimento());
 			callableStatement.setString(9, OrderBy);
 			callableStatement.setInt(10, rowsPerPage);
@@ -645,18 +646,19 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_UPD.routine());
 			callableStatement = prepareCall(Routines.CNDOCSP_UPD.routine());
-			//fine LP 20240919 PGNTCORE-24 
+			//fine LP 20240919 PGNTCORE-24
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
 			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
 			callableStatement.setString(4, blackboxpos.getCodiceIdentificativoFlusso());
-			callableStatement.setDate(5, new java.sql.Date(blackboxpos.getDataCreazione().getTimeInMillis()));
+			callableStatement.setDate(5, blackboxpos.getDataCreazione()!=null ? new java.sql.Date(blackboxpos.getDataCreazione().getTimeInMillis()) : null);
 			callableStatement.setString(6, blackboxpos.getTipoRecord());
 			callableStatement.setString(7, blackboxpos.getCodiceIdentificativoDocumento());
 			callableStatement.setString(8, blackboxpos.getNumeroRata());
-			callableStatement.setDate(9, new java.sql.Date(blackboxpos.getDataScadenza().getTimeInMillis()));
+			callableStatement.setDate(9, blackboxpos.getDataScadenza()!=null ? new java.sql.Date(blackboxpos.getDataScadenza().getTimeInMillis()) : null);
 			callableStatement.setString(10, blackboxpos.getCodiceFiscale());
-			callableStatement.setDouble(11, blackboxpos.getImporto());
+			//callableStatement.setDouble(11, blackboxpos.getImporto());
+			callableStatement.setBigDecimal(11, new BigDecimal(blackboxpos.getImporto()));
 			callableStatement.setString(12, blackboxpos.getDenominazioneDebitore());
 			callableStatement.setString(13, blackboxpos.getIndirizzoContribuente());
 			callableStatement.setString(14, blackboxpos.getLocalitaContribuente());
@@ -733,7 +735,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
 			callableStatement.setString(4, blackboxpos.getFlagPagato());
 			callableStatement.setBigDecimal(5, new BigDecimal(blackboxpos.getImportoPagato()));
-			callableStatement.setDate(6, new java.sql.Date(blackboxpos.getDataPagamento().getTimeInMillis()));
+			callableStatement.setDate(6, blackboxpos.getDataPagamento() != null ? new java.sql.Date(blackboxpos.getDataPagamento().getTimeInMillis()) : null);
 			callableStatement.registerOutParameter(7, Types.INTEGER);
 			callableStatement.execute();
 			int nRows = callableStatement.getInt(7);
@@ -929,7 +931,7 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(1, configurazioneBlackBoxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, configurazioneBlackBoxpos.getCodiceEnte());
 			callableStatement.setString(3, configurazioneBlackBoxpos.getNumeroAvviso());
-			callableStatement.setDate(4, new java.sql.Date(configurazioneBlackBoxpos.getDataInserimento().getTimeInMillis()));
+			callableStatement.setDate(4, configurazioneBlackBoxpos.getDataInserimento() != null ? new java.sql.Date(configurazioneBlackBoxpos.getDataInserimento().getTimeInMillis()) : null);
 			callableStatement.setString(5, configurazioneBlackBoxpos.getOperazioneEseguita());
 			callableStatement.registerOutParameter(6, Types.INTEGER);
 			callableStatement.execute();
@@ -1024,28 +1026,31 @@ public class ConfigurazioneBlackBoxDaoImpl extends BaseDaoHandler implements Con
 			//inizio LP 20240919 PGNTCORE-24 
 			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_INS.routine());
 			callableStatement = prepareCall(Routines.CNDOCSP_INS.routine());
-			//fine LP 20240919 PGNTCORE-24 
+			//fine LP 20240919 PGNTCORE-24
 			callableStatement.setString(1, blackboxpos.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, blackboxpos.getCodiceEnte());
 			callableStatement.setString(3, blackboxpos.getNumeroAvviso());
 			callableStatement.setString(4, blackboxpos.getCodiceIdentificativoFlusso());
-			callableStatement.setDate(5, new java.sql.Date(blackboxpos.getDataCreazione().getTimeInMillis()));
+			callableStatement.setDate(5, blackboxpos.getDataCreazione() != null ? new java.sql.Date(blackboxpos.getDataCreazione().getTimeInMillis()) : null);
 			callableStatement.setString(6, blackboxpos.getTipoRecord());
 			callableStatement.setString(7, blackboxpos.getCodiceIdentificativoDocumento());
 			callableStatement.setString(8, blackboxpos.getNumeroRata());
-			callableStatement.setDate(9, new java.sql.Date(blackboxpos.getDataScadenza().getTimeInMillis()));
+			callableStatement.setDate(9, blackboxpos.getDataScadenza() !=null ? new java.sql.Date(blackboxpos.getDataScadenza().getTimeInMillis()) : null);
 			callableStatement.setString(10, blackboxpos.getCodiceFiscale());
-			callableStatement.setDouble(11, blackboxpos.getImporto());
+			//callableStatement.setDouble(11, blackboxpos.getImporto());
+			callableStatement.setBigDecimal(11, new BigDecimal(blackboxpos.getImporto()));
 			callableStatement.setString(12, blackboxpos.getDenominazioneDebitore());
 			callableStatement.setString(13, blackboxpos.getIndirizzoContribuente());
 			callableStatement.setString(14, blackboxpos.getLocalitaContribuente());
 			callableStatement.setString(15, blackboxpos.getProvinciaContribuente());
 			callableStatement.setString(16, blackboxpos.getFlagAnnullamento());
-			callableStatement.setDate(17, new java.sql.Date(blackboxpos.getDataAggiornamentoRecord().getTimeInMillis()));
+			callableStatement.setDate(17, blackboxpos.getDataAggiornamentoRecord() != null ?
+					new java.sql.Date(blackboxpos.getDataAggiornamentoRecord().getTimeInMillis()) : null);
 			callableStatement.setString(18, blackboxpos.getCodiceIbanAccredito());
 			callableStatement.setString(19, blackboxpos.getCodiceIuv());
 			callableStatement.setString(20, blackboxpos.getFlagPagato());
-			callableStatement.setDouble(21, blackboxpos.getImportoPagato());
+			//callableStatement.setDouble(21, blackboxpos.getImportoPagato());
+			callableStatement.setBigDecimal(21, new BigDecimal(blackboxpos.getImportoPagato()));
 			callableStatement.setString(22, blackboxpos.getCodiceTipologiaServizio());
 			callableStatement.setString(23, blackboxpos.getCodiceIBAN2() == null ? "" : blackboxpos.getCodiceIBAN2());
 			callableStatement.setString(24, blackboxpos.getCausaleServizio() == null ? "" : blackboxpos.getCausaleServizio());
