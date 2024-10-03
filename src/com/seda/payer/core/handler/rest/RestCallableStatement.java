@@ -36,9 +36,11 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.logger.LoggerWrapper;
+import com.seda.commons.util.ApiClient;
 import com.seda.payer.core.handler.rest.routine.ERestRoutine;
 
 public class RestCallableStatement implements CallableStatement {
@@ -196,27 +198,27 @@ public class RestCallableStatement implements CallableStatement {
 
 	@Override
 	public boolean execute() throws SQLException {
-		System.setProperty("https.protocols", "TLSv1,TLSv1.1,TLSv1.2");
-		Client client = null;
 		try {
-			client = ClientBuilder.newClient();
-			return Optional.of(client)
-				.map(c -> {
+			return Optional.of(getEntity())
+				.map(entity -> {
 					try {
-						Entity<Map<String, Object>> entity = Entity.entity(getEntity(), MediaType.APPLICATION_JSON);
-						try {
-							logger.info(new ObjectMapper().writeValueAsString(entity));
-							System.out.println(new ObjectMapper().writeValueAsString(entity));
-						} catch (JsonProcessingException e) {}
+						return new ObjectMapper().writeValueAsString(entity);
+					} catch (Exception e) {
+						throw new RuntimeException(e);
+					}
+				})
+				.map(entity -> {
+					try {
+						logger.info(entity);
+						ApiClient apiClient = new ApiClient(baseUrl);
 						if (this.methodRest.equals("POST") ) {
 							System.out.println("Chiamata con metodo POST");
-							return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).post(entity);
+							return apiClient.post(entity, restRoutine.getRoutine(), Map.class);
 						} else if (this.methodRest.equals("PUT") ) {
 							System.out.println("Chiamata con metodo PUT");
-							return c.target(baseUrl).path(restRoutine.getRoutine()).request(MediaType.APPLICATION_JSON).put(entity);
+							return apiClient.put(entity, restRoutine.getRoutine(), Map.class);
 						}
-					} catch (SQLException e) {
-						e.printStackTrace();
+					} catch (Exception  e) {
 						throw new RuntimeException(e);
 					}
 					return null;
@@ -243,7 +245,7 @@ public class RestCallableStatement implements CallableStatement {
 		} catch (Throwable e) {
 			throw new RestSQLException("Exception in execute()", e);
 		} finally {
-			if (client != null) try { client.close(); } catch (Exception ex) { }
+
 		}
 	}
 
@@ -1383,7 +1385,44 @@ public class RestCallableStatement implements CallableStatement {
 					throw new RestSQLException("La response non contiene la chiave '" + RESPONSE_KEY + "'");
 				}
 			}
-			
+
+			return resultSets != null && !resultSets.isEmpty();
+		} catch (Exception e) {
+			throw new RestSQLException("Exception in checkResponse(Response response)", e);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private boolean checkResponse(Map response) throws SQLException {
+		try {
+			Map<String, Object> responseEntity = null;
+			responseEntity = Optional.of(response)
+				.map(r -> {
+					try {
+						return new ObjectMapper().writeValueAsString(response);
+					} catch (JsonProcessingException e) {
+						throw new RuntimeException(e);
+					}
+				})
+				.map(e -> {
+					try {
+						logger.info(e);
+					} catch (Exception ex) {}
+					try {
+						return new ObjectMapper().readValue(e, HashMap.class);
+					} catch (Exception e1) {
+						throw new RuntimeException(e1);
+					}
+				})
+				.get();
+			if (responseEntity.containsKey(RESPONSE_KEY)) {
+				outputDataMap = (Map<String, Object>) responseEntity.get(RESPONSE_KEY);
+				if (outputDataMap.containsKey(RESULT_SETS_KEY)) {
+					resultSets = (List<Map<String, Object>>) outputDataMap.get(RESULT_SETS_KEY);
+				}
+			} else {
+				throw new RestSQLException("La response non contiene la chiave '" + RESPONSE_KEY + "'");
+			}
 			return resultSets != null && !resultSets.isEmpty();
 		} catch (Exception e) {
 			throw new RestSQLException("Exception in checkResponse(Response response)", e);
@@ -1449,6 +1488,67 @@ public class RestCallableStatement implements CallableStatement {
             throw new RestSQLException("Exception in checkResponse(Response response)", e);
         }
 		return false;
+    }
+    @SuppressWarnings("unchecked")
+	private boolean checkResponseSEPA(Map response) throws SQLException {
+        try {
+			return Optional.of(response)
+				.map(r -> {
+					try {
+						return new ObjectMapper().writeValueAsString(response);
+					} catch (JsonProcessingException e) {
+						throw new RuntimeException(e);
+					}
+				})
+				.map(e -> {
+						try {
+							logger.info(e);
+						} catch (Exception ex) {}
+						try {
+							if (methodRest.equals("POST") ) {
+								//TODO il valore di ritorno è simile a questo oggetto {}
+								outputDataMap =	new ObjectMapper().readValue(e, HashMap.class);
+								return true;
+							} else if (methodRest.equals("PUT") ) {
+								// il valore di ritorno è simile a questo oggetto [{}]
+
+								outputDataMap =	new ObjectMapper().readValue(e, HashMap.class);
+								resultSets = (List<Map<String, Object>>) outputDataMap.get("ResultSet");
+
+								outputDataMap.remove("ResultSet");
+							//	outputDataMap.entrySet().removeIf(entry -> entry.getKey().startsWith("I_"));
+
+									/*
+									* {
+									"I_DAU_CUTECUTE": "000TO",
+									"I_DAU_CDCSCSIA": "AASCE",
+									"I_DAU_CDAUTPAU": "4",
+									"I_DAU_CDAUCOAU": "082010G561074222",
+									"O_DVI_CDVIVOCI": "BORSELTO",
+									"O_DCS_CDVCABIA": "02008",
+									"O_MESSAGE": "",
+									"ResultSet": [
+										{
+											"DAU_CDCSCSIA": "AASCE",
+											"DAU_CDAUTPAU": "4",
+											"DAU_CDAUCOAU": "082010G561074222",
+											"DAU_FDAUSTAT": "NON",
+											"DAU_GDAUVARI": ""
+										}
+									]
+									}*/
+
+								return resultSets != null && !resultSets.isEmpty();
+							}
+						} catch (Exception e1) {
+							throw new RuntimeException(e1);
+						}
+						return false;
+					})
+					.get();
+        } catch (Exception e) {
+            throw new RestSQLException("Exception in checkResponse(Response response)", e);
+        }
     }
 
 	public String getRestService() {
