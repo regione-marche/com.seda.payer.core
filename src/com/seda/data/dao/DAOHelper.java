@@ -15,6 +15,9 @@ import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.WebRowSet;
 
 import com.seda.commons.resource.ResourceManager;
+import com.seda.data.datasource.DataSourceImpl;
+import com.seda.data.datasource.PooledDataSource;
+import com.seda.data.procedure.reflection.DriverType;
 import com.sun.rowset.CachedRowSetImpl;
 import com.sun.rowset.WebRowSetImpl;
 
@@ -22,6 +25,7 @@ import com.sun.rowset.WebRowSetImpl;
  * @author Seda Lab
  *
  */
+@SuppressWarnings("restriction")
 public class DAOHelper {
 
 	public final static String JDBC_DRIVER = "driver";
@@ -69,7 +73,22 @@ public class DAOHelper {
 	public static Connection getConnection(DataSource dataSource, boolean autoCommit) throws DAOSysException {
 		Connection connection=null;
 		try {
-			connection = dataSource.getConnection();	
+			// Centralizzazione modifiche getConnection()
+//			connection = dataSource.getConnection();
+//			//RTC: Per PostgreSQL la connessione ? diversa
+//			if (DriverType.getDriverType(connection)==2) {
+//				ConnectionProxyInstance connProxy=new ConnectionProxyInstance(connection);
+//				connection = connProxy.getConenction();
+//				//autoCommit = false;
+//			}
+			if (dataSource instanceof DataSourceImpl || 
+					dataSource instanceof PooledDataSource) {
+				connection = dataSource.getConnection();
+			}
+			else {
+				connection = enhance(dataSource.getConnection());
+			}			
+			
 			connection.setAutoCommit(autoCommit);
 		} catch (SQLException se) {
 			throw new DAOSysException("SQL Exception while getting "
@@ -99,6 +118,8 @@ public class DAOHelper {
 				connection = DriverManager.getConnection(config.getProperty(JDBC_URL), 
 						config.getProperty(JDBC_USER), config.getProperty(JDBC_PASSWORD));
 			
+			// Centralizzazione modifiche getConnection()
+			connection = enhance(connection);
 	        connection.setAutoCommit(autoCommit);			
 		} catch (NumberFormatException x) {
 			
@@ -120,7 +141,7 @@ public class DAOHelper {
 		}
 		CachedRowSetImpl cachedRowSetImpl = null;
 		try {		
-			cachedRowSetImpl =  new CachedRowSetImpl();
+			cachedRowSetImpl = new CachedRowSetImpl();
 			cachedRowSetImpl.populate(resultSet);			
 		} catch (SQLException x) {
 			throw new DAORuntimeException(x.getMessage(),x);
@@ -147,7 +168,6 @@ public class DAOHelper {
 			throw new DAORuntimeException(x.getMessage(), x);
 		}
 		return webRowSet;
-		
 	}	
 	
 	/**
@@ -184,16 +204,34 @@ public class DAOHelper {
             + "DB connection : \n" + se);
         }
     }
+
 	public static void closeIgnoringException(Connection connection) {
         try {
             if (connection != null && !connection.isClosed()) {
+            	//Se ho dei cursori faccio anche la commit (quando ci sono cursori l'autocommit e' a false)
+            	if (ConnectionProxyInstance.getRefCursorNumber()>0 && !connection.getAutoCommit()) {
+            		connection.commit();
+            	}
                 connection.close();
             }
         } catch (Exception x) {
             // ignore exception
         }
 	}
-    /**
+
+	//inizio LP 20241001 - PGNTCORE-24
+	public static void closeIgnoringExceptionBatch(Connection connection) {
+        try {
+            if (connection != null && !connection.isClosed()) {
+	            connection.close();
+            }
+        } catch (Exception x) {
+            // ignore exception
+        }
+	}
+	//fine LP 20241001 - PGNTCORE-24
+
+	/**
      * Closes the result set
      * @param result
      * @throws DAOSysException in case of SQLExeption
@@ -279,5 +317,20 @@ public class DAOHelper {
 			} 
 			throw new DAOSysException("SQL Exception while rollback connection "+ x);
 		}
+	}
+	// Centralizzazione modifiche getConnection()
+	/**
+	 * Returns the provided connection with augmented functionality. <br/>
+	 * Questo metodo deve essere centrale per tutte le eventuali personalizzazioni da fare tramite proxy<br/>
+	 * Attenzione: non bisogna usare l'Enhancer più volte sullo stesso; applicare le eventuali logiche multiple su di un singolo Enhancer.setCallback(MethodInterceptor)
+	 * @param connection
+	 */
+	public static Connection enhance(Connection connection) {
+		//RTC: Per PostgreSQL la connessione è diversa
+		if (DriverType.isPostgres(connection)) {
+			ConnectionProxyInstance connProxy=new ConnectionProxyInstance(connection);
+			connection = connProxy.getConenction();
+		}
+		return connection;
 	}	
 }

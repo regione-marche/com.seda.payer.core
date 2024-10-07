@@ -140,12 +140,12 @@ public class CostiNotificaDao extends BaseDaoHandler {
 			if (costiNotifica.getUser().getUserCode() == null ||costiNotifica.getUser().getUserCode().length() ==0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("costiNotifica.chiaveCanalePagamento"));						
 			CostiNotifica data = doDetail(costiNotifica.getUser().getCompany().getCompanyCode(), costiNotifica.getUser().getUserCode());
-			if (data != null && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0)  throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("costiNotifica.saveadd.error"));
+			if (data != null && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0)
+				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("costiNotifica.saveadd.error"));
 			if (data != null) {
 				callableStatement = prepareCall(Routines.CSN_DOUPDATE.routine());
 				costiNotifica.update(callableStatement);
-			}
-			else {
+			} else {
 				callableStatement = prepareCall(Routines.CSN_DOINSERT.routine());
 				costiNotifica.save(callableStatement);
 			}

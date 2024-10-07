@@ -1,17 +1,13 @@
 package com.seda.payer.core.dao;
 
-import java.io.IOException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import javax.sql.DataSource;
-import javax.sql.rowset.CachedRowSet;
 
-import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.UfficiPageList;
@@ -20,27 +16,30 @@ import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 
 public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
-	
+
 	private static final long serialVersionUID = 1L;
-	
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
 	public UfficiDaoImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
-	
+
 	public UfficiDaoImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
-	
+
 	public Ufficio select(Ufficio ufficio) throws DaoException {
 		CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
 		Connection connection = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_SEL.routine());
+			//inizio LP 20240919 - PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_SEL.routine());
+            callableStatement = prepareCall(Routines.PYPABSP_SEL.routine());
+			//fine LP 20240919 - PGNTCORE-24 
 			callableStatement.setString(1, ufficio.getIdUfficio());
 			callableStatement.execute();
 			resultSet=callableStatement.getResultSet();
@@ -82,14 +81,17 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 		} 
 		return ufficio;
 	}
-	
+
 	public Integer update(Ufficio ufficio) throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_UPD.routine());
+			//inizio LP 20240919 - PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_UPD.routine());
+            callableStatement = prepareCall(Routines.PYPABSP_UPD.routine());
+			//fine LP 20240919 - PGNTCORE-24 
 			callableStatement.setString(1, ufficio.getIdUfficio());
 			callableStatement.setString(2, ufficio.getCodiceUfficio());
 			callableStatement.setString(3, ufficio.getDescrizioneIT());
@@ -126,14 +128,17 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 		}
 		return ret;
 	}
-	
+
 	public Integer delete(Ufficio ufficio) throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_DEL.routine());
+			//inizio LP 20240919 - PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_DEL.routine());
+            callableStatement = prepareCall(Routines.PYPABSP_DEL.routine());
+			//fine LP 20240919 - PGNTCORE-24 
 			callableStatement.setString(1, ufficio.getIdUfficio());			
 			callableStatement.execute();
 			ret=1;
@@ -167,14 +172,17 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 		}
 		return ret;
 	}
-	
+
 	public Integer insert(Ufficio ufficio)	throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_INS.routine());
+			//inizio LP 20240919 - PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_INS.routine());
+            callableStatement = prepareCall(Routines.PYPABSP_INS.routine());
+			//fine LP 20240919 - PGNTCORE-24 
 			callableStatement.setString(1, ufficio.getIdUfficio());
 			callableStatement.setString(2, ufficio.getCodiceUfficio());
 			callableStatement.setString(3, ufficio.getDescrizioneIT());
@@ -185,6 +193,11 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 			ret = e.getErrorCode();
 			e.printStackTrace();
 			throw new DaoException(e);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			ret = 803;
+			DaoException.makeIfDuplicateKeyError(x, 803, "record duplicato");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
@@ -226,7 +239,10 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 		String selectXml = "";
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_LST.routine());
+			//inizio LP 20240919 - PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPABSP_LST.routine());
+            callableStatement = prepareCall(Routines.PYPABSP_LST.routine());
+			//fine LP 20240919 - PGNTCORE-24 
 			callableStatement.setString(1, (ufficio.getCodiceUfficio()==null || ufficio.getCodiceUfficio().equals("")) ? "" : ufficio.getCodiceUfficio());
 			callableStatement.setString(2, ufficio.getDescrizioneIT());
 			callableStatement.setString(3, ufficio.getDescrizioneDE());
@@ -285,5 +301,4 @@ public class UfficiDaoImpl extends BaseDaoHandler implements UfficiDao {
 		} 
 		return ufficiPagelist;
 	}
-
 }

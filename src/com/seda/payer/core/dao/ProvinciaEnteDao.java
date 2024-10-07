@@ -17,11 +17,11 @@ public class ProvinciaEnteDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
-	private void closeConnection(CallableStatement callableStatement)
-	{
-		if (callableStatement != null)
-			DAOHelper.closeIgnoringException(callableStatement);
-	}
+//	private void closeConnection(CallableStatement callableStatement)
+//	{
+//		if (callableStatement != null)
+//			DAOHelper.closeIgnoringException(callableStatement);
+//	}
 	
 	public void doListProvince() throws DaoException {
 		CallableStatement callableStatement = null;
@@ -430,17 +430,29 @@ public class ProvinciaEnteDao extends BaseDaoHandler {
 		}
 	}	
 	
-	public void doGetEnteUtenteSocieta_Ane(String chiaveEnte) throws DaoException 
+	public void doGetEnteUtenteSocieta_Ane(String chiaveEnte) throws DaoException
+	{
+	//inizio LP 20240912 - PGNTFATT-5
+		doGetEnteUtenteSocieta_AneTail(true, true,chiaveEnte);
+	}
+
+	public void doGetEnteUtenteSocieta_AneBatch(boolean bUpdateFlagAutocommit, boolean bCloseStat, String chiaveEnte) throws DaoException 
+	{
+		doGetEnteUtenteSocieta_AneTail(bUpdateFlagAutocommit, bCloseStat, chiaveEnte);
+	}
+
+	private void doGetEnteUtenteSocieta_AneTail(boolean bUpdateFlagAutocommit, boolean bCloseStat, String chiaveEnte) throws DaoException 
 	{		
+	//fine LP 20240912 - PGNTFATT-5
 		CallableStatement callableStatement = null;
-		try	{ 
-			callableStatement = prepareCall(Routines.ANE_DODETAIL_ENTE2.routine());
+		try	{
+			//inizio LP 20240912 - PGNTFATT-5
+			//callableStatement = prepareCall(Routines.ANE_DODETAIL_ENTE2.routine());
+			callableStatement = prepareCall(bUpdateFlagAutocommit, Routines.ANE_DODETAIL_ENTE2.routine());
 			callableStatement.setString(1, chiaveEnte);
-			
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);	
 			}
-	
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -450,13 +462,20 @@ public class ProvinciaEnteDao extends BaseDaoHandler {
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240912 - PGNTFATT-5
+			if(bCloseStat) {
+			//fine LP 20240912 - PGNTFATT-5
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240912 - PGNTFATT-5
+				callableStatement = null;
 			}
+			//fine LP 20240912 - PGNTFATT-5
 			//fine LP PG21XX04 Leak
 		}
 	}	

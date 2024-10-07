@@ -6,19 +6,14 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
-
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
-import com.seda.payer.core.wallet.bean.ConfigurazionePagamentoServizio;
 import com.seda.payer.core.wallet.bean.ConfigurazioneRaccordoPagonet;
 import com.seda.payer.core.wallet.bean.EsitoRisposte;
 import com.seda.payer.core.wallet.bean.WalletPageList;
@@ -26,17 +21,20 @@ import com.seda.payer.core.wallet.bean.WalletPageList;
 public class ConfigurazioneRaccordoPagonetDAOImpl  extends BaseDaoHandler  implements ConfigurazioneRaccordoPagonetDAO  {
 
 		private static final long serialVersionUID = 1L;
+
 		//inizio LP PG21XX04 Leak
 		@Deprecated
 		//fine LP PG21XX04 Leak
 		public ConfigurazioneRaccordoPagonetDAOImpl(DataSource dataSource, String schema) throws SQLException {
 			super(dataSource.getConnection(), schema);
 		}
+
 		//inizio LP PG21XX04 Leak
 		public ConfigurazioneRaccordoPagonetDAOImpl(Connection connection, String schema) throws SQLException {
 			super(connection, schema);
 		}
 		//fine LP PG21XX04 Leak
+
 		public WalletPageList ListConfigurazioneRaccordoPagonet(
 				ConfigurazioneRaccordoPagonet configurazioneRaccordoPagonet,
 				int rowsPerPage, int pageNumber, String OrderBy)
@@ -59,7 +57,10 @@ public class ConfigurazioneRaccordoPagonetDAOImpl  extends BaseDaoHandler  imple
 //				OUT O_TOTPAGES SMALLINT
 					
 				connection = getConnection();
-				callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYRCPSP_LST.routine());
+				//inizio LP PGNTCORE-24
+				//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYRCPSP_LST.routine());
+				callableStatement = prepareCall(Routines.PYRCPSP_LST.routine());
+				//fine LP PGNTCORE-24
 				callableStatement.setInt(1, pageNumber);                          /* rows per page */
 				callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 				callableStatement.setString(3,configurazioneRaccordoPagonet.getCodiceSocieta());
@@ -138,7 +139,10 @@ public class ConfigurazioneRaccordoPagonetDAOImpl  extends BaseDaoHandler  imple
 			EsitoRisposte  esitoRisposte = new EsitoRisposte();
 			try {
 				connection = getConnection();
-				callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYRCPSP_DEL.routine());
+				//inizio LP PGNTCORE-24
+				//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYRCPSP_DEL.routine());
+				callableStatement = prepareCall(Routines.PYRCPSP_DEL.routine());
+				//fine LP PGNTCORE-24
 //				IN I_RCP_CSOCCSOC VARCHAR(5), 
 //				IN I_RCP_CUTECUTE VARCHAR(5),
 //				IN I_RCP_KANEKENT CHAR(10),
@@ -194,8 +198,10 @@ public class ConfigurazioneRaccordoPagonetDAOImpl  extends BaseDaoHandler  imple
 			EsitoRisposte esitoRisposte = new EsitoRisposte();
 			try {
 				connection = getConnection();
-				callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYRCPSP_INS.routine());
-
+				//inizio LP PGNTCORE-24
+				//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYRCPSP_INS.routine());
+				callableStatement = prepareCall(Routines.PYRCPSP_INS.routine());
+				//fine LP PGNTCORE-24
 //				IN I_RCP_CSOCCSOC VARCHAR(5), 
 //				IN I_RCP_CUTECUTE VARCHAR(5),
 //				IN I_RCP_KANEKENT CHAR(10),
@@ -264,8 +270,10 @@ public class ConfigurazioneRaccordoPagonetDAOImpl  extends BaseDaoHandler  imple
 //				IN I_RCP_CUTECUTE VARCHAR(5),
 //				IN I_RCP_KANEKENT CHAR(10),
 //				IN I_RCP_CRCPTSER CHAR(3)
-
-				callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYRCPSP_SEL.routine());
+				//inizio LP PGNTCORE-24
+				//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYRCPSP_SEL.routine());
+				callableStatement = prepareCall(Routines.PYRCPSP_SEL.routine());
+				//fine LP PGNTCORE-24
 				callableStatement.setString(1, configurazioneRaccordoPagonet.getCodiceSocieta());
 				callableStatement.setString(2, configurazioneRaccordoPagonet.getCuteCute());
 				callableStatement.setString(3, configurazioneRaccordoPagonet.getChiaveEnte());
@@ -278,7 +286,6 @@ public class ConfigurazioneRaccordoPagonetDAOImpl  extends BaseDaoHandler  imple
 				try {
 					rowSet = Convert.stringToWebRowSet(selectXml);
 				} catch (IOException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 				
@@ -346,8 +353,10 @@ public class ConfigurazioneRaccordoPagonetDAOImpl  extends BaseDaoHandler  imple
 			int ret=0;
 			try {
 				connection = getConnection();
-				callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYRCPSP_UPD.routine());
-
+				//inizio LP PGNTCORE-24
+				//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYRCPSP_UPD.routine());
+				callableStatement = prepareCall(Routines.PYRCPSP_UPD.routine());
+				//fine LP PGNTCORE-24
 //				IN I_RCP_CSOCCSOC VARCHAR(5), 
 //				IN I_RCP_CUTECUTE VARCHAR(5),
 //				IN I_RCP_KANEKENT CHAR(10),

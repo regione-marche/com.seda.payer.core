@@ -2,18 +2,10 @@ package com.seda.payer.core.dao;
 
 import java.math.BigDecimal;
 import java.sql.*;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
-//inizio LP PG21XX04 Leak
-//import com.seda.data.dao.DAOHelper;
-//fine LP PG21XX04 Leak
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.logger.LoggerWrapper;
 import com.seda.data.helper.HelperException;
@@ -100,15 +92,12 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			callableStatement.setString(++ik, testataComunicazione.getNoteOperatore()==null?"":testataComunicazione.getNoteOperatore());
 			callableStatement.setString(++ik, testataComunicazione.getOperatoreInserimentoComunicazione()==null?"":testataComunicazione.getOperatoreInserimentoComunicazione());
 			//PG190300 - fine
-		
 			callableStatement.execute();
-			
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			if (callableStatement != null) {
@@ -121,12 +110,25 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	public void doUpdateTestataComunicazione(TestataComunicazioneImpostaSoggiorno testataComunicazione) throws DaoException, SQLException {
+	//inizio LP 20240912 - PAGONET-604
+		doUpdateTestataComunicazioneTail(true, true, testataComunicazione);
+	}
+
+	public void doUpdateTestataComunicazioneBatch(boolean bFlagUpdateAutocomit, boolean bCloseStat, TestataComunicazioneImpostaSoggiorno testataComunicazione) throws DaoException, SQLException {
+		doUpdateTestataComunicazioneTail(bFlagUpdateAutocomit, bCloseStat, testataComunicazione);
+	}
+
+	private void doUpdateTestataComunicazioneTail(boolean bFlagUpdateAutocomit, boolean bCloseStat, TestataComunicazioneImpostaSoggiorno testataComunicazione) throws DaoException, SQLException {
+	//fine LP 20240912 - PAGONET-604
 		CallableStatement callableStatement = null;
 		System.out.println(testataComunicazione.toString());
 		try	{
-			callableStatement = prepareCall("PYSCTSP_UPD");
+			//inizio LP 20240912 - PAGONET-604
+			//callableStatement = prepareCall("PYSCTSP_UPD");
+			callableStatement = prepareCall(bFlagUpdateAutocomit, "PYSCTSP_UPD");
+			//fine LP 20240912 - PAGONET-604
 			callableStatement.setString(1, testataComunicazione.getChiaveTestataComunicazione());
 			callableStatement.setString(2, testataComunicazione.getChiaveAnagraficaStrutturaRicettiva());
 			callableStatement.setString(3, testataComunicazione.getCodiceSocieta());
@@ -293,19 +295,25 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			throw new DaoException(x);
 		}
 		finally {
-			//inizio LP PG21XX04 Leak
-			//closeConnection(callableStatement);
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240912 - PAGONET-604
+			if(bCloseStat) {
+			//fine LP 20240912 - PAGONET-604
+				//inizio LP PG21XX04 Leak
+				//closeConnection(callableStatement);
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+					//inizio LP 20240912 - PAGONET-604
+					callableStatement = null;
+					//fine LP 20240912 - PAGONET-604
 				}
 			}
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
 	
 	public void doInsertDettaglioComunicazione(DettaglioComunicazioneImpostaSoggiorno dettaglioComunicazione) throws DaoException, SQLException {
 		CallableStatement callableStatement = null;
@@ -323,15 +331,12 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			callableStatement.setInt(9, dettaglioComunicazione.getChiaveFasciaTariffa());
 	    	//fine LP PG1800XX_016
 			callableStatement.setString(10, dettaglioComunicazione.getChiaveTariffa());
-
 			callableStatement.execute();
-			
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			if (callableStatement != null) {
@@ -350,15 +355,12 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 		try	{
 			callableStatement = prepareCall(Routines.SCD_DODELETE_SCT.routine());
 			callableStatement.setString(1, chiaveDettaglioComunicazione);
-			
 			callableStatement.execute();
-			
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			if (callableStatement != null) {
@@ -376,10 +378,8 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 	public void doListComunicazioni(String chiaveAnagraficaStrutture, String dataInserimentoDa, String dataInserimentoA,
 			String dataComunicazioneDa, String dataComunicazioneA, String tipoComunicazione,
 			String statoComunicazione, String numeroDocumento, String statoDocumento, String dataConfermaDa, String dataConfermaA) throws DaoException {
-		
 		CallableStatement callableStatement = null;
-		try	
-		{
+		try {
 			callableStatement = prepareCall(Routines.SCT_DOLIST.routine());	
 			callableStatement.setString(1, chiaveAnagraficaStrutture);
 			callableStatement.setString(2, dataInserimentoDa);
@@ -394,17 +394,13 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			callableStatement.setString(10, dataConfermaDa);
 			callableStatement.setString(11, dataConfermaA);
 			//PG160210_001 GG 09122016 - fine
-			
 			//numero righe
 			callableStatement.registerOutParameter(12, Types.INTEGER);
-			
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				int numRows = callableStatement.getInt(12);
 				registerPageInfo(numRows,1,1,numRows,numRows,1);
 			}
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -430,11 +426,9 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			String dataInserimentoDa, String dataInserimentoA, String dataComunicazioneDa, String dataComunicazioneA, 
 			String tipoComunicazione, String statoComunicazione, String numeroDocumento, String statoPagamento,
 			String usernameOperatore, String codiceTipologiaStruttura, String insegna, String dataConfermaDa, String dataConfermaA, int rowsPerPage, int pageNumber, String order) throws DaoException {
-		
 		ResponseData res = new ResponseData();
 		CallableStatement callableStatement = null;
-		try	
-		{
+		try {
 			callableStatement = prepareCall(Routines.SCT_DOLIST_MGR.routine());	
 			callableStatement.setString(1, siglaProvincia);
 			callableStatement.setString(2, codiceBelfiore);
@@ -457,16 +451,13 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			callableStatement.setInt(17, rowsPerPage);
 			callableStatement.setInt(18, pageNumber);
 			callableStatement.setString(19, order);
-			
 			callableStatement.registerOutParameter(20, Types.INTEGER);
 			callableStatement.registerOutParameter(21, Types.INTEGER);
 			callableStatement.registerOutParameter(22, Types.INTEGER);
 			callableStatement.registerOutParameter(23, Types.SMALLINT);
-			
 			callableStatement.registerOutParameter(24, Types.INTEGER); //tot_soggetti
 			callableStatement.registerOutParameter(25, Types.INTEGER); //tot_pernottamenti_soggetti_ad_imposta
 			callableStatement.registerOutParameter(26, Types.DECIMAL); //importo_totale
-			
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				registerPageInfo(rowsPerPage, pageNumber, 
@@ -474,14 +465,11 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 								callableStatement.getInt(21), 
 								callableStatement.getInt(22), 
 								callableStatement.getInt(23));
-				
-				
 				res.setInfo1int(callableStatement.getInt(24)); //tot_soggetti
 				res.setInfo2int(callableStatement.getInt(25)); //tot_pernottamenti_soggetti_ad_imposta
 				res.setInfo1bd(callableStatement.getBigDecimal(26)); //importo_totale
 				return res;
 			}
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -507,10 +495,8 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			String dataInserimentoDa, String dataInserimentoA, String dataComunicazioneDa, String dataComunicazioneA, 
 			String tipoComunicazione, String statoComunicazione, String numeroDocumento, String statoPagamento,
 			String usernameOperatore, String codiceTipologiaStruttura, String insegna) throws DaoException {
-		
 		CallableStatement callableStatement = null;
-		try	
-		{
+		try {
 			callableStatement = prepareCall(Routines.SCT_DOLIST_CSV.routine());	
 			callableStatement.setString(1, siglaProvincia);
 			callableStatement.setString(2, codiceBelfiore);
@@ -526,11 +512,9 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			callableStatement.setString(12, usernameOperatore);
 			callableStatement.setString(13, codiceTipologiaStruttura);
 			callableStatement.setString(14, insegna);
-			
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 			}
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -550,15 +534,13 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	public void doListComunicazioniManagerCsvTrentino(String siglaProvincia, String codiceBelfiore, String numeroAutorizzazione, 
 			String dataInserimentoDa, String dataInserimentoA, String dataComunicazioneDa, String dataComunicazioneA, 
 			String tipoComunicazione, String statoComunicazione, String numeroDocumento, String statoPagamento,
 			String usernameOperatore, String codiceTipologiaStruttura, String insegna, String dataConfermaDa, String dataConfermaA) throws DaoException {
-		
 		CallableStatement callableStatement = null;
-		try	
-		{
+		try {
 			callableStatement = prepareCall(Routines.SCT_DOLIST_CSV_TR.routine());	
 			callableStatement.setString(1, siglaProvincia);
 			callableStatement.setString(2, codiceBelfiore);
@@ -576,11 +558,9 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			callableStatement.setString(14, insegna);
 			callableStatement.setString(15, dataConfermaDa);
 			callableStatement.setString(16, dataConfermaA);
-			
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 			}
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -606,10 +586,8 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			String dataInserimentoDa, String dataInserimentoA, String dataComunicazioneDa, String dataComunicazioneA, 
 			String tipoComunicazione, String statoComunicazione, String numeroDocumento, String statoPagamento,
 			String usernameOperatore, String codiceTipologiaStruttura, String insegna) throws DaoException {
-		
 		CallableStatement callableStatement = null;
-		try	
-		{
+		try	{
 			callableStatement = prepareCall(Routines.SCT_DOLIST_CSV_SS.routine());
 			callableStatement.setString(1, siglaProvincia);
 			callableStatement.setString(2, codiceBelfiore);
@@ -625,11 +603,9 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			callableStatement.setString(12, usernameOperatore);
 			callableStatement.setString(13, codiceTipologiaStruttura);
 			callableStatement.setString(14, insegna);
-
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 			}
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -651,49 +627,41 @@ public class ComunicazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 	}
 //fine LP PG1800XX_016
 	
-public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codiceEnteGestionaleEntrate, 
+	public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codiceEnteGestionaleEntrate, 
 			String impostaServizioGestionaleEntrate, String codiceContribuente) throws DaoException
 	{
 		CallableStatement callableStatement = null;
 		try	{
-			
     		System.out.println("DATA-IN-CODUTEN: " + codiceUtente);
     		System.out.println("DATA-IN-CODENTE: " + codiceEnteGestionaleEntrate);
     		System.out.println("DATA-IN-CODIMSE: " + impostaServizioGestionaleEntrate);
     		System.out.println("DATA-IN-CONTRIB: " + codiceContribuente);
-			
 			callableStatement = prepareCall(Routines.IS_RID_DODETAIL.routine());
 			callableStatement.setString(1, codiceUtente);
 			callableStatement.setString(2, codiceEnteGestionaleEntrate);
 			callableStatement.setString(3, impostaServizioGestionaleEntrate);
 			callableStatement.setString(4, codiceContribuente);
-			
 			//parametri di output
 			callableStatement.registerOutParameter(5, Types.VARCHAR);
 			callableStatement.registerOutParameter(6, Types.VARCHAR);
 			callableStatement.registerOutParameter(7, Types.VARCHAR);
 			callableStatement.registerOutParameter(8, Types.VARCHAR);
 			callableStatement.registerOutParameter(9, Types.VARCHAR);
-			
 			callableStatement.execute();
-			
 			ResponseData res = new ResponseData();
 			res.setRetCode(callableStatement.getString(8));
 			res.setRetMessage(callableStatement.getString(9));
 			res.setInfo1(callableStatement.getString(5)); //SI/NO: indica se per l'ente � attiva la procedura RID
 			res.setInfo2(callableStatement.getString(6)); //SI/NO: indica se il codice RID contribuente � autorizzato
 			res.setInfo3(callableStatement.getString(7).trim()); //codice RID contribuente
-			
 			return res;
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			if (callableStatement != null) {
@@ -709,6 +677,18 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 	
 	public ImpostaSoggiornoDatiAggregati doDetailComunicazione_Web(String chiaveTestataComunicazione) throws DaoException
 	{
+	//inizio LP 20240912 - PAGONET-604
+		return doDetailComunicazione_WebTail(true, true, chiaveTestataComunicazione);
+	}
+
+	public ImpostaSoggiornoDatiAggregati doDetailComunicazione_WebBatch(boolean bFlagUpdateAutocomit, boolean bCloseStat, String chiaveTestataComunicazione) throws DaoException
+	{
+		return doDetailComunicazione_WebTail(bFlagUpdateAutocomit, bCloseStat, chiaveTestataComunicazione);
+	}
+
+	private ImpostaSoggiornoDatiAggregati doDetailComunicazione_WebTail(boolean bFlagUpdateAutocomit, boolean bCloseStat, String chiaveTestataComunicazione) throws DaoException
+	{
+	//fine LP 20240912 - PAGONET-604
 		ImpostaSoggiornoDatiAggregati datiRes = null;
 		CallableStatement callableStatement = null;
 		ResultSet testata = null;
@@ -717,27 +697,23 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 		ResultSet dettRs = null;
 		//fine LP PG21XX04 Leak
 		try	{
-			callableStatement = prepareCall(Routines.SCT_DODETAIL_WEB.routine());
+			//inizio LP 20240912 - PAGONET-604
+			//callableStatement = prepareCall(Routines.SCT_DODETAIL_WEB.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.SCT_DODETAIL_WEB.routine());
+			//fine LP 20240912 - PAGONET-604
 			callableStatement.setString(1, chiaveTestataComunicazione);
-			
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				datiRes = new ImpostaSoggiornoDatiAggregati();
-				
 				//resultset 1: testata + anagrafica struttura + tariffa + tipologia struttura
 				testata = callableStatement.getResultSet();
-				
-				if (testata.next())
-				{
+				if (testata.next()) {
 					datiRes.setTestataComunicazione(new TestataComunicazioneImpostaSoggiorno(testata));
 					datiRes.setAnagraficaStrutturaRicettiva(new AnagraficaStrutturaRicettiva(testata));
 					datiRes.setTariffaImpostaSoggiorno(new TariffaImpostaSoggiorno(testata));
 					datiRes.setTipologiaStrutturaRicettiva(new TipologiaStrutturaRicettiva(testata));
 				}
-				
 				//resultset 2: dettaglio
-				if (callableStatement.getMoreResults())
-				{
+				if (callableStatement.getMoreResults()) {
 					//lo appoggio in un webrowset per poterlo scorrere 2 volte
 					dettaglio = new WebRowSetImpl();	
 					//inizio LP PG21XX04 Leak
@@ -745,28 +721,22 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 					dettRs = callableStatement.getResultSet();
 					dettaglio.populate(dettRs); 
 					//fine LP PG21XX04 Leak
-					
 					//carico il dettaglio sottoforma di struttura
 					while (dettaglio.next())
 						datiRes.addDettaglioComunicazione(new DettaglioComunicazioneImpostaSoggiorno(dettaglio));
-					
 					dettaglio.beforeFirst();
 					//carico il dettaglio sottoforma di xml
 					this.loadWebRowSet(dettaglio); 
-					
 				}
 			}
-			
 			return datiRes;
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			//if (testata != null)
@@ -794,13 +764,20 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 					e.printStackTrace();
 				}
 			}
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240912 - PAGONET-604
+			if(bCloseStat) {
+			//fine LP 20240912 - PAGONET-604
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+				callableStatement = null;
+			//inizio LP 20240912 - PAGONET-604
 			}
+			//fine LP 20240912 - PAGONET-604
 			//fine LP PG21XX04 Leak
 		}
 	}
@@ -811,6 +788,47 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			String progressivoPeriodo, String tipologiaComunicazione,
 			String notaTributo, String notaDocumento, String annoDocumentoGestionaleEntrate
 			, String dataConferma, String dataLimite	//PG190300
+			) throws DaoException
+	{
+	//inizio LP 20240912 - PAGONET-604		
+		return doSaveComunicazioneHostTail(true, true, 
+				anagStruttura, annoTributo, codiceTributoGestionaleEntrate, descrizioneComune, siglaProvincia,
+				importoTotaleComunicazione, dataScadenza, chiaveTestataComunicazione,
+				progressivoPeriodo, tipologiaComunicazione,
+				notaTributo, notaDocumento, annoDocumentoGestionaleEntrate,
+				dataConferma, dataLimite
+				);
+	}
+
+	public ResponseData doSaveComunicazioneHostBatch(
+			boolean bFlagUpdateAutocomit,
+			boolean bclostStat,
+			AnagraficaStrutturaRicettiva anagStruttura,
+			String annoTributo, String codiceTributoGestionaleEntrate, String descrizioneComune, String siglaProvincia,
+			BigDecimal importoTotaleComunicazione, String dataScadenza, String chiaveTestataComunicazione,
+			String progressivoPeriodo, String tipologiaComunicazione,
+			String notaTributo, String notaDocumento, String annoDocumentoGestionaleEntrate,
+			String dataConferma, String dataLimite	//PG190300
+			) throws DaoException
+	{
+		return doSaveComunicazioneHostTail(bFlagUpdateAutocomit, bclostStat, 
+				anagStruttura, annoTributo, codiceTributoGestionaleEntrate, descrizioneComune, siglaProvincia,
+				importoTotaleComunicazione, dataScadenza, chiaveTestataComunicazione,
+				progressivoPeriodo, tipologiaComunicazione,
+				notaTributo, notaDocumento, annoDocumentoGestionaleEntrate,
+				dataConferma, dataLimite
+				);
+	}
+
+	private ResponseData doSaveComunicazioneHostTail(
+			boolean bFlagUpdateAutocomit,
+			boolean bclostStat,
+			AnagraficaStrutturaRicettiva anagStruttura, 
+			String annoTributo, String codiceTributoGestionaleEntrate, String descrizioneComune, String siglaProvincia,
+			BigDecimal importoTotaleComunicazione, String dataScadenza, String chiaveTestataComunicazione,
+			String progressivoPeriodo, String tipologiaComunicazione,
+			String notaTributo, String notaDocumento, String annoDocumentoGestionaleEntrate,
+			String dataConferma, String dataLimite	//PG190300
 			) throws DaoException
 	{
 		CallableStatement callableStatement = null;
@@ -844,8 +862,10 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 				System.out.println("dataConferma: <"+dataConferma+">");
 				System.out.println("dataLimite: <"+dataLimite+">");
 			}
-			
-			callableStatement = prepareCall(Routines.IS_COMUNICAZIONE_DOSAVE.routine());
+			//inizio LP 20240912 - PAGONET-604
+			//callableStatement = prepareCall(Routines.IS_COMUNICAZIONE_DOSAVE.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.IS_COMUNICAZIONE_DOSAVE.routine());
+			//fine LP 20240912 - PAGONET-604		
 			callableStatement.setString(1, anagStruttura.getCodiceUtente());
 			callableStatement.setString(2, anagStruttura.getCodiceEnteGestionaleEntrate());
 			callableStatement.setString(3, anagStruttura.getImpostaServizioGestionaleEntrate());
@@ -855,14 +875,12 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			String insegnaStruttura = (anagStruttura.getInsegnaStruttura()!=null && anagStruttura.getInsegnaStruttura().trim().length()>0)?anagStruttura.getInsegnaStruttura():anagStruttura.getRagioneSocialeStruttura();
 			if (insegnaStruttura.trim().length()>100) {
 				callableStatement.setString(7, insegnaStruttura.substring(0,100).toUpperCase());
-			}
-			else {
+			} else {
 				callableStatement.setString(7, insegnaStruttura.toUpperCase());
 			}
 			if (anagStruttura.getIndirizzoStruttura().trim().length()>60) {
 				callableStatement.setString(8, anagStruttura.getIndirizzoStruttura().substring(0,60).toUpperCase());
-			}
-			else {
+			} else {
 				callableStatement.setString(8, anagStruttura.getIndirizzoStruttura().toUpperCase());
 			}
 			callableStatement.setString(9, descrizioneComune.toUpperCase());
@@ -885,7 +903,6 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			callableStatement.setString(25, dataConferma);
 			callableStatement.setString(26, dataLimite);
 			//PG190300 - fine
-			
 			//parametri di output
 			callableStatement.registerOutParameter(27, Types.VARCHAR);
 			callableStatement.registerOutParameter(28, Types.VARCHAR);
@@ -911,13 +928,10 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			//fine LP PG190010_002_LP
 			callableStatement.registerOutParameter(47, Types.VARCHAR);
 			callableStatement.registerOutParameter(48, Types.VARCHAR);
-			
 			callableStatement.execute();
-			
 			ResponseData res = new ResponseData();
 			res.setRetCode(callableStatement.getString(47));
 			res.setRetMessage(callableStatement.getString(48));
-
 			res.setInfo1(callableStatement.getString(27)); //numero documento
 			res.setInfo2(callableStatement.getString(29)); //codice RID
 			String numeroBollettino = callableStatement.getString(30);
@@ -943,7 +957,6 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			res.setNumeroAvvisoPagoPA(callableStatement.getString(45));
 			res.setCodiceIUV(callableStatement.getString(46));
 			//fine LP PG190010_002_LP
-			
 //			System.out.println("retCode: <"+callableStatement.getString(47)+">");
 //			System.out.println("retMessage: <"+callableStatement.getString(48)+">");
 //			System.out.println("info1: <"+callableStatement.getString(27)+">");
@@ -966,9 +979,7 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 //			System.out.println("DescrizioneImpostaServizio: <"+callableStatement.getString(44)+">");
 //			System.out.println("NumeroAvvisoPagoPA: <"+callableStatement.getString(45)+">");
 //			System.out.println("CodiceIUV: <"+callableStatement.getString(46)+">");
-		
 			return res;
-			
 		} catch (SQLException x) {
 			x.printStackTrace();
 			throw new DaoException(x);
@@ -978,34 +989,36 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 		} catch (HelperException x) {
 			x.printStackTrace();
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240912 - PAGONET-604		
+			if(bclostStat) {
+			//fine LP 20240912 - PAGONET-604		
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240912 - PAGONET-604		
+				callableStatement = null;
 			}
+			//fine LP 20240912 - PAGONET-604		
 			//fine LP PG21XX04 Leak
 		}
 	}
 	
 	//PG190300 - inizio
 	public void doListComunicazioniSecondarie(String chiaveTestataComunicazione) throws DaoException {
-		
 		CallableStatement callableStatement = null;
-		try	
-		{
+		try {
 			callableStatement = prepareCall(Routines.SCT_DOLIST_SEC.routine());	
 			callableStatement.setString(1, chiaveTestataComunicazione);
-						
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 			}
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -1038,8 +1051,7 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			if (callableStatement != null) {
@@ -1052,16 +1064,15 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			//fine LP PG21XX04 Leak
 		}
 	}
+
 	//Recupera codice freccia esteso e importo bollettino
 	public DatiBollettino doGetDatiBollettino(String cutecute, String nBollettino, String flagZero) throws DaoException {
 		DatiBollettino res = new DatiBollettino();
 		CallableStatement callableStatement = null;
-		
 		try	{
 			System.out.println("DATA-IN-CODUTEN: " + cutecute);
 			System.out.println("DATA-IN-NUMERAV: " + nBollettino);	
 			System.out.println("DATA-IN-FLAG-ZERO: " + flagZero);
-			
 			callableStatement = prepareCall(Routines.DO_DATI_BOLLETTINO.routine());	
 			callableStatement.setString(1, cutecute);
 			callableStatement.setBigDecimal(2, new BigDecimal(nBollettino));
@@ -1089,9 +1100,7 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			callableStatement.registerOutParameter(21, Types.VARCHAR); //RetCode
 			callableStatement.registerOutParameter(22, Types.VARCHAR); //Message
 			//fine LP PG200230
-						
 			callableStatement.execute();
-
 			System.out.println("Importo bollettino: " + callableStatement.getBigDecimal(4));
 			res.setImportoBollettino(callableStatement.getBigDecimal(4));
 			res.setCodiceFreccia(callableStatement.getString(5));
@@ -1116,7 +1125,6 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			res.setRetCode(callableStatement.getString(21));
 			res.setRetMessage(callableStatement.getString(22));
 			//fine LP PG200230
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -1144,28 +1152,21 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 		System.out.println("cutecute: " + cutecute);
 		System.out.println("idBollettinoCumulativoDaAggiornare: " + (idBollettinoCumulativoDaAggiornare == null || idBollettinoCumulativoDaAggiornare.equals("") ? new BigDecimal(0) : new BigDecimal(idBollettinoCumulativoDaAggiornare)));	
 		System.out.println("listaDocumentiStruttureCorrelate: " + listaDocumentiStruttureCorrelate);
-		try	
-		{
+		try {
     		System.out.println("DATA-IN-CODUTEN: " + cutecute);
     		System.out.println("DATA-IN-NUMERAV: " + (idBollettinoCumulativoDaAggiornare == null || idBollettinoCumulativoDaAggiornare.equals("") ? new BigDecimal(0) : new BigDecimal(idBollettinoCumulativoDaAggiornare)));
     		System.out.println("DATA-IN-LISDOCU: " + listaDocumentiStruttureCorrelate);
-
 			callableStatement = prepareCall(Routines.DO_BOLLETTINO_CUMULATIVO.routine());	
 			callableStatement.setString(1, cutecute);
 			callableStatement.setBigDecimal(2, (idBollettinoCumulativoDaAggiornare == null || idBollettinoCumulativoDaAggiornare.equals("") ? new BigDecimal(0) : new BigDecimal(idBollettinoCumulativoDaAggiornare)) );
 			callableStatement.setString(3, listaDocumentiStruttureCorrelate);
-
 			callableStatement.registerOutParameter(4, Types.DECIMAL);
 			callableStatement.registerOutParameter(5, Types.VARCHAR);
 			callableStatement.registerOutParameter(6, Types.VARCHAR);
-						
 			callableStatement.execute();
-			
 			res.setNumeroBollettinoCumulativo(callableStatement.getString(4));
 			res.setRetCode(callableStatement.getString(5));
 			res.setRetMessage(callableStatement.getString(6));
-		
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -1185,12 +1186,10 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			//fine LP PG21XX04 Leak
 		}
 		return res;
-		
 	}
 	
 	//PG190300 - fine
 	public void getDdlAlloggi(String partitaIVA, String anno) throws DaoException {
-		
 		CallableStatement callableStatement = null;
 		try	{ 
 			callableStatement = prepareCall(Routines.SAN_DDL_ALLOGGI.routine());
@@ -1229,13 +1228,10 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			callableStatement.registerOutParameter(3, Types.INTEGER);
 			callableStatement.registerOutParameter(4, Types.INTEGER);
 			callableStatement.registerOutParameter(5, Types.VARCHAR);
-			
 			callableStatement.execute();
-			
 			res.setComunicazioniInviate(callableStatement.getInt(3));
 			res.setComunicazioniDaInviare(callableStatement.getInt(4));
 			res.setStato(callableStatement.getString(5));
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -1264,11 +1260,9 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			callableStatement.setString(2, tipologiaStruttura);
 			callableStatement.setString(3, ricercaDataDa);
 			callableStatement.setString(4, ricercaDataA);
-			
 			if (callableStatement.execute()) {
 				this.loadWebRowSet(callableStatement);
 			}
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -1288,6 +1282,7 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			//fine LP PG21XX04 Leak
 		}	
 	}
+
 	//PG22XX04_SB1 - inizio
 	public void checkComunicazioniBollettinoCumulativo(String partitaIva, String anno)throws DaoException{
 		CallableStatement callableStatement = null;
@@ -1295,11 +1290,9 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 			callableStatement = prepareCall("PYSCTSP_CHK_CUM");
 			callableStatement.setString(1, partitaIva);
 			callableStatement.setString(2, anno);
-			
 			if (callableStatement.execute()) {
 				this.loadWebRowSet(callableStatement);
 			}
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -1318,23 +1311,33 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 	}
    //PG22XX04_SB1 - fine
 
-	public List<TestataComunicazioneImpostaSoggiorno> listaComunicazioni(Date data,String flag)throws DaoException{
+	public List<TestataComunicazioneImpostaSoggiorno> listaComunicazioni(Date data, String flag)throws DaoException {
+	//inizio LP 20240912 - PAGONET-604
+		return listaComunicazionTail(true, true, data, flag);
+	}
+
+	public List<TestataComunicazioneImpostaSoggiorno> listaComunicazioniBatch(boolean bFlagUpdateAutocomit, boolean bCloseStat, Date data,String flag)throws DaoException {
+		return listaComunicazionTail(bFlagUpdateAutocomit, bCloseStat, data, flag);
+	}
+
+	private List<TestataComunicazioneImpostaSoggiorno> listaComunicazionTail(boolean bFlagUpdateAutocomit, boolean bCloseStat, Date data,String flag)throws DaoException {
+	//fine LP 20240912 - PAGONET-604
 		CallableStatement callableStatement = null;
-		ResultSet resultSet = null;
-		LocalDate date=null;
+		//ResultSet resultSet = null; //LP 20240912 - PAGONET-604
+		//LocalDate date=null;
 		List<TestataComunicazioneImpostaSoggiorno> testate = new ArrayList<>();
 		TestataComunicazioneImpostaSoggiorno testata = new TestataComunicazioneImpostaSoggiorno();
 		try	{
-			callableStatement = prepareCall("PYSCTSP_LST_SEND_UFFICIO");
+			//inizio LP 20240912 - PAGONET-604
+			//callableStatement = prepareCall("PYSCTSP_LST_SEND_UFFICIO");
+			callableStatement = prepareCall(bFlagUpdateAutocomit, "PYSCTSP_LST_SEND_UFFICIO");
+			//fine LP 20240912 - PAGONET-604
 			callableStatement.setString(1, flag);
 			callableStatement.setDate(2, data);
-
 			if (callableStatement.execute()) {
 				this.loadWebRowSet(callableStatement);
 			}
-
 			while (this.getWebRowSet().next()) {
-
                 testata.setChiaveTestataComunicazione(this.getWebRowSet().getString(1));
 				testata.setChiaveAnagraficaStrutturaRicettiva(this.getWebRowSet().getString(2));
 				testata.setCodiceSocieta(this.getWebRowSet().getString(3));
@@ -1401,10 +1404,8 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 				testata.setQrCodePagoPACumulativo(this.getWebRowSet().getString(47));
 				testata.setNumeroAvvisoPagoPACumulativo(this.getWebRowSet().getString(48));
 				testata.setOperatoreInserimentoComunicazione(this.getWebRowSet().getString(49));
-
 				testate.add(testata);
 			}
-
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -1412,15 +1413,22 @@ public ResponseData verificaAbilitazioneRIDHost(String codiceUtente, String codi
 		} catch (HelperException x) {
 			throw new DaoException(x);
 		} finally {
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240912 - PAGONET-604
+			this.finalize();
+			if(bCloseStat) {
+			//fine LP 20240912 - PAGONET-604
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240912 - PAGONET-604
+				callableStatement = null;
 			}
+			//fine LP 20240912 - PAGONET-604
 		}
 		return testate;
 	}
-
 }

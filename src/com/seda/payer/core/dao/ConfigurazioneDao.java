@@ -9,9 +9,6 @@ import java.util.List;
 
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.logger.LoggerWrapper;
-//inizio LP PG21XX04 Leak
-//import com.seda.data.dao.DAOHelper;
-//fine LP PG21XX04 Leak
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.Configurazione;
 import com.seda.payer.core.exception.DaoException;
@@ -44,7 +41,6 @@ public class ConfigurazioneDao extends BaseDaoHandler {
 			bean.save(callableStatement);
 			callableStatement.executeUpdate();
 			commit();
-
 		} catch (SQLException x) {
 			rollback();
 			throw new DaoException(x);
@@ -79,7 +75,6 @@ public class ConfigurazioneDao extends BaseDaoHandler {
 			bean.update(callableStatement);			
 			callableStatement.executeUpdate();
 			commit();
-
 		} catch (SQLException x) {
 			rollback();
 			throw new DaoException(x);
@@ -112,7 +107,6 @@ public class ConfigurazioneDao extends BaseDaoHandler {
 			bean.delete(callableStatement);
 			callableStatement.executeUpdate();
 			commit();
-
 		} catch (SQLException x) {
 			rollback();
 			throw new DaoException(x);
@@ -167,7 +161,6 @@ public class ConfigurazioneDao extends BaseDaoHandler {
 				}
 			}
 			return null;
-
 		} catch (SQLException x) {
 			rollback();
 			throw new DaoException(x);
@@ -291,7 +284,6 @@ public class ConfigurazioneDao extends BaseDaoHandler {
 		return list;
 	}
 
-	
 	/**
 	 * @param codiceSocieta
 	 * @param codiceUtente
@@ -350,7 +342,6 @@ public class ConfigurazioneDao extends BaseDaoHandler {
 		}
 	}
 	
-
 	/**
 	 * @param callableStatement
 	 */

@@ -1385,7 +1385,7 @@ public class RestCallableStatement implements CallableStatement {
 					throw new RestSQLException("La response non contiene la chiave '" + RESPONSE_KEY + "'");
 				}
 			}
-			
+
 			return resultSets != null && !resultSets.isEmpty();
 		} catch (Exception e) {
 			throw new RestSQLException("Exception in checkResponse(Response response)", e);

@@ -1,17 +1,14 @@
 package com.seda.payer.core.dao;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
-import com.seda.payer.core.bean.FasciaTariffaImpostaSoggiorno;
 import com.seda.payer.core.bean.TariffaImpostaSoggiorno;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -219,6 +216,10 @@ public class TariffaImpostaSoggiornoDao extends BaseDaoHandler {
 				throw new DaoException(55,"esiste già una tariffa per i parametri selezionati");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già una tariffa per i parametri selezionati");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
 			throw new DaoException(101, x.getMessage());
@@ -388,7 +389,7 @@ public class TariffaImpostaSoggiornoDao extends BaseDaoHandler {
 			
 				data = callableStatement.getResultSet();
 				
-				while(data.next()) {
+				while(data != null && data.next()) {
 					sb.append(data.getString("RECORD"));
 					sb.append("\r\n");
 				}

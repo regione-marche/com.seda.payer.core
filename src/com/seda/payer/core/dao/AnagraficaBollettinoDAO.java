@@ -10,7 +10,6 @@ import com.seda.payer.core.bean.AnagraficaBollettinoECReports;
 import com.seda.payer.core.bean.AnagraficaBollettinoPageList;
 import com.seda.payer.core.bean.AnagraficaStrutturaRicettiva;
 import com.seda.payer.core.exception.DaoException;
-import com.seda.payer.core.wallet.bean.Wallet;
 
 
 public interface AnagraficaBollettinoDAO  extends Serializable {

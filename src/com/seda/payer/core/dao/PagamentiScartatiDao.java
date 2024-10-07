@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -18,10 +17,12 @@ public class PagamentiScartatiDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 	
-	private void closeConnection(CallableStatement callableStatement) {
-		if (callableStatement != null)
-			DAOHelper.closeIgnoringException(callableStatement);
-	}
+	//inizio LP 20240811 - PGNTCORE-24
+	//private void closeConnection(CallableStatement callableStatement) {
+	//	if (callableStatement != null)
+	//		DAOHelper.closeIgnoringException(callableStatement);
+	//}
+	//fine LP 20240811 - PGNTCORE-24
 
 	public int doInsertPagamentiScartati(String tipoFlusso, String nomeFile, String recordScartato, String tipologiaRecord, char stato) 
 								  throws DaoException {
@@ -33,7 +34,7 @@ public class PagamentiScartatiDao extends BaseDaoHandler {
 			callableStatement.setString(3, recordScartato);
 			callableStatement.setString(4, tipologiaRecord);
 			callableStatement.setString(5, String.valueOf(stato));
-			callableStatement.registerOutParameter(6, Types.INTEGER);
+			callableStatement.registerOutParameter(6, Types.BIGINT);
 			callableStatement.execute();
 			int i = callableStatement.getInt(6);
 			return i;
@@ -67,7 +68,7 @@ public class PagamentiScartatiDao extends BaseDaoHandler {
 			callableStatement.setString(3, recordScartato);
 			callableStatement.setString(4, tipologiaRecord);
 			callableStatement.setString(5, String.valueOf(stato));
-			callableStatement.setInt(6, pKey);
+			callableStatement.setLong(6, pKey);
 			callableStatement.registerOutParameter(7, Types.INTEGER);
 			callableStatement.execute();
 			int i = callableStatement.getInt(7);
@@ -100,23 +101,31 @@ public class PagamentiScartatiDao extends BaseDaoHandler {
 		try	{
 			callableStatement = prepareCall(Routines.SCA_DOASSIGN.routine());	
 			callableStatement.setString(1, " ");
-			callableStatement.setInt(2, 0);
+			callableStatement.setLong(2, 0);
 			//inizio LP PG21XX04 Leak
 			//ResultSet resultSet = callableStatement.executeQuery();
-			resultSet = callableStatement.executeQuery();
+			//inizio LP 20240811 - PGNTCORE-24
+			//resultSet = callableStatement.executeQuery();
+			if(callableStatement.execute()) {
+				resultSet = callableStatement.getResultSet();
+				if(resultSet != null) {
+			//fine LP 20240811 - PGNTCORE-24
 			//fine LP PG21XX04 Leak
-			if (resultSet.next()) {
-				List<String[]> output = new ArrayList<String[]>();
-				do { output.add(new String[] { 
-							resultSet.getString("chiaveTransazione"), 
-							resultSet.getString("chiaveScarto"),
-							resultSet.getString("descrizioneTipologiaServizio"),
-							resultSet.getString("descrizioneEnte"),
-							resultSet.getString("descrizioneUfficio") });
-				} while (resultSet.next());
-				return output;
+					if (resultSet.next()) {
+						List<String[]> output = new ArrayList<String[]>();
+						do { output.add(new String[] { 
+									resultSet.getString("chiaveTransazione"), 
+									resultSet.getString("chiaveScarto"),
+									resultSet.getString("descrizioneTipologiaServizio"),
+									resultSet.getString("descrizioneEnte"),
+									resultSet.getString("descrizioneUfficio") });
+						} while (resultSet.next());
+						return output;
+					}
+			//inizio LP 20240811 - PGNTCORE-24
+				}
 			}
-			return null;
+			//fine LP 20240811 - PGNTCORE-24
 		} catch (SQLException x) { throw new DaoException(x);
 		} catch (IllegalArgumentException x) { throw new DaoException(x);
 		} catch (HelperException x) { throw new DaoException(x);
@@ -139,6 +148,7 @@ public class PagamentiScartatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
+		return null;
 	}
 
 	public int doDeletePagamentiScartati(String nomeFile, char stato) throws DaoException {

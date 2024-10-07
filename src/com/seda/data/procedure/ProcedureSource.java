@@ -5,7 +5,6 @@ package com.seda.data.procedure;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Properties;
 
 import com.seda.commons.reflection.MetaClass;
 import com.seda.data.procedure.parameter.CallParameter;
@@ -82,8 +81,8 @@ public class ProcedureSource extends BaseParser {
 //	}
 	private CallParameter resolveCallParameter(String parameterName) {
 		CallParameter callParameter=null;
-		if (callParameterMap.containsName(parameterName)) {
-			callParameter=callParameterMap.getByName(parameterName);	
+		if (callParameterMap.containsName(parameterName.toUpperCase())) {
+			callParameter=callParameterMap.getByName(parameterName.toUpperCase());	
 		}
 		return callParameter;
 	}

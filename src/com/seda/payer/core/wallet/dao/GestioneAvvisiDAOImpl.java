@@ -5,11 +5,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-
 import javax.sql.DataSource;
 
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
@@ -18,8 +15,7 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.wallet.bean.Avviso;
 import com.seda.payer.core.wallet.bean.WalletPageList;
 
-public class GestioneAvvisiDAOImpl extends BaseDaoHandler implements
-GestioneAvvisiDAO {
+public class GestioneAvvisiDAOImpl extends BaseDaoHandler implements GestioneAvvisiDAO {
 
 	private static final long serialVersionUID = 1L;
 
@@ -54,7 +50,10 @@ GestioneAvvisiDAO {
 			//			OUT O_TOTPAGES SMALLINT
 
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMSGSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMSGSP_LST.routine());
+			callableStatement = prepareCall(Routines.PYMSGSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,avviso.getCuteCute());
@@ -83,9 +82,6 @@ GestioneAvvisiDAO {
 				walletPageList = new WalletPageList(pageInfo, "00","",getWebRowSetXml());
 				return walletPageList;
 			}
-
-
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");
@@ -132,7 +128,10 @@ GestioneAvvisiDAO {
 		ResultSet data = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMSGSP_SEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMSGSP_SEL.routine());
+			callableStatement = prepareCall(Routines.PYMSGSP_SEL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1,avviso.getCuteCute());
 			callableStatement.setString(2,avviso.getCodSoc());
 			callableStatement.setString(3,avviso.getChiaveEnte());
@@ -192,7 +191,10 @@ GestioneAvvisiDAO {
 		connection = getConnection();
 		int recordAggio=0;
 		try {
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMSGSP_UPD.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMSGSP_UPD.routine());
+			callableStatement = prepareCall(Routines.PYMSGSP_UPD.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, avviso.getCodSoc());
 			callableStatement.setString(2, avviso.getCuteCute());
 			callableStatement.setString(3, avviso.getChiaveEnte());
@@ -205,10 +207,9 @@ GestioneAvvisiDAO {
 			e.printStackTrace();
 			throw new DaoException(01,"Problemi generici nell'aggiornamento dei dati",e);
 		} catch (HelperException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			throw new DaoException(01,"Problemi generici nell'aggiornamento dei dati",e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
 			//DAOHelper.closeIgnoringException(connection);
@@ -230,6 +231,4 @@ GestioneAvvisiDAO {
 		}
 		return recordAggio;
 	}
-
-
 }

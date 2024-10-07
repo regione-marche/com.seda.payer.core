@@ -11,8 +11,8 @@ import java.sql.Statement;
 import java.util.Properties;
 
 import com.seda.commons.logger.LoggerWrapper;
-import com.seda.data.helper.HelperException;
-import com.seda.data.helper.SpParamCache;
+import com.seda.data.procedure.reflection.DriverType;
+import com.seda.data.dao.ConnectionProxyInstance;
 
 /**
  * @author SEDA Lab
@@ -28,7 +28,7 @@ public final class Helper {
 	 * @throws SQLException In case of SQL Exception.
 	 * @throws HelperException In case of DAO Exception.
 	 */
-	public synchronized static final CallableStatement prepareCall(final Connection connection, final String schemaPattern, final String procedureNamePattern, final int parameterCountExpected) throws SQLException, HelperException {
+	public synchronized static final CallableStatement 	prepareCall(final Connection connection, final String schemaPattern, final String procedureNamePattern, final int parameterCountExpected) throws SQLException, HelperException {
         if( connection == null ) throw new HelperException(Messages.ARGUMENT_NULL.format("connection"));
         if( schemaPattern == null || schemaPattern.length() == 0 ) throw new HelperException(Messages.ARGUMENT_NULL.format("schemaPattern"));        
         if( procedureNamePattern == null || procedureNamePattern.length() == 0 ) throw new HelperException(Messages.ARGUMENT_NULL.format("procedureNamePattern"));
@@ -40,7 +40,7 @@ public final class Helper {
         		throw new HelperException(Messages.PARAMETER_COUNT_ERROR.format(helperParameterSetMetaData.getParameterCount(), parameterCountExpected, schemaPattern, procedureNamePattern));        		
         	}
         }
-        
+        // return MetaProcedure.prepareCall(connection, helperParameterSetMetaData.getParameterSet());
         return connection.prepareCall(helperParameterSetMetaData.getParameterSet());
 	}
 	/**
@@ -75,6 +75,12 @@ public final class Helper {
 		else 
 			connection = DriverManager.getConnection( url, creds );			
         connection.setAutoCommit(autoCommit);			
+
+		if (DriverType.getDriverType(connection)==2) {
+			ConnectionProxyInstance connProxy=new ConnectionProxyInstance(connection);
+			connection = connProxy.getConenction();
+		}
+
 		return connection;
 	}
 	public synchronized static final DriverInfo getDriverInfo(Connection connection) throws SQLException, HelperException {

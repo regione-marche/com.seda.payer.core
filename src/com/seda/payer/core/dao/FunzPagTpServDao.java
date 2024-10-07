@@ -267,7 +267,8 @@ public class FunzPagTpServDao extends BaseDaoHandler {
 					funzPagTpServ.getTipServizio().getUser().getUserCode(),
 					funzPagTpServ.getTipServizio().getTipoServizio().getCodiceTipologiaServizio(),
 					funzPagTpServ.getNomeForm());
-			if (data != null  && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0)  throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("funzPagTpServ.saveadd.error"));
+			if (data != null  && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0)  
+				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("funzPagTpServ.saveadd.error"));
 			if (data != null) {
 				callableStatement = prepareCall(Routines.CTS_DOUPDATE.routine());
 				funzPagTpServ.update(callableStatement);

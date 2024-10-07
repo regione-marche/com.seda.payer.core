@@ -37,7 +37,6 @@ public class EnteConsorziatoDao extends BaseDaoHandler {
 			callableStatement.setString(2, userCode);
 			callableStatement.setString(3, chiaveEnteCon);
 			callableStatement.setString(4, chiaveEnteEnt);
-
 			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet data = callableStatement.getResultSet();
@@ -79,15 +78,11 @@ public class EnteConsorziatoDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(EnteConsorziato entec, int rowsPerPage, int pageNumber, String strDescrEnte,String strDescrSocieta,String strDescrUtente) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(entec, rowsPerPage, pageNumber,strDescrEnte,strDescrSocieta,strDescrUtente);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(entec, rowsPerPage, pageNumber,strDescrEnte,strDescrSocieta,strDescrUtente);
 	}
 	
 	public void rowSets(EnteConsorziato entec, int rowsPerPage, int pageNumber, String strDescrEnte,String strDescrSocieta,String strDescrUtente) throws DaoException {
@@ -147,25 +142,21 @@ public class EnteConsorziatoDao extends BaseDaoHandler {
 	public void doSave(EnteConsorziato entec,String codOp) throws DaoException {
 		CallableStatement callableStatement = null;
 		try	{
-			
 			if (entec.getEnte().getUser() == null || entec.getEnte().getUser().getUserCode() == null || entec.getEnte().getUser().getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("enteconsorziato.ente.userCode"));
 
-			if (                          entec.getEnte().getUser().getCompany() == null || entec.getEnte().getUser().getCompany().getCompanyCode() == null || entec.getEnte().getUser().getCompany().getCompanyCode().length() == 0)
+			if (entec.getEnte().getUser().getCompany() == null || entec.getEnte().getUser().getCompany().getCompanyCode() == null || entec.getEnte().getUser().getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("enteconsorziato.ente.userCode.company.companyCode"));
-			
 			if (entec.getEnte().getAnagEnte() == null || entec.getEnte().getAnagEnte().getChiaveEnte() == null || entec.getEnte().getAnagEnte().getChiaveEnte().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("enteconsorziato.ente.anagEnte.chiaveEnte"));
-			
 			if (entec.getAnagEnte() == null || entec.getAnagEnte().getChiaveEnte() == null || entec.getAnagEnte().getChiaveEnte().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("enteconsorziato.anagEnte.chiaveEnte"));
-			
 			EnteConsorziato data = doDetail(entec.getEnte().getUser().getCompany().getCompanyCode(),entec.getEnte().getUser().getUserCode(),entec.getEnte().getAnagEnte().getChiaveEnte(),entec.getAnagEnte().getChiaveEnte());
-			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ente.saveadd.error"));
+			if ((data != null) && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0)
+				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ente.saveadd.error"));
 			if (data != null) 
 				callableStatement = prepareCall(Routines.ENC_DOUPDATE.routine());
 			else callableStatement = prepareCall(Routines.ENC_DOINSERT.routine());
-			
 			entec.save(callableStatement);
 			callableStatement.execute();
 			//commit();
@@ -200,17 +191,12 @@ public class EnteConsorziatoDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			if (entec.getEnte().getUser().getUserCode() == null || entec.getEnte().getUser().getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("enteconsorziato.ente.userCode"));
-
 			if (entec.getEnte().getUser().getCompany() == null || entec.getEnte().getUser().getCompany().getCompanyCode() == null || entec.getEnte().getUser().getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("enteconsorziato.ente.user.company.companyCode"));
-
 			if (entec.getEnte().getAnagEnte() == null || entec.getEnte().getAnagEnte().getChiaveEnte() == null || entec.getEnte().getAnagEnte().getChiaveEnte().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("enteconsorziato.ente.anagEnte.chiaveEnte"));
-			
 			if (entec.getAnagEnte() == null || entec.getAnagEnte().getChiaveEnte() == null || entec.getAnagEnte().getChiaveEnte().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("enteconsorziato.anagEnte.chiaveEnte"));
-			
-			
 			callableStatement.setString(1, entec.getEnte().getUser().getCompany().getCompanyCode());
 			callableStatement.setString(2, entec.getEnte().getUser().getUserCode());
 			callableStatement.setString(3, entec.getEnte().getAnagEnte().getChiaveEnte());

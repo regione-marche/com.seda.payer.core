@@ -7,17 +7,17 @@ public class SPEPBOLL extends ARestRoutine {
 
 	@Override
 	protected String routine() {
-		
+
 		return "SPEPBOLL";
 	}
 
 	@Override
 	protected Map<Integer, String> inParameterMap() {
-		
+
 		int p = 1;
-		
+
 		Map<Integer, String> inParameterMap = new HashMap<Integer, String>();
-		
+
 		inParameterMap.put(p++, "data_in_coduten_in");
 		inParameterMap.put(p++, "data_in_codente_in");
 		inParameterMap.put(p++, "data_io_numerav_in");
@@ -56,17 +56,17 @@ public class SPEPBOLL extends ARestRoutine {
 		inParameterMap.put(p++, "data_ou_tassonomia_in");
 		inParameterMap.put(p++, "data_ou_causale_in");
 		inParameterMap.put(p++, "data_ou_message_in");
-		
+
 		return inParameterMap;
 	}
 
 	@Override
 	protected Map<Integer, String> outParameterMap() {
-		
+
 		int p = 1;
-		
+
 		Map<Integer, String> outParameterMap = new HashMap<Integer, String>();
-		
+
 		outParameterMap.put(p++, "data_in_coduten_out");
 		outParameterMap.put(p++, "data_in_codente_out");
 		outParameterMap.put(p++, "data_io_numerav_out");
@@ -106,17 +106,17 @@ public class SPEPBOLL extends ARestRoutine {
 		outParameterMap.put(p++, "data_ou_causale_out");
 		outParameterMap.put(p++, "data_ou_pagopa_out"); //SB PGNTCORE-49
 		outParameterMap.put(p++, "data_ou_message_out");
-		
+
 		return outParameterMap;
 	}
 
 	@Override
 	protected Map<Integer, Map<Integer, String>> resultSetsMap() {
-		
+
 		int p = 1;
-		
+
 		Map<Integer,String> resultSetMap1 = new HashMap<Integer, String>();
-		
+
 		resultSetMap1.put(p++, "1");
 		resultSetMap1.put(p++, "BOL_ENTE");
 		resultSetMap1.put(p++, "BOL_IMSE");
@@ -134,9 +134,9 @@ public class SPEPBOLL extends ARestRoutine {
 		resultSetMap1.put(p++, "BOL_CHANGE_IMP");
 		resultSetMap1.put(p++, "BOL_FLAG_AC");
 		resultSetMap1.put(p++, "BOL_FLAG_SANZ");
-		
+
 		p = 1;
-		
+
 		Map<Integer,String> resultSetMap2 = new HashMap<Integer, String>();
 
 		resultSetMap2.put(p++, "BEN_IDDOMINIO");
@@ -149,17 +149,18 @@ public class SPEPBOLL extends ARestRoutine {
 		resultSetMap2.put(p++, "BEN_TASSONOM");
 
 		p = 1;
-		
+
 		Map<Integer,String> resultSetMap3 = new HashMap<Integer, String>();
-		
+
 		// TODO
-		
+
 		Map<Integer, Map<Integer,String>> resultSetsMap = new HashMap<Integer, Map<Integer,String>>();
 		resultSetsMap.put(0, resultSetMap1);
 		resultSetsMap.put(1, resultSetMap2);
 		resultSetsMap.put(2, resultSetMap3);
-		
+
 		return resultSetsMap;
 	}
-	
+
 }
+

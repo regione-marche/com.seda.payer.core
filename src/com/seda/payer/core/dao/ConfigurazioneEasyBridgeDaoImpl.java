@@ -1,33 +1,18 @@
 package com.seda.payer.core.dao;
 
-import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.Calendar;
 
 import javax.sql.DataSource;
-import javax.sql.rowset.CachedRowSet;
 
-import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
-import com.seda.data.spi.PageInfo;
-import com.seda.payer.core.bean.BlackBoxPagelist;
-import com.seda.payer.core.bean.ConfigurazioneBlackBox;
 import com.seda.payer.core.bean.ConfigurazioneEasyBridge;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
-import com.seda.payer.core.wallet.bean.ConfigurazioneSolleciti;
 import com.seda.payer.core.wallet.bean.EsitoRisposte;
-import com.seda.payer.core.wallet.bean.Wallet;
-import com.seda.payer.core.wallet.bean.WalletPageList;
-import com.seda.payer.core.wallet.dao.WalletDAO;
 
 public class ConfigurazioneEasyBridgeDaoImpl extends BaseDaoHandler implements ConfigurazioneEasyBridgeDao   {
 	private static final long serialVersionUID = 1L;
@@ -48,7 +33,10 @@ public class ConfigurazioneEasyBridgeDaoImpl extends BaseDaoHandler implements C
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.EYUTESP_INS.routine());
+			//inizio LP 20240907 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.EYUTESP_INS.routine());
+			callableStatement = prepareCall(Routines.EYUTESP_INS.routine());
+			//fine LP 20240907 - PGNTCORE-24
 			callableStatement.setString(1, configurazioneEasyBridge.getCodiceIdentificativoDominio());
 			callableStatement.setString(2, configurazioneEasyBridge.getCutecute());
 			callableStatement.setString(3, configurazioneEasyBridge.getOperatore());
@@ -86,8 +74,7 @@ public class ConfigurazioneEasyBridgeDaoImpl extends BaseDaoHandler implements C
 		}
 		return esitoRisposte;
 	}
-	
-	
+
 	public ConfigurazioneEasyBridge select(ConfigurazioneEasyBridge configurazioneEasyBridge )	throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
@@ -97,7 +84,10 @@ public class ConfigurazioneEasyBridgeDaoImpl extends BaseDaoHandler implements C
 		//fine LP PG21XX04 Leak
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.EYUTESP_SEL.routine());
+			//inizio LP 20240907 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.EYUTESP_SEL.routine());
+			callableStatement = prepareCall(Routines.EYUTESP_SEL.routine());
+			//fine LP 20240907 - PGNTCORE-24
 			callableStatement.setString(1, configurazioneEasyBridge.getCodiceIdentificativoDominio());
 			callableStatement.execute();
 			//inizio LP PG21XX04 Leak

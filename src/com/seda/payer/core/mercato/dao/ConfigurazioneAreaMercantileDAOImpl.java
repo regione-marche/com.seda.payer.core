@@ -13,8 +13,6 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
@@ -23,7 +21,6 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.mercato.bean.ConfigurazioneAreaMercantile;
 import com.seda.payer.core.mercato.bean.EsitoRisposte;
 import com.seda.payer.core.mercato.bean.MercatoPageList;
-import com.seda.payer.core.mercato.dao.MercatoDAO;
 
 public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  implements ConfigurazioneAreaMercantileDAO  {
 	//private static final long serialVersionUID = 1L;
@@ -63,7 +60,10 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 //				OUT O_TOTPAGES SMALLINT
 				
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_LST.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,configurazioneAreaMercantile.getCodiceSocieta());
@@ -144,7 +144,10 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_DEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_DEL.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_DEL.routine());
+			//fine LP PGNTCORE-24
 //			IN I_MRC_CSOCCSOC VARCHAR(5), 
 //			IN I_MRC_CUTECUTE VARCHAR(5),
 //			IN I_MRC_KANEKENT CHAR(10),
@@ -200,8 +203,10 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_INS.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_INS.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_INS.routine());
+			//fine LP PGNTCORE-24
 //					IN I_MRC_CSOCCSOC VARCHAR(5), 
 //					IN I_MRC_CUTECUTE VARCHAR(5),
 //					IN I_MRC_KANEKENT CHAR(10),
@@ -277,8 +282,10 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-		
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_SEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_SEL.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_SEL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneAreaMercantile.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneAreaMercantile.getCuteCute());
 			callableStatement.setString(3, configurazioneAreaMercantile.getChiaveEnte());
@@ -291,7 +298,6 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -324,8 +330,9 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
+			e.printStackTrace();
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (rowSet != null) {
@@ -372,7 +379,10 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_APD.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_APD.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_APD.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneAreaMercantile.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneAreaMercantile.getCuteCute());
 			callableStatement.setString(3, configurazioneAreaMercantile.getChiaveEnte());
@@ -447,7 +457,10 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_TOT.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_TOT.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_TOT.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneAreaMercantile.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneAreaMercantile.getCuteCute());
 			callableStatement.setString(3, configurazioneAreaMercantile.getChiaveEnte());
@@ -519,8 +532,11 @@ public class ConfigurazioneAreaMercantileDAOImpl extends BaseDaoHandler  impleme
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_UPD.routine());
-
+			//inizio LP PGNTCORE-24
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMRCSP_UPD.routine());
+            callableStatement = prepareCall(Routines.PYMRCSP_UPD.routine());
+			//fine LP PGNTCORE-24
 //			IN I_MRC_CSOCCSOC VARCHAR(5), 
 //			IN I_MRC_CUTECUTE VARCHAR(5),
 //			IN I_MRC_KANEKENT CHAR(10),

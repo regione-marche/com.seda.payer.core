@@ -2,15 +2,9 @@ package com.seda.payer.core.dao;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
-import com.seda.payer.commons.bean.TypeRequest;
-import com.seda.payer.core.bean.GatewayPagamento;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
-import com.seda.payer.core.messages.Messages;
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 
 //codice da spostare nella classe originale

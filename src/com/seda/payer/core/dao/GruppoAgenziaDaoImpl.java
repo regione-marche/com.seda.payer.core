@@ -1,4 +1,3 @@
-
 package com.seda.payer.core.dao;
 
 import java.io.IOException;
@@ -14,8 +13,6 @@ import javax.sql.DataSource;
 import javax.sql.rowset.WebRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.GruppoAgenzia;
@@ -24,21 +21,20 @@ import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.wallet.bean.EsitoRisposte;
 
-
 public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenziaDao   {
 	private static final long serialVersionUID = 1L;
-	
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
 	public GruppoAgenziaDaoImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	public GruppoAgenziaDaoImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
-	
-	
+
 	public GruppoAgenzia select(String codiceGruppoAgenzia) throws DaoException {
 		CallableStatement callableStatement=null;
 		ResultSet resultSet=null;
@@ -46,7 +42,10 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		GruppoAgenzia gruppoAgenzia = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_SEL.routine());
+			//inizio LP 20240919 PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_SEL.routine());
+			callableStatement = prepareCall(Routines.PYGAGSP_SEL.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			callableStatement.setString(1, codiceGruppoAgenzia);
 
 			callableStatement.execute();
@@ -62,7 +61,7 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//	DAOHelper.closeIgnoringException(callableStatement);
 			//	DAOHelper.closeIgnoringException(connection);
@@ -91,17 +90,17 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		}
 		return gruppoAgenzia;
 	}
-	
-	
-	
+
 	public Integer update(GruppoAgenzia gruppoAgenzia)	throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_UPD.routine());
-
+			//inizio LP 20240919 PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_UPD.routine());
+			callableStatement = prepareCall(Routines.PYGAGSP_UPD.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			
 			callableStatement.setString(1, gruppoAgenzia.getCodiceGruppoAgenzia());
 			callableStatement.setString(2, gruppoAgenzia.getDescrizioneGruppoAgenzia());
@@ -116,7 +115,6 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 			e.printStackTrace();
 			throw new DaoException(e);
 		} catch (HelperException e) {
-			e.printStackTrace();
 			throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -139,14 +137,17 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		}
 		return ret;
 	}
-	
+
 	public EsitoRisposte delete(String codiceGruppoAgenzia)throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_DEL.routine());	
+			//inizio LP 20240919 PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_DEL.routine());	
+			callableStatement = prepareCall(Routines.PYGAGSP_DEL.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			
 			callableStatement.setString(1, codiceGruppoAgenzia);
 			callableStatement.registerOutParameter(2, Types.VARCHAR);
@@ -161,7 +162,6 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 			e.printStackTrace();
 			throw new DaoException(e);
 		} catch (HelperException e) {
-			e.printStackTrace();
 			throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -184,13 +184,17 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		}
 		return esitoRisposte;
 	}
+
 	public EsitoRisposte insert(GruppoAgenzia gruppoAgenzia)	throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_INS.routine());
+			//inizio LP 20240919 PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYGAGSP_INS.routine());
+			callableStatement = prepareCall(Routines.PYGAGSP_INS.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			
 			callableStatement.setString(1, gruppoAgenzia.getCodiceGruppoAgenzia());
 			callableStatement.setString(2, gruppoAgenzia.getDescrizioneGruppoAgenzia());
@@ -206,7 +210,6 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 			e.printStackTrace();
 			throw new DaoException(e);
 		} catch (HelperException e) {
-			e.printStackTrace();
 			throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -229,8 +232,7 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		}
 		return esitoRisposte;
 	}
-	
-	
+
 	public GruppoAgenziaPageList gruppoAgenziaList(GruppoAgenzia gruppoAgenzia,int rowsPerPage,
 			int pageNumber, String OrderBy) throws DaoException {
 		CallableStatement callableStatement=null;
@@ -247,7 +249,10 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		List<GruppoAgenzia> listGruppoAgenzia = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYGAGSP_LST.routine());
+			//inizio LP 20240919 PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYGAGSP_LST.routine());
+			callableStatement = prepareCall(Routines.PYGAGSP_LST.routine());
+			//fine LP 20240919 PGNTCORE-24 
 
 			callableStatement.setInt(1,pageNumber);
 			callableStatement.setInt(2,rowsPerPage);
@@ -349,7 +354,6 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		return gruppoAgenziaPagelist;
 	}
 
-	
 	public GruppoAgenziaPageList gruppoAgenziaListDDL() throws DaoException {
 		CallableStatement callableStatement=null;
 
@@ -360,7 +364,10 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		String gruppoAgenziaLstXml  = "";
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYGAGSP_LST_DDL.routine());
+			//inizio LP 20240919 PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYGAGSP_LST_DDL.routine());
+			callableStatement = prepareCall(Routines.PYGAGSP_LST_DDL.routine());
+			//fine LP 20240919 PGNTCORE-24 
 			
 			if(callableStatement.execute()) {
 				data = callableStatement.getResultSet();
@@ -407,5 +414,4 @@ public class GruppoAgenziaDaoImpl extends BaseDaoHandler implements GruppoAgenzi
 		}
 		return gruppoAgenziaPagelist;
 	}
-
 }

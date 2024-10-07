@@ -44,6 +44,7 @@ public class WalletDAOFactory {
 	}
 	//fine LP PG21XX04 Leak
 
+	@SuppressWarnings("unchecked")
 	public static WalletDAO getWalletDAO(Connection connection, String schema, boolean isRest, String baseUrl) throws DaoException {
 		WalletDAO walletDAO = null;
 		try {
@@ -56,6 +57,7 @@ public class WalletDAOFactory {
 		return walletDAO;
 	}
 
+	@SuppressWarnings("unused")
 	private static String ANAGRAFICA_GENITORE_MENSE_CLASS;
 
 
@@ -742,6 +744,7 @@ public class WalletDAOFactory {
 	}
 
 	// Connection connection, String schema, boolean isRest, String baseUrl
+	@SuppressWarnings("unchecked")
 	public static SepaDAO getSepaDAO(Connection connection, String schema, boolean isRest, String baseUrl) throws DaoException {
 		SepaDAO sepaDAO = null;
 		try {

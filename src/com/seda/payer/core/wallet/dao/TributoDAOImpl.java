@@ -8,8 +8,6 @@ import java.util.ArrayList;
 
 import javax.sql.DataSource;
 
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -18,18 +16,20 @@ import com.seda.payer.core.wallet.bean.Tributo;
 
 
 public class TributoDAOImpl   extends BaseDaoHandler  implements TributoDAO  {
-		private static final long serialVersionUID = 1L;
-		//inizio LP PG21XX04 Leak
-		@Deprecated
-		//fine LP PG21XX04 Leak
-		public TributoDAOImpl(DataSource dataSource, String schema) throws SQLException {
-			super(dataSource.getConnection(), schema);
-		}
-		//inizio LP PG21XX04 Leak
-		public TributoDAOImpl(Connection connection, String schema) throws SQLException {
-			super(connection, schema);
-		}
-		//fine LP PG21XX04 Leak
+	private static final long serialVersionUID = 1L;
+
+	//inizio LP PG21XX04 Leak
+	@Deprecated
+	//fine LP PG21XX04 Leak
+	public TributoDAOImpl(DataSource dataSource, String schema) throws SQLException {
+		super(dataSource.getConnection(), schema);
+	}
+
+	//inizio LP PG21XX04 Leak
+	public TributoDAOImpl(Connection connection, String schema) throws SQLException {
+		super(connection, schema);
+	}
+	//fine LP PG21XX04 Leak
 
 	public ArrayList<Tributo> listTributo() throws DaoException {
 		CallableStatement callableStatement=null;
@@ -38,7 +38,10 @@ public class TributoDAOImpl   extends BaseDaoHandler  implements TributoDAO  {
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTRBSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTRBSP_LST.routine());
+			callableStatement = prepareCall(Routines.PYTRBSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.execute();
 			resultSet=callableStatement.getResultSet();
 			
@@ -97,7 +100,10 @@ public class TributoDAOImpl   extends BaseDaoHandler  implements TributoDAO  {
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTRBSP_LST_SRV.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTRBSP_LST_SRV.routine());
+			callableStatement = prepareCall(Routines.PYTRBSP_LST_SRV.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, societa);
 			callableStatement.setString(2, utente);
 			callableStatement.setString(3,ente);
@@ -147,8 +153,6 @@ public class TributoDAOImpl   extends BaseDaoHandler  implements TributoDAO  {
 			}
 			//fine LP PG21XX04 Leak
 		} 
-		
 		return listTributo;
 	}
-	
 }

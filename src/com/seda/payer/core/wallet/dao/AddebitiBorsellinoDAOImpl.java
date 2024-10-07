@@ -1,6 +1,5 @@
 package com.seda.payer.core.wallet.dao;
 
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -9,11 +8,8 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-
 import javax.sql.DataSource;
 
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
@@ -21,7 +17,6 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.wallet.bean.AddebitiBorsellino;
 import com.seda.payer.core.wallet.bean.AddebitiPopup;
 import com.seda.payer.core.wallet.bean.Wallet;
-
 
 public class AddebitiBorsellinoDAOImpl extends BaseDaoHandler  implements AddebitiBorsellinoDAO{
 
@@ -46,7 +41,10 @@ public class AddebitiBorsellinoDAOImpl extends BaseDaoHandler  implements Addebi
 		ArrayList<AddebitiBorsellino> addebitiBorsellinoList = null;
 		try {
 			connection = getConnection();											
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYADBSP_LST.routine());
+			//inizio LP 20240921 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYADBSP_LST.routine());
+            callableStatement = prepareCall(Routines.PYADBSP_LST.routine());
+			//fine LP 20240921 - PGNTCORE-24
 			callableStatement.setString(1,wallet.getIdWallet());
 			callableStatement.setString(2,wallet.getCodiceSocieta());
 			callableStatement.setString(3,wallet.getCuteCute());
@@ -118,12 +116,10 @@ public class AddebitiBorsellinoDAOImpl extends BaseDaoHandler  implements Addebi
 			}		
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-
 		} catch (HelperException e) {
-			e.printStackTrace();		
+			e.printStackTrace();
 		} catch (ParseException e) {
 			e.printStackTrace();
 		} finally {
@@ -165,8 +161,10 @@ public class AddebitiBorsellinoDAOImpl extends BaseDaoHandler  implements Addebi
 		ArrayList<AddebitiBorsellino> addebitiBorsellinoList = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(),
-					Routines.PYADBSP_LST_DETT.routine());
+			//inizio LP 20240921 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(),	Routines.PYADBSP_LST_DETT.routine());
+            callableStatement = prepareCall(Routines.PYADBSP_LST_DETT.routine());
+			//fine LP 20240921 - PGNTCORE-24
 			callableStatement.setString(1, wallet.getIdWallet());
 			callableStatement.setString(2, wallet.getCodiceSocieta());
 			callableStatement.setString(3, wallet.getCuteCute());
@@ -203,7 +201,6 @@ public class AddebitiBorsellinoDAOImpl extends BaseDaoHandler  implements Addebi
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
 		} catch (HelperException e) {
@@ -248,8 +245,10 @@ public class AddebitiBorsellinoDAOImpl extends BaseDaoHandler  implements Addebi
 		ArrayList<AddebitiPopup> addebitiPopup = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(),
-					Routines.PYADBSP_POPUP.routine());
+			//inizio LP 20240921 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(),	Routines.PYADBSP_POPUP.routine());
+            callableStatement = prepareCall(Routines.PYADBSP_POPUP.routine());
+			//fine LP 20240921 - PGNTCORE-24
 			callableStatement.setString(1, wallet.getCodiceSocieta());
 			callableStatement.setString(2, wallet.getCuteCute());
 			callableStatement.setString(3, wallet.getChiaveEnte());

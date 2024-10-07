@@ -1,73 +1,53 @@
 package com.seda.payer.core.sosta.dao;
+
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.ResultSet;
-import java.sql.SQLData;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.List;
-
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
-
-
-
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
-import com.seda.data.spi.PageInfo;
-
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
-import com.seda.payer.core.wallet.bean.FattureRep;
-import com.seda.payer.core.wallet.bean.Wallet;
-import com.seda.payer.core.wallet.bean.WalletPageList;
-
 
 public class SostaDAOImpl extends BaseDaoHandler implements SostaDAO  { 
 	private static final long serialVersionUID = 1L;
-	
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
 	public SostaDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	public SostaDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}	
-	
-	
+
 	public long calcolaSosta(String codiceUtente, String ente, String targa,
 			String matricola, String nomevia, String numerocivico,
 			Calendar dataorainiziososta, Calendar dataorafinesosta,
 			long identificativoagevolazione) throws DaoException {
-
-
 		CallableStatement callableStatement=null;
 		ResultSet resultSet=null;
 		Connection connection = null;
 		CachedRowSet rowSet = null;
-		
 		String orario = String.valueOf(dataorainiziososta.get(Calendar.HOUR_OF_DAY));
 		long tariffaOraria = 0;
 		long importoSosta = 0;
 		long milliSosta = (dataorafinesosta.getTimeInMillis() - dataorainiziososta.getTimeInMillis());
 		long minutiSosta = milliSosta / (1000 * 60);
 		//TODO: gestire eventuale arrotondamento per eccesso dei minuti
-		
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSATSP_SEL.routine());
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSATSP_SEL.routine());
+            callableStatement = prepareCall(Routines.PYSATSP_SEL.routine());
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setString(1, codiceUtente);
 			callableStatement.setString(2, ente);
 			callableStatement.setString(3, matricola);
@@ -84,20 +64,21 @@ public class SostaDAOImpl extends BaseDaoHandler implements SostaDAO  {
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (rowSet.next() ) {
-				String zonaTariffaria = rowSet.getString(1);
-				String matricolaTar = rowSet.getString(2);
-				String nomeviaTar= rowSet.getString(3);
-				String orarioTar= rowSet.getString(4);
+				//inizio LP 20240919 - PGNTCORE-24
+				//String zonaTariffaria = rowSet.getString(1);
+				//String matricolaTar = rowSet.getString(2);
+				//String nomeviaTar= rowSet.getString(3);
+				//String orarioTar= rowSet.getString(4);
+				//tariffaOraria = rowSet.getLong(5);
+				//String municipio = rowSet.getString(6);
+				//String ambito = rowSet.getString(7);
+				//String tratto = rowSet.getString(8);
+				//String agevolazioniTariffarie = rowSet.getString(9);
 				tariffaOraria = rowSet.getLong(5);
-				String municipio = rowSet.getString(6);
-				String ambito = rowSet.getString(7);
-				String tratto = rowSet.getString(8);
-				String agevolazioniTariffarie = rowSet.getString(9);
-				
+				//fine LP 20240919 - PGNTCORE-24
 			}
 		} catch (SQLException e) {
 			throw new DaoException(e);
@@ -105,7 +86,7 @@ public class SostaDAOImpl extends BaseDaoHandler implements SostaDAO  {
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//if (closeConnection) {
 				//inizio LP PG21XX04 Leak
 				//DAOHelper.closeIgnoringException(callableStatement);
@@ -141,10 +122,8 @@ public class SostaDAOImpl extends BaseDaoHandler implements SostaDAO  {
 				//fine LP PG21XX04 Leak
 			//}
 		}
-		
-		importoSosta =  (long)(tariffaOraria / 60f * minutiSosta); 
+		importoSosta =  (long) (tariffaOraria / 60f * minutiSosta); 
 		//TODO: gestire eventuale arrotondamento
-		
 		return importoSosta;
 	}
 //
@@ -173,7 +152,6 @@ public class SostaDAOImpl extends BaseDaoHandler implements SostaDAO  {
 //			try {
 //				rowSet = Convert.stringToWebRowSet(selectXml);
 //			} catch (IOException e) {
-//				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
 //

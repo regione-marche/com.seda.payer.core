@@ -4,40 +4,43 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
-
 import javax.sql.DataSource;
 
-import com.seda.data.dao.DAOHelper;
-
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.dao.Routines;
-import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.wallet.bean.Scuola;
 
 public class ScuolaDAOImpl  extends  BaseDaoHandler  implements ScuolaDAO  {
 	private static final long serialVersionUID = 1L;
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
+
 	public ScuolaDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	public ScuolaDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
+
 	//inizio LP PG21XX04
 	//Nota. La chiusura della connection è affidata al chiamante.
 	//fine LP PG21XX04
 	public String insertBatch(Scuola scuola)  {
 		CallableStatement callableStatement=null;
-		Connection connection = null; 
+		//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
+		//Connection connection = null; 
+		//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
 		String message = "";
 		try {
-			connection = getConnection();
-			
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSCUSP_INS.routine());
+			//inizio LP 20240828 - PGNTCORE-24/PGNTWPB-3
+			//connection = getConnection();
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSCUSP_INS.routine());
+			callableStatement = prepareCall(Routines.PYSCUSP_INS.routine());
+			//fine LP 20240828 - PGNTCORE-24/PGNTWPB-3
 //		1	I_SCU_CSOCCSOC VARCHAR(5),
 //		2	I_SCU_CUTECUTE VARCHAR(5),
 //		3	I_SCU_KANEKENT CHAR(10),
@@ -85,7 +88,6 @@ public class ScuolaDAOImpl  extends  BaseDaoHandler  implements ScuolaDAO  {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return message;
 	}
 }

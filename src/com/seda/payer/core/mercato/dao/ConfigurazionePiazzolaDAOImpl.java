@@ -13,18 +13,14 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
-//import com.seda.payer.core.mercato.bean.ConfigurazioneCompenso;
 import com.seda.payer.core.mercato.bean.ConfigurazionePiazzola;
 import com.seda.payer.core.mercato.bean.EsitoRisposte;
 import com.seda.payer.core.mercato.bean.MercatoPageList;
-import com.seda.payer.core.mercato.dao.MercatoDAO;
 
 public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements ConfigurazionePiazzolaDAO  {
 	//private static final long serialVersionUID = 1L;
@@ -68,7 +64,10 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 //				OUT O_TOTROWS INTEGER,
 //				OUT O_TOTPAGES SMALLINT			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_LST.routine());
+            callableStatement = prepareCall(Routines.PYPZLSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,configurazionePiazzola.getCodiceSocieta());
@@ -170,7 +169,10 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_DEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_DEL.routine());
+            callableStatement = prepareCall(Routines.PYPZLSP_DEL.routine());
+			//fine LP PGNTCORE-24
 //			IN I_PZL_CSOCCSOC VARCHAR(5), 
 //			IN I_PZL_CUTECUTE VARCHAR(5),
 //			IN I_PZL_KANEKENT CHAR(10),
@@ -228,8 +230,10 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_INS.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_INS.routine());
+            callableStatement = prepareCall(Routines.PYPZLSP_INS.routine());
+			//fine LP PGNTCORE-24
 //					IN I_PZL_KPZLKPZL VARCHAR(64),
 //					IN I_PZL_CSOCCSOC VARCHAR(5), 
 //					IN I_PZL_CUTECUTE VARCHAR(5),
@@ -371,8 +375,10 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-		
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_SEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_SEL.routine());
+            callableStatement = prepareCall(Routines.PYPZLSP_SEL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazionePiazzola.getCodiceSocieta());
 			callableStatement.setString(2, configurazionePiazzola.getCuteCute());
 			callableStatement.setString(3, configurazionePiazzola.getChiaveEnte());
@@ -386,7 +392,6 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -426,7 +431,7 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (rowSet != null) {
@@ -472,8 +477,10 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-		
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_SEK.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_SEK.routine());
+            callableStatement = prepareCall(Routines.PYPZLSP_SEK.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazionePiazzola.getCodiceKeyPiazzola());
 			callableStatement.execute();
 			
@@ -483,7 +490,6 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -522,8 +528,9 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
+			e.printStackTrace();
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (rowSet != null) {
@@ -577,7 +584,10 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 		ResultSet resultSet = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_TOT.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_TOT.routine());
+            callableStatement = prepareCall(Routines.PYPZLSP_TOT.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazionePiazzola.getCodiceSocieta());
 			callableStatement.setString(2, configurazionePiazzola.getCuteCute());
 			callableStatement.setString(3, configurazionePiazzola.getChiaveEnte());
@@ -641,6 +651,7 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
+			e.printStackTrace();
 			throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -684,7 +695,10 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 		ResultSet resultSet = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_APM.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_APM.routine());
+            callableStatement = prepareCall(Routines.PYPZLSP_APM.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazionePiazzola.getCodiceSocieta());
 			callableStatement.setString(2, configurazionePiazzola.getCuteCute());
 			callableStatement.setString(3, configurazionePiazzola.getChiaveEnte());
@@ -725,6 +739,7 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
+			e.printStackTrace();
 			throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -766,8 +781,10 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_UPD.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_UPD.routine());
+            callableStatement = prepareCall(Routines.PYPZLSP_UPD.routine());
+			//fine LP PGNTCORE-24
 //			IN I_PZL_CSOCCSOC VARCHAR(5), 
 //			IN I_PZL_CUTECUTE VARCHAR(5),
 //			IN I_PZL_KANEKENT CHAR(10),
@@ -895,7 +912,10 @@ public class ConfigurazionePiazzolaDAOImpl extends BaseDaoHandler  implements Co
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_UPK.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYPZLSP_UPK.routine());
+            callableStatement = prepareCall(Routines.PYPZLSP_UPK.routine());
+			//fine LP PGNTCORE-24
 //		IN I_PZL_KPZLKPZL VARCHAR(64), 
 //		IN I_PZL_GPZLDTIN TIMESTAMP,
 //		IN I_PZL_GPZLDTFN TIMESTAMP,

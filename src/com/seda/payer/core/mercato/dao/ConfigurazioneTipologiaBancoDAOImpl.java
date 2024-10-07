@@ -12,8 +12,6 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
@@ -22,7 +20,6 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.mercato.bean.ConfigurazioneTipologiaBanco;
 import com.seda.payer.core.mercato.bean.EsitoRisposte;
 import com.seda.payer.core.mercato.bean.MercatoPageList;
-import com.seda.payer.core.mercato.dao.MercatoDAO;
 
 public class ConfigurazioneTipologiaBancoDAOImpl extends BaseDaoHandler  implements ConfigurazioneTipologiaBancoDAO  {
 	private static final long serialVersionUID = 1L;
@@ -63,7 +60,10 @@ public class ConfigurazioneTipologiaBancoDAOImpl extends BaseDaoHandler  impleme
 //				OUT O_TOTPAGES SMALLINT
 				
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTPBSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTPBSP_LST.routine());
+            callableStatement = prepareCall(Routines.PYTPBSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,configurazioneTipologiaBanco.getCodiceSocieta());
@@ -95,8 +95,6 @@ public class ConfigurazioneTipologiaBancoDAOImpl extends BaseDaoHandler  impleme
 				mercatoPageList = new MercatoPageList(pageInfo, "00","",getWebRowSetXml());
 				return mercatoPageList;
 			}
-			
-			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -144,7 +142,10 @@ public class ConfigurazioneTipologiaBancoDAOImpl extends BaseDaoHandler  impleme
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTPBSP_DEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTPBSP_DEL.routine());
+            callableStatement = prepareCall(Routines.PYTPBSP_DEL.routine());
+			//fine LP PGNTCORE-24
 //			IN I_TPB_CSOCCSOC VARCHAR(5), 
 //			IN I_TPB_CUTECUTE VARCHAR(5),
 //			IN I_TPB_KANEKENT CHAR(10),
@@ -200,8 +201,10 @@ public class ConfigurazioneTipologiaBancoDAOImpl extends BaseDaoHandler  impleme
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTPBSP_INS.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTPBSP_INS.routine());
+            callableStatement = prepareCall(Routines.PYTPBSP_INS.routine());
+			//fine LP PGNTCORE-24
 //					IN I_TPB_CSOCCSOC VARCHAR(5), 
 //					IN I_TPB_CUTECUTE VARCHAR(5),
 //					IN I_TPB_KANEKENT CHAR(10),
@@ -271,7 +274,10 @@ public class ConfigurazioneTipologiaBancoDAOImpl extends BaseDaoHandler  impleme
 //			IN I_TPB_CUTECUTE VARCHAR(5),
 //			IN I_TPB_KANEKENT CHAR(10),
 //			IN I_TPB_CTPBCTIP VARCHAR(10)			
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTPBSP_SEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTPBSP_SEL.routine());
+            callableStatement = prepareCall(Routines.PYTPBSP_SEL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneTipologiaBanco.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneTipologiaBanco.getCuteCute());
 			callableStatement.setString(3, configurazioneTipologiaBanco.getChiaveEnte());
@@ -284,7 +290,6 @@ public class ConfigurazioneTipologiaBancoDAOImpl extends BaseDaoHandler  impleme
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -308,7 +313,7 @@ public class ConfigurazioneTipologiaBancoDAOImpl extends BaseDaoHandler  impleme
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (rowSet != null) {
@@ -356,7 +361,10 @@ public class ConfigurazioneTipologiaBancoDAOImpl extends BaseDaoHandler  impleme
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTPBSP_TOT.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTPBSP_TOT.routine());
+            callableStatement = prepareCall(Routines.PYTPBSP_TOT.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneTipologiaBanco.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneTipologiaBanco.getCuteCute());
 			callableStatement.setString(3, configurazioneTipologiaBanco.getChiaveEnte());
@@ -422,8 +430,10 @@ public class ConfigurazioneTipologiaBancoDAOImpl extends BaseDaoHandler  impleme
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTPBSP_UPD.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTPBSP_UPD.routine());
+            callableStatement = prepareCall(Routines.PYTPBSP_UPD.routine());
+			//fine LP PGNTCORE-24
 //			IN I_TPB_CSOCCSOC VARCHAR(5), 
 //			IN I_TPB_CUTECUTE VARCHAR(5),
 //			IN I_TPB_KANEKENT CHAR(10),
@@ -476,5 +486,4 @@ public class ConfigurazioneTipologiaBancoDAOImpl extends BaseDaoHandler  impleme
 		}
 		return ret;
 	}	
-
 }

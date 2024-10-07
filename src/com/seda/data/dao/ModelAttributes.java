@@ -12,7 +12,7 @@ import java.util.Map;
 /**
  * Questa classe fornisce il supporto per l'aggiunta di attributi facoltativi al model
  * @author f.ricci
- * @deprecated usare com.seda.commons.data.AttributesModel. Nelle prossime release sarà eliminato
+ * deprecated usare com.seda.commons.data.AttributesModel. Nelle prossime release sarà eliminato
  *
  */
 public class ModelAttributes implements Serializable {

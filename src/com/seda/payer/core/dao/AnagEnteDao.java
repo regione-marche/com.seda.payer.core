@@ -22,7 +22,13 @@ public class AnagEnteDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
+	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5/PGNTBIMAIO-1/PGNTBOLDER-1
 	public AnagEnte doDetail(String chiaveEnte) throws DaoException {
+		return doDetailTail(true, chiaveEnte);
+	}
+
+	public AnagEnte doDetailTail(boolean bFlagUpdateAutocommit, String chiaveEnte) throws DaoException {
+	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5/PGNTBIMAIO-1/PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
@@ -30,7 +36,10 @@ public class AnagEnteDao extends BaseDaoHandler {
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.ANE_DODETAIL.routine());
-			callableStatement = prepareCall(Routines.ANE_DODETAIL.routine());
+			//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5/PGNTBIMAIO-1/PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.ANE_DODETAIL.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.ANE_DODETAIL.routine());
+			//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5/PGNTBIMAIO-1/PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, chiaveEnte);
 			if (callableStatement.execute()) {
@@ -48,9 +57,8 @@ public class AnagEnteDao extends BaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
 		//inizio LP PG21XX04 Leak
-		finally {
+		} finally {
 			if(data != null) {
 				try {
 					data.close();
@@ -64,9 +72,10 @@ public class AnagEnteDao extends BaseDaoHandler {
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				callableStatement = null; //LP 20240909 - PGNTBOLDER-24
 			}
-		}
 		//fine LP PG21XX04 Leak
+		}
 	}
 
 	public void doRowSets(AnagEnte anagEnte) throws DaoException {
@@ -74,15 +83,11 @@ public class AnagEnteDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(AnagEnte anagEnte, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(anagEnte, rowsPerPage, pageNumber);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(anagEnte, rowsPerPage, pageNumber);
 	}
 
 	public void rowSets(AnagEnte anagEnte, int rowsPerPage, int pageNumber) throws DaoException {
@@ -124,37 +129,51 @@ public class AnagEnteDao extends BaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
 		//inizio LP PG21XX04 Leak
-		finally {
+		} finally {
 			if(callableStatement != null) {
 				try {
 					callableStatement.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				callableStatement = null; //LP 20240909 - PGNTBOLDER-24
 			}
-		}
 		//fine LP PG21XX04 Leak
+		}
 	}
 
-	public void doSave(AnagEnte anagEnte,String codOp) throws DaoException {
+	//inizio LP 20240909 - PGNTBOLDER-1
+	public void doSave(AnagEnte anagEnte, String codOp) throws DaoException {
+		doSaveTail(true, anagEnte, codOp);
+	}
+
+	public void doSaveTail(boolean bFlagUpdateAutocommit, AnagEnte anagEnte, String codOp) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		try	{
 			if ((anagEnte.getChiaveEnte() == null || anagEnte.getChiaveEnte().length() == 0) && codOp.compareTo(TypeRequest.EDIT_SCOPE.scope())==0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagEnte.chiaveRange"));
 			if (anagEnte.getAnagProvCom() == null || anagEnte.getAnagProvCom().getCodiceBelfiore() == null || anagEnte.getAnagProvCom().getCodiceBelfiore().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagEnte.codiceBelfiore"));			
-	/*		if (                            anagEnte.getAnagProvCom().getCompany() == null || anagEnte.getAnagProvCom().getCompany().getCompanyCode()== null ||  anagEnte.getAnagProvCom().getCompany().getCompanyCode().length()==0)
+			/*if (anagEnte.getAnagProvCom().getCompany() == null || anagEnte.getAnagProvCom().getCompany().getCompanyCode()== null ||  anagEnte.getAnagProvCom().getCompany().getCompanyCode().length()==0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagEnte.companyCode")); */			
-			AnagEnte data = doDetail(anagEnte.getChiaveEnte());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//AnagEnte data = doDetail(anagEnte.getChiaveEnte());
+			AnagEnte data = doDetailTail(bFlagUpdateAutocommit, anagEnte.getChiaveEnte());
+			//fine LP 20240909 - PGNTBOLDER-1
 			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagEnte.saveadd.error"));
 			if (data != null) {
-				callableStatement = prepareCall(Routines.ANE_DOUPDATE.routine());
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.ANE_DOUPDATE.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.ANE_DOUPDATE.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
 				anagEnte.update(callableStatement);
-			}
-			else {
-				callableStatement = prepareCall(Routines.ANE_DOINSERT.routine());
+			} else {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.ANE_DOINSERT.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocommit, Routines.ANE_DOINSERT.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
 				anagEnte.save(callableStatement);
 			}
 			callableStatement.execute();
@@ -165,28 +184,37 @@ public class AnagEnteDao extends BaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
 		//inizio LP PG21XX04 Leak
-		finally {
+		} finally {
 			if(callableStatement != null) {
 				try {
 					callableStatement.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				callableStatement = null; //LP 20240909 - PGNTBOLDER-24
 			}
-		}
 		//fine LP PG21XX04 Leak
+		}
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doDelete(AnagEnte anagEnte) throws DaoException {
+		doDeleteTail(true, anagEnte);
+	}
+
+	public void doDeleteTail(boolean bFlagUpdateAutocomit, AnagEnte anagEnte) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.ANE_DODELETE.routine());
-			callableStatement = prepareCall(Routines.ANE_DODELETE.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.ANE_DODELETE.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.ANE_DODELETE.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			if (anagEnte.getChiaveEnte() == null || anagEnte.getChiaveEnte().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagEnte.chiaveEnte"));
@@ -194,25 +222,23 @@ public class AnagEnteDao extends BaseDaoHandler {
 			callableStatement.setString(1, anagEnte.getChiaveEnte());
 			callableStatement.execute();
 			//commit();
-			
-			
 		} catch (SQLException x) {
 			throw new DaoException(x.getErrorCode(),x.getMessage(),x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(Integer.parseInt(Messages.ILL_ARG_ERR_CODE.format()),x.getMessage(),x);
 		} catch (HelperException x) {
 			throw new DaoException(Integer.parseInt(Messages.HELPER_ERR_CODE.format()),x.getMessage(),x);
-		}
 		//inizio LP PG21XX04 Leak
-		finally {
+		} finally {
 			if(callableStatement != null) {
 				try {
 					callableStatement.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				callableStatement = null; //LP 20240909 - PGNTBOLDER-24
 			}
-		}
 		//fine LP PG21XX04 Leak
+		}
 	}
 }

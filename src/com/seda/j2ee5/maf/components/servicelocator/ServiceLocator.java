@@ -22,7 +22,7 @@ import javax.sql.DataSource;
 
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.logger.LoggerWrapper;
-import com.seda.j2ee5.maf.components.jms.pooling.QueueSenderManager;
+import com.seda.data.datasource.DataSourceImpl;
 import com.seda.j2ee5.maf.util.MAFLogger;
 
 /**
@@ -405,23 +405,21 @@ public class ServiceLocator {
     }
     public DataSource getDataSource(String url, String initial,  
     		String principal, String credentials, String dataSourceName) throws ServiceLocatorException {
-    	DataSource dataSource = null;
-    	String contexKey = getInitialContextKey(url, initial, principal, credentials);
-    	String cacheKey=contexKey+":"+dataSourceName;      	    	    	
-    	try {
-    		if (dataSourceCache.containsKey(cacheKey)) {
-    			dataSource = (DataSource) dataSourceCache.get(cacheKey);
-    		} else {
+				String contexKey = getInitialContextKey(url, initial, principal, credentials);
+				String cacheKey=contexKey+":"+dataSourceName;      	    	    	
+		try {
+			DataSource dataSource = null;
+    		if (!dataSourceCache.containsKey(cacheKey)) {
     			dataSource = (DataSource) getInitialContext(url, initial, 
     					principal, credentials).lookup(dataSourceName);
-    			dataSourceCache.put(cacheKey, dataSource );
+    			dataSourceCache.put(cacheKey, new DataSourceImpl(dataSource) );
     		}
     	} catch (NamingException ne) {
     		throw new ServiceLocatorException(ne);
     	} catch (Exception e) {
     		throw new ServiceLocatorException(e);
     	}
-    	return dataSource;
+    	return (DataSource) dataSourceCache.get(cacheKey);
     }
 
 }

@@ -11,16 +11,7 @@ import java.sql.Types;
 import java.text.SimpleDateFormat;
 
 import javax.sql.rowset.WebRowSet;
-//import java.util.ArrayList;
-//import java.util.Calendar;
-//import java.util.Date;
-
-//import javax.sql.rowset.WebRowSet;
-
-//import com.ibm.icu.math.BigDecimal;
 import com.seda.data.helper.HelperException;
-//import com.seda.payer.core.bean.EccedenzaDetailPage;
-//import com.seda.payer.core.bean.EccedenzaDettaglioBean;
 import com.seda.payer.core.bean.AnagraficaPartitaRuolo;
 import com.seda.payer.core.bean.RuoliArticoliPage;
 import com.seda.payer.core.bean.RuoliPagamentiCSV;
@@ -30,11 +21,9 @@ import com.seda.payer.core.bean.PartitePage;
 import com.seda.payer.core.bean.RuoliAnagrafichePage;
 import com.seda.payer.core.bean.RuoliPage;
 import com.seda.payer.core.bean.Ruolo;
-//import com.seda.payer.core.bean.EccedenzePage;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 
-//@SuppressWarnings("unchecked")
 public class RuoliBancaDatiDao extends BaseDaoHandler {
 
 /*	
@@ -245,7 +234,7 @@ public class RuoliBancaDatiDao extends BaseDaoHandler {
 			callableStatement = prepareCall(Routines.PYRRUSP_S_SEL.routine());
 			//fine LP PG21XX04 Leak
 
-			callableStatement.setBigDecimal(1, new java.math.BigDecimal(dto.getProgrFlusso()));
+			callableStatement.setLong(1, Long.parseLong(dto.getProgrFlusso()));
 			callableStatement.setString(2, dto.getCodiceSocieta());
 			callableStatement.setString(3, dto.getCodiceUtente());
 			callableStatement.setString(4, dto.getCodiceEnte());
@@ -305,7 +294,7 @@ public class RuoliBancaDatiDao extends BaseDaoHandler {
 			callableStatement = prepareCall(Routines.PYRRUSP_S_SEL.routine());
 			//fine LP PG21XX04 Leak
 
-			callableStatement.setBigDecimal(1, new java.math.BigDecimal(dto.getProgrFlusso()));
+			callableStatement.setLong(1, Long.parseLong(dto.getProgrFlusso()));
 			callableStatement.setString(2, dto.getCodiceSocieta());
 			callableStatement.setString(3, dto.getCodiceUtente());
 			callableStatement.setString(4, dto.getCodiceEnte());
@@ -614,14 +603,14 @@ public class RuoliBancaDatiDao extends BaseDaoHandler {
 			callableStatement = prepareCall(Routines.PYRPASP_SEL.routine());
 			//fine LP PG21XX04 Leak
 
-			callableStatement.setBigDecimal(1, new java.math.BigDecimal(dto.getProgrFlusso()));
+			callableStatement.setLong(1, Long.parseLong(dto.getProgrFlusso()));
 			callableStatement.setString(2, dto.getCodiceSocieta());
 			callableStatement.setString(3, dto.getCodiceUtente());
 			callableStatement.setString(4, dto.getCodiceEnte());
 			callableStatement.setString(5, dto.getConcessione());
 			callableStatement.setString(6, dto.getAnnoRuolo());
 			callableStatement.setString(7, dto.getNumeroRuolo());
-			callableStatement.setBigDecimal(8, new java.math.BigDecimal(dto.getCodicePartita()));
+			callableStatement.setLong(8, Long.parseLong(dto.getCodicePartita()));
 			callableStatement.setString(9, dto.getCodiceTomb());
 /*
 			RPA_CSOCCSOC,RPA_CUTECUTE,ANE_CANECENT,RAR_CRARCCAR,RPA_NRPAANNO,RPA_NRPANUME,
@@ -1183,7 +1172,7 @@ SUM(RAR_IRARRESI) RESIDUO,RRU_GRRUGRUO
 			callableStatement = prepareCall(Routines.PYRANSP_SEL.routine());
 			//fine LP PG21XX04 Leak
 
-			callableStatement.setBigDecimal(1, new java.math.BigDecimal(dto.getProgrFlusso()));
+			callableStatement.setLong(1, Long.parseLong(dto.getProgrFlusso()));
 			callableStatement.setString(2, dto.getCodiceSocieta());
 			callableStatement.setString(3, dto.getCodiceUtente());
 			callableStatement.setString(4, dto.getCodiceEnte());
@@ -1499,25 +1488,26 @@ SUM(RAR_IRARRESI) RESIDUO,RRU_GRRUGRUO
 			callableStatement.setString(11, dto.getDataRegistrazioneA());
 			callableStatement.setString(12, dto.getDataEffettivaDa());
 			callableStatement.setString(13, dto.getDataEffettivaA());
-
-			data = callableStatement.executeQuery();
-
-			if (data != null) 
-			{
-				loadWebRowSet(data);
-				rowSet = getWebRowSet();
+			//inizio LP 20240811 - PGNTCORE-24
+			//data = callableStatement.executeQuery()
+			if(callableStatement.execute()) {
+				data = callableStatement.getResultSet();
+				if(data != null) {
+			//fine LP 20240811 - PGNTCORE-24
+					if (data != null) {
+						loadWebRowSet(data);
+						rowSet = getWebRowSet();
+					}
+			//inizio LP 20240811 - PGNTCORE-24
+				}
 			}
+			//fine LP 20240811 - PGNTCORE-24
 	} 
-	catch (SQLException x) 
-	{
+	catch (SQLException x) {
 		throw new DaoException(x);
-	} 
-	catch (IllegalArgumentException x) 
-	{
+	} catch (IllegalArgumentException x) {
 		throw new DaoException(x);
-	} 
-	catch (HelperException x) 
-	{
+	} catch (HelperException x) {
 		throw new DaoException(x);
 	} 
 	//inizio LP PG21XX04 Leak

@@ -2139,17 +2139,30 @@ public class TxTransazioniDao extends BaseDaoHandler{
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void insertTransazione(Transazione transazione) throws DaoException, SQLException {
+		//
+		// Nota:
+		//		Qui rispetto allo "standard" il metodo con firma 
+		//		"pre postgres" viene usato con bFlagUpdateAutocomit == false
+		//
+		insertTransazioneTail(false, transazione);
+	}
+
+	public void insertTransazioneTail(boolean bFlagUpdateAutocomit, Transazione transazione) throws DaoException, SQLException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		try
 		{
-			callableStatement = prepareCall(Routines.TRA_DOINSERT.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.TRA_DOINSERT.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			transazione.save(callableStatement);
 			callableStatement.execute();
 			String esito=callableStatement.getString(49);
 			if(esito.trim().equalsIgnoreCase("KO")){
-				throw new DaoException(100,"Il numero di riferimento ordine associato alla transazione corrente: "+transazione.getChiaveTransazione()+" è già presente.");
+				throw new DaoException(100,"Il numero di riferimento ordine associato alla transazione corrente: " + transazione.getChiaveTransazione() + " è già presente.");
 			}
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);

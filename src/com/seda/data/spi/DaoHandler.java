@@ -3,8 +3,6 @@
  */
 package com.seda.data.spi;
 
-
-
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -21,12 +19,15 @@ import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.helper.Messages;
+import com.seda.data.procedure.reflection.DriverType;
+import com.seda.data.procedure.reflection.MetaProcedure;
 import com.sun.rowset.CachedRowSetImpl;
 import com.sun.rowset.WebRowSetImpl;
 /**
  * @author Seda Lab
  *
  */
+@SuppressWarnings("restriction")
 public abstract class DaoHandler {
 
 	private String schema;
@@ -107,6 +108,25 @@ public abstract class DaoHandler {
 		return prepareCall(routine, -1);
 	}
 
+	//inizio LP 20240821 - Nuove prepareCall per flagUpdateAutocommit
+	protected CallableStatement prepareCall(String routine, boolean flagUpdateAutocommit) throws IllegalArgumentException, SQLException, HelperException {
+		return prepareCall(routine, -1, flagUpdateAutocommit ? 1 : 0);
+	}
+	
+	protected CallableStatement prepareCall(String routine, String methodRest, String restService, boolean flagUpdateAutocommit) throws IllegalArgumentException, SQLException, HelperException {
+		return prepareCall(routine, -1, flagUpdateAutocommit ? 1 : 0);
+	}
+
+	protected CallableStatement prepareCall(boolean flagUpdateAutocommit, String routine) throws IllegalArgumentException, SQLException, HelperException {
+		return prepareCall(routine, -1, flagUpdateAutocommit ? 1 : 0);
+	}
+	//fine LP 20240821 - Nuove prepareCall per flagUpdateAutocommit
+
+	//inizio LP 20240828 - Nuove prepareCall per flagUpdateAutocommit
+	protected CallableStatement prepareCall(boolean flagUpdateAutocommit, String routine, String methodRest, String restService) throws IllegalArgumentException, SQLException, HelperException {
+		return prepareCall(routine, -1, flagUpdateAutocommit ? 1 : 0);
+	}
+	//fine LP 20240828 - Nuove prepareCall per flagUpdateAutocommit
 	
 	/**
 	 * Returns a prepared CallableStatement object builded using DAO schema and provided routine name
@@ -119,9 +139,36 @@ public abstract class DaoHandler {
 	 * @throws HelperException in case of unpaired number of parameters
 	 */
 	protected final CallableStatement prepareCall(String routine, int parameterCountExpected) throws IllegalArgumentException, SQLException, HelperException {
-		return Helper.prepareCall(getConnection(), getSchema(), routine, parameterCountExpected);
+		//TODO se jdbc di tipo postgres usiamo metaprocedure altrimenti usiamo helper
+		//return Helper.prepareCall(getConnection(), getSchema(), routine, parameterCountExpected);
+		if (DriverType.getDriverType(getConnection())==2)
+			return MetaProcedure.prepareCall(getConnection(), getSchema(), routine);
+		else
+			return Helper.prepareCall(getConnection(), getSchema(), routine, parameterCountExpected);
 	}	
+	
+	//inizio LP 20240821 - Nuova prepareCall con flagUpdateAutocommit
 	/**
+	 * Returns a prepared CallableStatement object builded using DAO schema and provided routine name
+	 *  
+	 * @param routine the name of the stored procedure that will called
+	 * @param parameterCountExpected The number of expected parameter excluding the return value
+	 * @param flagAutocommit vale solo per postgres
+	 * @return <code>{@link CallableStatement}</code> the prepared statement
+	 * @throws IllegalArgumentException in case of null input arguments
+	 * @throws SQLException if a database access error occurs 
+	 * @throws HelperException in case of unpaired number of parameters
+	 */
+	protected final CallableStatement prepareCall(String routine, int parameterCountExpected, int flagUpdateAutocommit) throws IllegalArgumentException, SQLException, HelperException {
+		if (DriverType.getDriverType(getConnection()) == 2)
+			return MetaProcedure.prepareCall(getConnection(), getSchema(), routine, flagUpdateAutocommit);
+		else
+			return Helper.prepareCall(getConnection(), getSchema(), routine, parameterCountExpected);
+	}	
+	//fine LP 20240821 - Nuova prepareCall con flagAutocommit
+	
+	/**
+	 * 
 	 * Constructor of DAO object
 	 * 
 	 * @param connection The {@link Connection} object used in the DAO method operations

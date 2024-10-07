@@ -1,7 +1,4 @@
-//da com.seda.payer.core.dao;
 package com.seda.payer.core.dao;
-
-//import com.seda.payer.riversamento.facade.logger.LogWriter;
 
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
@@ -10,20 +7,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
-
 import javax.sql.rowset.WebRowSet;
-//import java.util.ArrayList;
-//import java.util.Calendar;
-//import java.util.Date;
-
-//import javax.sql.rowset.WebRowSet;
-
-//import com.ibm.icu.math.BigDecimal;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.EntrateDocumentiPage;
-//import com.seda.payer.core.bean.EccedenzaDetailPage;
-//import com.seda.payer.core.bean.EccedenzaDettaglioBean;
-import com.seda.payer.core.bean.DettaglioComunicazioneImpostaSoggiorno;
 import com.seda.payer.core.bean.Documento;
 import com.seda.payer.core.bean.EntrateNotePage;
 import com.seda.payer.core.bean.EntratePagamentiDocumentiPage;
@@ -38,7 +24,6 @@ import com.seda.payer.core.bean.Paginazione;
 import com.seda.payer.core.bean.EntrateDocumentoDettaglio;
 import com.seda.payer.core.bean.EntrateTributoDettaglio;
 import com.seda.payer.core.bean.Scadenza;
-//import com.seda.payer.core.bean.EccedenzePage;
 import com.seda.payer.core.bean.EntrateScadenzePage;
 import com.seda.payer.core.bean.EntrateTributiPage;
 import com.seda.payer.core.exception.DaoException;
@@ -77,35 +62,25 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 	private final String PYEH1SP_STAT_EMIS = "PYEH1SP_STAT_EMIS";
 	private final String PYEH1SP_SEL_EMIS = "PYEH1SP_SEL_EMIS";
 	*/
-	
+
 	public EntrateBancaDatiDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
 
-	
 // pagamenti	
 	public EntratePagamentiPage getPagamenti(EntratePagamentiPage dto, String ordine) throws DaoException {
-		
 		return getPagamenti(dto, ordine, 0, 0);
 	}
 
 	public EntratePagamentiPage getPagamenti(EntratePagamentiPage dto, String ordine, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			dto = getListaPagamenti(dto, ordine, rowsPerPage, pageNumber);
-			return dto;
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		dto = getListaPagamenti(dto, ordine, rowsPerPage, pageNumber);
+		return dto;
 	}
 
-	
-	
-	
-	
 	private EntratePagamentiPage getListaPagamenti(EntratePagamentiPage dto, String ordine, int rowsPerPage, int pageNumber) throws DaoException 
 	{
 		//CallableStatement callableStatement = null;
@@ -113,7 +88,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
-
 //			CallableStatement callableStatement = prepareCall(PYEH3SP_LST);		
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.EH3_DOLIST.routine());
@@ -134,16 +108,13 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(13, dto.getDataPagamentoA());
 			callableStatement.setString(14, dto.getTipologiaServizio());
 			callableStatement.setString(15, dto.getNumeroDocumento());
-
 			if (dto.getProgRiscossione()==null || dto.getProgRiscossione().equals(""))
 				callableStatement.setInt(16, -1);
 			else	
 				callableStatement.setInt(16, Integer.parseInt(dto.getProgRiscossione()));
-
 			callableStatement.setString(17, ordine);
 			callableStatement.setInt(18, rowsPerPage);
 			callableStatement.setInt(19, pageNumber);
-
 			/* we register row start */
 			callableStatement.registerOutParameter(20, Types.INTEGER);
 			/* we register row end */
@@ -153,8 +124,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			/* we register total pages */
 			callableStatement.registerOutParameter(23, Types.SMALLINT);
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				/* we register page info */
 				registerPageInfo(rowsPerPage, pageNumber, callableStatement.getInt(20), callableStatement.getInt(21), 
@@ -179,68 +149,60 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-
 		return dto;
 	}
 
-		
 	public WebRowSet estraiPagamentiCsv(EntratePagamentiCSV dto) throws DaoException	
-		{	
-
-			ResultSet data = null;
-			WebRowSet rowSet = null;
+	{	
+		ResultSet data = null;
+		WebRowSet rowSet = null;
+		//inizio LP PG21XX04 Leak
+		CallableStatement callableStatement = null;
+		//fine LP PG21XX04 Leak
+		try {
+			//CallableStatement callableStatement = prepareCall(PYEH3SP_LST_CSV);		
 			//inizio LP PG21XX04 Leak
-			CallableStatement callableStatement = null;
+			//CallableStatement callableStatement = prepareCall(Routines.EH3_DOLIST_CSV.routine());
+			callableStatement = prepareCall(Routines.EH3_DOLIST_CSV.routine());
 			//fine LP PG21XX04 Leak
-			try {
-				
-				//CallableStatement callableStatement = prepareCall(PYEH3SP_LST_CSV);		
-				//inizio LP PG21XX04 Leak
-				//CallableStatement callableStatement = prepareCall(Routines.EH3_DOLIST_CSV.routine());
-				callableStatement = prepareCall(Routines.EH3_DOLIST_CSV.routine());
-				//fine LP PG21XX04 Leak
-				
-				callableStatement.setString(1, dto.getCodiceSocieta());
-				callableStatement.setString(2, dto.getCodiceUtente());
-				callableStatement.setString(3, dto.getCodiceEnte());			
-				callableStatement.setString(4, dto.getImpostaServizio());
-				callableStatement.setString(5, dto.getCodiceFiscale());
-				callableStatement.setString(6, dto.getModalita());
-				callableStatement.setString(7, dto.getTipoMovimento());
-				callableStatement.setString(8, dto.getTipoUfficio());
-				callableStatement.setString(9, dto.getCodiceUfficio());
-				callableStatement.setString(10, dto.getAnnoEmissione());
-				callableStatement.setString(11, dto.getNumeroEmissione());
-				callableStatement.setString(12, dto.getDataPagamentoDa());
-				callableStatement.setString(13, dto.getDataPagamentoA());
-				callableStatement.setString(14, dto.getTipologiaServizio());
-				callableStatement.setString(15, dto.getNumeroDocumento());
-
-				if (dto.getProgRiscossione()==null || dto.getProgRiscossione().equals(""))
-					callableStatement.setInt(16, -1);
-				else	
-					callableStatement.setInt(16, (Integer.parseInt(dto.getProgRiscossione())));
-										
-				data = callableStatement.executeQuery();
-
-				if (data != null) 
-				{
+			callableStatement.setString(1, dto.getCodiceSocieta());
+			callableStatement.setString(2, dto.getCodiceUtente());
+			callableStatement.setString(3, dto.getCodiceEnte());			
+			callableStatement.setString(4, dto.getImpostaServizio());
+			callableStatement.setString(5, dto.getCodiceFiscale());
+			callableStatement.setString(6, dto.getModalita());
+			callableStatement.setString(7, dto.getTipoMovimento());
+			callableStatement.setString(8, dto.getTipoUfficio());
+			callableStatement.setString(9, dto.getCodiceUfficio());
+			callableStatement.setString(10, dto.getAnnoEmissione());
+			callableStatement.setString(11, dto.getNumeroEmissione());
+			callableStatement.setString(12, dto.getDataPagamentoDa());
+			callableStatement.setString(13, dto.getDataPagamentoA());
+			callableStatement.setString(14, dto.getTipologiaServizio());
+			callableStatement.setString(15, dto.getNumeroDocumento());
+			if (dto.getProgRiscossione()==null || dto.getProgRiscossione().equals(""))
+				callableStatement.setInt(16, -1);
+			else	
+				callableStatement.setInt(16, (Integer.parseInt(dto.getProgRiscossione())));
+			//inizio LP 20240810 - PGNTCORE-24
+				//data = callableStatement.executeQuery();
+			if(callableStatement.execute()) {
+				data = callableStatement.getResultSet();
+			//fine LP 20240810 - PGNTCORE-24
+				if (data != null) {
 					loadWebRowSet(data);
 					rowSet = getWebRowSet();
 				}
-		} 
-		catch (SQLException x) 
-		{
+			//inizio LP 20240810 - PGNTCORE-24
+			}
+			//fine LP 20240810 - PGNTCORE-24
+		} catch (SQLException x) {
 			throw new DaoException(x);
-		} 
-		catch (IllegalArgumentException x) 
-		{
+		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
-		} 
-		catch (HelperException x) 
-		{
+		} catch (HelperException x) {
 			throw new DaoException(x);
-		} 
+		}
 		//inizio LP PG21XX04 Leak
 		//finally {}
 		finally {
@@ -260,35 +222,27 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 		}
 		//fine LP PG21XX04 Leak
-			
 		return rowSet;
 	}
-	
+
 	//anagrafiche
-	
 	public EntrateAnagrafichePage getAnagrafiche(EntrateAnagrafichePage dto) throws DaoException {
-
 		Paginazione paginazione = dto.getPaginazione();
-
 		if (paginazione.getRowsPerPage() <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
 
 		if (paginazione.getPageNumber() <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-
 		//CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
-			
 			//CallableStatement callableStatement = prepareCall(PYEH8SP_LST);		
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.EH8_DOLIST.routine());
 			callableStatement = prepareCall(Routines.EH8_DOLIST.routine());
 			//fine LP PG21XX04 Leak
-			
 			callableStatement.setString(1, dto.getCodiceSocieta());
 			callableStatement.setString(2, dto.getCodiceUtente());
 			callableStatement.setString(3, dto.getCodiceEnte());			
@@ -296,11 +250,9 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(5, dto.getCodiceFiscale());
 			callableStatement.setString(6, dto.getDenominazione());
 			callableStatement.setString(7, dto.getTipoRic());
-			
 			callableStatement.setString(8, paginazione.getOrder());
 			callableStatement.setInt(9, paginazione.getRowsPerPage());
 			callableStatement.setInt(10, paginazione.getPageNumber());
-
 			/* we register row start */
 			callableStatement.registerOutParameter(11, Types.INTEGER);
 			/* we register row end */
@@ -310,8 +262,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			/* we register total pages */
 			callableStatement.registerOutParameter(14, Types.SMALLINT);
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				/* we register page info */
 				registerPageInfo(paginazione.getRowsPerPage(), paginazione.getPageNumber(), callableStatement.getInt(11), callableStatement.getInt(12), 
@@ -336,12 +287,9 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return dto;
 	}
 
-	
-	
 	public EntrateDettaglioAnagrafica getDettaglioAnagrafica(EntrateDettaglioAnagrafica dto) throws DaoException 
 	{
 //		CallableStatement callableStatement = null;
@@ -364,13 +312,10 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
             callableStatement.setString(8, dto.getImpostaServizio()!=null?dto.getImpostaServizio():"");
             callableStatement.setString(9, dto.getCodiceFiscale()!=null?dto.getCodiceFiscale():"");
             callableStatement.setString(10, dto.getCodiceTomb()!=null?dto.getCodiceTomb():"");
-	           
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				dto.setListXml(getWebRowSetXml(RiversamentoDao.IDX_DOLIST_LISTA));                
 			}
-
 			/*
 			if (callableStatement.execute()) 
 			{
@@ -379,7 +324,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 				dto.setDettaglio(new AnagraficaDettaglioBean(ris));				
 			}
 			 */
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -397,22 +341,15 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-			
 		return dto;
-
-}
+	}
 
 	public EntrateDocumentiAnagrafica getDocumentiAnagrafica(EntrateDocumentiAnagrafica dto) throws DaoException {
-
 		Paginazione paginazione = dto.getPaginazione();
-
 		if (paginazione.getRowsPerPage() <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
 		if (paginazione.getPageNumber() <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-
 		//CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
@@ -433,11 +370,9 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
             callableStatement.setString(8, dto.getImpostaServizio()!=null?dto.getImpostaServizio():"");
             callableStatement.setString(9, dto.getCodiceFiscale()!=null?dto.getCodiceFiscale():"");
             callableStatement.setString(10, dto.getCodiceTomb()!=null?dto.getCodiceTomb():"");
-			
 			callableStatement.setString(11, paginazione.getOrder());
 			callableStatement.setInt(12, paginazione.getRowsPerPage());
 			callableStatement.setInt(13, paginazione.getPageNumber());
-
 			/* we register row start */
 			callableStatement.registerOutParameter(14, Types.INTEGER);
 			/* we register row end */
@@ -447,8 +382,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			/* we register total pages */
 			callableStatement.registerOutParameter(17, Types.SMALLINT);
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				/* we register page info */
 				registerPageInfo(paginazione.getRowsPerPage(), paginazione.getPageNumber(), callableStatement.getInt(14), callableStatement.getInt(15), 
@@ -473,15 +407,12 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return dto;
 	}
 
-	
 // fine anagrafiche	
 
 // documenti emissione
-
 	public EntrateDettaglioEmissioneS getDettaglioEmissioneS(EntrateDettaglioEmissioneS dto) throws DaoException 
 	{
 //		CallableStatement callableStatement = null;
@@ -502,13 +433,10 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
             callableStatement.setString(6, dto.getAnnoEmissione()!=null?dto.getAnnoEmissione():"");
             callableStatement.setString(7, dto.getNumeroEmissione()!=null?dto.getNumeroEmissione():"");
             callableStatement.setString(8, dto.getCodiceTomb()!=null?dto.getCodiceTomb():"");
-	           
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				dto.setListXml(getWebRowSetXml(RiversamentoDao.IDX_DOLIST_LISTA));                
 			}
-
 			/*
 			if (callableStatement.execute()) 
 			{
@@ -517,7 +445,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 				dto.setDettaglio(new AnagraficaDettaglioBean(ris));				
 			}
 			 */
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -535,28 +462,20 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-			
 		return dto;
-
-}
+	}
 
 	public EntrateDocumentiEmissione getDocumentiEmissione(EntrateDocumentiEmissione dto) throws DaoException {
-
 		Paginazione paginazione = dto.getPaginazione();
-
 		if (paginazione.getRowsPerPage() <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
 		if (paginazione.getPageNumber() <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-
 		//CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
-
 //			CallableStatement callableStatement = prepareCall(PYEH1SP_DOC_EMI_LST);		
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.EH1_DOC_EMI_LST.routine());
@@ -570,11 +489,9 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
             callableStatement.setString(6, dto.getAnnoEmissione()!=null?dto.getAnnoEmissione():"");
             callableStatement.setString(7, dto.getNumeroEmissione()!=null?dto.getNumeroEmissione():"");
             callableStatement.setString(8, dto.getCodiceTomb()!=null?dto.getCodiceTomb():"");
-			
 			callableStatement.setString(9, paginazione.getOrder());
 			callableStatement.setInt(10, paginazione.getRowsPerPage());
 			callableStatement.setInt(11, paginazione.getPageNumber());
-
 			/* we register row start */
 			callableStatement.registerOutParameter(12, Types.INTEGER);
 			/* we register row end */
@@ -584,8 +501,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			/* we register total pages */
 			callableStatement.registerOutParameter(15, Types.SMALLINT);
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				/* we register page info */
 				registerPageInfo(paginazione.getRowsPerPage(), paginazione.getPageNumber(), callableStatement.getInt(12), callableStatement.getInt(13), 
@@ -610,12 +526,10 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return dto;
 	}
 	
 // fine documenti emissione
-	
 
 	public EntrateTributiPage getListaTributi(EntrateTributiPage dto, String ordine, int rowsPerPage, int pageNumber) throws DaoException 
 	{
@@ -639,7 +553,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(8, dto.getTipoUfficio());
 			callableStatement.setString(9, dto.getCodiceUfficio());
 			callableStatement.setString(10, dto.getNumeroDocumento());
-
 			/* we register row start */
 			callableStatement.registerOutParameter(11, Types.INTEGER);
 			/* we register row end */
@@ -649,8 +562,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			/* we register total pages */
 			callableStatement.registerOutParameter(14, Types.SMALLINT);
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				/* we register page info */
 				registerPageInfo(rowsPerPage, pageNumber, callableStatement.getInt(11), callableStatement.getInt(12), 
@@ -658,7 +570,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 				dto.setPageInfo(getPageInfo());
 				dto.setListXml(getWebRowSetXml(EntrateBancaDatiDao.IDX_DOLIST_LISTA));
 			}
-
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -676,10 +587,8 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return dto;
 	}
-
 
 	public EntrateNotePage getListaNote(EntrateNotePage dto, String ordine, int rowsPerPage, int pageNumber) throws DaoException 
 	{
@@ -705,7 +614,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
-
 		try	{
 			//CallableStatement callableStatement = prepareCall(PYEH7SP_LST_NOTE);
 			//inizio LP PG21XX04 Leak
@@ -727,7 +635,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(13, dto.getCodTrib());
 			callableStatement.setString(14, dto.getAnnoTrib());			
 			callableStatement.setString(15, dto.getProgrTrib());			
-
 			/* we register row start */
 			callableStatement.registerOutParameter(16, Types.INTEGER);
 			/* we register row end */
@@ -737,8 +644,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			/* we register total pages */
 			callableStatement.registerOutParameter(19, Types.SMALLINT);
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				/* we register page info */
 				registerPageInfo(rowsPerPage, pageNumber, callableStatement.getInt(16), callableStatement.getInt(17), 
@@ -746,7 +652,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 				dto.setPageInfo(getPageInfo());
 				dto.setListXml(getWebRowSetXml(EntrateBancaDatiDao.IDX_DOLIST_LISTA));
 			}
-
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -764,14 +669,12 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return dto;
 	}
 
 	public EntrateTributoDettaglio getDettaglioTributo(EntrateTributoDettaglio dto) throws DaoException 
 	{
 		//CallableStatement callableStatement = null;
-
 		/*	IN I_EH7_CEH7NDOC VARCHAR(20),
 	IN I_EH7_CUTECUTE CHAR(5),
 	IN I_EH7_PEH7FLUS BIGINT,
@@ -784,7 +687,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 	IN I_EH7_CEH7TRIB CHAR(4),
 	IN I_EH7_CEH7ATRI CHAR(4),
 	IN I_EH7_PEH7PROG INT
-
 */
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
@@ -797,7 +699,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, dto.getNumeroDocumento()!=null?dto.getNumeroDocumento():"");
 			callableStatement.setString(2, dto.getCodiceUtente()!=null?dto.getCodiceUtente():"");
-			callableStatement.setString(3, dto.getProgrFlusso()!=null?dto.getProgrFlusso():"");
+			callableStatement.setLong(3, dto.getProgrFlusso()!=null?Long.parseLong(dto.getProgrFlusso()):0);
 			callableStatement.setString(4, dto.getProgrServ()!=null?dto.getProgrServ():"");
 			callableStatement.setString(5, dto.getCodiceEnte()!=null?dto.getCodiceEnte():"");
 			callableStatement.setString(6, dto.getTipoUfficio()!=null?dto.getTipoUfficio():"");
@@ -807,14 +709,11 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(10, dto.getCodTrib()!=null?dto.getCodTrib():"");
 			callableStatement.setString(11, dto.getAnnoTrib()!=null?dto.getAnnoTrib():"");			
 			callableStatement.setString(12, dto.getProgrTrib()!=null?dto.getProgrTrib():"");			
-
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				dto.setListXml(getWebRowSetXml(RiversamentoDao.IDX_DOLIST_LISTA)); 
 			}
-
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -832,11 +731,8 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return dto;
 	}
-
-	
 
 	public EntrateScadenzePage getListaScadenze(EntrateScadenzePage dto, String ordine, int rowsPerPage, int pageNumber) throws DaoException 
 	{
@@ -860,7 +756,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(8, dto.getTipoUfficio());
 			callableStatement.setString(9, dto.getCodiceUfficio());
 			callableStatement.setString(10, dto.getNumeroDocumento());
-
 			/* we register row start */
 			callableStatement.registerOutParameter(11, Types.INTEGER);
 			/* we register row end */
@@ -870,8 +765,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			/* we register total pages */
 			callableStatement.registerOutParameter(14, Types.SMALLINT);
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				/* we register page info */
 				registerPageInfo(rowsPerPage, pageNumber, callableStatement.getInt(11), callableStatement.getInt(12), 
@@ -879,7 +773,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 				dto.setPageInfo(getPageInfo());
 				dto.setListXml(getWebRowSetXml(EntrateBancaDatiDao.IDX_DOLIST_LISTA));
 			}
-
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -897,7 +790,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return dto;
 	}
 
@@ -923,7 +815,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(8, dto.getTipoUfficio());
 			callableStatement.setString(9, dto.getCodiceUfficio());
 			callableStatement.setString(10, dto.getNumeroDocumento());
-
 			/* we register row start */
 			callableStatement.registerOutParameter(11, Types.INTEGER);
 			/* we register row end */
@@ -933,8 +824,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			/* we register total pages */
 			callableStatement.registerOutParameter(14, Types.SMALLINT);
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				/* we register page info */
 				registerPageInfo(rowsPerPage, pageNumber, callableStatement.getInt(11), callableStatement.getInt(12), 
@@ -942,7 +832,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 				dto.setPageInfo(getPageInfo());
 				dto.setListXml(getWebRowSetXml(EntrateBancaDatiDao.IDX_DOLIST_LISTA));
 			}
-
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -960,10 +849,9 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return dto;
 	}
-	
+
 	public EntrateDocumentiPage getListaDocumenti(EntrateDocumentiPage dto, String ordine, int rowsPerPage, int pageNumber) throws DaoException 
 	{
 		//CallableStatement callableStatement = null;
@@ -971,7 +859,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
-
 			/*IN I_PAGENO SMALLINT,
 			IN I_ROWSPERPAGE SMALLINT,
 			IN I_ORDER VARCHAR(64),
@@ -995,10 +882,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			OUT O_ROWEND INTEGER,
 			OUT O_TOTROWS INTEGER,
 			OUT O_TOTPAGES SMALLINT*/
-			
-			
-			
-			
 			//callableStatement = prepareCall(PYECTSP_LST);		
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.PYEH1SP_LST.routine());
@@ -1011,7 +894,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(5, dto.getCodiceUtente());
 			callableStatement.setString(6, dto.getCodiceEnte());
 			callableStatement.setString(7, dto.getImpostaServizio());
-			
 			callableStatement.setString(8, dto.getCodiceFiscale());
 			callableStatement.setString(9, dto.getAnnoEmissione());
 			callableStatement.setString(10, dto.getNumeroEmissione());
@@ -1024,9 +906,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(17, dto.getStatoProcedure());
 			callableStatement.setString(18, dto.getNumeroBollettino());
 			callableStatement.setString(19, dto.getNumeroIUV());
-			
 			callableStatement.registerOutParameter(20,Types.VARCHAR);
-
 			/* we register row start */
 			callableStatement.registerOutParameter(21, Types.INTEGER);
 			/* we register row end */
@@ -1036,8 +916,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			/* we register total pages */
 			callableStatement.registerOutParameter(24, Types.SMALLINT);
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				/* we register page info */
 				registerPageInfo(rowsPerPage, pageNumber, callableStatement.getInt(21), callableStatement.getInt(22), 
@@ -1062,7 +941,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return dto;
 	}
 
@@ -1070,15 +948,12 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 	{
 		try	{
 			dto.setDataUltimoAgg(getDataUltimoAggiornamento(dto.getCodiceSocieta(),dto.getCodiceUtente(),dto.getCodiceEnte()));
-		}catch (IllegalArgumentException x) {
+		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} finally {
 		}
 		return dto;
 	}
-
-	
-	
 
 	public java.sql.Date getDataUltimoAggiornamento(String codiceSocieta,String codiceUtente,String codiceEnte) throws DaoException 
 	{
@@ -1087,7 +962,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 		ResultSet data = null;
 		//fine LP PG21XX04 Leak
 		try	{
-
 //			CallableStatement callableStatement = prepareCall(PYELGSP_SEL_DATE);
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.ELG_SEL_DATE.routine());
@@ -1097,10 +971,8 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(1, codiceSocieta);
 			callableStatement.setString(2, codiceUtente);
 			callableStatement.setString(3, codiceEnte);
-			
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{				
+			if (callableStatement.execute()) {				
 				//inizio LP PG21XX04 Leak
 				//callableStatement.getResultSet().next();
 				//return callableStatement.getResultSet().getDate(1);
@@ -1109,8 +981,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 				return data.getDate(1);
 				//fine LP PG21XX04 Leak
 			}
-			return null;
-
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -1135,8 +1005,8 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
+		return null;
 	}
-
 
 	public EntrateDocumentiPage getStatisticheDocumenti(EntrateDocumentiPage dto) throws DaoException 
 	{
@@ -1144,19 +1014,16 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
-
 //			CallableStatement callableStatement = prepareCall(PYEH1SP_STAT);
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.EH1_STAT.routine());
 			callableStatement = prepareCall(Routines.EH1_STAT.routine());
 			//fine LP PG21XX04 Leak
-
 			//callableStatement = prepareCall(PYECTSP_LST);		
 			callableStatement.setString(1, dto.getCodiceSocieta());
 			callableStatement.setString(2, dto.getCodiceUtente());
 			callableStatement.setString(3, dto.getCodiceEnte());
 			callableStatement.setString(4, dto.getImpostaServizio());
-			
 			callableStatement.setString(5, dto.getCodiceFiscale());
 			callableStatement.setString(6, dto.getAnnoEmissione());
 			callableStatement.setString(7, dto.getNumeroEmissione());
@@ -1171,7 +1038,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(16, dto.getChiaveTipoServ());
 			callableStatement.setString(17, dto.getChiaveCodiceEnte());
 //			callableStatement.setString(18, dto.getCodiceTomb());
-		
 			callableStatement.registerOutParameter(18,Types.DECIMAL);
 			callableStatement.registerOutParameter(19,Types.DECIMAL);
 			callableStatement.registerOutParameter(20,Types.DECIMAL);
@@ -1180,9 +1046,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.registerOutParameter(23,Types.DECIMAL);
 			callableStatement.registerOutParameter(24,Types.DECIMAL);
 			callableStatement.registerOutParameter(25,Types.DECIMAL);
-
 			callableStatement.execute();
-
 			dto.setTotcarico(callableStatement.getBigDecimal(18)!=null?callableStatement.getBigDecimal(18):new BigDecimal(0));
 			dto.setTotrendicontato(callableStatement.getBigDecimal(19)!=null?callableStatement.getBigDecimal(19):new BigDecimal(0));
 			dto.setTotdimcarico(callableStatement.getBigDecimal(20)!=null?callableStatement.getBigDecimal(20):new BigDecimal(0));
@@ -1211,17 +1075,12 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 		return dto;
 	}
 
-
-	
-	
-
 	public String getListaUffImpositore(String  codiceSocieta, String codiceEnte, String codiceUtente) throws DaoException 
 	{
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
-
 			//CallableStatement callableStatement = prepareCall(PYANESP_LST_DDL_UFF);
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.ANE_DDL_UFF.routine());
@@ -1231,9 +1090,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(1, codiceSocieta);
 			callableStatement.setString(2, codiceEnte);
 			callableStatement.setString(3, codiceUtente);
-			
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				return getWebRowSetXml(EntrateBancaDatiDao.IDX_DOLIST_LISTA);
 			}
@@ -1256,7 +1113,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 		}
 		return "";
 	}
-
 
 	public String getListaImpostaServizio(String codiceSocieta, String codiceUtente, String codiceEnte, String tipoServizio) throws DaoException 
 	{
@@ -1273,9 +1129,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(2, codiceUtente);
 			callableStatement.setString(3, codiceEnte);
 			callableStatement.setString(4, tipoServizio);
-			
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				return getWebRowSetXml(EntrateBancaDatiDao.IDX_DOLIST_LISTA);
 			}
@@ -1298,7 +1152,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 		}
 		return "";
 	}
-	
+
 	public EntrateDocumentoDettaglio getDettaglioDocumento(EntrateDocumentiPage dtoIn) throws DaoException 
 	{
 		//inizio LP PG21XX04 Leak
@@ -1308,7 +1162,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 		EntrateDocumentoDettaglio dto = new EntrateDocumentoDettaglio();
 		try	{
 			//dto.setDocumentiTot(getStatisticheDocumenti(dtoIn));
-			
 //			CallableStatement callableStatement = prepareCall(PYEH1SP_SEL);
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.EH1_DODETAIL.routine());
@@ -1317,17 +1170,14 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			//callableStatement = prepareCall(PYECTSP_LST);		
 			callableStatement.setString(1, dtoIn.getNumeroDocumento()!=null?dtoIn.getNumeroDocumento():"");
 			callableStatement.setString(2, dtoIn.getCodiceUtente()!=null?dtoIn.getCodiceUtente():"");
-			callableStatement.setLong(3, dtoIn.getProgrFlusso() == null || dtoIn.getProgrFlusso().equals("")?
-											0:new Long(dtoIn.getProgrFlusso()));
+			callableStatement.setLong(3, dtoIn.getProgrFlusso() == null || dtoIn.getProgrFlusso().equals("") ? 0:new Long(dtoIn.getProgrFlusso()));
 			callableStatement.setString(4, dtoIn.getChiaveTipoServ()!=null?dtoIn.getChiaveTipoServ():"");
 			callableStatement.setString(5, dtoIn.getChiaveCodiceEnte()!=null?dtoIn.getChiaveCodiceEnte():"");
 			callableStatement.setString(6, dtoIn.getTipoUfficio()!=null?dtoIn.getTipoUfficio():"");
 			callableStatement.setString(7, dtoIn.getCodiceUfficio()!=null?dtoIn.getCodiceUfficio():"");
 			callableStatement.setString(8, dtoIn.getImpostaServizio()!=null?dtoIn.getImpostaServizio():"");
 			callableStatement.setString(9, dtoIn.getCodiceTomb()!=null?dtoIn.getCodiceTomb():"");
-		
 			callableStatement.registerOutParameter(10,Types.DECIMAL);
-
 			if(callableStatement.execute()){
 				//this.loadWebRowSets(callableStatement);
 				//dto.setListXml(getWebRowSetXml(EntrateBancaDatiDao.IDX_DOLIST_LISTA));
@@ -1395,7 +1245,8 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 		}
 		return dto;
 	}
-  public Documento getDettaglioDocumento2(String societa,
+
+	public Documento getDettaglioDocumento2(String societa,
                                           String numeroDocumento,
                                           String codiceUtente,
                                           String progrFlusso,
@@ -1405,7 +1256,27 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
                                           String codiceUfficio,
                                           String impostaServizio,
                                           String codiceTomb) throws DaoException 
-  {
+	{
+	//inizio LP 20240921 - PGNTECCSV-10
+		return getDettaglioDocumento2Batch(true, true,
+				societa, numeroDocumento, codiceUtente, progrFlusso,
+				chiaveTipoServ, chiaveCodUtenteEnte, tipoUfficio, codiceUfficio,
+				impostaServizio, codiceTomb);
+	}
+
+	public Documento getDettaglioDocumento2Batch(boolean bFlagUpodateAutocommit, boolean bCloseStat,
+		String societa,
+        String numeroDocumento,
+        String codiceUtente,
+        String progrFlusso,
+        String chiaveTipoServ,
+        String chiaveCodUtenteEnte,
+        String tipoUfficio,
+        String codiceUfficio,
+        String impostaServizio,
+        String codiceTomb) throws DaoException
+	//fine LP 20240921 - PGNTECCSV-10
+	{
 	//inizio LP PG21XX04 Leak
 	CallableStatement callableStatement = null;
     ResultSet rs = null;
@@ -1413,93 +1284,92 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 	//fine LP PG21XX04 Leak
     Documento dto = new Documento();
     try {
-      //dto.setDocumentiTot(getStatisticheDocumenti(dtoIn));
-      
-//      CallableStatement callableStatement = prepareCall(PYEH1SP_SEL);
-      //inizio LP PG21XX04 Leak
-      //CallableStatement callableStatement = prepareCall("PYEH1SP_SEL2");
-      callableStatement = prepareCall("PYEH1SP_SEL2");
-      //fine LP PG21XX04 Leak
-      //callableStatement = prepareCall(PYECTSP_LST);   
-      callableStatement.setString(1, societa!=null?societa:"");
-      callableStatement.setString(2, numeroDocumento!=null?numeroDocumento:"");
-      callableStatement.setString(3, codiceUtente!=null?codiceUtente:"");
-      callableStatement.setLong(4, progrFlusso == null || progrFlusso.equals("")?0:new Long(progrFlusso));
-      callableStatement.setString(5, chiaveTipoServ!=null?chiaveTipoServ:"");
-      callableStatement.setString(6, chiaveCodUtenteEnte!=null?chiaveCodUtenteEnte:"");
-      callableStatement.setString(7, tipoUfficio!=null?tipoUfficio:"");
-      callableStatement.setString(8, codiceUfficio!=null?codiceUfficio:"");
-      callableStatement.setString(9, impostaServizio!=null?impostaServizio:"");
-      callableStatement.setString(10, codiceTomb!=null?codiceTomb:"");
-    
-      if(callableStatement.execute()){
-		//inizio LP PG21XX04 Leak
-        //ResultSet rs = callableStatement.getResultSet();
-        rs = callableStatement.getResultSet();
+    	//dto.setDocumentiTot(getStatisticheDocumenti(dtoIn));
+    	//CallableStatement callableStatement = prepareCall(PYEH1SP_SEL);
+    	//inizio LP PG21XX04 Leak
+    	//CallableStatement callableStatement = prepareCall("PYEH1SP_SEL2");
+		//inizio LP 20240921 - PGNTECCSV-10
+		//callableStatement = prepareCall("PYEH1SP_SEL2");
+		callableStatement = prepareCall(bFlagUpodateAutocommit, "PYEH1SP_SEL2");
+		//fine LP 20240921 - PGNTECCSV-10
 		//fine LP PG21XX04 Leak
-        if (rs.next()){
-          dto.setCodImpostaServizio(rs.getString(1));
-          dto.setDescImpostaServizio(rs.getString(2));
-          dto.setAnnoEmissione(rs.getString(3));
-          dto.setNumeroEmissione(rs.getString(4));
-          dto.setCodTipologiaServizio(rs.getString(5));
-          dto.setDescTipologiaServizio(rs.getString(6));
-          dto.setNumeroDocumento(rs.getString(7));
-          dto.setDataNotifica(rs.getString(8));
-          dto.setImpBollettinoTotaleDocumento(rs.getBigDecimal(9));
-          dto.setNumeroBollettinoPagoPA(rs.getString(10));
-          dto.setIbanAccredito(rs.getString(11));
-          dto.setFlagFatturazioneElettronica(rs.getString(12));
-          dto.setIdentificativoUnivocoVersamento(rs.getString(13));
-
-          dto.setAnaFiscale(rs.getString(14));
-          dto.setAnaDenom(rs.getString(15));
-          dto.setAnaTipoAnag(rs.getString(16));
-          dto.setAnBelfNascita(rs.getString(17));
-          dto.setAnaDataNascita(rs.getString(18));
-          dto.setAnaStato(rs.getString(19));
-          dto.setAnaIndirizzo(rs.getString(20));
-          dto.setAnaFiscaleAlt(rs.getString(21));
-          dto.setAnaMail(rs.getString(22));
-          dto.setAnaMailPec(rs.getString(23));
-          dto.setProvinciaNascita(rs.getString(24));
-          dto.setProvinciaFiscale(rs.getString(25));
-          dto.setCodEnte(rs.getString(26));
-          dto.setFlagGenerazioneIUV(rs.getString(27));
-          dto.setFlagStampaAvviso(rs.getString(28));
-          dto.setIdDominio(rs.getString(29));
-          dto.setAuxDigit(rs.getString(30));
-          dto.setApplCode(rs.getString(31));
-          dto.setSegrCode(rs.getString(32));
-          dto.setIbanAppoggio(rs.getString(33));
-          dto.setCarattServizio(rs.getString(34));
-          dto.setCausale(rs.getString(35));
-          dto.setNomeFlusso(rs.getString(36));
-          dto.setTassonomia(rs.getString(37)); //inizio LP PG200360
-          
-          if (callableStatement.getMoreResults()){
-    		//inizio LP PG21XX04 Leak
-            //ResultSet rs2 = callableStatement.getResultSet(); 
-            rs2 = callableStatement.getResultSet(); 
-    		//fine LP PG21XX04 Leak
-            ArrayList<Scadenza> arrSca = new ArrayList<Scadenza>();
-            //inizio LP PG210130
-            //Scadenza sca = new Scadenza();     
-            Scadenza sca = null;     
-            //fine LP PG210130
-            while (rs2.next()){
-              sca = new Scadenza(); 
-              sca.setNumeroRata(rs2.getInt(1));
-              sca.setDataScadenzaRata(rs2.getString(2));
-              sca.setNumeroBollettinoPagoPA(rs2.getString(3));
-              sca.setImpBollettinoRata(rs2.getBigDecimal(4));
-              sca.setIdentificativoUnivocoVersamento(rs2.getString(5));
-              arrSca.add(sca);
-            }       
-            dto.setScad(arrSca);
-          }         
-        }       
-      }
+		//callableStatement = prepareCall(PYECTSP_LST);   
+		callableStatement.setString(1, societa!=null?societa:"");
+		callableStatement.setString(2, numeroDocumento!=null?numeroDocumento:"");
+		callableStatement.setString(3, codiceUtente!=null?codiceUtente:"");
+		callableStatement.setLong(4, progrFlusso == null || progrFlusso.equals("")?0:new Long(progrFlusso));
+		callableStatement.setString(5, chiaveTipoServ!=null?chiaveTipoServ:"");
+		callableStatement.setString(6, chiaveCodUtenteEnte!=null?chiaveCodUtenteEnte:"");
+		callableStatement.setString(7, tipoUfficio!=null?tipoUfficio:"");
+		callableStatement.setString(8, codiceUfficio!=null?codiceUfficio:"");
+		callableStatement.setString(9, impostaServizio!=null?impostaServizio:"");
+		callableStatement.setString(10, codiceTomb!=null?codiceTomb:"");
+		if(callableStatement.execute()){
+			//inizio LP PG21XX04 Leak
+	        //ResultSet rs = callableStatement.getResultSet();
+	        rs = callableStatement.getResultSet();
+			//fine LP PG21XX04 Leak
+			if (rs.next()){
+	          dto.setCodImpostaServizio(rs.getString(1));
+	          dto.setDescImpostaServizio(rs.getString(2));
+	          dto.setAnnoEmissione(rs.getString(3));
+	          dto.setNumeroEmissione(rs.getString(4));
+	          dto.setCodTipologiaServizio(rs.getString(5));
+	          dto.setDescTipologiaServizio(rs.getString(6));
+	          dto.setNumeroDocumento(rs.getString(7));
+	          dto.setDataNotifica(rs.getString(8));
+	          dto.setImpBollettinoTotaleDocumento(rs.getBigDecimal(9));
+	          dto.setNumeroBollettinoPagoPA(rs.getString(10));
+	          dto.setIbanAccredito(rs.getString(11));
+	          dto.setFlagFatturazioneElettronica(rs.getString(12));
+	          dto.setIdentificativoUnivocoVersamento(rs.getString(13));
+	          dto.setAnaFiscale(rs.getString(14));
+	          dto.setAnaDenom(rs.getString(15));
+	          dto.setAnaTipoAnag(rs.getString(16));
+	          dto.setAnBelfNascita(rs.getString(17));
+	          dto.setAnaDataNascita(rs.getString(18));
+	          dto.setAnaStato(rs.getString(19));
+	          dto.setAnaIndirizzo(rs.getString(20));
+	          dto.setAnaFiscaleAlt(rs.getString(21));
+	          dto.setAnaMail(rs.getString(22));
+	          dto.setAnaMailPec(rs.getString(23));
+	          dto.setProvinciaNascita(rs.getString(24));
+	          dto.setProvinciaFiscale(rs.getString(25));
+	          dto.setCodEnte(rs.getString(26));
+	          dto.setFlagGenerazioneIUV(rs.getString(27));
+	          dto.setFlagStampaAvviso(rs.getString(28));
+	          dto.setIdDominio(rs.getString(29));
+	          dto.setAuxDigit(rs.getString(30));
+	          dto.setApplCode(rs.getString(31));
+	          dto.setSegrCode(rs.getString(32));
+	          dto.setIbanAppoggio(rs.getString(33));
+	          dto.setCarattServizio(rs.getString(34));
+	          dto.setCausale(rs.getString(35));
+	          dto.setNomeFlusso(rs.getString(36));
+	          dto.setTassonomia(rs.getString(37)); //inizio LP PG200360
+	          if (callableStatement.getMoreResults()){
+	    		//inizio LP PG21XX04 Leak
+	            //ResultSet rs2 = callableStatement.getResultSet(); 
+	            rs2 = callableStatement.getResultSet(); 
+	    		//fine LP PG21XX04 Leak
+	            ArrayList<Scadenza> arrSca = new ArrayList<Scadenza>();
+	            //inizio LP PG210130
+	            //Scadenza sca = new Scadenza();     
+	            Scadenza sca = null;     
+	            //fine LP PG210130
+	            while (rs2.next()){
+	              sca = new Scadenza(); 
+	              sca.setNumeroRata(rs2.getInt(1));
+	              sca.setDataScadenzaRata(rs2.getString(2));
+	              sca.setNumeroBollettinoPagoPA(rs2.getString(3));
+	              sca.setImpBollettinoRata(rs2.getBigDecimal(4));
+	              sca.setIdentificativoUnivocoVersamento(rs2.getString(5));
+	              arrSca.add(sca);
+	            }       
+	            dto.setScad(arrSca);
+	          }         
+			}       
+		}
     } catch (SQLException x) {
       throw new DaoException(x);
     } catch (IllegalArgumentException x) {
@@ -1522,17 +1392,25 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 				e.printStackTrace();
 			}
 		}
-		if (callableStatement != null) {
-			try {
-				callableStatement.close();
-			} catch (SQLException e) {
-				e.printStackTrace();
+		//inizio LP 20240921 - PGNTECCSV-10
+		if(bCloseStat) {
+		//fine LP 20240921 - PGNTECCSV-10
+			if (callableStatement != null) {
+				try {
+					callableStatement.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
 			}
+			callableStatement = null;
+		//inizio LP 20240921 - PGNTECCSV-10
 		}
+		//fine LP 20240921 - PGNTECCSV-10
 		//fine LP PG21XX04 Leak
     }
     return dto;
   }
+
 	public EntrateDocumentiPage getListaEmissioni(EntrateDocumentiPage dto, String ordine, int rowsPerPage, int pageNumber) throws DaoException 
 	{
 		//CallableStatement callableStatement = null;
@@ -1544,7 +1422,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			/*IN I_PAGENO SMALLINT,
 			IN I_ROWSPERPAGE SMALLINT,
 			IN I_ORDER VARCHAR(64),
-			
 			IN I_EH1_CSOCCSOC CHAR(5),
 			IN I_EH1_CUTECUTE CHAR(5),
 			IN I_ANE_KANEKENT CHAR(10),
@@ -1575,9 +1452,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			IN I_EH1_CANECUFF CHAR(6),
 			IN I_EH1_CTSECTSE CHAR(3),
 			*/
-			
-			
-			
 			//callableStatement = prepareCall(PYECTSP_LST);		
 //			CallableStatement callableStatement = prepareCall(PYEH1SP_LST_EMIS);
 			//inizio LP PG21XX04 Leak
@@ -1596,9 +1470,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(10, dto.getTipoUfficio());
 			callableStatement.setString(11, dto.getCodiceUfficio());
 			callableStatement.setString(12, dto.getTipologiaServizio());
-			
 			callableStatement.registerOutParameter(13,Types.VARCHAR);
-
 			/* we register row start */
 			callableStatement.registerOutParameter(14, Types.INTEGER);
 			/* we register row end */
@@ -1608,8 +1480,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			/* we register total pages */
 			callableStatement.registerOutParameter(17, Types.SMALLINT);
 			/* we execute procedure */
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				/* we register page info */
 				registerPageInfo(rowsPerPage, pageNumber, callableStatement.getInt(14), callableStatement.getInt(15), 
@@ -1634,13 +1505,11 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return dto;
 	}
-	
+
 	public EntrateDocumentiPage getStatisticheEmissioni(EntrateDocumentiPage dto) throws DaoException 
 	{
-		
 		/*
 		IN I_EH1_CSOCCSOC CHAR(5),
 		IN I_EH1_CUTECUTE CHAR(5),
@@ -1658,13 +1527,10 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 		OUT O_TOT_RIMB DECIMAL(15 , 2),
 		OUT O_TOT_RESIDUO DECIMAL(15 , 2)
 		*/
-
-		
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
-
 //			CallableStatement callableStatement = prepareCall(PYEH1SP_STAT_EMIS);
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.EH1_EMI_STAT.routine());
@@ -1675,13 +1541,11 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(2, dto.getCodiceUtente());
 			callableStatement.setString(3, dto.getCodiceEnte());
 			callableStatement.setString(4, dto.getImpostaServizio());
-
 			callableStatement.setString(5, dto.getAnnoEmissione());
 			callableStatement.setString(6, dto.getNumeroEmissione());
 			callableStatement.setString(7, dto.getTipoUfficio());
 			callableStatement.setString(8, dto.getCodiceUfficio());
 			callableStatement.setString(9, dto.getTipologiaServizio());
-		
 			callableStatement.registerOutParameter(10,Types.DECIMAL);
 			callableStatement.registerOutParameter(11,Types.DECIMAL);
 			callableStatement.registerOutParameter(12,Types.DECIMAL);
@@ -1689,9 +1553,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.registerOutParameter(14,Types.DECIMAL);
 			callableStatement.registerOutParameter(15,Types.DECIMAL);
 			callableStatement.registerOutParameter(16,Types.DECIMAL);
-
 			callableStatement.execute();
-
 			dto.setTotcarico(callableStatement.getBigDecimal(10));
 			dto.setTotrendicontato(callableStatement.getBigDecimal(11));
 			dto.setTotdimcarico(callableStatement.getBigDecimal(12));
@@ -1728,8 +1590,6 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 		EntrateDocumentoDettaglio dto = new EntrateDocumentoDettaglio();
 		try	{
 			//dto.setDocumentiTot(getStatisticheDocumenti(dtoIn));
-
-			
 //			CallableStatement callableStatement = prepareCall(PYEH1SP_SEL_EMIS);
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.EH1_EMI_DODETAIL.routine());
@@ -1743,9 +1603,7 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 			callableStatement.setString(5, dtoIn.getNumeroEmissione()!=null?dtoIn.getNumeroEmissione():"");
 			callableStatement.setString(6, dtoIn.getTipoUfficio()!=null?dtoIn.getTipoUfficio():"");
 			callableStatement.setString(7, dtoIn.getCodiceUfficio()!=null?dtoIn.getCodiceUfficio():"");
-		
 			callableStatement.registerOutParameter(8,Types.DECIMAL);
-
 			if(callableStatement.execute()){
 				//this.loadWebRowSets(callableStatement);
 				//dto.setListXml(getWebRowSetXml(EntrateBancaDatiDao.IDX_DOLIST_LISTA));
@@ -1768,14 +1626,11 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 					dtoIn.setTotriscosso(rs.getBigDecimal(12)== null?new java.math.BigDecimal(0):rs.getBigDecimal(12));
 					dtoIn.setTotdimcarico(rs.getBigDecimal(13)== null?new java.math.BigDecimal(0):rs.getBigDecimal(13));
 					dtoIn.setTotrimborso(rs.getBigDecimal(14)== null?new java.math.BigDecimal(0):rs.getBigDecimal(14));
-					
 					dtoIn.setTotcaricoRendicontato(rs.getBigDecimal(15)== null?new java.math.BigDecimal(0):rs.getBigDecimal(15));
 					dtoIn.setTotriscossoRendicontato(rs.getBigDecimal(16)== null?new java.math.BigDecimal(0):rs.getBigDecimal(16));
 					dtoIn.setTotdimcaricoRendicontato(rs.getBigDecimal(17)== null?new java.math.BigDecimal(0):rs.getBigDecimal(17));
 					dtoIn.setTotrimborsoRendicontato(rs.getBigDecimal(18)== null?new java.math.BigDecimal(0):rs.getBigDecimal(18));
-					
 					dtoIn.setTotResScaduto(callableStatement.getBigDecimal(8));
-					
 					dto.setDocumentiTot(dtoIn);
 				}					
 			}
@@ -1813,21 +1668,17 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 //		ResultSet data = null;
 		try	{
 			callableStatement = prepareCall(Routines.EH6_TSE_DDL.routine());
-						
 			callableStatement.setString(1, codiceSocieta);
 			callableStatement.setString(2, codiceUtente);
 			callableStatement.setString(3, codiceEnte);
 			callableStatement.setString(4, tipoServizio);
-			
 //			if(callableStatement.execute()) {
 //				data = callableStatement.getResultSet();
 //				loadWebRowSet(data);
 //				return getWebRowSetXml();
 //			}
 //			return null;
-			
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				return getWebRowSetXml(EntrateBancaDatiDao.IDX_DOLIST_LISTA);
 			}
@@ -1853,5 +1704,4 @@ public class EntrateBancaDatiDao extends BaseDaoHandler {
 		return "";
 	}
 	//PG170070 GG 20170530 - fine
-	
 }

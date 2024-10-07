@@ -7,7 +7,6 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.commons.bean.TypeRequest;
 import com.seda.payer.core.bean.User;
@@ -94,9 +93,14 @@ public class UserDao extends BaseDaoHandler {
 	}
 	
 	//FINE PG130100
-	
-	
+
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public User doDetail(String companyCode, String userCode) throws DaoException {
+		return doDetailTail(true, companyCode, userCode);
+	}
+
+	public User doDetailTail(boolean bFlagUpdateAutocomit, String companyCode, String userCode) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;;
 		ResultSet data = null;
@@ -105,7 +109,9 @@ public class UserDao extends BaseDaoHandler {
 		{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.USER_DODETAIL.routine());
-			callableStatement = prepareCall(Routines.USER_DODETAIL.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.USER_DODETAIL.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, companyCode);
 			callableStatement.setString(2, userCode);
@@ -263,21 +269,36 @@ public class UserDao extends BaseDaoHandler {
 	 * @param codOp - use <code>TypeRequest.scope</code>
 	 * @throws DaoException
 	 */
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doSave(User user, String codOp) throws DaoException {
-		CallableStatement callableStatement=null;
+		doSaveTail(false, user, codOp);
+	}
+
+	public void doSaveTail(boolean bFlagUpdateAutocomit, User user, String codOp) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
+		CallableStatement callableStatement = null;
 		try	{
 			if (user.getUserCode() == null || user.getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("user.userCode"));
 
 			if (user.getCompany() == null || user.getCompany().getCompanyCode() == null || user.getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("user.company.companyCode"));
-			
-			User data = doDetail(user.getCompany().getCompanyCode(), user.getUserCode());
-			
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//User data = doDetail(user.getCompany().getCompanyCode(), user.getUserCode());
+			User data = doDetailTail(bFlagUpdateAutocomit, user.getCompany().getCompanyCode(), user.getUserCode());
+			//fine LP 20240909 - PGNTBOLDER-1
 			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("user.saveadd.error"));
-			if (data != null) 
-				callableStatement = prepareCall(Routines.USER_DOUPDATE.routine());
-			else callableStatement = prepareCall(Routines.USER_DOINSERT.routine());
+			if (data != null) { 
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.USER_DOUPDATE.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.USER_DOUPDATE.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			} else {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.USER_DOINSERT.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.USER_DOINSERT.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			}
 
 			user.save(callableStatement);
 			callableStatement.execute();
@@ -302,14 +323,23 @@ public class UserDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doDelete(User user) throws DaoException {
+		doDeleteTail(true, user);
+	}
+
+	public void doDeleteTail(boolean bFlagUpdateAutocomit, User user) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;;
 		//fine LP PG21XX04 Leak
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.USER_DODELETE.routine());
-			callableStatement = prepareCall(Routines.USER_DODELETE.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.USER_DODELETE.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.USER_DODELETE.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			if (user.getUserCode() == null || user.getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("user.userCode"));

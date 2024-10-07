@@ -9,7 +9,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.ModuloIntegrazionePagamenti;
 import com.seda.payer.core.bean.ModuloIntegrazionePagamentiContainer;
@@ -25,13 +24,21 @@ public class ModuloIntegrazionePagamentiDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
  
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public ModuloIntegrazionePagamenti doDetail(String chiaveTransazione) throws DaoException {
+		return doDetailTail(true, chiaveTransazione);
+	}
+
+	public ModuloIntegrazionePagamenti doDetailTail(boolean bFlagUpdateAutocomit, String chiaveTransazione) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		try	{
-			callableStatement = prepareCall(Routines.MIP_DODETAIL.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.MIP_DODETAIL.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.MIP_DODETAIL.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			callableStatement.setString(1, chiaveTransazione);
-			
 			if (callableStatement.execute()) {
 				data = callableStatement.getResultSet();
 				if (data.next())
@@ -44,8 +51,7 @@ public class ModuloIntegrazionePagamentiDao extends BaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//if (callableStatement != null)
 			//	DAOHelper.closeIgnoringException(callableStatement);
@@ -160,36 +166,43 @@ public class ModuloIntegrazionePagamentiDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doSave(ModuloIntegrazionePagamenti mip) throws DaoException {
+		doSaveTail(true, mip);
+	}
+
+	public void doSaveTail(boolean bFlagUpdateAutocomit, ModuloIntegrazionePagamenti mip) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		try	{
 			if (mip.getChiaveTransazione() == null || mip.getChiaveTransazione().length() == 0) 
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ModuloIntegrazionePagamenti.chiaveTransazione"));
-			
-			ModuloIntegrazionePagamenti data = doDetail(mip.getChiaveTransazione());
-			
-			if (data != null)  
-			{
-				callableStatement = prepareCall(Routines.MIP_DOUPDATE.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//ModuloIntegrazionePagamenti data = doDetail(mip.getChiaveTransazione());
+			ModuloIntegrazionePagamenti data = doDetailTail(bFlagUpdateAutocomit, mip.getChiaveTransazione());
+			//fine LP 20240909 - PGNTBOLDER-1
+			if (data != null) {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.MIP_DOUPDATE.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.MIP_DOUPDATE.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
 				mip.update(callableStatement);
-			}
-			else
-			{
-				callableStatement = prepareCall(Routines.MIP_DOINSERT.routine());
+			} else {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.MIP_DOINSERT.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.MIP_DOINSERT.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
 				mip.save(callableStatement);
 			}
-
 			callableStatement.execute();
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//if (callableStatement != null)
 			//	DAOHelper.closeIgnoringException(callableStatement);

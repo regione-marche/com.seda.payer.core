@@ -5,22 +5,16 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import javax.sql.DataSource;
 
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.riconciliazionemt.bean.ContoList;
 import com.seda.payer.core.riconciliazionemt.bean.FlussiAbbinatiList;
-import com.seda.payer.core.riconciliazionemt.bean.Flusso;
-import com.seda.payer.core.riconciliazionemt.bean.FlussoPageList;
 import com.seda.payer.core.riconciliazionemt.bean.Flusso;
 import com.seda.payer.core.riconciliazionemt.bean.FlussoPageList;
 import com.seda.payer.core.riconciliazionemt.bean.GiornaleDiCassa;
@@ -35,6 +29,7 @@ import com.seda.payer.core.riconciliazionemt.bean.TransazionePageList;
 import com.seda.payer.core.riconciliazionemt.bean.TransazioniAbbinateList;
 
 public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDiCassaDAO {
+	@SuppressWarnings("unused")
 	private static final long serialVersionUID = 1L;
 	//inizio LP PG21XX04 Leak
 	@Deprecated
@@ -48,7 +43,9 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		super(connection, schema);
 	}
 	//fine LP PG21XX04 Leak
-	/*public List<Flusso> doList(Flusso gdc) throws DaoException {
+
+/*
+	public List<Flusso> doList(Flusso gdc) throws DaoException {
 		CallableStatement callableStatement = null;
 		Connection connection = null;
 		ResultSet resultSet = null;
@@ -115,7 +112,8 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		return listGDC;
 		
 	}
-	*/
+*/
+
 	public GiornaleDiCassaPageList ListGiornaliDiCassa(
 			GiornaleDiCassa gdc,
 			int rowsPerPage, int pageNumber, String order)
@@ -127,7 +125,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		GiornaleDiCassaPageList gdcPageList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYGDCSP_LST");                      
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYGDCSP_LST");
+            callableStatement = prepareCall("PYGDCSP_LST");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setString(1, gdc.getCodSocieta());
 			callableStatement.setString(2, gdc.getCodUtente());
 			callableStatement.setString(3, gdc.getCodEnte());
@@ -152,18 +153,15 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			} else {
 				callableStatement.setTimestamp(8, new java.sql.Timestamp(gdc.getDataMovimentoA().getTimeInMillis()));
 			}
-			
 			callableStatement.setString(9, gdc.getSospRegolarizzati());
 			callableStatement.setString(10, gdc.getSospRendicontati());
 			callableStatement.setString(11, gdc.getNumDocumento());
 			callableStatement.setString(12, gdc.getPsp());
-			
 			callableStatement.setInt(13, pageNumber);                        
 			callableStatement.setInt(14, rowsPerPage);
 			callableStatement.setString(15, order == null ? "" : order);
 			callableStatement.setString(16, gdc.getIdFlusso());
 			callableStatement.setString(17, gdc.getChiaveRen());		
-			
 			/* we register row start */
 			callableStatement.registerOutParameter(18, Types.INTEGER);
 			/* we register row end */
@@ -172,7 +170,6 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			callableStatement.registerOutParameter(20, Types.INTEGER);
 			/* we register total pages */
 			callableStatement.registerOutParameter(21, Types.SMALLINT);
-			 
 			/* we execute procedure */
 			if(callableStatement.execute())	{
 				pageInfo = new PageInfo();
@@ -182,13 +179,11 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 				pageInfo.setLastRow(callableStatement.getInt(19));
 				pageInfo.setNumRows(callableStatement.getInt(20));
 				pageInfo.setNumPages(callableStatement.getInt(21));
-				
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
 				gdcPageList = new GiornaleDiCassaPageList(pageInfo, "00","",getWebRowSetXml());
 				return gdcPageList;
 			}
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			gdcPageList = new GiornaleDiCassaPageList(pageInfo, "01","Sql-Exception","");
@@ -226,7 +221,7 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		}
 		return gdcPageList;	
 	}
-	
+
 	public PspList ListPsp(GiornaleDiCassa gdc) throws  DaoException{
 		CallableStatement callableStatement=null;
 		Connection connection = null;
@@ -234,12 +229,14 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		PspList pspList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST_PSP");                      
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST_PSP");
+            callableStatement = prepareCall("PYMDCSP_LST_PSP");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setString(1, gdc.getCodSocieta());
 			callableStatement.setString(2, gdc.getCodUtente());
 			callableStatement.setString(3, gdc.getCodEnte());
 			callableStatement.setLong(4, gdc.getId());
-			
 			if(callableStatement.execute())	{
 				
 				data = callableStatement.getResultSet();
@@ -284,7 +281,7 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		}
 		return pspList;
 	}
-	
+
 	public ContoList ListConto(long IDgdc) throws  DaoException{
 		CallableStatement callableStatement=null;
 		Connection connection = null;
@@ -292,9 +289,11 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		ContoList contoList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST_CONT");                      
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST_CONT");
+            callableStatement = prepareCall("PYMDCSP_LST_CONT");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setLong(1, IDgdc);
-			
 			if(callableStatement.execute())	{
 				
 				data = callableStatement.getResultSet();
@@ -339,7 +338,7 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		}
 		return contoList;
 	}
-	
+
 	public MovimentoDiCassaPageList ListMovimentiDiCassa(
 			GiornaleDiCassa gdc,
 			MovimentoDiCassa mdc,
@@ -352,7 +351,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		MovimentoDiCassaPageList mdcPageList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST");                      
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST");                      
+            callableStatement = prepareCall("PYMDCSP_LST");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setLong(1, gdc.getId());
 			callableStatement.setString(2, mdc.getRegolarizzato());
 			callableStatement.setString(3, mdc.getRendicontato());
@@ -379,8 +381,6 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			callableStatement.setInt(16, pageNumber);                        
 			callableStatement.setInt(17, rowsPerPage);
 			callableStatement.setString(18, order == null ? "" : order);
-			
-			
 			/* we register row start */
 			callableStatement.registerOutParameter(19, Types.INTEGER);
 			/* we register row end */
@@ -389,7 +389,6 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			callableStatement.registerOutParameter(21, Types.INTEGER);
 			/* we register total pages */
 			callableStatement.registerOutParameter(22, Types.SMALLINT);
-			 
 			/* we execute procedure */
 			if(callableStatement.execute())	{
 				pageInfo = new PageInfo();
@@ -399,13 +398,11 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 				pageInfo.setLastRow(callableStatement.getInt(20));
 				pageInfo.setNumRows(callableStatement.getInt(21));
 				pageInfo.setNumPages(callableStatement.getInt(22));
-				
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
 				mdcPageList = new MovimentoDiCassaPageList(pageInfo, "00","",getWebRowSetXml());
 				return mdcPageList;
 			}
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			mdcPageList = new MovimentoDiCassaPageList(pageInfo, "01","Sql-Exception","");
@@ -443,21 +440,21 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		}
 		return mdcPageList;	
 	}
-	
+
 	public MovimentoDiCassa dettaglioMovimentoDiCassa(long idMdc) throws DaoException {
 		CallableStatement callableStatement = null;
 		Connection connection = null;
 		ResultSet resultSet = null;
 		MovimentoDiCassa mdc = null;
-		
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_SEL");
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_SEL");
+            callableStatement = prepareCall("PYMDCSP_SEL");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
-			
 			callableStatement.execute();
 			resultSet=callableStatement.getResultSet();
-			
 			mdc = new MovimentoDiCassa();
 			if(resultSet.next()) {
 				mdc.setId(resultSet.getLong("MDC_PMDCPKEY"));
@@ -482,7 +479,6 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 				mdc.setTipoEsecuzione(resultSet.getString("MDC_CMDCESEC"));
 				mdc.setCodiceRiferimento(resultSet.getString("MDC_CMDCCRIF"));
 				mdc.setCausale(resultSet.getString("MDC_CMDCCAUS"));
-				
 				mdc.setIdGiornale(resultSet.getLong("GDC_PGDCPKEY"));
 				mdc.setEnte(resultSet.getString("ANE_DANEDENT"));
 				mdc.setProvenienza(resultSet.getString("GDC_CGDCPROV"));
@@ -493,7 +489,6 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 				mdc.setEsercizio(resultSet.getInt("GDC_CGDCESER"));
 				mdc.setSospRegolarizzati(resultSet.getString("GDC_CMDCREGO"));
 				mdc.setSospRendicontati(resultSet.getString("GDC_CMDCREND"));
-				
 				mdc.setNota(resultSet.getString("MDC_CMDCNREN"));				
 				if(resultSet.getTimestamp("MDC_GMDCDREN")!=null) {
 					GregorianCalendar dataRendicontazione = new GregorianCalendar();
@@ -504,7 +499,6 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 				mdc.setSiglaProvincia(resultSet.getString("APC_CAPCSIGL"));
 				mdc.setChiaveEnte(resultSet.getString("MDC_KANEKENT"));
 				mdc.setCodiceSocieta(resultSet.getString("MDC_CSOCCSOC"));
-				
 			}
 		} catch (SQLException e) {
 			throw new DaoException(e);
@@ -538,10 +532,9 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			}
 			//fine LP PG21XX04 Leak
 		} 
-		
 		return mdc;
 	}
-	
+
 	public FlussiAbbinatiList FlussiAbbinati(long IDmdc) throws  DaoException{
 		CallableStatement callableStatement=null;
 		Connection connection = null;
@@ -549,11 +542,12 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		FlussiAbbinatiList flussiAbbinatiList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_SEL");                      
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_SEL");                      
+            callableStatement = prepareCall("PYRMFSP_SEL");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setLong(1, IDmdc);
-			
 			if(callableStatement.execute())	{
-				
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
 				flussiAbbinatiList = new FlussiAbbinatiList(getWebRowSetXml());
@@ -596,7 +590,7 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		}
 		return flussiAbbinatiList;
 	}
-	
+
 	public TransazioniAbbinateList TransazioniAbbinate(long IDmdc) throws  DaoException{
 		CallableStatement callableStatement=null;
 		Connection connection = null;
@@ -604,9 +598,11 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		TransazioniAbbinateList transazioniAbbinateList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_SEL");                      
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_SEL");                      
+            callableStatement = prepareCall("PYRMTSP_SEL");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setLong(1, IDmdc);
-			
 			if(callableStatement.execute())	{
 				
 				data = callableStatement.getResultSet();
@@ -651,7 +647,7 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		}
 		return transazioniAbbinateList;
 	}
-	
+
 	public NumeroDocumentoList ListNumeroDocumento(GiornaleDiCassa gdc) throws  DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
@@ -659,7 +655,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		NumeroDocumentoList numdocList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST_DOCN");                      
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_LST_DOCN");
+            callableStatement = prepareCall("PYMDCSP_LST_DOCN");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setString(1, gdc.getCodSocieta());
 			callableStatement.setString(2, gdc.getCodUtente());
 			callableStatement.setString(3, gdc.getCodEnte());
@@ -674,9 +673,7 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			} else {
 				callableStatement.setTimestamp(6, new java.sql.Timestamp(gdc.getDataGiornaleA().getTimeInMillis()));
 			}
-			
 			callableStatement.setString(7, gdc.getIdFlusso());
-	 
 			/* we execute procedure */
 			if(callableStatement.execute())	{		
 				data = callableStatement.getResultSet();
@@ -722,7 +719,7 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		}
 		return numdocList;	
 	}
-	
+
 	public FlussoPageList ListFlusso(
 			Flusso flusso,
 			int rowsPerPage, int pageNumber, String order)
@@ -734,7 +731,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		FlussoPageList flussoPageList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_LST");                      
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_LST");                      
+            callableStatement = prepareCall("PYRMFSP_LST");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setLong(1, flusso.getIdMdc());
 			if (flusso.getDataFlussoDa()==null) {
 				callableStatement.setTimestamp(2, null);
@@ -750,12 +750,9 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			callableStatement.setString(5, flusso.getCodiceMittente());
 			callableStatement.setBigDecimal(6, flusso.getImportoDa());
 			callableStatement.setBigDecimal(7, flusso.getImportoA());
-
 			callableStatement.setInt(8, pageNumber);                        
 			callableStatement.setInt(9, rowsPerPage);
 			callableStatement.setString(10, order == null ? "" : order);
-			
-			
 			/* we register row start */
 			callableStatement.registerOutParameter(11, Types.INTEGER);
 			/* we register row end */
@@ -764,7 +761,6 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			callableStatement.registerOutParameter(13, Types.INTEGER);
 			/* we register total pages */
 			callableStatement.registerOutParameter(14, Types.SMALLINT);
-			 
 			/* we execute procedure */
 			if(callableStatement.execute())	{
 				pageInfo = new PageInfo();
@@ -780,7 +776,6 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 				flussoPageList = new FlussoPageList(pageInfo, "00","",getWebRowSetXml());
 				return flussoPageList;
 			}
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			flussoPageList = new FlussoPageList(pageInfo, "01","Sql-Exception","");
@@ -818,7 +813,7 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		}
 		return flussoPageList;	
 	}
-	
+
 	public TransazionePageList ListTransazione(
 			Transazione transazione,
 			int rowsPerPage, int pageNumber, String order)
@@ -830,7 +825,10 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		TransazionePageList transazionePageList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_LST");                      
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_LST");                      
+            callableStatement = prepareCall("PYRMTSP_LST");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setLong(1, transazione.getIdMdc());
 			if (transazione.getDataTransazioneDa()==null) {
 				callableStatement.setTimestamp(2, null);
@@ -847,12 +845,9 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			callableStatement.setString(6, transazione.getIur());
 			callableStatement.setBigDecimal(7, transazione.getImportoDa());
 			callableStatement.setBigDecimal(8, transazione.getImportoA());
-
 			callableStatement.setInt(9, pageNumber);                        
 			callableStatement.setInt(10, rowsPerPage);
 			callableStatement.setString(11, order == null ? "" : order);
-			
-			
 			/* we register row start */
 			callableStatement.registerOutParameter(12, Types.INTEGER);
 			/* we register row end */
@@ -861,7 +856,6 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			callableStatement.registerOutParameter(14, Types.INTEGER);
 			/* we register total pages */
 			callableStatement.registerOutParameter(15, Types.SMALLINT);
-			 
 			/* we execute procedure */
 			if(callableStatement.execute())	{
 				pageInfo = new PageInfo();
@@ -871,13 +865,11 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 				pageInfo.setLastRow(callableStatement.getInt(13));
 				pageInfo.setNumRows(callableStatement.getInt(14));
 				pageInfo.setNumPages(callableStatement.getInt(15));
-				
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
 				transazionePageList = new TransazionePageList(pageInfo, "00","",getWebRowSetXml());
 				return transazionePageList;
 			}
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			transazionePageList = new TransazionePageList(pageInfo, "01","Sql-Exception","");
@@ -915,14 +907,17 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		}
 		return transazionePageList;	
 	}
-	
+
 	public void AggiungiFlusso(long idMdc, long idFlusso) throws  DaoException{
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_INS");                      
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_INS");                      
+            callableStatement = prepareCall("PYRMFSP_INS");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
 			callableStatement.setLong(2, idFlusso);
 			callableStatement.execute();
@@ -952,14 +947,16 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	public void EliminaFlusso(long idMdc, long idFlusso) throws  DaoException{
-		CallableStatement callableStatement=null;
+		CallableStatement callableStatement = null;
 		Connection connection = null;
-
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_DEL_QUN");                      
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMFSP_DEL_QUN");                      
+            callableStatement = prepareCall("PYRMFSP_DEL_QUN");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
 			callableStatement.setLong(2, idFlusso);
 			callableStatement.execute();
@@ -989,14 +986,16 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	public void AggiungiTransazione(long idMdc, long idTransazione) throws  DaoException{
-		CallableStatement callableStatement=null;
+		CallableStatement callableStatement = null;
 		Connection connection = null;
-
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_INS");                      
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_INS");                      
+            callableStatement = prepareCall("PYRMTSP_INS");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
 			callableStatement.setLong(2, idTransazione);
 			callableStatement.execute();
@@ -1026,14 +1025,16 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	public void EliminaTransazione(long idMdc, long idTransazione) throws  DaoException{
-		CallableStatement callableStatement=null;
+		CallableStatement callableStatement = null;
 		Connection connection = null;
-
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_DEL_RPT");                     
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYRMTSP_DEL_RPT");                 
+            callableStatement = prepareCall("PYRMTSP_DEL_RPT");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
 			callableStatement.setLong(2, idTransazione);
 			callableStatement.execute();
@@ -1063,19 +1064,20 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	public MittenteList ListMittente(long idMdc) throws  DaoException {
-		CallableStatement callableStatement=null;
+		CallableStatement callableStatement = null;
 		Connection connection = null;
 		ResultSet data = null;
 		MittenteList mittenteList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYQUNSP_LST_MITT");                      
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYQUNSP_LST_MITT");                      
+            callableStatement = prepareCall("PYQUNSP_LST_MITT");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
-			
 			if(callableStatement.execute())	{
-				
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
 				mittenteList = new MittenteList(getWebRowSetXml());
@@ -1120,12 +1122,14 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 	}
 	
 	public void RegolarizzaSospeso(long idMdc, String user, String nota) throws DaoException {
-		CallableStatement callableStatement=null;
+		CallableStatement callableStatement = null;
 		Connection connection = null;
-
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_UPD_REND_DEF");                     
+			//inizio LP 20240919 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYMDCSP_UPD_REND_DEF");                     
+            callableStatement = prepareCall("PYMDCSP_UPD_REND_DEF");
+			//fine LP 20240919 - PGNTCORE-24
 			callableStatement.setLong(1, idMdc);
 			callableStatement.setString(2, user);
 			callableStatement.setString(3, nota);
@@ -1156,7 +1160,7 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	public Connection getGDCConnection(){
 		Connection connection = null;
 		try {			
@@ -1166,5 +1170,5 @@ public class GiornaleDiCassaDAOImpl extends BaseDaoHandler implements GiornaleDi
 		}
 		return connection;
 	}
-	
+
 }

@@ -12,8 +12,6 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -38,6 +36,7 @@ public class PosizioniIuvDAOImpl   extends BaseDaoHandler  implements PosizioniI
 	public PosizioniIuvDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	public PosizioniIuvDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema); 
 	}
@@ -60,7 +59,10 @@ public class PosizioniIuvDAOImpl   extends BaseDaoHandler  implements PosizioniI
 			
 			connection = getConnection();
 			//callableStatement = Helper.prepareCall(connection, getSchema(), "CNDOCSP_SEL");
-			callableStatement = Helper.prepareCall(connection, getSchema(), "CNDOCSP_SEL2");
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "CNDOCSP_SEL2");
+            callableStatement = prepareCall("CNDOCSP_SEL2");
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, idDominio);
 			callableStatement.setString(2, codEnte);
 			callableStatement.setString(3, codIuv==null?"":codIuv);
@@ -138,7 +140,7 @@ public class PosizioniIuvDAOImpl   extends BaseDaoHandler  implements PosizioniI
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
 			//DAOHelper.closeIgnoringException(connection);

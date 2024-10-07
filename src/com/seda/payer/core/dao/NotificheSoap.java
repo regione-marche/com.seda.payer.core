@@ -335,7 +335,7 @@ public class NotificheSoap extends BaseDaoHandler {
 			cs.registerOutParameter(p++, Types.INTEGER);
 			cs.registerOutParameter(p++, Types.INTEGER);
 			cs.registerOutParameter(p++, Types.INTEGER);
-			cs.registerOutParameter(p++, Types.SMALLINT);
+			cs.registerOutParameter(p++, Types.INTEGER);//LP 20240812  - PGNTCORE-24
 
 			if (cs.execute()) {
 
@@ -373,29 +373,31 @@ public class NotificheSoap extends BaseDaoHandler {
 	
 
 	public NotificaSoap doDetail (String chiaveTransizione, String chiaveDettaglioTransazione) throws DaoException {
-		
 		NotificaSoap notificaSoap = null;
-		
 		CallableStatement cs = null;
-		
 		try {
-
 			cs = prepareCall(Routines.PYNEXSP_SEL_MG.routine());	
-			
 			int p = 1;
 			cs.setString(p++, chiaveTransizione);
 			cs.setString(p++, chiaveDettaglioTransazione);
-			
-			ResultSet rs = cs.executeQuery();
-					
-			try {
-				if (rs.next())
-					notificaSoap = new NotificaSoap(rs);
-			} finally {
-				if (rs != null) {
-					try { rs.close(); } catch (SQLException e) { }
+			//inizio LP 20240811 - PGNTCORE-24
+			//ResultSet rs = cs.executeQuery();
+			if(cs.execute()) {
+				ResultSet rs = cs.getResultSet();
+				if(rs != null ) {
+			//fine LP 20240811 - PGNTCORE-24
+					try {
+						if (rs.next())
+							notificaSoap = new NotificaSoap(rs);
+					} finally {
+						if (rs != null) {
+							try { rs.close(); } catch (SQLException e) { }
+						}
+					}
+			//inizio LP 20240811 - PGNTCORE-24
 				}
 			}
+			//fine LP 20240811 - PGNTCORE-24
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
@@ -405,7 +407,6 @@ public class NotificheSoap extends BaseDaoHandler {
 				try { cs.close(); } catch (SQLException e) { }
 			}
 		}
-
 		return notificaSoap;
 	}
 	

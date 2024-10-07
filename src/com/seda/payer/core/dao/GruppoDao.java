@@ -1,5 +1,6 @@
 package com.seda.payer.core.dao;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigInteger;
 import java.sql.CallableStatement;
 import java.sql.Connection;
@@ -201,6 +202,10 @@ public class GruppoDao extends BaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
+		//inizio LP 20240811  - PGNTCORE-24 	
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x);
+		//fine LP 20240811  - PGNTCORE-24 	
 		} finally {
 			if (callableStatement != null) {
 				try {
@@ -230,6 +235,10 @@ public class GruppoDao extends BaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
+		//inizio LP 20240811  - PGNTCORE-24 	
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x);
+		//fine LP 20240811  - PGNTCORE-24 	
 		} finally {
 			if (callableStatement != null) {
 				try {
@@ -251,7 +260,7 @@ public class GruppoDao extends BaseDaoHandler {
 				Routines.PYGRPSP_DEL);
 		try {
 			callableStatement = prepareCall(Routines.PYGRPSP_DEL.routine());
-			callableStatement.setInt(1, chiaveGruppo.intValue());
+			callableStatement.setLong(1, chiaveGruppo.intValue());
 			callableStatement.executeUpdate();
 		} catch (SQLException x) {
 			throw new DaoException(x);

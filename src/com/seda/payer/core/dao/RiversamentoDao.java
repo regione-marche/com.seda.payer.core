@@ -1,9 +1,6 @@
 //da com.seda.payer.core.dao;
 package com.seda.payer.core.dao;
 
-//import com.seda.payer.riversamento.facade.logger.LogWriter;
-
-//import java.sql.Array;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -14,35 +11,17 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
-/*
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.math.BigDecimal;
-
-import org.apache.commons.net.ftp.FTPClient;
-import org.apache.commons.net.ftp.FTPReply;
-*/
 
 import com.seda.data.helper.HelperException;
-//import com.seda.payer.commons.bean.TypeRequest;
-//import com.seda.payer.core.bean.Beneficiario;
 import com.seda.payer.core.bean.AvanzamentoStato;
 import com.seda.payer.core.bean.Riversamento;
 import com.seda.payer.core.bean.RiversamentoPage;
 import com.seda.payer.core.bean.RiversamentoDetailPage;
 import com.seda.payer.core.bean.RiversamentoReport;
 import com.seda.payer.core.bean.RiversamentoUpdate;
-//import com.seda.payer.core.dao.StoredProcConf;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.messages.Messages;
-//import com.seda.payer.core.bean.Riversamento;
-//import com.seda.payer.riversamento.facade.dto.Riversamento;
-//import com.sun.org.apache.bcel.internal.generic.LLOAD;
 
 public class RiversamentoDao extends BaseDaoHandler {
 
@@ -61,37 +40,28 @@ public class RiversamentoDao extends BaseDaoHandler {
 	}
 
 	public RiversamentoPage getRiversamenti(RiversamentoPage dto, String ordine, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			dto = getLista(dto, ordine, rowsPerPage, pageNumber);
-			dto = getStatistiche(dto);
-			return dto;
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		dto = getLista(dto, ordine, rowsPerPage, pageNumber);
+		dto = getStatistiche(dto);
+		return dto;
 	}
 
 	public RiversamentoDetailPage getDettaglioRiv(RiversamentoDetailPage dto, String ordine) throws DaoException {
-		
 		return getDettaglioRiv(dto, ordine, 0, 0);
 	}
 
 	public RiversamentoDetailPage getDettaglioRiv(RiversamentoDetailPage dto, String ordine, int rowsPerPage, int pageNumber) throws DaoException {
-
 		if (rowsPerPage <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
 		if (pageNumber <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
-
 	  	dto = getListaDettagli(dto, ordine, rowsPerPage, pageNumber);
 		dto = getStatisticheDettagli(dto);
 		return dto;
-
-}
+	}
 	
 /*	
 	public ArrayList elaboraNuoviRiversamenti() throws DaoException 

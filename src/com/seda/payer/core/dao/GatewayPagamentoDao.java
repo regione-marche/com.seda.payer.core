@@ -19,7 +19,13 @@ public class GatewayPagamentoDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public GatewayPagamento doDetail(String chiaveGateway) throws DaoException {
+		return doDetailTail(true, chiaveGateway);
+	}
+
+	public GatewayPagamento doDetailTail(boolean bFlagUpdateAutocomit, String chiaveGateway) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
@@ -27,7 +33,10 @@ public class GatewayPagamentoDao extends BaseDaoHandler {
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.GTW_DODETAIL.routine());
-			callableStatement = prepareCall(Routines.GTW_DODETAIL.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.GTW_DODETAIL.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.GTW_DODETAIL.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, chiaveGateway);
 			if (callableStatement.execute()) {
@@ -140,20 +149,35 @@ public class GatewayPagamentoDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
-	public void doSave(GatewayPagamento gateway,String codOp) throws DaoException {
+	//inizio LP 20240909 - PGNTBOLDER-1
+	public void doSave(GatewayPagamento gateway, String codOp) throws DaoException {
+		doSaveTail(true, gateway, codOp);
+	}
+
+	public void doSaveTail(boolean bFlagUpdateAutocomit, GatewayPagamento gateway, String codOp) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 	    CallableStatement callableStatement=null;
 		try	{
 			if ((gateway.getChiaveGateway() == null || gateway.getChiaveGateway().length() == 0) && codOp.compareTo(TypeRequest.EDIT_SCOPE.scope())==0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("gatewayPagamento.chiaveGateway"));
 			
-			GatewayPagamento data = doDetail(gateway.getChiaveGateway());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//GatewayPagamento data = doDetail(gateway.getChiaveGateway());
+			GatewayPagamento data = doDetailTail(bFlagUpdateAutocomit, gateway.getChiaveGateway());
+			//fine LP 20240909 - PGNTBOLDER-1
 			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("gatewayPagamento.saveadd.error"));
 			if (data != null) {
-				callableStatement = prepareCall(Routines.GTW_DOUPDATE.routine());
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.GTW_DOUPDATE.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.GTW_DOUPDATE.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
 				gateway.update(callableStatement);
 			}
 			else {
-				callableStatement = prepareCall(Routines.GTW_DOINSERT.routine());
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.GTW_DOINSERT.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.GTW_DOINSERT.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
 				gateway.save(callableStatement);
 			}
 			callableStatement.execute();
@@ -178,14 +202,23 @@ public class GatewayPagamentoDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doDelete(GatewayPagamento gateway) throws DaoException {
+		doDeleteTail(true, gateway);
+	}
+
+	public void doDeleteTail(boolean bFlagUpdateAutocomit, GatewayPagamento gateway) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.GTW_DODELETE.routine());
-			callableStatement = prepareCall(Routines.GTW_DODELETE.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.GTW_DODELETE.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.GTW_DODELETE.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			if ((gateway.getChiaveGateway() == null || gateway.getChiaveGateway().length() == 0))
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("gatewayPagamento.chiaveGateway"));

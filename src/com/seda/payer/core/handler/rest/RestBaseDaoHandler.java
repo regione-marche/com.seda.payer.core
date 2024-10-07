@@ -51,6 +51,24 @@ public abstract class RestBaseDaoHandler extends BaseDaoHandler {
 		return prepareCall(routine, -1);
 	}
 
+	//inizio LP 20240828 - Nuove prepareCall per flagUpdateAutocommit
+	@Override
+	protected CallableStatement prepareCall(boolean flagUpdateAutocommit, String routine) throws IllegalArgumentException, SQLException, HelperException {
+		ERestRoutine restRoutine = ERestRoutine.fromRoutineName(routine);
+		if (isRest && restRoutine != null) {
+			return new RestCallableStatement(baseUrl, getSchema(), restRoutine);
+		}
+		return prepareCall(routine, -1, flagUpdateAutocommit ? 1 : 0);
+	}
 
-	
+	@Override
+	protected CallableStatement prepareCall(boolean flagUpdateAutocommit, String routine, String methodRest, String restService) throws IllegalArgumentException, SQLException, HelperException {
+		ERestRoutine restRoutine = ERestRoutine.fromRoutineName(routine);
+		if (isRest && restRoutine != null) {
+			return new RestCallableStatement(baseUrl, getSchema(), restRoutine, methodRest, restService);
+		}
+		return prepareCall(routine, -1, flagUpdateAutocommit ? 1 : 0);
+	}
+	//fine LP 20240828 - Nuove prepareCall per flagUpdateAutocommit
+
 }

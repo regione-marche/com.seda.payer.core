@@ -19,11 +19,10 @@ import javax.sql.DataSource;
 import javax.sql.rowset.WebRowSet;
 
 import com.seda.commons.string.Convert;
+import com.seda.data.helper.HelperException;
 //inizio LP PG21XX04 Leak
 //import com.seda.data.dao.DAOHelper;
 //fine LP PG21XX04 Leak
-import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.ConfigurazioneModello3;
 import com.seda.payer.core.bean.ConfigurazioneModello3Pagelist;
@@ -44,10 +43,19 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		super(connection, schema);
 	}
 	
-	
 	public ConfigurazioneModello3 select(ConfigurazioneModello3 configurazioneModello3) throws DaoException {
-		CallableStatement callableStatement=null;
-		ResultSet resultSet=null;
+	//inizio LP 20240911 - PGNTBIPOS-1	
+		return selectTail2(true, true, configurazioneModello3);
+	}
+
+	public ConfigurazioneModello3 selectBatch(boolean bFlagUpdateAutocomit, boolean bCloseConn, ConfigurazioneModello3 configurazioneModello3) throws DaoException {
+		return selectTail2(bFlagUpdateAutocomit, bCloseConn, configurazioneModello3);
+	}
+
+	private ConfigurazioneModello3 selectTail2(boolean bFlagUpdateAutocomit, boolean bCloseConn, ConfigurazioneModello3 configurazioneModello3) throws DaoException {
+	//fine LP 20240911 - PGNTBIPOS-1	
+		CallableStatement callableStatement = null;
+		ResultSet resultSet = null;
 		Connection connection = null;
 		//inizio LP PG21XX04 Leak
 		//CachedRowSet rowSet = null;
@@ -55,7 +63,10 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		try {
 			connection = getConnection();
 			//PG180080 modificare SP e parametri da passare
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_SEL.routine());
+			//inizio LP 20240911 - PGNTCORE-24/PGNTBIPOS-1
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_SEL.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.PYMDTSP_SEL.routine());
+			//fine LP 20240911 - PGNTCORE-24/PGNTBIPOS-1 
 			callableStatement.setString(1, configurazioneModello3.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneModello3.getCodiceUtente());
 			callableStatement.setString(3, configurazioneModello3.getChiaveEnte());
@@ -64,14 +75,11 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 			callableStatement.setString(6, configurazioneModello3.getCodiceSegregazione());
 			callableStatement.setString(7, configurazioneModello3.getCarattereDiServizio()); //SVILUPPO_002_SB
 			callableStatement.setString(8, configurazioneModello3.getTipologiaServizio()==null ? "" :  configurazioneModello3.getTipologiaServizio()); //SB PG210140
-
 			callableStatement.execute();
-
 			resultSet=callableStatement.getResultSet();
 			if(resultSet.next()) {
 				configurazioneModello3 = new ConfigurazioneModello3(resultSet);
 			}
-			
 //			loadWebRowSet(resultSet);
 //			String selectXml = getWebRowSetXml();
 //			try {
@@ -122,8 +130,9 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
+			e.printStackTrace();
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//	DAOHelper.closeIgnoringException(callableStatement);
 			//	DAOHelper.closeIgnoringException(connection);
@@ -140,26 +149,36 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
+				callableStatement = null;
 			}
-			if (connection != null) {
-				try {
-					connection.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240911 - PGNTBIPOS-1
+			if(bCloseConn) {
+			//fine LP 20240911 - PGNTBIPOS-1
+				if (connection != null) {
+					try {
+						connection.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240911 - PGNTBIPOS-1
 			}
+			//fine LP 20240911 - PGNTBIPOS-1
 			//fine LP PG21XX04 Leak
 		}
 		return configurazioneModello3;
 	}
 
 	public Integer update(ConfigurazioneModello3 configurazioneModello3 )	throws DaoException {
-		CallableStatement callableStatement=null;
+		CallableStatement callableStatement = null;
 		Connection connection = null;
-		int ret=0;
+		int ret = 0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_UPD.routine());
+			//inizio LP 20240907 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_UPD.routine());
+			callableStatement = prepareCall(Routines.PYMDTSP_UPD.routine());
+			//fine LP 20240907 - PGNTCORE-24 
 
 //			 IN I_MDT_CSOCCSOC CHAR(5), 	
 //			 IN I_MDT_CUTECUTE CHAR(5),		
@@ -224,7 +243,10 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_DEL.routine());
+			//inizio LP 20240907 - PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_DEL.routine());
+			callableStatement = prepareCall(Routines.PYMDTSP_DEL.routine());
+			//fine LP 20240907 - PGNTCORE-24 
 //			IN I_MDT_CSOCCSOC
 //			IN I_MDT_CUTECUTE
 //			IN I_MDT_KANEKENT
@@ -276,13 +298,17 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		}
 		return esitoRisposte;
 	}
+
 	public EsitoRisposte insert(ConfigurazioneModello3 configurazioneModello3 )	throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_INS.routine());
+			//inizio LP 20240907 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYMDTSP_INS.routine());
+			callableStatement = prepareCall(Routines.PYMDTSP_INS.routine());
+			//fine LP 20240907 - PGNTCORE-24 
 			
 //			 IN I_MDT_CSOCCSOC
 //			 IN I_MDT_CUTECUTE
@@ -354,7 +380,6 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 	) throws DaoException {
 	//fine LP PG21XX09
 		CallableStatement callableStatement=null;
-
 		Connection connection = null;
 		ResultSet data = null;
 		//inizio LP PG21XX04 Leak
@@ -366,7 +391,10 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 		List<ConfigurazioneModello3> listConfigurazioneModello3 = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYMDTSP_LST.routine());
+			//inizio LP 20240927 - PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(),Routines.PYMDTSP_LST.routine());
+			callableStatement = prepareCall(Routines.PYMDTSP_LST.routine());
+			//fine LP 20240927 - PGNTCORE-24 
 //			   IN I_MDT_CSOCCSOC
 //             IN I_MDT_CUTECUTE
 //             IN I_MDT_KANEKENT
@@ -398,9 +426,7 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 			callableStatement.registerOutParameter(13, Types.INTEGER);
 			/* we register total pages */
 			callableStatement.registerOutParameter(14, Types.SMALLINT);
-
 			/* we execute procedure */
-
 			if(callableStatement.execute())	{
 				pageInfo = new PageInfo();
 				pageInfo.setPageNumber(pageNumber);
@@ -409,12 +435,9 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 				pageInfo.setLastRow(callableStatement.getInt(12));
 				pageInfo.setNumRows(callableStatement.getInt(13));
 				pageInfo.setNumPages(callableStatement.getInt(14));
-
 				data = callableStatement.getResultSet();
 				loadWebRowSet(data);
 				configurazioneModello3Lst[0] = getWebRowSetXml();
-			
-
 				//inizio LP PG21XX04 Leak
 				//WebRowSet tmpRowSet = Convert.stringToWebRowSet(configurazioneModello3Lst[0]);
 				tmpRowSet = Convert.stringToWebRowSet(configurazioneModello3Lst[0]);
@@ -424,8 +447,6 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 					ConfigurazioneModello3 item = new ConfigurazioneModello3(tmpRowSet);
 					listConfigurazioneModello3.add(item);
 				}
-				
-				
 				if(callableStatement.getMoreResults()){
 					//inizio LP PG21XX04 Leak
 					if (data != null) {
@@ -440,24 +461,21 @@ public class ConfigurazioneModello3DaoImpl extends BaseDaoHandler implements Con
 					loadWebRowSet(data);
 					configurazioneModello3Lst[1] = getWebRowSetXml();
 				}
-
-				
 			}
 			configurazioneModello3Pagelist = new ConfigurazioneModello3Pagelist(pageInfo, "00","",configurazioneModello3Lst, listConfigurazioneModello3);
 			return configurazioneModello3Pagelist;
-
 		} catch (SQLException e) {
 			e.printStackTrace();
 			configurazioneModello3Pagelist = new ConfigurazioneModello3Pagelist(pageInfo, "01","Sql-Exception","", null);
 		} catch (IllegalArgumentException e) {
 			e.printStackTrace();
-			configurazioneModello3Pagelist = new ConfigurazioneModello3Pagelist(pageInfo, "01","Sql-Exception","", null);
+			configurazioneModello3Pagelist = new ConfigurazioneModello3Pagelist(pageInfo, "01","IllegalArgument-Exception","", null);
 		} catch (HelperException e) {
 			e.printStackTrace();
-			configurazioneModello3Pagelist = new ConfigurazioneModello3Pagelist(pageInfo, "01","Sql-Exception","", null);
+			configurazioneModello3Pagelist = new ConfigurazioneModello3Pagelist(pageInfo, "01","Helper-Exception","", null);
 		} catch (IOException e) {
 			e.printStackTrace();
-			configurazioneModello3Pagelist = new ConfigurazioneModello3Pagelist(pageInfo, "01","Sql-Exception","", null);
+			configurazioneModello3Pagelist = new ConfigurazioneModello3Pagelist(pageInfo, "01","IO-Exception","", null);
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);

@@ -1,26 +1,14 @@
 package com.seda.payer.core.wallet.dao;
 
-import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
-import javax.sql.DataSource;
-
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler; 
 import com.seda.payer.core.wallet.bean.FattureComunicazioniREP;
-import com.seda.payer.core.wallet.bean.Rep;
 
 /**
  * PG130100
@@ -28,8 +16,8 @@ import com.seda.payer.core.wallet.bean.Rep;
  */
 
 public class FattureComunicazioniREPDAOImpl  extends BaseDaoHandler  implements FattureComunicazioniREPDAO  {  
-	CallableStatement insertBatchCs=null;
-	Connection connection = null;
+	CallableStatement insertBatchCs = null;
+	//Connection connection = null; //LP PGNTCORE-24
 	 
 	
 	public FattureComunicazioniREPDAOImpl(Connection connection, String schema) {
@@ -40,9 +28,15 @@ public class FattureComunicazioniREPDAOImpl  extends BaseDaoHandler  implements 
 
 	public void openInsertBatch( )	throws DaoException { 
 		try {
-			connection = getConnection();
-			insertBatchCs = Helper.prepareCall(connection, getSchema(), Routines.PYICRSP_INS.routine());
-		}catch (Exception e) {
+			//inizio LP PGNTCORE-24
+			//connection = getConnection();
+			//insertBatchCs = Helper.prepareCall(connection, getSchema(), Routines.PYICRSP_INS.routine());
+			//insertBatchCs = MetaProcedure.prepareCall(connection, getSchema(), Routines.PYICRSP_INS.routine());
+			if(insertBatchCs == null) { 
+				insertBatchCs = prepareCall(Routines.PYICRSP_INS.routine());
+			}
+			//fine LP PGNTCORE-24
+		} catch (Exception e) {
 			throw new DaoException(e);
 		}
 	}
@@ -57,6 +51,7 @@ public class FattureComunicazioniREPDAOImpl  extends BaseDaoHandler  implements 
 */
 	public void closeInsertBatch( ) {
 		Helper.close(insertBatchCs);
+		insertBatchCs = null; //LP PGNTCORE-24
 		//Helper.close(connection); 
 	}
  

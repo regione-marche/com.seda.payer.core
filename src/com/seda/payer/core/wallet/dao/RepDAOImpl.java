@@ -1,23 +1,20 @@
 package com.seda.payer.core.wallet.dao;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigDecimal;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.Types;
-
 import javax.sql.DataSource;
-
 import com.seda.data.helper.Helper;
-import com.seda.data.spi.DaoHandler;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler; 
 import com.seda.payer.core.wallet.bean.Rep; 
 
 public class RepDAOImpl extends BaseDaoHandler  implements RepDAO { 
-	CallableStatement insertBatchCs=null;
-	Connection connection = null;
+	CallableStatement insertBatchCs = null;
+	//Connection connection = null; //LP PGNTCORE-24
 	
 	public RepDAOImpl(DataSource ds, String schema) throws SQLException {
 		super(ds.getConnection(), schema);
@@ -29,22 +26,25 @@ public class RepDAOImpl extends BaseDaoHandler  implements RepDAO {
 
 	public void openInsertBatch( )	throws DaoException { 
 		try {
-			connection = getConnection();
-			insertBatchCs = Helper.prepareCall(connection, getSchema(), Routines.PYREPSP_INS.routine());
-		}catch (Exception e) {
+			//inizio LP PGNTCORE-24
+			//connection = getConnection();
+			//insertBatchCs = Helper.prepareCall(connection, getSchema(), Routines.PYREPSP_INS.routine());
+			insertBatchCs =  prepareCall(Routines.PYREPSP_INS.routine());
+			//fine LP PGNTCORE-24
+		} catch (Exception e) {
 			throw new DaoException(e);
 		}
 	} 
 	
 	// public void commitInsertBatch() throws DaoException{}
 
-	public void closeInsertBatch( ) {
+	public void closeInsertBatch() {
 		Helper.close(insertBatchCs);
+		insertBatchCs = null;; //LP PGNTCORE-24
 		//Helper.close(connection); 
 	}
- 
 
-	public void executeInsertBatch( ) throws DaoException {
+	public void executeInsertBatch() throws DaoException {
 		try {
 			insertBatchCs.executeBatch();
 		} catch (SQLException e) {
@@ -52,8 +52,7 @@ public class RepDAOImpl extends BaseDaoHandler  implements RepDAO {
 		}
 	}
 	
-	public void insertBatch(Rep rep)	throws DaoException {
-		  
+	public void insertBatch(Rep rep) throws DaoException {
 		try { 
 			insertBatchCs.setString(1, rep.getIdWallet());
 			insertBatchCs.setString(2, rep.getNumeroProgressivoDisposizione() ); 
@@ -78,10 +77,15 @@ public class RepDAOImpl extends BaseDaoHandler  implements RepDAO {
 			if (e.getErrorCode() == -803) {
 				String msg = "Disposizione già presente "+Routines.PYREPSP_INS.routine();
 				throw new DaoException(803,msg,e);
-			}else{
+			} else {
 				String msg = "Errore nell'esecuzione della stored "+Routines.PYREPSP_INS.routine();
 				throw new DaoException(1,msg,e);
 			}
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			String msg = "disposizione già presente " + Routines.PYREPSP_INS.routine();
+			DaoException.makeIfDuplicateKeyError(x, 803, msg);
+		//fine LP 20240811 - PGNTCORE-24
 		} 
 	}
 	

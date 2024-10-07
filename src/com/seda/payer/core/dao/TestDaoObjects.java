@@ -1,7 +1,7 @@
 package com.seda.payer.core.dao;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import com.seda.payer.core.bean.Menu;

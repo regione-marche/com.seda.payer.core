@@ -7,8 +7,7 @@ import java.sql.SQLException;
 import java.sql.Types;
 
 import javax.sql.DataSource;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
+
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.ScadenzaUrlNotifica;
 import com.seda.payer.core.exception.DaoException;
@@ -29,7 +28,6 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		super(connection, schema);
 	}
 
-
 	public ScadenzaUrlNotifica select(String codEnte, String codiceFiscale, String numeroDocumento ) throws DaoException {
 		CallableStatement callableStatement = null;
 		ResultSet resultSet = null;
@@ -37,16 +35,17 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		ScadenzaUrlNotifica scadenzaUrlNotifica = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYUNPSP_SEL");
+			//inizio LP 20240919 - PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYUNPSP_SEL");
+            callableStatement = prepareCall("PYUNPSP_SEL");
+			//fine LP 20240919 - PGNTCORE-24 
 			System.out.println("PYEUNPSP_SEL - codEnte: " + codEnte);
 			System.out.println("PYEUNPSP_SEL - codiceFiscale: " + codiceFiscale);
 			System.out.println("PYEUNPSP_SEL - numeroDocumento: " + numeroDocumento);
 			callableStatement.setString(1, codEnte);
 			callableStatement.setString(2, codiceFiscale);
 			callableStatement.setString(3, numeroDocumento);
-
 			callableStatement.execute();
-
 			resultSet=callableStatement.getResultSet();
 			if(resultSet.next()) {
 				scadenzaUrlNotifica = new ScadenzaUrlNotifica(resultSet);
@@ -86,14 +85,17 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		//fine LP PG21XX04 Leak
 		return scadenzaUrlNotifica;
 	}
-	
+
 	public Integer update(ScadenzaUrlNotifica scadenzaUrl )	throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYUNPSP_UPD");
+			//inizio LP 20240919 - PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYUNPSP_UPD");
+            callableStatement = prepareCall("PYUNPSP_UPD");
+			//fine LP 20240919 - PGNTCORE-24 
 			callableStatement.setString(1, scadenzaUrl.getCodiceEnte());
 			if(scadenzaUrl.getCodiceUtente()==null || scadenzaUrl.getCodiceUtente().equals(""))
 				callableStatement.setNull(2, Types.VARCHAR);
@@ -113,7 +115,7 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 				callableStatement.setNull(7, Types.VARCHAR);
 			else
 				callableStatement.setString(7, scadenzaUrl.getChiaveNotifica());
-			if(scadenzaUrl.getDataScadenza() ==null || scadenzaUrl.getDataScadenza().equals(""))
+			if(scadenzaUrl.getDataScadenza() == null || scadenzaUrl.getDataScadenza().equals(""))
 				callableStatement.setNull(8, Types.TIMESTAMP);
 			else
 				callableStatement.setTimestamp(8,  new java.sql.Timestamp(scadenzaUrl.getDataScadenza().getTimeInMillis()));
@@ -129,6 +131,7 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//inizio LP PG21XX04 Leak
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -150,14 +153,17 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		}
 		return ret;
 	}
-	
+
 	public EsitoRisposte insert(ScadenzaUrlNotifica scadenzaUrlNotifica )	throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYUNPSP_INS");
+			//inizio LP 20240919 - PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYUNPSP_INS");
+            callableStatement = prepareCall("PYUNPSP_INS");
+			//fine LP 20240919 - PGNTCORE-24 
 			callableStatement.setString(1, scadenzaUrlNotifica.getCodiceEnte());
 			callableStatement.setString(2, scadenzaUrlNotifica.getCodiceUtente());
 			callableStatement.setString(3, scadenzaUrlNotifica.getCodiceSocieta());
@@ -201,18 +207,18 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		}
 		return esitoRisposte;
 	}
-	
+
 	public String getCodiceSocietaByEnteUtente(String cutecute, String codEnte) throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		ResultSet listInfoCodEnteImpositore = null;
-	
 		String codiceSocieta = "";
-		
 		try {	
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYENTSP_SEL_INFO_CENT");
-	
+			//inizio LP 20240919 - PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYENTSP_SEL_INFO_CENT");
+            callableStatement = prepareCall("PYENTSP_SEL_INFO_CENT");
+			//fine LP 20240919 - PGNTCORE-24 
 			callableStatement.setString(1, cutecute);
 			callableStatement.setString(2, codEnte);
 			callableStatement.execute();
@@ -221,7 +227,7 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 				codiceSocieta = listInfoCodEnteImpositore.getString("ENT_CSOCCSOC");
 			}
 			
-		}   catch (SQLException e) {
+		} catch (SQLException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
 		} catch (IllegalArgumentException e) {
@@ -230,6 +236,7 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		} catch (HelperException e) {
 			e.printStackTrace();
 			throw new DaoException(e);
+		//fine LP 20240919 - PGNTCORE-24 
 		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
@@ -258,5 +265,4 @@ public class ScadenzaUrlNotificaDaoImpl extends BaseDaoHandler implements Scaden
 		}
 		return codiceSocieta;
 	}
-
 }

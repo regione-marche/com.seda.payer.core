@@ -22,7 +22,13 @@ public class AnagServiziDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public AnagServizi doDetail(String codiceAnagServizi) throws DaoException {
+		return doDetailTail(true, codiceAnagServizi);
+	}
+
+	public AnagServizi doDetailTail(boolean bFlagUpdateAutocomit, String codiceAnagServizi) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
@@ -30,7 +36,10 @@ public class AnagServiziDao extends BaseDaoHandler {
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.SER_DODETAIL.routine());
-			callableStatement = prepareCall(Routines.SER_DODETAIL.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.SER_DODETAIL.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.SER_DODETAIL.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, codiceAnagServizi);
 			if (callableStatement.execute()) {
@@ -74,15 +83,11 @@ public class AnagServiziDao extends BaseDaoHandler {
 	}
 
 	public void doRowSets(String codiceAnagServizi, String descrizioneAnagServizi, int rowsPerPage, int pageNumber) throws DaoException {
-
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(codiceAnagServizi, descrizioneAnagServizi, rowsPerPage, pageNumber);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(codiceAnagServizi, descrizioneAnagServizi, rowsPerPage, pageNumber);
 	}
 
 	private void rowSets(String codiceAnagServizi, String descrizioneAnagServizi, int rowsPerPage, int pageNumber) throws DaoException {
@@ -134,18 +139,33 @@ public class AnagServiziDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
-	public void doSave(AnagServizi anagservizi,String codOp) throws DaoException {
+	//inizio LP 20240909 - PGNTBOLDER-1
+	public void doSave(AnagServizi anagservizi, String codOp) throws DaoException {
+		doSaveTail(true, anagservizi, codOp);
+	}
+
+	public void doSaveTail(boolean bFlagUpdateAutocomit, AnagServizi anagservizi,String codOp) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement=null;
 		try	{
 			if (anagservizi.getCodiceAnagServizi() == null || anagservizi.getCodiceAnagServizi().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagServizi.codiceAnagServizi"));
-
-			AnagServizi data = doDetail(anagservizi.getCodiceAnagServizi());
-			if ((data != null) && codOp!=null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagServizi.saveadd.error"));
-			if (data != null) 
-				callableStatement = prepareCall(Routines.SER_DOUPDATE.routine());
-			else callableStatement = prepareCall(Routines.SER_DOINSERT.routine());
-			
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//AnagServizi data = doDetail(anagservizi.getCodiceAnagServizi());
+			AnagServizi data = doDetailTail(bFlagUpdateAutocomit, anagservizi.getCodiceAnagServizi());
+			//fine LP 20240909 - PGNTBOLDER-1
+			if ((data != null) && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0) throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagServizi.saveadd.error"));
+			if (data != null) {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.SER_DOUPDATE.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.SER_DOUPDATE.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			} else {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.SER_DOINSERT.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.SER_DOINSERT.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			}
 			anagservizi.save(callableStatement);
 			callableStatement.execute();
 			//commit();
@@ -169,18 +189,26 @@ public class AnagServiziDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doDelete(AnagServizi anagservizi) throws DaoException {
+		doDeleteTail(true, anagservizi);
+	}
+
+	public void doDeleteTail(boolean bFlagUpdateAutocomit, AnagServizi anagservizi) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.SER_DODELETE.routine());
-			callableStatement = prepareCall(Routines.SER_DODELETE.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.SER_DODELETE.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.SER_DODELETE.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			if (anagservizi.getCodiceAnagServizi() == null || anagservizi.getCodiceAnagServizi().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("anagservizi.codiceAnagServizi"));
-	
 			callableStatement.setString(1, anagservizi.getCodiceAnagServizi());
 			callableStatement.execute();
 			//commit();

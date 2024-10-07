@@ -1,6 +1,5 @@
 package com.seda.payer.core.wallet.dao;
 
-import java.sql.Connection;
 import java.util.ArrayList;
 
 import com.seda.payer.core.exception.DaoException;

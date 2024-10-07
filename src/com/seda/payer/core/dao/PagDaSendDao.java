@@ -4,14 +4,10 @@ import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
-import com.seda.payer.core.bean.FlussiRen;
 import com.seda.payer.core.bean.PagDaRend_Freccia;
 import com.seda.payer.core.bean.PagDaRend_IV;
 import com.seda.payer.core.exception.DaoException;
@@ -23,7 +19,13 @@ public class PagDaSendDao extends BaseDaoHandler{
 		super(connection, schema);
 	}
 	
-	public List<PagDaRend_IV> listaPagDaSend_IV(String chiaveRendicontazione) throws DaoException{
+	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+	public List<PagDaRend_IV> listaPagDaSend_IV(String chiaveRendicontazione) throws DaoException {
+		return listaPagDaSend_IVTail(true, chiaveRendicontazione);
+	}
+
+	public List<PagDaRend_IV> listaPagDaSend_IVTail(boolean bFlagUpdateAutocommit, String chiaveRendicontazione) throws DaoException {
+	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 		//inizio LP PG21XX04 Leak
 		//CallableStatement callableStatement;
 		CallableStatement callableStatement = null;
@@ -32,7 +34,10 @@ public class PagDaSendDao extends BaseDaoHandler{
 		List<PagDaRend_IV> lista = null;
 		try{
 			if((chiaveRendicontazione != null) && (!chiaveRendicontazione.equals(""))){
-				callableStatement = prepareCall("PYTDTSP_SEL_SEND");
+				//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+				//callableStatement = prepareCall("PYTDTSP_SEL_SEND");
+				callableStatement = prepareCall(bFlagUpdateAutocommit, "PYTDTSP_SEL_SEND");
+				//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 				callableStatement.setString(1, chiaveRendicontazione);
 				
 				if(callableStatement.execute()){
@@ -46,7 +51,7 @@ public class PagDaSendDao extends BaseDaoHandler{
 					}
 				}
 			}
-		}catch (IllegalArgumentException e) {
+		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
 		} catch (SQLException e) {
 			throw new DaoException(e);
@@ -74,7 +79,13 @@ public class PagDaSendDao extends BaseDaoHandler{
 		return lista;
 	}
 	
+	//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 	public List<PagDaRend_Freccia> listaPagDaSend_Freccia(String chiaveRendicontazione) throws DaoException{
+		return listaPagDaSend_FrecciaTail(true, chiaveRendicontazione);
+	}
+
+	public List<PagDaRend_Freccia> listaPagDaSend_FrecciaTail(boolean bFlagUpdateAutocommit, String chiaveRendicontazione) throws DaoException{
+	//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 		//inizio LP PG21XX04 Leak
 		//CallableStatement callableStatement;
 		CallableStatement callableStatement = null;
@@ -83,7 +94,10 @@ public class PagDaSendDao extends BaseDaoHandler{
 		List<PagDaRend_Freccia> lista = null;
 		try{
 			if((chiaveRendicontazione != null) && (!chiaveRendicontazione.equals(""))){
-				callableStatement = prepareCall("PYTFRSP_SEL_SEND");
+				//inizio LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
+				//callableStatement = prepareCall("PYTFRSP_SEL_SEND");
+				callableStatement = prepareCall(bFlagUpdateAutocommit, "PYTFRSP_SEL_SEND");
+				//fine LP 20240905 - PGNTCORE-24/PGNTPROR-5/PGNTPROR-5
 				callableStatement.setString(1, chiaveRendicontazione);
 				
 				if(callableStatement.execute()){

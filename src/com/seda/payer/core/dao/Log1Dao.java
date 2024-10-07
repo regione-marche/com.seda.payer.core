@@ -37,7 +37,7 @@ public class Log1Dao extends BaseDaoHandler {
 //                  + "\n\tPARAM: idRequest:" + key);
 		try {
 			// we prepare callableStatement
-			//TODO: non � stata implementata la SP PGLG1SP_SEL
+			//Non e' stata implementata la SP PGLG1SP_SEL
 			callableStatement = prepareCall("PYLG1SP_SEL");
 			Log1 bean = new Log1();
 			bean.setChiaveLog(key);

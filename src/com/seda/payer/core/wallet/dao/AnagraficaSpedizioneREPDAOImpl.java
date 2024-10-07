@@ -2,32 +2,23 @@ package com.seda.payer.core.wallet.dao;
 
 import java.sql.CallableStatement;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Locale;
-
-import javax.sql.DataSource;
-
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.Helper;
-import com.seda.data.helper.HelperException;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler; 
 import com.seda.payer.core.wallet.bean.AnagraficaSpedizioneREP;
-import com.seda.payer.core.wallet.bean.Rep;
 
 /**
  * PG130100
  *
  */
-public class AnagraficaSpedizioneREPDAOImpl  extends BaseDaoHandler  implements AnagraficaSpedizioneREPDAO  {  
-	CallableStatement insertBatchCs=null;
-	Connection connection = null;
-	 
+public class AnagraficaSpedizioneREPDAOImpl  extends BaseDaoHandler  implements AnagraficaSpedizioneREPDAO  {
+	CallableStatement insertBatchCs = null;
+	//inizio LP PGNTCORE-24
+	//Connection connection = null;
+	//fine LP PGNTCORE-24
 	
 	public AnagraficaSpedizioneREPDAOImpl(Connection connection, String schema) {
 		super(connection, schema); 
@@ -35,11 +26,16 @@ public class AnagraficaSpedizioneREPDAOImpl  extends BaseDaoHandler  implements 
 
 	
 
-	public void openInsertBatch( )	throws DaoException { 
+	public void openInsertBatch() throws DaoException { 
 		try {
-			connection = getConnection();
-			insertBatchCs = Helper.prepareCall(connection, getSchema(), Routines.PYASPSP_INS.routine());
-		}catch (Exception e) {
+			//inizio LP PGNTCORE-24
+			//connection = getConnection();
+			//insertBatchCs = Helper.prepareCall(connection, getSchema(), Routines.PYASPSP_INS.routine());
+			if(insertBatchCs == null) {
+				insertBatchCs = prepareCall(Routines.PYASPSP_INS.routine());
+			}
+			//fine LP PGNTCORE-24
+		} catch (Exception e) {
 			throw new DaoException(e);
 		}
 	}
@@ -54,6 +50,7 @@ public class AnagraficaSpedizioneREPDAOImpl  extends BaseDaoHandler  implements 
 */
 	public void closeInsertBatch( ) {
 		Helper.close(insertBatchCs);
+		insertBatchCs = null; //LP PGNTCORE-24
 		//Helper.close(connection); 
 	}
  

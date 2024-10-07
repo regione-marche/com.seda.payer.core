@@ -8,16 +8,10 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
-
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
-
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
@@ -30,25 +24,30 @@ import com.seda.payer.core.wallet.bean.WalletPageList;
 public class ConfigurazioneEvoIntimazioniDAOImpl extends BaseDaoHandler  implements ConfigurazioneEvoIntimazioniDAO  {
 
 	private static final long serialVersionUID = 1L;
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
 	public ConfigurazioneEvoIntimazioniDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	//inizio LP PG21XX04 Leak
 	public ConfigurazioneEvoIntimazioniDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
 	//fine LP PG21XX04 Leak
+
 	public EsitoRisposte insert(ConfigurazioneEvoIntimazioni configurazioneEvoIntimazioni )	throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSLISP_INS.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSLISP_INS.routine());
+			callableStatement = prepareCall( Routines.PYSLISP_INS.routine());
+			//fine LP PGNTCORE-24
 //			IN I_SLI_CSOCCSOC VARCHAR(5), 
 //			IN I_SLI_CUTECUTE VARCHAR(5),
 //			IN I_SLI_KANEKENT CHAR(10),
@@ -127,7 +126,10 @@ public class ConfigurazioneEvoIntimazioniDAOImpl extends BaseDaoHandler  impleme
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSLISP_DEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSLISP_DEL.routine());
+			callableStatement = prepareCall( Routines.PYSLISP_DEL.routine());
+			//fine LP PGNTCORE-24
 //			IN I_SLI_CSOCCSOC VARCHAR(5), 
 //			IN I_SLI_CUTECUTE VARCHAR(5),
 //			IN I_SLI_KANEKENT CHAR(10),
@@ -184,7 +186,10 @@ public class ConfigurazioneEvoIntimazioniDAOImpl extends BaseDaoHandler  impleme
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSLISP_SEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSLISP_SEL.routine());
+			callableStatement = prepareCall( Routines.PYSLISP_SEL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneEvoIntimazioni.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneEvoIntimazioni.getCuteCute());
 			callableStatement.setString(3, configurazioneEvoIntimazioni.getChiaveEnte());
@@ -199,10 +204,8 @@ public class ConfigurazioneEvoIntimazioniDAOImpl extends BaseDaoHandler  impleme
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
 			if (rowSet.next() ) {
 				 String codiceSocieta = rowSet.getString(1);       		
 				 String cuteCute = rowSet.getString(2);					
@@ -236,7 +239,7 @@ public class ConfigurazioneEvoIntimazioniDAOImpl extends BaseDaoHandler  impleme
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (rowSet != null) {
@@ -279,8 +282,10 @@ public class ConfigurazioneEvoIntimazioniDAOImpl extends BaseDaoHandler  impleme
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSLISP_UPD.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSLISP_UPD.routine());
+			callableStatement = prepareCall( Routines.PYSLISP_UPD.routine());
+			//fine LP PGNTCORE-24
 //			IN I_SLI_CSOCCSOC VARCHAR(5), 
 //			IN I_SLI_CUTECUTE VARCHAR(5),
 //			IN I_SLI_KANEKENT CHAR(10),
@@ -372,7 +377,10 @@ public class ConfigurazioneEvoIntimazioniDAOImpl extends BaseDaoHandler  impleme
 //			OUT O_TOTPAGES SMALLINT
 				
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSLISP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSLISP_LST.routine());
+			callableStatement = prepareCall( Routines.PYSLISP_LST.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,configurazioneEvoIntimazioni.getCodiceSocieta());

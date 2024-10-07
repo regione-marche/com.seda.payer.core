@@ -19,6 +19,7 @@ import com.seda.commons.management.annotations.Description;
 import com.seda.commons.management.annotations.ManagedAttribute;
 import com.seda.commons.management.annotations.ManagedOperation;
 import com.seda.commons.resource.ResourceManager;
+import com.seda.data.dao.DAOHelper;
 import com.seda.data.event.DAOEventProxy;
 /**
  * @author f.ricci
@@ -43,6 +44,8 @@ public class DataSourceImpl implements DataSource {
 	private UserConnectionWrapperFactory connectionWrapperFactory;
 	
 	private volatile boolean suspend=false;
+
+	private DataSource originalDataSource = null;
 
 	@ManagedOperation @Description("Suspend connection requests on this datasource")
 	public void suspend() {
@@ -117,17 +120,24 @@ public class DataSourceImpl implements DataSource {
 		this.driverProperties = driverProperties;
 	}
 
+	public DataSourceImpl(DataSource dataSource) {
+		this.originalDataSource = dataSource;
+	}
+
 	public Connection getConnection() throws SQLException {
-		initializeDriver();
 		Connection connection;
-		if (driverProperties != null) {
-			connection = DriverManager.getConnection(url, driverProperties);
-		} else if (username == null || password == null) {
-			connection = DriverManager.getConnection(url);
+		if (originalDataSource != null) {
+			connection = originalDataSource.getConnection();			
 		} else {
-			connection = DriverManager.getConnection(url, username, password);
+			initializeDriver();
+			if (driverProperties != null) {
+				connection = DriverManager.getConnection(url, driverProperties);
+			} else if (username == null || password == null) {
+				connection = DriverManager.getConnection(url);
+			} else {
+				connection = DriverManager.getConnection(url, username, password);
+			}
 		}
-		
 		return configureConnection(connection);
 	}
 
@@ -237,6 +247,8 @@ public class DataSourceImpl implements DataSource {
 		
 		// before returning connection fire the open connection event
 		DAOEventProxy.dispatch(conn);
+		// Centralizzazione modifiche getConnection()
+		conn = DAOHelper.enhance(conn);
 		
 		return conn;
 	}

@@ -85,8 +85,6 @@ public class BeneficiarioDao extends BaseDaoHandler {
 		}
 	}
 
-
-	
 	public void doRowSets(Beneficiario beneficiario, String ordine) throws DaoException {
 		doRowSets(beneficiario, ordine, 0, 0);
 	}
@@ -95,18 +93,15 @@ public class BeneficiarioDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		if (rowsPerPage <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
 		if (pageNumber <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
-
 		try	{
 			callableStatement = prepareCall(Routines.BEN_DOLIST.routine());
 			callableStatement.setString(1, beneficiario.getUser().getCompany().getCompanyCode());
 			callableStatement.setString(2, beneficiario.getAnagEnte().getAnagProvCom().getCodiceBelfiore());
 			callableStatement.setString(3, beneficiario.getUser().getUserCode());
 			callableStatement.setString(4, beneficiario.getAnagEnte().getChiaveEnte());
-
-			//TODO aggiungere gli altri campi
+			//Aggiungere gli altri campi ?
 			/*
 			callableStatement.setString(4, ente.getTipoEnte());
 			callableStatement.setString(5, ente.getNumeroContoCorrente());
@@ -159,33 +154,26 @@ public class BeneficiarioDao extends BaseDaoHandler {
 		try	{
 			if (beneficiario.getUser() == null || beneficiario.getUser().getUserCode() == null || beneficiario.getUser().getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("beneficiario.user.userCode"));
-
 			if (beneficiario.getUser().getCompany() == null || beneficiario.getUser().getCompany().getCompanyCode() == null || beneficiario.getUser().getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("beneficiario.user.company.companyCode"));
-
 			if (beneficiario.getAnagEnte() == null || beneficiario.getAnagEnte().getChiaveEnte() == null || beneficiario.getAnagEnte().getChiaveEnte().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("beneficiario.anagEnte.chiaveEnte"));
-
 			Beneficiario data = doDetail(beneficiario.getUser().getCompany().getCompanyCode(), beneficiario.getUser().getUserCode(), beneficiario.getAnagEnte().getChiaveEnte());
-
 			/*
 			if (data != null && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0) 
 				throw new IllegalArgumentException(Messages.UNIQUE_CONSTRAINT_VIOLATION.format(data.getUser().getCompany().getCompanyCode() + 
 						" / " + data.getUser().getUserCode() + " / " + data.getAnagEnte().getChiaveEnte()));
-*/
+			*/
 			if (data != null && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0) 
 				throw new IllegalArgumentException(Messages.UNIQUE_CONSTRAINT_VIOLATION.format("Scheda Beneficiario"));
-
 			if (data != null)
 				callableStatement = prepareCall(Routines.BEN_DOUPDATE.routine());
 			else 
 				callableStatement = prepareCall(Routines.BEN_DOINSERT.routine());
-
 			beneficiario.save(callableStatement);
 			callableStatement.execute();
 			//commit();
 			code = callableStatement.getInt(12);
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -215,10 +203,8 @@ public class BeneficiarioDao extends BaseDaoHandler {
 			callableStatement = prepareCall(Routines.BEN_DODELETE.routine());
 			if (beneficiario.getUser().getUserCode() == null || beneficiario.getUser().getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("beneficiario.user.userCode"));
-
 			if (beneficiario.getUser().getCompany() == null || beneficiario.getUser().getCompany().getCompanyCode() == null || beneficiario.getUser().getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("beneficiario.user.company.companyCode"));
-
 			beneficiario.delete(callableStatement);
 			callableStatement.execute();
 			//commit();
@@ -252,13 +238,10 @@ public class BeneficiarioDao extends BaseDaoHandler {
 			callableStatement.setString(1, codSocieta == null ? "" : codSocieta);
 			callableStatement.setString(2, codProvincia == null ? "" : codProvincia);
 			callableStatement.setString(3, codUtente == null ? "" : codUtente);
-
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);	
 			}
-			
 			return this.getWebRowSetXml(BeneficiarioDao.IDX_DOLIST_LISTA);
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -291,13 +274,10 @@ public class BeneficiarioDao extends BaseDaoHandler {
 			callableStatement.setString(5, codSocietaBen == null ? "" : codSocietaBen);
 			callableStatement.setString(6, codProvinciaBen == null ? "" : codProvinciaBen);
 			callableStatement.setString(7, codUtenteBen == null ? "" : codUtenteBen);
-
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);	
 			}
-			
 			return this.getWebRowSetXml(BeneficiarioDao.IDX_DOLIST_LISTA);
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -326,13 +306,10 @@ public class BeneficiarioDao extends BaseDaoHandler {
 			callableStatement.setString(1, codSocieta == null ? "" : codSocieta);
 			callableStatement.setString(2, codProvincia == null ? "" : codProvincia);
 			callableStatement.setString(3, codUtente == null ? "" : codUtente);
-
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);	
 			}
-			
 			return this.getWebRowSetXml(BeneficiarioDao.IDX_DOLIST_LISTA);
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -363,7 +340,6 @@ public class BeneficiarioDao extends BaseDaoHandler {
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);	
 			}
-			
 			return this.getWebRowSetXml(BeneficiarioDao.IDX_DOLIST_LISTA);
 		} catch (SQLException x) {
 			throw new DaoException(x);
@@ -385,11 +361,10 @@ public class BeneficiarioDao extends BaseDaoHandler {
 		}
 	}
 	
-	
-	private void closeConnection(CallableStatement callableStatement)
-	{
-		if (callableStatement != null)
-			DAOHelper.closeIgnoringException(callableStatement);
-	}
+//	private void closeConnection(CallableStatement callableStatement)
+//	{
+//		if (callableStatement != null)
+//			DAOHelper.closeIgnoringException(callableStatement);
+//	}
 
 }

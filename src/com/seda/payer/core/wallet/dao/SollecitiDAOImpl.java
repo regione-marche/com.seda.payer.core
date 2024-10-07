@@ -1,21 +1,14 @@
 package com.seda.payer.core.wallet.dao;
 
-import java.io.IOException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-
 import javax.sql.DataSource;
-import javax.sql.rowset.CachedRowSet;
 import javax.sql.rowset.WebRowSet;
 
-import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
-import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -23,12 +16,14 @@ import com.seda.payer.core.wallet.bean.Solleciti;
 
 public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 	private static final long serialVersionUID = 1L;
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
 	public SollecitiDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	public SollecitiDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
@@ -41,8 +36,11 @@ public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 		String storicoXML= "";
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST.routine());
-			                        /* page number*/
+			//inizio LP 20240921 - PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST.routine());
+			callableStatement = prepareCall(Routines.PYSOLSP_LST.routine());
+			//fine LP 20240921 - PGNTCORE-24
+			/* page number*/
 			callableStatement.setString(1,solleciti.getIdWallet());			 
 			/* we execute procedure */
 			if(callableStatement.execute())	{
@@ -53,7 +51,6 @@ public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 					String dataStr= storico.getString(3);
 					dataStr=dataStr.replace(".", "/");
 					storico.setString(3, dataStr);
-					
 				}
 				storicoXML = getWebRowSetXml();
 			}	
@@ -63,7 +60,7 @@ public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (storico != null) {
@@ -103,13 +100,15 @@ public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		ResultSet data = null; 
-		WebRowSet listarecord= null;
 		String storicoXML= "";
 		String[] result = new String[2];
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST_ONE.routine());
-			                        /* page number*/
+			//inizio LP 20240921 - PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYSOLSP_LST_ONE.routine());
+			callableStatement = prepareCall(Routines.PYSOLSP_LST_ONE.routine());
+			//fine LP 20240921 - PGNTCORE-24
+            /* page number*/
 			callableStatement.setString(1,solleciti.getIdWallet());			 
 			callableStatement.registerOutParameter(2, Types.VARCHAR);
 			/* we execute procedure */
@@ -142,7 +141,7 @@ public class SollecitiDAOImpl  extends BaseDaoHandler implements SollecitiDAO {
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (data != null) {

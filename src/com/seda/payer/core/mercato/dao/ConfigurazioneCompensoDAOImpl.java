@@ -14,8 +14,6 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
@@ -24,7 +22,6 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.mercato.bean.ConfigurazioneCompenso;
 import com.seda.payer.core.mercato.bean.EsitoRisposte;
 import com.seda.payer.core.mercato.bean.MercatoPageList;
-import com.seda.payer.core.mercato.dao.MercatoDAO;
 
 public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements ConfigurazioneCompensoDAO  {
 	//private static final long serialVersionUID = 1L;
@@ -53,7 +50,10 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 		try {
 				
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_LST.routine());
+            callableStatement = prepareCall(Routines.PYCOMSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,configurazioneCompenso.getCodiceSocieta());
@@ -158,8 +158,10 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_DEL.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_DEL.routine());
+            callableStatement = prepareCall(Routines.PYCOMSP_DEL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneCompenso.getCodiceKeyCompenso());
 			callableStatement.registerOutParameter(2, Types.VARCHAR);
 			callableStatement.registerOutParameter(3, Types.VARCHAR);			
@@ -205,17 +207,22 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_INS.routine());
-			
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_INS.routine());
+            callableStatement = prepareCall(Routines.PYCOMSP_INS.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneCompenso.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneCompenso.getCuteCute());
 			callableStatement.setString(3, configurazioneCompenso.getChiaveEnte());
 			callableStatement.setBigDecimal(4, configurazioneCompenso.getImportoFisso());
-			callableStatement.setDouble(5, configurazioneCompenso.getPercentualeCompenso());
+			//callableStatement.setDouble(5, configurazioneCompenso.getPercentualeCompenso());
+			callableStatement.setBigDecimal(5, new BigDecimal(configurazioneCompenso.getPercentualeCompenso()));
 			if (configurazioneCompenso.getPercentualeIva()==null){
-				callableStatement.setDouble(6, 0);
+				//callableStatement.setDouble(6, 0);
+				callableStatement.setBigDecimal(6, BigDecimal.ZERO);
 			} else {
-				callableStatement.setDouble(6, configurazioneCompenso.getPercentualeIva());
+				//callableStatement.setDouble(6, configurazioneCompenso.getPercentualeIva());
+				callableStatement.setBigDecimal(6, new BigDecimal(configurazioneCompenso.getPercentualeIva()));
 			}
 			callableStatement.setTimestamp(7, new java.sql.Timestamp(configurazioneCompenso.getDataInizioValidita().getTimeInMillis()));
 			if (configurazioneCompenso.getDataFineValidita()==null) {
@@ -270,8 +277,10 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-		
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_SEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_SEL.routine());
+            callableStatement = prepareCall(Routines.PYCOMSP_SEL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneCompenso.getCodiceKeyCompenso());
 			
 			callableStatement.execute();
@@ -282,7 +291,6 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -312,8 +320,9 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
+			e.printStackTrace();
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (rowSet != null) {
@@ -356,7 +365,10 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_TOT.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_TOT.routine());
+            callableStatement = prepareCall(Routines.PYCOMSP_TOT.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneCompenso.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneCompenso.getCuteCute());
 			callableStatement.setString(3, configurazioneCompenso.getChiaveEnte());
@@ -413,6 +425,7 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
+			e.printStackTrace();
 			throw new DaoException(e);
 		} finally {
 			//inizio LP PG21XX04 Leak
@@ -453,18 +466,24 @@ public class ConfigurazioneCompensoDAOImpl extends BaseDaoHandler  implements Co
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_UPD.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCOMSP_UPD.routine());
+            callableStatement = prepareCall(Routines.PYCOMSP_UPD.routine());
+			//fine LP PGNTCORE-24
 			
 			callableStatement.setString(1, configurazioneCompenso.getCodiceKeyCompenso());
 			callableStatement.setString(2, configurazioneCompenso.getCodiceSocieta());
 			callableStatement.setString(3, configurazioneCompenso.getCuteCute());
 			callableStatement.setString(4, configurazioneCompenso.getChiaveEnte());
 			callableStatement.setBigDecimal(5, configurazioneCompenso.getImportoFisso());
-			callableStatement.setDouble(6, configurazioneCompenso.getPercentualeCompenso());
+			//callableStatement.setDouble(6, configurazioneCompenso.getPercentualeCompenso());
+			callableStatement.setBigDecimal(6, BigDecimal.valueOf(configurazioneCompenso.getPercentualeCompenso()));
 			if (configurazioneCompenso.getPercentualeIva()==null) {
-				callableStatement.setDouble(7, 0);
+				//callableStatement.setDouble(7, 0);
+				callableStatement.setBigDecimal(7, BigDecimal.ZERO);
 			} else {
-				callableStatement.setDouble(7, configurazioneCompenso.getPercentualeIva());
+				//callableStatement.setDouble(7, configurazioneCompenso.getPercentualeIva());
+				callableStatement.setBigDecimal(7, BigDecimal.valueOf(configurazioneCompenso.getPercentualeIva()));
 			}
 			callableStatement.setTimestamp(8, new java.sql.Timestamp(configurazioneCompenso.getDataInizioValidita().getTimeInMillis()));
 			if (configurazioneCompenso.getDataFineValidita()==null) {

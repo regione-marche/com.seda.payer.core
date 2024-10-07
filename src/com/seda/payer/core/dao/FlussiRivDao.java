@@ -5,7 +5,6 @@ package com.seda.payer.core.dao;
 
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
@@ -21,12 +20,8 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
-
-import com.seda.payer.core.dao.FlussiRenDao.TipoStringa;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
-
-
 
 // NON USATO
 
@@ -44,7 +39,6 @@ public class FlussiRivDao extends BaseDaoHandler {
 	 */
 	public FlussiRivDao(Connection connection, String schema) {
 		super(connection, schema);
-		// TODO Auto-generated constructor stub
 	}
 
 	
@@ -147,10 +141,8 @@ public class FlussiRivDao extends BaseDaoHandler {
 				}
 			}
 			//fine LP PG21XX04 Leak
-			
 		}
 		// salvo il file csv e l'equivalente zippato
-		
 		try {
 			FileOutputStream file = new FileOutputStream(filePath+".csv");
 			PrintStream output = new PrintStream(file);
@@ -180,7 +172,6 @@ public class FlussiRivDao extends BaseDaoHandler {
 			out.close();
 
 		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();

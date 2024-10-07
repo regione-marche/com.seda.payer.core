@@ -5,7 +5,6 @@ import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.bean.TransazioneAtm;
@@ -29,16 +28,47 @@ public class TxTransazioniAtmDao extends BaseDaoHandler {
 	//		DAOHelper.closeIgnoringException(callableStatement);
 	//}
 	//fine LP PG21XX04 Leak
-
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void insertTransazione(TransazioneAtm transazione) throws DaoException {
+		//
+		// Nota:
+		//		Qui rispetto allo "standard" il metodo con firma 
+		//		"pre postgres" viene usato con bFlagUpdateAutocomit == false
+		//
+		insertTransazioneTail(false, transazione);
+	}
+
+	public void insertTransazioneTail(boolean bFlagUpdateAutocomit, TransazioneAtm transazione) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		try {
-			callableStatement = prepareCall(Routines.ATM_DOINSERT.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.ATM_DOINSERT.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			transazione.save(callableStatement);
 			callableStatement.execute();
-			commit();
+			//inizio LP 20240909 - PGNTBOLDER-1
+			// A T T E N Z I O N E  A T T E N Z I O N E  A T T E N Z I O N E  A T T E N Z I O N E
+			//
+			// Nota.
+			// 		Qui era presente esplicitamente il commit
+			//		in contrasto a quando dovrebbe essere con
+			//		la gestione del commit\rollback all'esterno
+			//		Lo commento 20240909
+			//
+			//commit();
+			// A T T E N Z I O N E  A T T E N Z I O N E  A T T E N Z I O N E  A T T E N Z I O N E
 		} catch (SQLException x) {
-			rollback();
+			// A T T E N Z I O N E  A T T E N Z I O N E  A T T E N Z I O N E  A T T E N Z I O N E
+			//
+			// Nota.
+			// 		Qui era presente esplicitamente il commit
+			//		in contrasto a quando dovrebbe essere con
+			//		la gestione del commit\rollback all'esterno
+			//		Lo commento 20240909
+			//
+			//rollback();
+			// A T T E N Z I O N E  A T T E N Z I O N E  A T T E N Z I O N E  A T T E N Z I O N E
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);

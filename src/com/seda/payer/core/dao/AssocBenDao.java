@@ -1,5 +1,6 @@
 package com.seda.payer.core.dao;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -10,7 +11,6 @@ import com.seda.payer.core.bean.AssocBen;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.messages.Messages;
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 
 
@@ -76,14 +76,10 @@ public class AssocBenDao extends BaseDaoHandler {
 	public void doRowSets(AssocBen associazione, String ordine, int rowsPerPage, int pageNumber) throws DaoException {
 		if (rowsPerPage <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
 		if (pageNumber <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
-
 		CallableStatement callableStatement = null;
-
 		try	{
-			
 			/*
 	        IN I_SOC_CSOCCSOC CHAR(5),
 		    IN I_APC_CAPCSIGL CHAR(2),
@@ -93,17 +89,14 @@ public class AssocBenDao extends BaseDaoHandler {
 	  	    IN I_CBP_NCBPANNO_DA CHAR(4),
 	  	    IN I_CBP_NCBPANNO_A CHAR(4),
 			*/
-
 			callableStatement = prepareCall(Routines.CBP_DOLIST.routine());
 			callableStatement.setString(1, associazione.getUser().getCompany().getCompanyCode());
 			callableStatement.setString(2, associazione.getAnagBeneficiario().getAnagProvCom().getCodiceProvincia());
 			callableStatement.setString(3, associazione.getUser().getUserCode());
 			callableStatement.setString(4, associazione.getAnagBeneficiario().getChiaveEnte());		
-
 			callableStatement.setString(5, associazione.getDataValidita());		
 			callableStatement.setString(6, associazione.getAnnoRifDa());		
 			callableStatement.setString(7, associazione.getAnnoRifA());		
-			
 			callableStatement.setString(8, ordine);
 			callableStatement.setInt(9, rowsPerPage);
 			callableStatement.setInt(10, pageNumber);
@@ -148,8 +141,7 @@ public class AssocBenDao extends BaseDaoHandler {
 		try	{
 			if (codOp.equals(TypeRequest.EDIT_SCOPE.scope())) {
 				callableStatement = prepareCall(Routines.CBP_DOUPDATE.routine());
-			}
-			else {
+			} else {
 				callableStatement = prepareCall(Routines.CBP_DOINSERT.routine());
 			}
 			associazione.save(callableStatement);
@@ -157,9 +149,13 @@ public class AssocBenDao extends BaseDaoHandler {
 			code = callableStatement.getInt(11);
 		} catch (SQLException x) {
 			if (x.getErrorCode()== -803 || x.getErrorCode()== 1062) 
-				throw new DaoException(x.getErrorCode(),Messages.UNIQUE_CONSTRAINT_VIOLATION.format("Associazione"));
+				throw new DaoException(x.getErrorCode(), Messages.UNIQUE_CONSTRAINT_VIOLATION.format("Associazione"));
 			else
 				throw new DaoException(x.getErrorCode(),x.getMessage());
+		//inizio LP 20240811  - PGNTCORE-24 	
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, Messages.UNIQUE_CONSTRAINT_VIOLATION.format("Associazione"));
+		//fine LP 20240811  - PGNTCORE-24 	
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
@@ -214,10 +210,10 @@ public class AssocBenDao extends BaseDaoHandler {
 		return code;
 	}
 	
-	private void closeConnection(CallableStatement callableStatement)
-	{
-		if (callableStatement != null)
-			DAOHelper.closeIgnoringException(callableStatement);
-	}
+//	private void closeConnection(CallableStatement callableStatement)
+//	{
+//		if (callableStatement != null)
+//			DAOHelper.closeIgnoringException(callableStatement);
+//	}
 
 }

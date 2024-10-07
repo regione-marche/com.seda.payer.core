@@ -9,13 +9,9 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.Calendar;
-
 import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
-
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
@@ -28,25 +24,30 @@ import com.seda.payer.core.wallet.bean.WalletPageList;
 public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements ConfigurazioneSollecitiDAO  {
 
 	private static final long serialVersionUID = 1L;
+
 	//inizio LP PG21XX04 Leak
 	@Deprecated
 	//fine LP PG21XX04 Leak
 	public ConfigurazioneSollecitiDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	//inizio LP PG21XX04 Leak
 	public ConfigurazioneSollecitiDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
 	//fine LP PG21XX04 Leak
+
 	public EsitoRisposte insert(ConfigurazioneSolleciti configurazioneSolleciti )	throws DaoException {
 		CallableStatement callableStatement=null;
 		Connection connection = null;
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_INS.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_INS.routine());
+			callableStatement = prepareCall(Routines.PYCSLSP_INS.routine());
+			//fine LP PGNTCORE-24
 //			IN I_CSL_CSOCCSOC VARCHAR(5), 
 //			IN I_CSL_CUTECUTE VARCHAR(5),
 //			IN I_CSL_KANEKENT CHAR(10),
@@ -152,7 +153,10 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_DEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_DEL.routine());
+			callableStatement = prepareCall(Routines.PYCSLSP_DEL.routine());
+			//fine LP PGNTCORE-24
 //				private String codiceSocieta;        		//	"I_CSL_CSOCCSOC" VARCHAR(5)
 //				private String cuteCute;					//	"I_CSL_CUTECUTE" VARCHAR(5)
 //				private String chiaveEnte;					//	"I_CSL_KANEKENT" CHAR(10)
@@ -207,7 +211,10 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_SEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_SEL.routine());
+			callableStatement = prepareCall(Routines.PYCSLSP_SEL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneSolleciti.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneSolleciti.getCuteCute());
 			callableStatement.setString(3, configurazioneSolleciti.getChiaveEnte());
@@ -222,7 +229,6 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -312,8 +318,10 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_UPD.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_UPD.routine());
+			callableStatement = prepareCall(Routines.PYCSLSP_UPD.routine());
+			//fine LP PGNTCORE-24
 //			IN I_CSL_CSOCCSOC VARCHAR(5), 
 //			IN I_CSL_CUTECUTE VARCHAR(5),
 //			IN I_CSL_KANEKENT CHAR(10),
@@ -453,7 +461,10 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 //				OUT O_TOTPAGES SMALLINT
 				
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYCSLSP_LST.routine());
+			callableStatement = prepareCall(Routines.PYCSLSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,configurazioneSolleciti.getCodiceSocieta());
@@ -489,9 +500,6 @@ public class ConfigurazioneSollecitiDAOImpl extends BaseDaoHandler  implements C
 				walletPageList = new WalletPageList(pageInfo, "00","",getWebRowSetXml());
 				return walletPageList;
 			}
-			
-			
-			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			walletPageList = new WalletPageList(pageInfo, "01","Sql-Exception","");

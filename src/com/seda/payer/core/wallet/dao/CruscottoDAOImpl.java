@@ -11,22 +11,14 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
-import java.util.ArrayList;
 import java.util.Properties;
-
 import javax.sql.DataSource;
-
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.logger.LoggerWrapper;
-import com.seda.data.dao.DAOHelper;
-
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
-
 import com.seda.payer.core.wallet.bean.StatisticheForCruscotto;
-import com.seda.payer.core.wallet.bean.Wallet;
 
 public class CruscottoDAOImpl   extends BaseDaoHandler  implements CruscottoDAO  {
 	private static final long serialVersionUID = 1L;
@@ -63,10 +55,12 @@ public class CruscottoDAOImpl   extends BaseDaoHandler  implements CruscottoDAO 
 	public CruscottoDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	public CruscottoDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
-	public  StatisticheForCruscotto generaFlussoStatistiche(String cutecute,String filePathWork) throws DaoException {
+
+	public  StatisticheForCruscotto generaFlussoStatistiche(String cutecute, String filePathWork) throws DaoException {
 		StatisticheForCruscotto statisticheForCruscotto = new StatisticheForCruscotto();
 		Connection connection = null;
 		//inizio LP PG21XX04 Leak
@@ -75,21 +69,21 @@ public class CruscottoDAOImpl   extends BaseDaoHandler  implements CruscottoDAO 
 		//fine LP PG21XX04 Leak
 		try {
 			connection = getConnection();
-			
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = Helper.prepareCall(connection, getSchema(), STATISTICHE_CRUSCOTTO);
-			callableStatement = Helper.prepareCall(connection, getSchema(), STATISTICHE_CRUSCOTTO);
+			//inizio LP 20240916 - PGNTCORE-24/PGNTWPB-3
+			//callableStatement = Helper.prepareCall(connection, getSchema(), STATISTICHE_CRUSCOTTO);
+			callableStatement = prepareCall(STATISTICHE_CRUSCOTTO);
+			//fine LP 20240916 - PGNTCORE-24/PGNTWPB-3
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, cutecute);
 			callableStatement.registerOutParameter(2, Types.INTEGER);
 			callableStatement.registerOutParameter(3, Types.VARCHAR);
 			callableStatement.execute();
-
 			// save output parameters as attributes
 			attributes = new Properties();
 			attributes.setProperty("RETURNCODE", callableStatement.getString(2));
 			attributes.setProperty("RETURNMESSAGE", callableStatement.getString(3));
-			
 			attributes.setProperty("nomeFileScuole", defineFile(filePathWork,"/Scuole.txt"));
 			attributes.setProperty("nomeFileBorsellini", defineFile(filePathWork,"/Borsellini.txt"));
 			attributes.setProperty("nomeFileRicariche", defineFile(filePathWork,"/Ricariche.txt"));
@@ -99,7 +93,6 @@ public class CruscottoDAOImpl   extends BaseDaoHandler  implements CruscottoDAO 
 			attributes.setProperty("nomeFileSolleciti", defineFile(filePathWork,"/Solleciti.txt"));
 			attributes.setProperty("nomeFileConsumiForfettari", defineFile(filePathWork,"/Consumi_forfettari.txt"));
 			attributes.setProperty("nomeFileConsumiGiornalieri", defineFile(filePathWork,"/Consumi_giornalieri.txt"));
-					
 			do {
 				//inizio LP PG21XX04 Leak
 				//ResultSet resultSet = callableStatement.getResultSet();
@@ -107,7 +100,7 @@ public class CruscottoDAOImpl   extends BaseDaoHandler  implements CruscottoDAO 
 				//fine LP PG21XX04 Leak
 				if (resultSet != null && resultSet.next()) {
 					do {					
-						scriviFlusso(statisticheForCruscotto,resultSet.getString(1), resultSet.getString(2));
+						scriviFlusso(statisticheForCruscotto, resultSet.getString(1), resultSet.getString(2));
 					} while(resultSet.next());
 				}
 			} while (callableStatement.getMoreResults());
@@ -164,216 +157,198 @@ public class CruscottoDAOImpl   extends BaseDaoHandler  implements CruscottoDAO 
 			fileConsumiForfettari.close();
 			fileConsumiGiornalieri.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			new DaoException(e);
 		}
 	}
 	
+	private BufferedWriter getFilePath(String nomeFilePath) throws FileNotFoundException  {
+		return  new BufferedWriter( new OutputStreamWriter( new FileOutputStream( new File(nomeFilePath) , false) )  );   // il true finale indica che siamo in append
+	}		
 
-		private BufferedWriter getFilePath(String nomeFilePath) throws FileNotFoundException  {
-			// TODO[AA]
-			return  new BufferedWriter( new OutputStreamWriter( new FileOutputStream( new File(nomeFilePath) , false) )  );   // il true finale indica che siamo in append
-		}		
-
-
-		
-		private String defineFile(String nomePath,String nomeFile){
-
-			if (nomeFile.equals("/Scuole.txt")){ 
-				try {
-					fileScuole = getFilePath(nomePath.concat(nomeFile));
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			} else {
+	private String defineFile(String nomePath,String nomeFile){
+		if (nomeFile.equals("/Scuole.txt")){ 
+			try {
+				fileScuole = getFilePath(nomePath.concat(nomeFile));
+			} catch (FileNotFoundException e1) {
+				e1.printStackTrace();
+			}
+		} else {
 			if (nomeFile.equals("/Borsellini.txt")){ 
 				try {
 					fileBorsellini = getFilePath(nomePath.concat(nomeFile));
 				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
 			} else {
-			if (nomeFile.equals("/Ricariche.txt")){ 
-				try {
-					fileRicariche = getFilePath(nomePath.concat(nomeFile));
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
+				if (nomeFile.equals("/Ricariche.txt")){ 
+					try {
+						fileRicariche = getFilePath(nomePath.concat(nomeFile));
+					} catch (FileNotFoundException e1) {
+						e1.printStackTrace();
+					}
+				} else {
+					if (nomeFile.equals("/Dettagli_Ricariche.txt")){ 
+						try {
+							fileDettagliRicariche = getFilePath(nomePath.concat(nomeFile));
+						} catch (FileNotFoundException e1) {
+							e1.printStackTrace();
+						}
+					} else {
+						if (nomeFile.equals("/Figli.txt")){ 
+							try {
+								fileFigli = getFilePath(nomePath.concat(nomeFile));
+							} catch (FileNotFoundException e1) {
+								e1.printStackTrace();
+							}
+						} else {
+							if (nomeFile.equals("/Addebiti.txt")){ 
+								try {
+									fileAddebiti = getFilePath(nomePath.concat(nomeFile));
+								} catch (FileNotFoundException e1) {
+									e1.printStackTrace();
+								}
+							} else {
+								if (nomeFile.equals("/Solleciti.txt")){ 
+									try {
+										fileSolleciti = getFilePath(nomePath.concat(nomeFile));
+									} catch (FileNotFoundException e1) {
+										e1.printStackTrace();
+									}
+								} else {
+									if (nomeFile.equals("/Consumi_forfettari.txt")){ 
+										try {
+											fileConsumiForfettari = getFilePath(nomePath.concat(nomeFile));
+										} catch (FileNotFoundException e1) {
+											e1.printStackTrace();
+										}
+									} else {
+										if (nomeFile.equals("/Consumi_giornalieri.txt")){ 
+											try {
+												fileConsumiGiornalieri = getFilePath(nomePath.concat(nomeFile));
+											} catch (FileNotFoundException e1) {
+												e1.printStackTrace();
+											}
+										}
+									}
+								}
+							}
+						}
+					}
 				}
-			} else {
-			if (nomeFile.equals("/Dettagli_Ricariche.txt")){ 
-				try {
-					fileDettagliRicariche = getFilePath(nomePath.concat(nomeFile));
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			} else {
-			if (nomeFile.equals("/Figli.txt")){ 
-				try {
-					fileFigli = getFilePath(nomePath.concat(nomeFile));
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			} else {
-			if (nomeFile.equals("/Addebiti.txt")){ 
-				try {
-					fileAddebiti = getFilePath(nomePath.concat(nomeFile));
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			} else {
-			if (nomeFile.equals("/Solleciti.txt")){ 
-				try {
-					fileSolleciti = getFilePath(nomePath.concat(nomeFile));
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			} else {
-			if (nomeFile.equals("/Consumi_forfettari.txt")){ 
-				try {
-					fileConsumiForfettari = getFilePath(nomePath.concat(nomeFile));
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
-			} else {
-			if (nomeFile.equals("/Consumi_giornalieri.txt")){ 
-				try {
-					fileConsumiGiornalieri = getFilePath(nomePath.concat(nomeFile));
-				} catch (FileNotFoundException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-				}
 			}
-			}
-			}
-			}
-			}
-			}
-			}
-			}
-			}
-			return nomePath.concat(nomeFile);
-
 		}
+		return nomePath.concat(nomeFile);
+	}
 
-		private StatisticheForCruscotto scriviFlusso(StatisticheForCruscotto stat,String flusso, String dati){
-			StringBuffer file = new StringBuffer();            
-			String row = "";
-//			row += dati + ";";
-			row += dati;
-			row += "\r";
-			row += "\n";	//19012015 GG Ticket 0121497100000100 per file in formato DOS
-			file.append(row);
+	private StatisticheForCruscotto scriviFlusso(StatisticheForCruscotto stat,String flusso, String dati){
+		StringBuffer file = new StringBuffer();            
+		String row = "";
+		row += dati;
+		row += "\r";
+		row += "\n";	//19012015 GG Ticket 0121497100000100 per file in formato DOS
+		file.append(row);
 			
-			if (flusso.equals("SCU")){ 
-				try { 
-					int num = stat.getRecordsScuole();
-					num ++;
-					stat.setRecordsScuole(num);
-					fileScuole.write(file.toString());
-				}
-				catch(Exception e){
-					logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileScuole") , e);
-				}
+		if (flusso.equals("SCU")){ 
+			try { 
+				int num = stat.getRecordsScuole();
+				num ++;
+				stat.setRecordsScuole(num);
+				fileScuole.write(file.toString());
 			}
-			if (flusso.equals("BOR")){ 
-				try { 
-					int num = stat.getRecordsBorsellino();
-					num ++;
-					stat.setRecordsBorsellino(num);
-					fileBorsellini.write(file.toString());
-				}
-				catch(Exception e){
-					logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileBorsellini") , e);
-				}
+			catch(Exception e){
+				logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileScuole") , e);
 			}
-			if (flusso.equals("RIC")){ 
-				try { 
-					int num = stat.getRecordsRicariche();
-					num ++;
-					stat.setRecordsRicariche(num);
-					fileRicariche.write(file.toString());
-				}
-				catch(Exception e){
-					logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileRicariche") , e);
-				}
-			}
-			if (flusso.equals("DER")){ 
-				try { 
-					int num = stat.getRecordsDetteglioRicariche();
-					num ++;
-					stat.setRecordsDetteglioRicariche(num);
-					fileDettagliRicariche.write(file.toString());
-				}
-				catch(Exception e){
-					logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileDettagliRicariche") , e);
-				}
-			}
-			if (flusso.equals("FIG")){ 
-				try { 
-					int num = stat.getRecordsFigli();
-					num ++;
-					stat.setRecordsFigli(num);
-					fileFigli.write(file.toString());
-				}
-				catch(Exception e){
-					logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileFigli") , e);
-				}
-			}
-			if (flusso.equals("ADD")){ 
-				try { 
-					int num = stat.getRecordsAddebiti();
-					num ++;
-					stat.setRecordsAddebiti(num);
-					fileAddebiti.write(file.toString());
-				}
-				catch(Exception e){
-					logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileAddebiti") , e);
-				}
-			}
-			if (flusso.equals("SOL")){ 
-				try { 
-					int num = stat.getRecordsSolleciti();
-					num ++;
-					stat.setRecordsSolleciti(num);
-					fileSolleciti.write(file.toString());
-				}
-				catch(Exception e){
-					logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileSolleciti") , e);
-				}
-			}
-			if (flusso.equals("FOR")){ 
-				try { 
-					int num = stat.getRecordsPresenzeForfettarie();
-					num ++;
-					stat.setRecordsPresenzeForfettarie(num);
-					fileConsumiForfettari.write(file.toString());
-				}
-				catch(Exception e){
-					logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileConsumiForfettari") , e);
-				}
-			}
-			if (flusso.equals("GIO")){ 
-				try { 
-					int num = stat.getRecordsPresenzeGiornaliere();
-					num ++;
-					stat.setRecordsPresenzeGiornaliere(num);
-					fileConsumiGiornalieri.write(file.toString());
-				}
-				catch(Exception e){
-					logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileConsumiGiornalieri") , e);
-				}
-			}
-			return stat;
 		}
-
+		if (flusso.equals("BOR")){ 
+			try { 
+				int num = stat.getRecordsBorsellino();
+				num ++;
+				stat.setRecordsBorsellino(num);
+				fileBorsellini.write(file.toString());
+			}
+			catch(Exception e){
+				logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileBorsellini") , e);
+			}
+		}
+		if (flusso.equals("RIC")){ 
+			try { 
+				int num = stat.getRecordsRicariche();
+				num ++;
+				stat.setRecordsRicariche(num);
+				fileRicariche.write(file.toString());
+			}
+			catch(Exception e){
+				logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileRicariche") , e);
+			}
+		}
+		if (flusso.equals("DER")){ 
+			try { 
+				int num = stat.getRecordsDetteglioRicariche();
+				num ++;
+				stat.setRecordsDetteglioRicariche(num);
+				fileDettagliRicariche.write(file.toString());
+			}
+			catch(Exception e){
+				logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileDettagliRicariche") , e);
+			}
+		}
+		if (flusso.equals("FIG")){ 
+			try { 
+				int num = stat.getRecordsFigli();
+				num ++;
+				stat.setRecordsFigli(num);
+				fileFigli.write(file.toString());
+			}
+			catch(Exception e){
+				logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileFigli") , e);
+			}
+		}
+		if (flusso.equals("ADD")){ 
+			try { 
+				int num = stat.getRecordsAddebiti();
+				num ++;
+				stat.setRecordsAddebiti(num);
+				fileAddebiti.write(file.toString());
+			}
+			catch(Exception e){
+				logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileAddebiti") , e);
+			}
+		}
+		if (flusso.equals("SOL")){ 
+			try { 
+				int num = stat.getRecordsSolleciti();
+				num ++;
+				stat.setRecordsSolleciti(num);
+				fileSolleciti.write(file.toString());
+			}
+			catch(Exception e){
+				logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileSolleciti") , e);
+			}
+		}
+		if (flusso.equals("FOR")){ 
+			try { 
+				int num = stat.getRecordsPresenzeForfettarie();
+				num ++;
+				stat.setRecordsPresenzeForfettarie(num);
+				fileConsumiForfettari.write(file.toString());
+			}
+			catch(Exception e){
+				logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileConsumiForfettari") , e);
+			}
+		}
+		if (flusso.equals("GIO")){ 
+			try { 
+				int num = stat.getRecordsPresenzeGiornaliere();
+				num ++;
+				stat.setRecordsPresenzeGiornaliere(num);
+				fileConsumiGiornalieri.write(file.toString());
+			}
+			catch(Exception e){
+				logger.error("Errore durante la scrittura del flusso " + attributes.getProperty("nomeFileConsumiGiornalieri") , e);
+			}
+		}
+		return stat;
+	}
 
 }

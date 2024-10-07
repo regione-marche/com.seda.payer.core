@@ -13,8 +13,6 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
@@ -23,7 +21,6 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.mercato.bean.ConfigurazioneAnagAutorizzazione;
 import com.seda.payer.core.mercato.bean.EsitoRisposte;
 import com.seda.payer.core.mercato.bean.MercatoPageList;
-import com.seda.payer.core.mercato.dao.MercatoDAO;
 
 public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  implements ConfigurazioneAnagAutorizzazioneDAO  {
 	//private static final long serialVersionUID = 1L;
@@ -66,7 +63,10 @@ public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  imp
 //				OUT O_TOTPAGES SMALLINT
 				
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_LST.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_LST.routine());
+            callableStatement = prepareCall(Routines.PYAUTSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,configurazioneAnagAutorizzazione.getCodiceSocieta());
@@ -99,7 +99,6 @@ public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  imp
 				mercatoPageList = new MercatoPageList(pageInfo, "00","",getWebRowSetXml());
 				return mercatoPageList;
 			}
-			
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -147,7 +146,10 @@ public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  imp
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_DEL.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_DEL.routine());
+            callableStatement = prepareCall(Routines.PYAUTSP_DEL.routine());
+			//fine LP PGNTCORE-24
 //			IN I_AUT_CSOCCSOC VARCHAR(5), 
 //			IN I_AUT_CUTECUTE VARCHAR(5),
 //			IN I_AUT_KANEKENT CHAR(10),
@@ -203,7 +205,10 @@ public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  imp
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_INS.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_INS.routine());
+            callableStatement = prepareCall(Routines.PYAUTSP_INS.routine());
+			//fine LP PGNTCORE-24
 //					IN I_AUT_KAUTKAUT VARCHAR(64),
 //					IN I_AUT_CSOCCSOC VARCHAR(5), 
 //					IN I_AUT_CUTECUTE VARCHAR(5),
@@ -276,6 +281,7 @@ public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  imp
 		return esitoRisposte;
 	}
 
+	@SuppressWarnings("deprecation")
 	public ConfigurazioneAnagAutorizzazione select(ConfigurazioneAnagAutorizzazione configurazioneAnagAutorizzazione)
 			throws DaoException 
 	{
@@ -285,8 +291,10 @@ public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  imp
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-		
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_SEL.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_SEL.routine());
+            callableStatement = prepareCall(Routines.PYAUTSP_SEL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneAnagAutorizzazione.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneAnagAutorizzazione.getCuteCute());
 			callableStatement.setString(3, configurazioneAnagAutorizzazione.getChiaveEnte());
@@ -300,7 +308,6 @@ public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  imp
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -332,7 +339,7 @@ public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  imp
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (rowSet != null) {
@@ -381,7 +388,10 @@ public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  imp
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_TOT.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_TOT.routine());
+            callableStatement = prepareCall(Routines.PYAUTSP_TOT.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneAnagAutorizzazione.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneAnagAutorizzazione.getCuteCute());
 			callableStatement.setString(3, configurazioneAnagAutorizzazione.getChiaveEnte());
@@ -460,7 +470,10 @@ public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  imp
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_TOT.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_TOT.routine());
+            callableStatement = prepareCall(Routines.PYAUTSP_TOT.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneAnagAutorizzazione.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneAnagAutorizzazione.getCuteCute());
 			callableStatement.setString(3, configurazioneAnagAutorizzazione.getChiaveEnte());
@@ -537,7 +550,10 @@ public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  imp
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_NOM.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_NOM.routine());
+            callableStatement = prepareCall(Routines.PYAUTSP_NOM.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneAnagAutorizzazione.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneAnagAutorizzazione.getCuteCute());
 			callableStatement.setString(3, configurazioneAnagAutorizzazione.getChiaveEnte());
@@ -610,7 +626,10 @@ public class ConfigurazioneAnagAutorizzazioneDAOImpl extends BaseDaoHandler  imp
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_UPD.routine());
+			//inizio LP PGNTCORE-24 
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYAUTSP_UPD.routine());
+            callableStatement = prepareCall(Routines.PYAUTSP_UPD.routine());
+			//fine LP PGNTCORE-24
 
 //			IN I_AUT_CSOCCSOC VARCHAR(5), 
 //			IN I_AUT_CUTECUTE VARCHAR(5),

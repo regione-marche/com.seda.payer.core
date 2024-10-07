@@ -20,7 +20,13 @@ public class EnteDao extends BaseDaoHandler {
 		super(connection, schema);
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public Ente doDetail(String companyCode, String userCode, String chiaveEnte) throws DaoException {
+		return doDetailTail(true, companyCode, userCode, chiaveEnte);
+	}
+
+	public Ente doDetailTail(boolean bFlagUpdateAutocomit, String companyCode, String userCode, String chiaveEnte) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
@@ -28,7 +34,9 @@ public class EnteDao extends BaseDaoHandler {
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.ENT_DODETAIL.routine());
-			callableStatement = prepareCall(Routines.ENT_DODETAIL.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.ENT_DODETAIL.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			callableStatement.setString(1, companyCode);
 			callableStatement.setString(2, userCode);
@@ -73,8 +81,22 @@ public class EnteDao extends BaseDaoHandler {
 	//inizio LP 20180629
 	//inizio LP PG200060
 	//public Ente doDetailToCodFis(String userCode, String codFis) throws DaoException {
+	//inizio LP 20240907 - PGNTBIMAIO-1
 	public Ente doDetailToCodFis(String userCode, String codFis, String dbSchemaCodSocieta) throws DaoException {
-		//inizio LP PG21XX04 Leak
+		return doDetailToCodFisTail(true, userCode, codFis, dbSchemaCodSocieta);
+	}
+
+	public Ente doDetailToCodFisTail(boolean bFlagUpdateAutocomit, String userCode, String codFis, String dbSchemaCodSocieta) throws DaoException {
+		return doDetailToCodFisTail2(bFlagUpdateAutocomit, true, userCode, codFis, dbSchemaCodSocieta);
+	}
+
+	public Ente doDetailToCodFisBatch(boolean bFlagUpdateAutocomit, boolean bCloseStat, String userCode, String codFis, String dbSchemaCodSocieta) throws DaoException {
+		return doDetailToCodFisTail2(bFlagUpdateAutocomit, bCloseStat, userCode, codFis, dbSchemaCodSocieta);
+	}
+
+	private Ente doDetailToCodFisTail2(boolean bFlagUpdateAutocomit, boolean bCloseStat, String userCode, String codFis, String dbSchemaCodSocieta) throws DaoException {
+	//fine LP 20240907 - PGNTBIMAIO-1
+	//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		//fine LP PG21XX04 Leak
@@ -82,7 +104,10 @@ public class EnteDao extends BaseDaoHandler {
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.ENT_DODETAIL_CODFIS.routine());
-			callableStatement = prepareCall(Routines.ENT_DODETAIL_CODFIS.routine());
+			//inizio LP 20240907 - PGNTBIMAIO-1
+			//callableStatement = prepareCall(Routines.ENT_DODETAIL_CODFIS.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.ENT_DODETAIL_CODFIS.routine());
+			//fine LP 20240907 - PGNTBIMAIO-1
 			//fine LP PG21XX04 Leak
 			//inizio LP PG200060
 			//NOTA: le sp SV e RM sono diverse
@@ -121,17 +146,24 @@ public class EnteDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240907 - PGNTBIMAIO-1
+			if(bCloseStat) {
+			//fine LP 20240907 - PGNTBIMAIO-1
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240907 - PGNTBIMAIO-1
 			}
+			//fine LP 20240907 - PGNTBIMAIO-1
 		}
 		//fine LP PG21XX04 Leak
 	}
 	//fine LP 20180629
+
 	public void doRowSetsForAdd(Ente ente) throws DaoException {
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
@@ -147,7 +179,6 @@ public class EnteDao extends BaseDaoHandler {
 			/* we execute procedure */
 			if (callableStatement.execute())
 				this.loadWebRowSets(callableStatement);
-
 			System.out.println("[INFO] - invoke doRowSetsForAdd successfully");
 		} catch (SQLException x) { throw new DaoException(x);
 		} catch (IllegalArgumentException x) { throw new DaoException(x);
@@ -233,28 +264,40 @@ public class EnteDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doSave(Ente ente, String codOp) throws DaoException {
+		doSaveTail(true, ente, codOp);
+	}
+
+	public void doSaveTail(boolean bFlagUpdateAutocomit, Ente ente, String codOp) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		try	{
 			if (ente.getUser() == null || ente.getUser().getUserCode() == null || ente.getUser().getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ente.user.userCode"));
-
 			if (ente.getUser().getCompany() == null || ente.getUser().getCompany().getCompanyCode() == null || ente.getUser().getCompany().getCompanyCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ente.user.company.companyCode"));
-
 			if (ente.getAnagEnte() == null || ente.getAnagEnte().getChiaveEnte() == null || ente.getAnagEnte().getChiaveEnte().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ente.anagEnte.chiaveEnte"));
-
-			Ente data = doDetail(ente.getUser().getCompany().getCompanyCode(), ente.getUser().getUserCode(), ente.getAnagEnte().getChiaveEnte());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//Ente data = doDetail(ente.getUser().getCompany().getCompanyCode(), ente.getUser().getUserCode(), ente.getAnagEnte().getChiaveEnte());
+			Ente data = doDetailTail(bFlagUpdateAutocomit, ente.getUser().getCompany().getCompanyCode(), ente.getUser().getUserCode(), ente.getAnagEnte().getChiaveEnte());
+			//fine LP 20240909 - PGNTBOLDER-1
 			System.out.println("CORE ENTE doDetail dentro doSave eseguita");
 			if (data != null && codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0) 
 				throw new IllegalArgumentException(Messages.UNIQUE_CONSTRAINT_VIOLATION.format(data.getUser().getCompany().getCompanyCode() + 
 						" / " + data.getUser().getUserCode() + " / " + data.getAnagEnte().getChiaveEnte()));
-
-			if (data != null)
-				callableStatement = prepareCall(Routines.ENT_DOUPDATE.routine());
-			else callableStatement = prepareCall(Routines.ENT_DOINSERT.routine());
-
+			if (data != null) {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.ENT_DOUPDATE.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.ENT_DOUPDATE.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			} else {
+				//inizio LP 20240909 - PGNTBOLDER-1
+				//callableStatement = prepareCall(Routines.ENT_DOINSERT.routine());
+				callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.ENT_DOINSERT.routine());
+				//fine LP 20240909 - PGNTBOLDER-1
+			}
 			ente.save(callableStatement);
 			//System.out.println("CORE ENTE save dentro doSave eseguita");
 			callableStatement.execute();
@@ -282,14 +325,23 @@ public class EnteDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 	}
 
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public void doDelete(Ente ente) throws DaoException {
+		doDeleteTail(true, ente);
+	}
+
+	public void doDeleteTail(boolean bFlagUpdateAutocomit, Ente ente) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
 		//fine LP PG21XX04 Leak
 		try	{
 			//inizio LP PG21XX04 Leak
 			//CallableStatement callableStatement = prepareCall(Routines.ENT_DODELETE.routine());
-			callableStatement = prepareCall(Routines.ENT_DODELETE.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.ENT_DODELETE.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.ENT_DODELETE.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 			if (ente.getUser().getUserCode() == null || ente.getUser().getUserCode().length() == 0)
 				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("ente.user.userCode"));
@@ -385,7 +437,6 @@ public class EnteDao extends BaseDaoHandler {
 		CallableStatement callableStatement = null;
 		ResultSet res = null;
 		String codiceIpa = "";
-
 		try {
 			if (primoArg.length() <= 5) {
 				// è un codice utente
@@ -422,13 +473,11 @@ public class EnteDao extends BaseDaoHandler {
 			}
 		}
 	}
-	
-	
+
 	public String selezionaFlussoDocumento(String codiceBollettino) throws Exception {
 		CallableStatement callableStatement = null;
 		ResultSet res = null;
 		String progressivoFlusso = "";
-		
 		try {
 			callableStatement = prepareCall(Routines.PYEH1SP_SEL_FLU.routine());		
 			callableStatement.setString(1, codiceBollettino.trim()); // EH1_CEH1CBOL
@@ -438,7 +487,6 @@ public class EnteDao extends BaseDaoHandler {
 				progressivoFlusso = res.getString("EH1_PEH1FLUS");
 			}
 			return progressivoFlusso;
-			
 		} catch (SQLException e) {
 			throw new Exception(e);
 		} catch (IllegalArgumentException e) {
@@ -455,17 +503,15 @@ public class EnteDao extends BaseDaoHandler {
 			}
 		}
 	}
-	
+
 	public void aggiornaFlagInviaDovuto(String progressivoFlusso, String flagInviaDovuto) throws Exception {
 		CallableStatement callableStatement = null;
 		Connection connection = null;
-		
 		try {
 			connection = getConnection();
 			callableStatement = prepareCall(Routines.PYEH0SP_UPD_INV.routine());		
-			callableStatement.setString(1, progressivoFlusso.trim());
+			callableStatement.setLong(1, Long.parseLong(progressivoFlusso.trim()));
 			callableStatement.setString(2, flagInviaDovuto);
-			
 			callableStatement.execute();
 		} catch (SQLException x) {
 			throw new Exception(x);
@@ -481,7 +527,6 @@ public class EnteDao extends BaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			
 			if (connection != null) {
 				try {
 					connection.close();

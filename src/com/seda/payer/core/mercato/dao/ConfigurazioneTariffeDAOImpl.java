@@ -13,8 +13,6 @@ import javax.sql.DataSource;
 import javax.sql.rowset.CachedRowSet;
 
 import com.seda.commons.string.Convert;
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.PageInfo;
 import com.seda.payer.core.dao.Routines;
@@ -23,7 +21,6 @@ import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.mercato.bean.ConfigurazioneTariffe;
 import com.seda.payer.core.mercato.bean.EsitoRisposte;
 import com.seda.payer.core.mercato.bean.MercatoPageList;
-import com.seda.payer.core.mercato.dao.MercatoDAO;
 
 public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements ConfigurazioneTariffeDAO  {
 	//private static final long serialVersionUID = 1L;
@@ -70,7 +67,10 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 //				OUT O_TOTROWS INTEGER,
 //				OUT O_TOTPAGES SMALLINT			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_LST.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_LST.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_LST.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setInt(1, pageNumber);                          /* rows per page */
 			callableStatement.setInt(2, rowsPerPage);                        /* page number*/
 			callableStatement.setString(3,configurazioneTariffe.getCodiceSocieta());
@@ -176,7 +176,10 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 		EsitoRisposte  esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_DEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_DEL.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_DEL.routine());
+			//fine LP PGNTCORE-24
 //			IN I_TAM_CSOCCSOC VARCHAR(5), 
 //			IN I_TAM_CUTECUTE VARCHAR(5),
 //			IN I_TAM_KANEKENT CHAR(10),
@@ -232,7 +235,10 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 		EsitoRisposte esitoRisposte = new EsitoRisposte();
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_INS.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_INS.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_INS.routine());
+			//fine LP PGNTCORE-24
 //					IN I_TAM_KTAMKTAM" VARCHAR(64),
 //					IN I_TAM_CSOCCSOC" CHAR(5),
 //					IN I_TAM_CUTECUTE" CHAR(5),
@@ -292,7 +298,6 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			} else {
 			    callableStatement.setTimestamp(15, new java.sql.Timestamp(configurazioneTariffe.getDataFineValidita().getTimeInMillis()));
 			}
-
 			callableStatement.registerOutParameter(16, Types.VARCHAR);
 			callableStatement.registerOutParameter(17, Types.VARCHAR);			
 			callableStatement.execute();
@@ -339,8 +344,10 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-		
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_SEL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_SEL.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_SEL.routine());
+			//fine LP PGNTCORE-24
 //			IN I_TAM_CSOCCSOC VARCHAR(5), 
 //			IN I_TAM_CUTECUTE VARCHAR(5),
 //			IN I_TAM_KANEKENT CHAR(10),
@@ -372,7 +379,6 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
@@ -410,7 +416,7 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (rowSet != null) {
@@ -454,8 +460,10 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 		CachedRowSet rowSet = null;
 		try {
 			connection = getConnection();
-
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_SLK.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_SLK.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_SLK.routine());
+			//fine LP PGNTCORE-24
 //	IN I_TAM_KTAMKTAM VARCHAR(64) 				
 			callableStatement.setString(1, configurazioneTariffe.getCodiceKeyTariffa());
 			callableStatement.execute();
@@ -465,7 +473,6 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			try {
 				rowSet = Convert.stringToWebRowSet(selectXml);
 			} catch (IOException e) {
-		// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			if (rowSet.next() ) {
@@ -502,7 +509,7 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(connection);
 			if (rowSet != null) {
@@ -554,7 +561,10 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_TOT.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_TOT.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_TOT.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneTariffe.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneTariffe.getCuteCute());
 			callableStatement.setString(3, configurazioneTariffe.getChiaveEnte());
@@ -642,7 +652,10 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_APA.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_APA.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_APA.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneTariffe.getCodiceSocieta());
 			callableStatement.setString(2, configurazioneTariffe.getCuteCute());
 			callableStatement.setString(3, configurazioneTariffe.getChiaveEnte());
@@ -720,7 +733,10 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 		ResultSet resultSet=null;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_APL.routine());
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_APL.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_APL.routine());
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, configurazioneTariffe.getCodiceKeyPiazzola());
 			callableStatement.execute();
 			resultSet=callableStatement.getResultSet();
@@ -796,8 +812,10 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 		int ret=0;
 		try {
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_UPD.routine());
-
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_UPD.routine());
+            callableStatement = prepareCall(Routines.PYTAMSP_UPD.routine());
+			//fine LP PGNTCORE-24
 //			IN I_TAM_CSOCCSOC VARCHAR(5), 
 //			IN I_TAM_CUTECUTE VARCHAR(5),
 //			IN I_TAM_KANEKENT CHAR(10),
@@ -883,8 +901,10 @@ public class ConfigurazioneTariffeDAOImpl extends BaseDaoHandler  implements Con
 	int ret=0;
 	try {
 		connection = getConnection();
-		callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_UPK.routine());
-
+		//inizio LP PGNTCORE-24
+		//callableStatement = Helper.prepareCall(connection, getSchema(), Routines.PYTAMSP_UPK.routine());
+        callableStatement = prepareCall(Routines.PYTAMSP_UPK.routine());
+		//fine LP PGNTCORE-24
 //		IN I_TAM_KTAMKTAM VARCHAR(64), 
 //		IN I_TAM_DTAMTRTA DECIMAL(9,5),
 //		IN I_TAM_DTAMTRCO DECIMAL(9,5),

@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Vector;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.PyUser;
 import com.seda.payer.core.bean.PyUserBean;
@@ -32,19 +31,28 @@ public class PyUserDao extends BaseDaoHandler{
 	 * @return PyUser - Il bean dell'utente
 	 * @throws DaoException
 	 */
+	//inizio LP 20240909 - PGNTBOLDER-1
 	public PyUser selectPyUserByKey(Long chiaveUtente) throws DaoException
+	{
+		return selectPyUserByKeyTail(true, chiaveUtente);
+	}
+
+	public PyUser selectPyUserByKeyTail(boolean bFlagUpdateAutocomit, Long chiaveUtente) throws DaoException
+	//fine LP 20240909 - PGNTBOLDER-1
 	{
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		PyUser pyUser = null;
 
 		try{
-			callableStatement = prepareCall(Routines.USR_DODETAIL.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.USR_DODETAIL.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.USR_DODETAIL.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			callableStatement.setLong(1, chiaveUtente);
 			if (callableStatement.execute()) {
 				data = callableStatement.getResultSet();
-				if(data.next())
-				{
+				if(data.next()) {
 					pyUser =  PyUser.getBean(data, false);
 					return pyUser;
 				}
@@ -56,9 +64,7 @@ public class PyUserDao extends BaseDaoHandler{
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally
-		{
+		} finally {
 			//inizio LP PG21XX04 Leak
             //DAOHelper.closeIgnoringException(data);
 			//DAOHelper.closeIgnoringException(callableStatement);
@@ -98,7 +104,7 @@ public class PyUserDao extends BaseDaoHandler{
 		List<String> applicazioni = null;
 
 		try{
-			callableStatement = prepareCall(Routines.USR_GET_PYUSER_AND_APP.routine());
+			callableStatement = prepareCall(Routines.	USR_GET_PYUSER_AND_APP.routine());
 			callableStatement.setLong(1, chiaveUtente);
 			/*
 			 * Recupero il bean dell'utente dal primo resultset 
@@ -282,26 +288,17 @@ public class PyUserDao extends BaseDaoHandler{
 			callableStatement.setString(12, gruppoAgenzia == null ? "" : gruppoAgenzia); //RE180181_001 SB
 			callableStatement.setInt(13, rowsPerPage);
 			callableStatement.setInt(14, pageNumber);
-			
-			
-			
-			
-
-
 			callableStatement.registerOutParameter(15, Types.INTEGER);
 			callableStatement.registerOutParameter(16, Types.INTEGER);
 			callableStatement.registerOutParameter(17, Types.INTEGER);
 			callableStatement.registerOutParameter(18, Types.SMALLINT);
-
 			callableStatement.registerOutParameter(19, Types.VARCHAR);
-
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);
 				/* we register page info */
 				registerPageInfo(rowsPerPage, pageNumber, callableStatement.getInt(15), callableStatement.getInt(16), 
 								 callableStatement.getInt(17), callableStatement.getInt(18));
 			}
-			
 		} catch (IllegalArgumentException e) {
 			throw new DaoException(e);
 		} catch (SQLException e) {
@@ -462,7 +459,14 @@ public class PyUserDao extends BaseDaoHandler{
 	 * @return boolean
 	 * @throws DaoException
 	 */
-	public boolean updatePyUser ( PyUser pyUser ) throws DaoException
+	//inizio LP 20240909 - PGNTBOLDER-1
+	public boolean updatePyUser(PyUser pyUser) throws DaoException
+	{
+		return updatePyUserTail(true, pyUser);
+	}
+
+	public boolean updatePyUserTail(boolean bFlagUpdateAutocomit, PyUser pyUser) throws DaoException
+	//fine LP 20240909 - PGNTBOLDER-1
 	{
 		/*
 		 * Se il bean è nullo genero una eccezione.
@@ -479,8 +483,9 @@ public class PyUserDao extends BaseDaoHandler{
 		 */
 		CallableStatement callableStatement = null;
 		try {
-			callableStatement = prepareCall(Routines.USR_DOUPDATE.routine());
-			
+			//inizio LP 20240909 - PGNTBOLDER-1
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.USR_DOUPDATE.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			callableStatement.setLong(1, pyUser.getChiaveUtente());
 			callableStatement.setString(2, pyUser.getUserName());
 			
@@ -599,9 +604,7 @@ public class PyUserDao extends BaseDaoHandler{
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}
-		finally
-		{
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
 			if (callableStatement != null) {
@@ -621,8 +624,13 @@ public class PyUserDao extends BaseDaoHandler{
 	 * @return boolean - "true" se l'utente è stato cancellato
 	 * @throws DaoException
 	 */
-	public boolean deletePyUser(Long chiaveUtente) throws DaoException
-	{
+	//inizio LP 20240909 - PGNTBOLDER-1
+	public boolean deletePyUser(Long chiaveUtente) throws DaoException {
+		return deletePyUserTail(true, chiaveUtente);
+	}
+
+	public boolean deletePyUserTail(boolean bFlagUpdateAutocomit, Long chiaveUtente) throws DaoException {
+	//fine LP 20240909 - PGNTBOLDER-1
 		/*
 		 * Se "userName" non è definito genero una eccezione.
 		 */
@@ -633,7 +641,10 @@ public class PyUserDao extends BaseDaoHandler{
 		 */
 		CallableStatement callableStatement = null;
 		try {
-			callableStatement = prepareCall(Routines.USR_DODELETE.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.USR_DODELETE.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit,  Routines.USR_DODELETE.routine());
+			//fine LP 20240909 - PGNTBOLDER-1
 			callableStatement.setLong(1, chiaveUtente);
 			callableStatement.registerOutParameter(2, Types.INTEGER);
 			callableStatement.executeUpdate();
@@ -645,9 +656,7 @@ public class PyUserDao extends BaseDaoHandler{
 			throw new DaoException(e);
 		} catch (HelperException e) {
 			throw new DaoException(e);
-		}
-		finally
-		{
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//DAOHelper.closeIgnoringException(callableStatement);
 			if (callableStatement != null) {

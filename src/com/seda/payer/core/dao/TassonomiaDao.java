@@ -8,7 +8,6 @@ import java.sql.SQLException;
 
 import com.seda.commons.logger.CustomLoggerManager;
 import com.seda.commons.logger.LoggerWrapper;
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.bean.Tassonomia;
 import com.seda.payer.core.exception.DaoException;
@@ -285,7 +284,7 @@ public class TassonomiaDao extends BaseDaoHandler {
 				Routines.PYTASSP_DEL);
 		try {
 			callableStatement = prepareCall(Routines.PYTASSP_DEL.routine());
-			callableStatement.setInt(1, chiaveTassonomia.intValue());
+			callableStatement.setLong(1, chiaveTassonomia.intValue());
 			callableStatement.executeUpdate();
 		} catch (SQLException x) {
 			throw new DaoException(x);

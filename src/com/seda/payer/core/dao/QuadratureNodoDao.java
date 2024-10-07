@@ -25,7 +25,6 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 
 	private PageInfo pageInfo = null;
 
-	
 	public QuadratureNodoDao(Connection connection, String schema) {
 		super(connection, schema);
 	}
@@ -132,7 +131,7 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		
 		try{
 			callableStatement = prepareCall(Routines.QUN_NODO_TRARIC.routine());
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2, chiaveTransazione);
 			callableStatement.setBigDecimal(3, importo);
 			callableStatement.setBigDecimal(4, spese);
@@ -187,7 +186,7 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		
 		try{
 			callableStatement = prepareCall("PYQUNSP_NODO_SEARCHM");
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2, chiaveTransazione);
 			callableStatement.setBigDecimal(3, importo);
 			callableStatement.setBigDecimal(4, spese);
@@ -226,10 +225,10 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		try
 		{
 			callableStatement = prepareCall(Routines.QUN_NODO_QUNEND.routine());
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2, quadrareMovimentiSquadrati);
 			callableStatement.setString(3, chiaveTransazione); //PG170300 - 30/1/2018 - INIZIO - gestione multibollettino 
-			callableStatement.setInt(4, txRecuperate);  //PG190240_001 SB
+			callableStatement.setLong(4, txRecuperate);  //PG190240_001 SB
 			callableStatement.registerOutParameter(5, Types.INTEGER);
 			callableStatement.executeUpdate();
 			scritture = callableStatement.getInt(5);
@@ -515,7 +514,7 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		boolean risultato = false;
 		try{
 			callableStatement = prepareCall(Routines.QUN_CHIUDI_MOVIMENTO_NODO.routine());
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.setString(2,user);
 			callableStatement.execute();
 			risultato = true;
@@ -820,7 +819,6 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			String operatore
 			) throws DaoException {
 		CallableStatement callableStatement = null;
-		ResultSet data = null;
 		try {
 			callableStatement = prepareCall(Routines.QUI_INSERT.routine());
 			callableStatement.setInt(1, posizione);
@@ -843,15 +841,6 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		}
 		finally {
 			//inizio LP PG21XX04 Leak
-			//DaoUtil.closeResultSet(data);
-			//DaoUtil.closeStatement(callableStatement);
-			if (data != null) {
-				try {
-					data.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
 			if (callableStatement != null) {
 				try {
 					callableStatement.close();
@@ -872,7 +861,6 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			String operatore
 			) throws DaoException {
 		CallableStatement callableStatement = null;
-		ResultSet data = null;
 		try{
 			callableStatement = prepareCall(Routines.QUI_UPDATE.routine());
 			callableStatement.setInt(1, posizione);
@@ -892,18 +880,8 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 			}
 		} catch (Exception e) {
 			throw new DaoException(e);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
-			//DaoUtil.closeResultSet(data);
-			//DaoUtil.closeStatement(callableStatement);
-			if (data != null) {
-				try {
-					data.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
 			if (callableStatement != null) {
 				try {
 					callableStatement.close();
@@ -974,7 +952,7 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 		try
 		{
 			callableStatement = prepareCall("PYQUNSP_UPN");
-			callableStatement.setInt(1, chiaveQuadratura);
+			callableStatement.setLong(1, chiaveQuadratura);
 			callableStatement.registerOutParameter(2, Types.INTEGER);
 			callableStatement.executeUpdate();
 			scritture = callableStatement.getInt(2);
@@ -998,20 +976,34 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 	public int getNumeroTrasazioniPerEnte(String dataInizio, String dataFine, String chiaveEnte) throws DaoException {
 		int numeroTransazioniPerEnte = 0;
 		CallableStatement callableStatement = null;
-		try
-		{
+		ResultSet data = null; //inizio LP 20240912 - PGNTFATT-5
+		try {
 			callableStatement = prepareCall(Routines.PYQUNSP_SEL_NTOT.routine());
 			callableStatement.setString(1, dataInizio);
 			callableStatement.setString(2, dataFine);
 			callableStatement.setString(3, chiaveEnte);
 			callableStatement.execute();
-			if(callableStatement.getResultSet().next()){
-				numeroTransazioniPerEnte = callableStatement.getResultSet().getInt(2);
+			//inizio LP 20240912 - PGNTFATT-5			
+			//if(callableStatement.getResultSet().next()) {
+			//	numeroTransazioniPerEnte = callableStatement.getResultSet().getInt(2);
+			data = callableStatement.getResultSet();
+			if(data.next()) {
+				numeroTransazioniPerEnte = data.getInt(2);
 			}
+			//fine LP 20240912 - PGNTFATT-5			
 		}
 		catch (Exception x) {
 			throw new DaoException(x);
 		} finally {
+			//inizio LP 20240912 - PGNTFATT-5			
+			if (data != null) {
+				try {
+					data.close();
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+			//fine LP 20240912 - PGNTFATT-5			
 			if (callableStatement != null) {
 				try {
 					callableStatement.close();
@@ -1052,32 +1044,68 @@ public class QuadratureNodoDao  extends BaseDaoHandler{
 	}
 
 	public List<QuadraturaNodo> getEntiQUN(Boolean hasFilters, String dataDa, String dataA) throws DaoException {
+	//inizio LP 20240912 - PGNTFATT-5
+		return getEntiQUNTail(true, true, hasFilters, dataDa, dataA);
+	}
+	
+	public List<QuadraturaNodo> getEntiQUNBatch(boolean bFlagUpdateAutocomit, boolean bCloseStat, Boolean hasFilters, String dataDa, String dataA) throws DaoException {
+		return getEntiQUNTail(bFlagUpdateAutocomit, bCloseStat, hasFilters, dataDa, dataA);
+		
+	}
+	
+	private List<QuadraturaNodo> getEntiQUNTail(boolean bFlagUpdateAutocomit, boolean bCloseStat, Boolean hasFilters, String dataDa, String dataA) throws DaoException {
+		ResultSet data = null;
+	//fine LP 20240912 - PGNTFATT-5
 		List<QuadraturaNodo> list = new ArrayList<>();
 		CallableStatement callableStatement = null;
 		try
 		{
-			callableStatement = prepareCall(Routines.PYQUNSP_SEL_ENT.routine());
+			//inizio LP 20240912 - PGNTFATT-5
+			//callableStatement = prepareCall(Routines.PYQUNSP_SEL_ENT.routine());
+			callableStatement = prepareCall(bFlagUpdateAutocomit, Routines.PYQUNSP_SEL_ENT.routine());
+			//fine LP 20240912 - PGNTFATT-5
 			callableStatement.setString(1, hasFilters ? dataDa : "");
 			callableStatement.setString(2, hasFilters ? dataA : "");
 			callableStatement.execute();
-			while(callableStatement.getResultSet().next()){
+			//inizio LP 20240912 - PGNTFATT-5
+			//while(callableStatement.getResultSet().next()){
+			//	QuadraturaNodo quadraturaNodo = new QuadraturaNodo();
+			//	quadraturaNodo.setCodSocieta(callableStatement.getResultSet().getString(1));
+			//	quadraturaNodo.setCodUtente(callableStatement.getResultSet().getString(2));
+			//	quadraturaNodo.setKeyEnte(callableStatement.getResultSet().getString(3));
+			data = callableStatement.getResultSet();
+			while(data.next()){
 				QuadraturaNodo quadraturaNodo = new QuadraturaNodo();
-				quadraturaNodo.setCodSocieta(callableStatement.getResultSet().getString(1));
-				quadraturaNodo.setCodUtente(callableStatement.getResultSet().getString(2));
-				quadraturaNodo.setKeyEnte(callableStatement.getResultSet().getString(3));
+				quadraturaNodo.setCodSocieta(data.getString(1));
+				quadraturaNodo.setCodUtente(data.getString(2));
+				quadraturaNodo.setKeyEnte(data.getString(3));
+			//fine LP 20240912 - PGNTFATT-5
 				list.add(quadraturaNodo);
 			}
 		}
 		catch (Exception x) {
 			throw new DaoException(x);
 		} finally {
-			if (callableStatement != null) {
+			//inizio LP 20240912 - PGNTFATT-5			
+			if (data != null) {
 				try {
-					callableStatement.close();
+					data.close();
 				} catch (SQLException e) {
 					e.printStackTrace();
 				}
 			}
+			if(bCloseStat) {
+			//fine LP 20240912 - PGNTFATT-5			
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
+				}
+			//inizio LP 20240912 - PGNTFATT-5			
+			}
+			//fine LP 20240912 - PGNTFATT-5			
 		}
 		return list;
 	}

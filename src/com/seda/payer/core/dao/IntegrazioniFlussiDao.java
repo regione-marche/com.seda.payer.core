@@ -8,7 +8,6 @@ import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.data.spi.DaoHandler;
 import com.seda.payer.core.bean.FlussiPageList;
@@ -23,15 +22,15 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 	}
 
 	public FlussiPageList flussiList(String tipoFlusso, String codFiscAgg, String nomeFile, String dataCreazioneDa, String dataCreazioneA, int pageNumber, int rowsPerPage, String orderBy) throws DaoException {
-		
 		FlussiPageList flussiPageList = null;
-		
-		Connection connection = getConnection();
+		//Connection connection = getConnection();//LP 20240919 - PGNTCORE-24
 		CallableStatement cs = null;
 		ResultSet data = null;
-		
 		try {
-			cs = Helper.prepareCall(connection, getSchema(), Routines.CNPSTSP_MAN_LST.routine());
+			//inizio LP 20240919 - PGNTCORE-24 
+			//cs = Helper.prepareCall(connection, getSchema(), Routines.CNPSTSP_MAN_LST.routine());
+            cs = prepareCall(Routines.CNPSTSP_MAN_LST.routine());
+			//fine LP 20240919 - PGNTCORE-24 
 			int p = 1;
 			cs.setString(p++, tipoFlusso);
 			cs.setString(p++, codFiscAgg);
@@ -51,18 +50,14 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 			cs.setInt(p++, pageNumber);
 			cs.setInt(p++, rowsPerPage);
 			cs.setString(p++, orderBy);
-			
 			if (cs.execute()) {
-				
 				flussiPageList = new FlussiPageList();
-				
 				flussiPageList.setPageNumber(pageNumber);
 				flussiPageList.setRowsPerPage(rowsPerPage);
 				flussiPageList.setFirstRow(cs.getInt(p++));
 				flussiPageList.setLastRow(cs.getInt(p++));
 				flussiPageList.setNumRows(cs.getInt(p++));
 				flussiPageList.setNumPages(cs.getInt(p++));
-				
 				data = cs.getResultSet();
 				loadWebRowSet(data);
 				flussiPageList.setFlussiListXml(getWebRowSetXml());
@@ -87,20 +82,19 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 				}
 			}
 		}
-		
 		return flussiPageList;
 	}
 
 	public FlussoDettagliPageList flussoDettagliList(int idFlusso, String idDominio, String codiceEnte,	String codiceIuv, Boolean flagPagato, int idFlussoRT, int pageNumber, int rowsPerPage, String orderBy) throws DaoException {
-		
 		FlussoDettagliPageList flussoDettagliPageList = null;
-		
-		Connection connection = getConnection();
+		//Connection connection = getConnection(); //LP 20240919 - PGNTCORE-24
 		CallableStatement cs = null;
 		ResultSet data = null;
-		
 		try {
-			cs = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_MAN_LST.routine());
+			//inizio LP 20240919 - PGNTCORE-24 
+			//cs = Helper.prepareCall(connection, getSchema(), Routines.CNDOCSP_PST_MAN_LST.routine());
+            cs = prepareCall(Routines.CNDOCSP_PST_MAN_LST.routine());
+			//fine LP 20240919 - PGNTCORE-24 
 			int p = 1;
 			cs.setInt(p++, idFlusso);
 			cs.setString(p++, idDominio);
@@ -111,18 +105,14 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 			cs.setInt(p++, pageNumber);
 			cs.setInt(p++, rowsPerPage);
 			cs.setString(p++, orderBy);
-			
 			if (cs.execute()) {
-				
 				flussoDettagliPageList = new FlussoDettagliPageList();
-				
 				flussoDettagliPageList.setPageNumber(pageNumber);
 				flussoDettagliPageList.setRowsPerPage(rowsPerPage);
 				flussoDettagliPageList.setFirstRow(cs.getInt(p++));
 				flussoDettagliPageList.setLastRow(cs.getInt(p++));
 				flussoDettagliPageList.setNumRows(cs.getInt(p++));
 				flussoDettagliPageList.setNumPages(cs.getInt(p++));
-				
 				data = cs.getResultSet();
 				loadWebRowSet(data);
 				flussoDettagliPageList.setFlussoDettagliListXml(getWebRowSetXml());
@@ -147,24 +137,34 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 				}
 			}
 		}
-		
 		return flussoDettagliPageList;
 	}
-	
+
 	public Flusso select(int idFlusso) throws DaoException {
-		
 		Flusso flusso = null;
-		
-		Connection connection = getConnection();
+		//Connection connection = getConnection(); //LP 20240919 - PGNTCORE-24
 		CallableStatement cs = null;
 		ResultSet rs = null;
 		try {
-			cs = Helper.prepareCall(connection, getSchema(), Routines.CNPSTSP_SEL.routine());
+			//inizio LP 20240919 - PGNTCORE-24 
+			//cs = Helper.prepareCall(connection, getSchema(), Routines.CNPSTSP_SEL.routine());
+            cs = prepareCall(Routines.CNPSTSP_SEL.routine());
+			//fine LP 20240919 - PGNTCORE-24 
 			int p = 1;
 			cs.setInt(p++, idFlusso);
-			rs = cs.executeQuery();
-			if (rs.next())
-				flusso = new Flusso(rs);
+			//inizio LP 20240811 PGNTCORE-24
+			//rs = cs.executeQuery();
+			if(cs.execute()) {
+				rs = cs.getResultSet();
+				if(rs != null) {
+			//fine LP 20240811 PGNTCORE-24
+					if (rs.next()) {
+						flusso = new Flusso(rs);
+					}
+			//inizio LP 20240811 PGNTCORE-24
+				}
+			}
+			//fine LP 20240811 PGNTCORE-24
 		} catch (SQLException e) {
 			throw new DaoException(e);
 		} catch (HelperException e) {
@@ -185,7 +185,6 @@ public class IntegrazioniFlussiDao extends DaoHandler {
 				}
 			}
 		}
-		
 		return flusso;
 	}
 }

@@ -7,8 +7,6 @@ import java.sql.SQLException;
 
 import javax.sql.DataSource;
 
-import com.seda.data.dao.DAOHelper;
-import com.seda.data.helper.Helper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
@@ -27,6 +25,7 @@ public class MonitoraggioCruscottoDAOImpl extends BaseDaoHandler implements Moni
 	public MonitoraggioCruscottoDAOImpl(DataSource dataSource, String schema) throws SQLException {
 		super(dataSource.getConnection(), schema);
 	}
+
 	public MonitoraggioCruscottoDAOImpl(Connection connection, String schema) throws SQLException {
 		super(connection, schema);
 	}
@@ -42,7 +41,10 @@ public class MonitoraggioCruscottoDAOImpl extends BaseDaoHandler implements Moni
 		RendicontazioneList rendicontazioneList = null;
 		try {			
 			connection = getConnection();
-			callableStatement = Helper.prepareCall(connection, getSchema(), "PYTRASP_SEL_CRUSS_MG");
+			//inizio LP PGNTCORE-24
+			//callableStatement = Helper.prepareCall(connection, getSchema(), "PYTRASP_SEL_CRUSS_MG");
+            callableStatement = prepareCall("PYTRASP_SEL_CRUSS_MG");
+			//fine LP PGNTCORE-24
 			callableStatement.setString(1, dataDa);
 			callableStatement.setString(2, dataAl);
 			callableStatement.setString(3, "1");	

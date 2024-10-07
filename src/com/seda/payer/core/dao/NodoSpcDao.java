@@ -1,12 +1,7 @@
 package com.seda.payer.core.dao;
 
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.UndeclaredThrowableException;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.sql.CallableStatement;
@@ -17,17 +12,12 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 
-
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
-
 import com.seda.payer.core.bean.NodoSpcRpt;
 import com.seda.payer.core.bean.NodoSpcPsc;
 import com.seda.payer.core.bean.NodoSpcPsp;
-
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
-
 
 public class NodoSpcDao extends BaseDaoHandler {
 	
@@ -118,10 +108,12 @@ public class NodoSpcDao extends BaseDaoHandler {
 		
 	}
 
-	private BufferedWriter getFilePath(String nomeFilePath) throws FileNotFoundException  {
-		// TODO[AA]
-		return  new BufferedWriter( new OutputStreamWriter( new FileOutputStream( new File(nomeFilePath) , false) )  );   // il true finale indica che siamo in append
-	}
+	//inizio LP 20240811  - PGNTCORE-24
+	//private BufferedWriter getFilePath(String nomeFilePath) throws FileNotFoundException  {
+	//	return  new BufferedWriter( new OutputStreamWriter( new FileOutputStream( new File(nomeFilePath) , false) )  );   // il true finale indica che siamo in append
+	//}
+	//fine LP 20240811  - PGNTCORE-24
+
 	/***
 	 * Svuota e ricarica la tabella dei PSP ottenuti dal Nodo Nazionale SPC
 	 * @param nodoSpcPsp
@@ -190,8 +182,6 @@ public class NodoSpcDao extends BaseDaoHandler {
 //						filelog.write("getCondizioniEconomiche = " + psc.getCondizioniEconomiche());
 //						filelog.write("getUrl = " + psc.getUrl());
 //					} catch (IOException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
 //					}
 					
 					callableStatement = prepareCall(Routines.PYPSCSP_INS.routine());
@@ -215,8 +205,11 @@ public class NodoSpcDao extends BaseDaoHandler {
 			if(x.getErrorCode()== -803){
 				throw new DaoException(55,"esiste già un psp con la chiave selezionata");
 			}
-			
 			throw new DaoException(x);
+		//inizio LP 20240811  - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già un psp con la chiave selezionata");
+		//fine LP 20240811  - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
 //			try {
@@ -224,7 +217,6 @@ public class NodoSpcDao extends BaseDaoHandler {
 //				filelog.close();
 //				
 //			} catch (IOException e) {
-//				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
 			throw new DaoException(101, x.getMessage());
@@ -233,7 +225,6 @@ public class NodoSpcDao extends BaseDaoHandler {
 //				filelog.write("errore  = " + x.getMessage());
 //				filelog.close();
 //			} catch (IOException e) {
-//				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
 			throw new DaoException(x);
@@ -241,7 +232,6 @@ public class NodoSpcDao extends BaseDaoHandler {
 //			try {
 //				filelog.close();
 //			} catch (IOException e) {
-//				// TODO Auto-generated catch block
 //				e.printStackTrace();
 //			}
 			//inizio LP PG21XX04 Leak
@@ -295,7 +285,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			if(Iuv.equals("") && bCuteCute)
 				callableStatement = prepareCall("PYRPTSP_INS_CDSE");
 			else
-				callableStatement = prepareCall(Routines.PYRPTSP_INS.routine());
+				callableStatement = prepareCall(Routines.	PYRPTSP_INS.routine());
 			//fine LP PG21XX08_1
 			callableStatement.setString(1, nodoSpcRpt.getChiaveTra());
 			callableStatement.setString(2, nodoSpcRpt.getCodSocieta());
@@ -318,8 +308,8 @@ public class NodoSpcDao extends BaseDaoHandler {
 			callableStatement.setString(16, nodoSpcRpt.getIdPSP());					//31012017 GG PG160130_02X
 			callableStatement.setString(17, nodoSpcRpt.getIdIntermediarioPSP());	//31012017 GG PG160130_02X	
 			callableStatement.setString(18, nodoSpcRpt.getIdCanalePSP());			//31012017 GG PG160130_02X
-			callableStatement.registerOutParameter(19, Types.INTEGER);
-			callableStatement.registerOutParameter(20, Types.INTEGER);				//29072016 GG PG160130
+			callableStatement.registerOutParameter(19, Types.BIGINT);
+			callableStatement.registerOutParameter(20, Types.BIGINT);				//29072016 GG PG160130
 			//inizio LP PG21XX08_1
 			if(Iuv.equals("") && bCuteCute)
 				callableStatement.registerOutParameter(21, Types.VARCHAR);
@@ -327,10 +317,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 
 			callableStatement.execute();
 			//recupero id
-			int id = callableStatement.getInt(19);
+			int id = (int) callableStatement.getLong(19);
 			System.out.println("ID dopo INS = " + id);
 			
-			int progIuv = callableStatement.getInt(20);
+			int progIuv = (int) callableStatement.getLong(20);
 			System.out.println("PROG IUV dopo INS = " + progIuv);
 			
 			//inizio LP PG21XX08_1
@@ -372,7 +362,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 				}
 				//fine LP PG21XX04 Leak
 				callableStatement = prepareCall(Routines.PYRPTSP_UPD.routine());
-				callableStatement.setInt(1, id);
+				callableStatement.setLong(1, id);
 				callableStatement.setNull(2, Types.VARCHAR);
 				callableStatement.setNull(3, Types.CHAR);
 				callableStatement.setNull(4, Types.CHAR);
@@ -380,10 +370,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 				callableStatement.setNull(6, Types.CHAR);
 				callableStatement.setNull(7, Types.VARCHAR);
 				callableStatement.setNull(8, Types.DECIMAL);
-				callableStatement.setNull(9, Types.BINARY);
+				callableStatement.setNull(9, Types.VARCHAR);
 				callableStatement.setNull(10, Types.VARCHAR);
 				callableStatement.setNull(11, Types.VARCHAR);
-				callableStatement.setNull(12, Types.BINARY);
+				callableStatement.setNull(12, Types.VARCHAR);
 				callableStatement.setNull(13, Types.VARCHAR);
 				callableStatement.setNull(14, Types.VARCHAR);
 				callableStatement.setNull(15, Types.VARCHAR);
@@ -415,7 +405,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 				callableStatement.setNull(30, Types.VARCHAR);//Esito Inivio Email Revoca Notifica Contribuente
 				callableStatement.setNull(31, Types.TIMESTAMP);//Data Esito Inivio Email Revoca Notifica Contribuente
 //				YLM PG22XX07 INI
-				callableStatement.setNull(32, Types.TIMESTAMP);//XML SEND RT
+				callableStatement.setNull(32, Types.VARCHAR);//XML SEND RT
 //				YLM PG22XX07 FINE
 				callableStatement.registerOutParameter(33, Types.INTEGER);
 				//fine LP PG190220
@@ -424,7 +414,9 @@ public class NodoSpcDao extends BaseDaoHandler {
 				
 				//inizio LP PG190220
 				//int recCount = callableStatement.getInt(25);
-				int recCount = callableStatement.getInt(33);
+				//inizio LP 20240811  - PGNTCORE-24
+				//int recCount = callableStatement.getInt(33);
+				//fine LP 20240811  - PGNTCORE-24
 				//fine LP PG190220
 				//fine LP PG180290
 				
@@ -436,6 +428,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 				throw new DaoException(55,"esiste già una rpt con la chiave selezionata");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811  - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già un rpt con la chiave selezionata");
+		//fine LP 20240811  - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			x.printStackTrace();
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
@@ -465,7 +461,14 @@ public class NodoSpcDao extends BaseDaoHandler {
 	 * @return numero di righe modificate
 	 * @throws DaoException
 	 */
+	//inizio LP 20240826 - PGNTBNPE-1
 	public int updateRptNodoSpc(NodoSpcRpt nodoSpcRpt) throws DaoException 
+	{
+		return updateRptNodoSpcTail(true, nodoSpcRpt);
+	}
+		
+	public int updateRptNodoSpcTail(boolean bFlagAutocommitUpdate, NodoSpcRpt nodoSpcRpt) throws DaoException 
+	//fine LP 20240826 - PGNTBNPE-1
 	{
 		int recCount = 0;
 		CallableStatement callableStatement = null;
@@ -473,8 +476,11 @@ public class NodoSpcDao extends BaseDaoHandler {
 			//recupero id
 			int id = nodoSpcRpt.getId().intValue();
 			System.out.println("recupero id = " + id);
-			callableStatement = prepareCall(Routines.PYRPTSP_UPD.routine());
-			callableStatement.setInt(1, id);
+			//inizio LP 20240826 - PGNTBNPE-1
+			//callableStatement = prepareCall(Routines.PYRPTSP_UPD.routine());
+			callableStatement = prepareCall(bFlagAutocommitUpdate, Routines.PYRPTSP_UPD.routine());
+			//fine LP 20240826 - PGNTBNPE-1
+			callableStatement.setLong(1, id);
 			if(nodoSpcRpt.getChiaveTra() != null &&  !nodoSpcRpt.getChiaveTra().equalsIgnoreCase(""))
 				callableStatement.setString(2, nodoSpcRpt.getChiaveTra());
 			else
@@ -513,7 +519,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			if(nodoSpcRpt.getRpt() != null &&  !nodoSpcRpt.getRpt().equalsIgnoreCase(""))
 				callableStatement.setString(9, nodoSpcRpt.getRpt());
 			else
-				callableStatement.setNull(9, Types.BINARY);
+				callableStatement.setNull(9, Types.VARCHAR);
 			
 			if(nodoSpcRpt.getRptEsito() != null &&  !nodoSpcRpt.getRptEsito().equalsIgnoreCase(""))
 				callableStatement.setString(10, nodoSpcRpt.getRptEsito());
@@ -537,7 +543,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			}
 			//fine LP PG190220
 			else
-				callableStatement.setNull(12, Types.BINARY);
+				callableStatement.setNull(12, Types.VARCHAR);
 			
 			if(nodoSpcRpt.getRtEsito() != null && !nodoSpcRpt.getRtEsito().equalsIgnoreCase(""))
 			//inizio LP PG190220
@@ -704,6 +710,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 				throw new DaoException(55,"esiste già una rpt con la chiave selezionata");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già un rpt con la chiave selezionata");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
 			throw new DaoException(101, x.getMessage());
@@ -724,8 +734,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 		}
 		return recCount;
 	}
-	
-	
+
 	private String CalculateIUV(int paymentId){
 		String res = "";
 		
@@ -763,15 +772,24 @@ public class NodoSpcDao extends BaseDaoHandler {
 	//fine LP PG21XX08_1
 
 	//29072016 PG160130 GG introdotto codContestoPagamento
+	//inizio LP 20240826 - PGNTBNPE-1
 	public List<NodoSpcRpt> recuperaRPT(BigInteger id, String chiaveTra, String codiceIuv, String codContestoPagamento, String idDominio, String identificativoPSP) throws DaoException 
+	{
+		return recuperaRPTTail(true, id, chiaveTra, codiceIuv, codContestoPagamento, idDominio, identificativoPSP);
+	}
+		
+	public List<NodoSpcRpt> recuperaRPTTail(boolean bFlagAutocommitUpdate, BigInteger id, String chiaveTra, String codiceIuv, String codContestoPagamento, String idDominio, String identificativoPSP) throws DaoException 
+	//fine LP 20240826 - PGNTBNPE-1
 	{
 		List<NodoSpcRpt> listRpt = new ArrayList<NodoSpcRpt>(); 
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		try	{
-			callableStatement = prepareCall(Routines.PYRPTSP_SEL.routine());
+			//inizio LP 20240826 - PGNTBNPE-1
+			callableStatement = prepareCall(bFlagAutocommitUpdate,  Routines.PYRPTSP_SEL.routine());
+			//fine LP 20240826 - PGNTBNPE-1
 			if (id != null && id.longValue()>0)
-				callableStatement.setInt(1, id.intValue());
+				callableStatement.setLong(1, id.longValue());
 			else
 				callableStatement.setNull(1, Types.BIGINT);
 			if (chiaveTra != null && !chiaveTra.equals(""))
@@ -921,7 +939,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 		try	{
 			//Update RT
 			callableStatement = prepareCall(Routines.PYRPTSP_UPD.routine());
-			callableStatement.setInt(1, paymentId);
+			callableStatement.setLong(1, paymentId);
 			callableStatement.setNull(2, Types.VARCHAR);
 			callableStatement.setNull(3, Types.CHAR);
 			callableStatement.setNull(4, Types.CHAR);
@@ -929,7 +947,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			callableStatement.setNull(6, Types.CHAR);
 			callableStatement.setNull(7, Types.VARCHAR);
 			callableStatement.setNull(8, Types.DECIMAL);
-			callableStatement.setNull(9, Types.BINARY);
+			callableStatement.setNull(9, Types.VARCHAR);
 			callableStatement.setNull(10, Types.VARCHAR);
 			callableStatement.setNull(11, Types.VARCHAR);
 			
@@ -969,7 +987,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			callableStatement.setNull(30, Types.VARCHAR);//Esito Inivio Email Revoca Notifica Contribuente
 			callableStatement.setNull(31, Types.TIMESTAMP);//Data Esito Inivio Email Revoca Notifica Contribuente
 //			YLM PG22XX07 INI
-			callableStatement.setNull(32, Types.TIMESTAMP);//XML SEND RT
+			callableStatement.setNull(32, Types.VARCHAR);//XML SEND RT
 //			YLM PG22XX07 FINE
 			callableStatement.registerOutParameter(33, Types.INTEGER);
 			//fine LP PG190220
@@ -978,7 +996,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			
 			//inizio LP PG190220
 			//int recCount = callableStatement.getInt(25);
-			int recCount = callableStatement.getInt(33);
+			//int recCount = callableStatement.getInt(33); //LP 20240923 - PGNTCORE-24
 			//fine LP PG190220
 			
 			//fine LP PG180290
@@ -988,6 +1006,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 				throw new DaoException(55,"esiste già un psp con la chiave selezionata");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già un psp con la chiave selezionata");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
 			throw new DaoException(101, x.getMessage());
@@ -1025,7 +1047,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			//Update RT
 			System.out.println("paymentId id = " + paymentId);
 			callableStatement = prepareCall(Routines.PYRPTSP_UPD.routine());
-			callableStatement.setInt(1, paymentId);
+			callableStatement.setLong(1, paymentId);
 			callableStatement.setNull(2, Types.VARCHAR);
 			callableStatement.setNull(3, Types.CHAR);
 			callableStatement.setNull(4, Types.CHAR);
@@ -1039,7 +1061,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			//fine LP 20210325
 			callableStatement.setNull(10, Types.VARCHAR);
 			callableStatement.setNull(11, Types.VARCHAR);
-			callableStatement.setNull(12, Types.BINARY);
+			callableStatement.setNull(12, Types.VARCHAR);
 			callableStatement.setNull(13, Types.VARCHAR);
 			callableStatement.setNull(14, Types.VARCHAR);
 			callableStatement.setNull(15, Types.VARCHAR);
@@ -1071,7 +1093,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			callableStatement.setNull(30, Types.VARCHAR);//Esito Inivio Email Revoca Notifica Contribuente
 			callableStatement.setNull(31, Types.TIMESTAMP);//Data Esito Inivio Email Revoca Notifica Contribuente
 //			YLM PG22XX07 INI
-			callableStatement.setNull(32, Types.TIMESTAMP);//XML SEND RT
+			callableStatement.setNull(32, Types.VARCHAR);//XML SEND RT
 //			YLM PG22XX07 FINE
 			callableStatement.registerOutParameter(33, Types.INTEGER);
 			//fine LP PG190220
@@ -1080,7 +1102,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			
 			//inizio LP PG190220
 			//int recCount = callableStatement.getInt(25);
-			int recCount = callableStatement.getInt(33);
+			//int recCount = callableStatement.getInt(33); //LP 20240923 - PGNTCORE-24
 			//fine LP PG190220
 			
 			//fine LP PG180290
@@ -1090,6 +1112,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 				throw new DaoException(55,"esiste già un psp con la chiave selezionata");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già un psp con la chiave selezionata");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
 			throw new DaoException(101, x.getMessage());
@@ -1123,7 +1149,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 		try	{
 			//Update RT
 			callableStatement = prepareCall(Routines.PYRPTSP_UPD.routine());
-			callableStatement.setInt(1, paymentId);
+			callableStatement.setLong(1, paymentId);
 			callableStatement.setNull(2, Types.VARCHAR);
 			callableStatement.setNull(3, Types.CHAR);
 			callableStatement.setNull(4, Types.CHAR);
@@ -1131,10 +1157,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 			callableStatement.setNull(6, Types.CHAR);
 			callableStatement.setNull(7, Types.VARCHAR);
 			callableStatement.setNull(8, Types.DECIMAL);
-			callableStatement.setNull(9, Types.BINARY);
+			callableStatement.setNull(9, Types.VARCHAR);
 			callableStatement.setNull(10, Types.VARCHAR);
 			callableStatement.setNull(11, Types.VARCHAR);
-			callableStatement.setNull(12, Types.BINARY);
+			callableStatement.setNull(12, Types.VARCHAR);
 			callableStatement.setNull(13, Types.VARCHAR);
 			callableStatement.setNull(14, Types.VARCHAR);
 			
@@ -1185,7 +1211,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			callableStatement.setNull(30, Types.VARCHAR);//Esito Inivio Email Revoca Notifica Contribuente
 			callableStatement.setNull(31, Types.TIMESTAMP);//Data Esito Inivio Email Revoca Notifica Contribuente
 //			YLM PG22XX07 INI
-			callableStatement.setNull(32, Types.TIMESTAMP);//XML SEND RT
+			callableStatement.setNull(32, Types.VARCHAR);//XML SEND RT
 //			YLM PG22XX07 FINE
 			callableStatement.registerOutParameter(33, Types.INTEGER);
 			//fine LP PG190220
@@ -1194,7 +1220,7 @@ public class NodoSpcDao extends BaseDaoHandler {
 			
 			//inizio LP PG190220
 			//int recCount = callableStatement.getInt(25);
-			int recCount = callableStatement.getInt(33);
+			//int recCount = callableStatement.getInt(33); //LP 20240923 - PGNTCORE-24
 			//fine LP PG190220
 			
 			//fine LP PG180290
@@ -1204,6 +1230,10 @@ public class NodoSpcDao extends BaseDaoHandler {
 				throw new DaoException(55,"esiste già un psp con la chiave selezionata");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già un psp con la chiave selezionata");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			System.out.println("doSave failed generic error due to: " + x.getMessage());
 			throw new DaoException(101, x.getMessage());

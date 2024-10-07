@@ -184,7 +184,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(2, (tx_provincia == null) || (tx_provincia.equals(StoredProcConf.PROVINCIA_ALL_VALUE.getParam())) ? "" :  tx_provincia);
 			callableStatement.setString(3, (tx_utente == null) || (tx_utente.equals(StoredProcConf.UTENTE_ALL_VALUE.getParam())) ? "" :  tx_utente);
 			callableStatement.setString(4, (tx_ente == null) || (tx_ente.equals(StoredProcConf.ENTECONSORZIATO_ALL_VALUE.getParam())) ? "" :  tx_ente);
-			callableStatement.setString(5, tx_mostra == null ? "" : tx_mostra);
+			callableStatement.setString(5, tx_mostra == null ? "" : tx_mostra.trim());
 			callableStatement.setString(6, tx_codice_transazione == null ? "" :  tx_codice_transazione);
 			callableStatement.setString(7, tx_indirizzo_ip == null ? "" :  tx_indirizzo_ip);
 			callableStatement.setString(8, tx_user_email == null ? "" :  tx_user_email);
@@ -285,7 +285,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 		callableStatement.setString(5, (tx_provincia == null) || (tx_provincia.equals(StoredProcConf.PROVINCIA_ALL_VALUE.getParam())) ? "" :  tx_provincia);
 		callableStatement.setString(6, (tx_utente == null) || (tx_utente.equals(StoredProcConf.UTENTE_ALL_VALUE.getParam())) ? "" :  tx_utente);
 		callableStatement.setString(7, (tx_ente == null) || (tx_ente.equals(StoredProcConf.ENTECONSORZIATO_ALL_VALUE.getParam())) ? "" :  tx_ente);
-		callableStatement.setString(8, tx_mostra == null ? "" : tx_mostra);
+		callableStatement.setString(8, tx_mostra == null ? "" : tx_mostra.trim());
 		callableStatement.setString(9, tx_codice_transazione == null ? "" :  tx_codice_transazione);
 		callableStatement.setString(10, tx_indirizzo_ip == null ? "" :  tx_indirizzo_ip);
 		callableStatement.setString(11, tx_user_email == null ? "" :  tx_user_email);
@@ -301,7 +301,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 	    callableStatement.setBigDecimal(21, tx_importo_a_bd);
 		callableStatement.setString(22,tx_data_da == null ? "" : tx_data_da);
 		callableStatement.setString(23,tx_data_a == null ? "" : tx_data_a);
-		callableStatement.setInt(24, chiaveQuadratura);
+		callableStatement.setLong(24, chiaveQuadratura);
 		callableStatement.setString(25,tx_id_Terminale_Atm == null ? "" : tx_id_Terminale_Atm);
 		callableStatement.setString(26,tx_id_Transazione_Atm == null ? "" : tx_id_Transazione_Atm);
 		callableStatement.setString(27,tx_chiave_rendicontazione == null ? "" : tx_chiave_rendicontazione);
@@ -375,7 +375,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 		    callableStatement.setBigDecimal(17, tx_importo_a_bd);
 			callableStatement.setString(18,tx_data_da == null ? "" : tx_data_da);
 			callableStatement.setString(19,tx_data_a == null ? "" : tx_data_a);
-			callableStatement.setInt(20, chiaveQuadratura);
+			callableStatement.setLong(20, chiaveQuadratura);
 			callableStatement.setString(21,tx_id_Terminale_Atm == null ? "" : tx_id_Terminale_Atm);
 			callableStatement.setString(22,tx_id_Transazione_Atm == null ? "" : tx_id_Transazione_Atm);
 			callableStatement.setString(23,chiaveRendicontazione == null ? "" : chiaveRendicontazione);
@@ -385,7 +385,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(27,tx_codice_IUV == null ? "" :  tx_codice_IUV);			//17032015 GG
 			callableStatement.setString(28,idFlussoQuadratura == null ? "" :  idFlussoQuadratura);	//15022017 GG
 			callableStatement.setString(29,tx_recuperate==null ? "" : tx_recuperate);
-			callableStatement.setString(30,tx_mostra == null ? "" : tx_mostra);
+			callableStatement.setString(30,tx_mostra == null ? "" : tx_mostra.trim());
 			callableStatement.setString(31, tx_codice_fiscale == null ? "" : tx_codice_fiscale); // PAGONET-437
 			
 			callableStatement.registerOutParameter(32, Types.DECIMAL);
@@ -475,7 +475,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 		    callableStatement.setBigDecimal(17, tx_importo_a_bd);
 			callableStatement.setString(18,tx_data_da == null ? "" : tx_data_da);
 			callableStatement.setString(19,tx_data_a == null ? "" : tx_data_a);
-			callableStatement.setInt(20, chiaveQuadratura);
+			callableStatement.setLong(20, chiaveQuadratura);
 			callableStatement.setString(21,tx_id_Terminale_Atm == null ? "" : tx_id_Terminale_Atm);
 			callableStatement.setString(22,tx_id_Transazione_Atm == null ? "" : tx_id_Transazione_Atm);
 			callableStatement.setString(23,chiaveRendicontazione == null ? "" : chiaveRendicontazione);
@@ -494,7 +494,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.registerOutParameter(35, Types.DECIMAL);
  
 			callableStatement.registerOutParameter(36, Types.DECIMAL);
-			callableStatement.setString(37,tx_mostra == null ? "" : tx_mostra);
+			callableStatement.setString(37,tx_mostra == null ? "" : tx_mostra.trim());
 
 			if(callableStatement.execute()) {
 				BigDecimal totale = callableStatement.getBigDecimal(36);
@@ -1565,7 +1565,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 		try {
 			callableStatement = prepareCall(Routines.TMG_UPDATE_RIF_MOVIMENTO.routine());
 			callableStatement.setString(1, codiceTransazione);
-			callableStatement.setInt(2, rifMovimento);
+			callableStatement.setLong(2, rifMovimento);
 			callableStatement.setString(3, user);
 			callableStatement.registerOutParameter(4, Types.INTEGER);
 			callableStatement.executeUpdate();
@@ -1813,7 +1813,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 			callableStatement.setString(17, dataPagamentoA == null ? "" : dataPagamentoA);
 			callableStatement.setString(18, dataTransazioneDa ==  null ? "" : dataTransazioneDa);
 			callableStatement.setString(19, dataTransazioneA == null ? "" : dataTransazioneA);
-			callableStatement.setInt(20, chiaveMovimento);
+			callableStatement.setLong(20, chiaveMovimento);
 			callableStatement.registerOutParameter(21, Types.VARCHAR);
 			callableStatement.registerOutParameter(22, Types.INTEGER);
 			callableStatement.registerOutParameter(23, Types.INTEGER);
@@ -1887,7 +1887,7 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 //			callableStatement.setString(16, dataTransazioneA == null ? "" : dataTransazioneA);
 //			callableStatement.setInt(17, chiaveMovimento);
 			callableStatement = prepareCall(Routines.TMG_RIEPILOGO_QUADRATURA.routine());
-			callableStatement.setInt(1, chiaveMovimento);
+			callableStatement.setLong(1, chiaveMovimento);
 			callableStatement.registerOutParameter(2, Types.DECIMAL);
 			callableStatement.registerOutParameter(3, Types.DECIMAL);
 			callableStatement.registerOutParameter(4, Types.DECIMAL);
@@ -1956,11 +1956,11 @@ public class ManagerTransazioniDao  extends BaseDaoHandler{
 		    callableStatement.setBigDecimal(17, tx_importo_a_bd);
 			callableStatement.setString(18,tx_data_da == null ? "" : tx_data_da);
 			callableStatement.setString(19,tx_data_a == null ? "" : tx_data_a);
-			callableStatement.setInt(20, chiaveQuadratura);
+			callableStatement.setLong(20, chiaveQuadratura);
 			callableStatement.setString(21,tx_id_Terminale_Atm == null ? "" : tx_id_Terminale_Atm);
 			callableStatement.setString(22,tx_id_Transazione_Atm == null ? "" : tx_id_Transazione_Atm);
 			callableStatement.setString(23,chiaveRendicontazione == null ? "" : chiaveRendicontazione);
-			callableStatement.setString(24,tx_mostra == null ? "" : tx_mostra);
+			callableStatement.setString(24,tx_mostra == null ? "" : tx_mostra.trim());
 			callableStatement.setString(25,tx_id_terminale_pos_fisico == null ? "" : tx_id_terminale_pos_fisico);
 			callableStatement.setString(26,tx_data_accr_da == null ? "" : tx_data_accr_da);
 			callableStatement.setString(27,tx_data_accr_a == null ? "" : tx_data_accr_a);

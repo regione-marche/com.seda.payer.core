@@ -11,7 +11,6 @@ import com.seda.payer.core.bean.TipologiaServizio;
 import com.seda.payer.core.exception.DaoException;
 import com.seda.payer.core.handler.BaseDaoHandler;
 import com.seda.payer.core.messages.Messages;
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 
 import java.util.Vector;
@@ -44,11 +43,9 @@ public class AssocImpBenDao extends BaseDaoHandler {
 //			callableStatement = prepareCall(APCBEN_CEBDODDLIST);
 			callableStatement = prepareCall(Routines.APCBEN_CEBDODDLIST.routine());
 			callableStatement.setString(1, codSocieta == null ? "" : codSocieta);
-
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);	
 			}
-			
 			return this.getWebRowSetXml(BeneficiarioDao.IDX_DOLIST_LISTA);
 		} catch (SQLException x) {
 			throw new DaoException(x);
@@ -80,13 +77,10 @@ public class AssocImpBenDao extends BaseDaoHandler {
 			callableStatement.setString(2, codProvincia == null ? "" : codProvincia);
 			callableStatement.setString(3, codUtente == null ? "" : codUtente);
 			callableStatement.setString(4, codEnte == null ? "" : codEnte);
-
 			if (callableStatement.execute()) {
 				this.loadWebRowSets(callableStatement);	
 			}
-			
 			return this.getWebRowSetXml(BeneficiarioDao.IDX_DOLIST_LISTA);
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
@@ -106,8 +100,7 @@ public class AssocImpBenDao extends BaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
-	
+
 	public AssocImpBen doDetail(AssocImpBen associazione) throws DaoException {
 		CallableStatement callableStatement = null;
 		//inizio LP PG21XX04 Leak
@@ -118,17 +111,13 @@ public class AssocImpBenDao extends BaseDaoHandler {
 			callableStatement.setString(1, associazione.getUser().getCompany().getCompanyCode());
 			callableStatement.setString(2, associazione.getUser().getUserCode());
 			callableStatement.setString(3, associazione.getAnagImpositore().getChiaveEnte());		
-
 			callableStatement.setString(4, associazione.getTipologiaServizio().getCodiceTipologiaServizio());		
 			callableStatement.setString(5, associazione.getAnnoRifDa());		
 			callableStatement.setString(6, associazione.getAnnoRifA());		
 			callableStatement.setString(7, associazione.getDataValidita());		
-
 			callableStatement.setString(8, associazione.getAnagBeneficiario().getChiaveEnte());
 			callableStatement.setString(9, associazione.getUserBeneficiario().getCompany().getCompanyCode());
 			callableStatement.setString(10, associazione.getUserBeneficiario().getUserCode());
-
-			
 			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet data = callableStatement.getResultSet();
@@ -175,10 +164,8 @@ public class AssocImpBenDao extends BaseDaoHandler {
 			callableStatement.setString(1, associazione.getUser().getCompany().getCompanyCode());
 			callableStatement.setString(2, associazione.getUser().getUserCode());
 			callableStatement.setString(3, associazione.getAnagImpositore().getChiaveEnte());		
-
 			callableStatement.setString(4, associazione.getTipologiaServizio().getCodiceTipologiaServizio());		
 			callableStatement.setString(5, associazione.getDataValidita());		
-
 			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet data = callableStatement.getResultSet();
@@ -215,7 +202,6 @@ public class AssocImpBenDao extends BaseDaoHandler {
 		}
 	}
 
-	
 	public void doRowSets(AssocImpBen associazione, String ordine) throws DaoException {
 		doRowSets(associazione, ordine, 0, 0);
 	}
@@ -223,14 +209,10 @@ public class AssocImpBenDao extends BaseDaoHandler {
 	public void doRowSets(AssocImpBen associazione, String ordine, int rowsPerPage, int pageNumber) throws DaoException {
 		if (rowsPerPage <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
 		if (pageNumber <= 0)
 			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
-
 		CallableStatement callableStatement = null;
-
 		try	{
-			
 /*
          IN I_SOC_CSOCCSOC CHAR(5),
   	    IN I_APC_CANEBELF CHAR(4), 
@@ -249,17 +231,13 @@ public class AssocImpBenDao extends BaseDaoHandler {
 			callableStatement.setString(3, associazione.getUser().getUserCode());
 			callableStatement.setString(4, associazione.getAnagImpositore().getChiaveEnte());		
 			callableStatement.setString(5, associazione.getAnagBeneficiario().getChiaveEnte());		
-
 			callableStatement.setString(6, associazione.getDataValidita());		
 			callableStatement.setString(7, associazione.getAnnoRifDa());		
 			callableStatement.setString(8, associazione.getAnnoRifA());		
 			callableStatement.setString(9, associazione.getTipologiaServizio().getCodiceTipologiaServizio());		
-			
 			callableStatement.setString(10, associazione.getUserBeneficiario().getCompany().getCompanyCode());
 			callableStatement.setString(11, associazione.getAnagBeneficiario().getAnagProvCom().getCodiceBelfiore());
 			callableStatement.setString(12, associazione.getUserBeneficiario().getUserCode());
-			
-			
 			callableStatement.setString(13, ordine);
 			callableStatement.setInt(14, rowsPerPage);
 			callableStatement.setInt(15, pageNumber);
@@ -298,7 +276,6 @@ public class AssocImpBenDao extends BaseDaoHandler {
 		}
 	}
 
-	
 /*	
 	public int doSave(AssocImpBen associazione, String codOp) throws DaoException {
 		CallableStatement callableStatement = null;
@@ -355,62 +332,45 @@ public class AssocImpBenDao extends BaseDaoHandler {
 	public int doSave(AssocImpBen associazione, String codOp) throws DaoException {
 		CallableStatement callableStatement = null;
 		int code = 0;
-		
-		try
-		{
-			if (codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope())==0)
-			{
+		try {
+			if (codOp != null && codOp.compareTo(TypeRequest.ADD_SCOPE.scope()) == 0) {
 	            boolean risultato = true;
 				callableStatement = prepareCall(Routines.CEB_DOINSERT.routine());
 				//controllo immissione
-				if (associazione.getTipologiaServizio().getCodiceTipologiaServizio().equals("000"))
-				{
+				if (associazione.getTipologiaServizio().getCodiceTipologiaServizio().equals("000")) {
 					//ricerca servizi per società
 					String codSocieta = associazione.getUser().getCompany().getCompanyCode();
 					String codUtente = associazione.getUser().getUserCode();
 					String chiaveEnte = associazione.getAnagImpositore().getChiaveEnte();
-					
 					Vector<String> tipSer = getTipologieServizi(codSocieta,codUtente,chiaveEnte);
-					for(String codTipologiaServizio: tipSer)
-					{
+					for(String codTipologiaServizio: tipSer) {
 						TipologiaServizio tipologiaServizio = new TipologiaServizio();
 				    	tipologiaServizio.getCompany().setCompanyCode(codSocieta);	    	
 				    	tipologiaServizio.setCodiceTipologiaServizio(codTipologiaServizio);
-
 						associazione.setTipologiaServizio(tipologiaServizio);
-						try
-						{
+						try {
 						 code = code + addAssociazione(associazione, callableStatement);
-						}
-						catch(Exception e)
-						{
+						} catch(Exception e) {
 							//inserimento non effettuato a seguito di violazione vincoli
 							risultato = false;
 						}
 					}
-					if (!risultato)
-						{
-						 if (code==0)
-							 code = -2; // nessun inserimento a causa di vincoli violati
-						 else
-							 code = -1; // alcuni inserimenti non eseguiti a causa di vincoli violati
+					if (!risultato) {
+						if (code == 0)
+							code = -2; // nessun inserimento a causa di vincoli violati
+						else
+							code = -1; // alcuni inserimenti non eseguiti a causa di vincoli violati
+					} else {
+						if (code>0)
+							code = 1; // tutti gli inserimenti sono riusciti
+						else
+							code = -3; // il ciclo non ha eseguito iterazioni per mancanza di tipologia servizi							 
 						}
-					else
-						{
-						 if (code>0)
-								code = 1; // tutti gli inserimenti sono riusciti
-						 else
-								code = -3; // il ciclo non ha eseguito iterazioni per mancanza di tipologia servizi							 
-						}
-				}
-				else
-				{
+				} else {
 					//singolo inserimento
 					code = addAssociazione(associazione, callableStatement);	//0 nessun inseirmento 1 inserimento riuscito
 				}
-			}
-			else
-			{
+			} else {
 				callableStatement = prepareCall(Routines.CEB_DOUPDATE.routine());
 				code = saveAssociazione(associazione, callableStatement);
 			}
@@ -423,8 +383,7 @@ public class AssocImpBenDao extends BaseDaoHandler {
 			throw new DaoException(x);
 		} catch (Exception e) {
 			throw new DaoException(e);
-		} 
-		finally {
+		}  finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			if(callableStatement != null) {
@@ -436,7 +395,6 @@ public class AssocImpBenDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return code;
 	}
 
@@ -447,7 +405,6 @@ public class AssocImpBenDao extends BaseDaoHandler {
 		AssocImpBen data = doDetail(associazione);
 		if (data != null) 
 			throw new IllegalArgumentException(Messages.UNIQUE_CONSTRAINT_VIOLATION.format("Associazione"));
-
 		//controllo associazione impositore / beneficiario
 		AssocImpBen appoggio = new AssocImpBen();
 /*
@@ -470,20 +427,17 @@ public class AssocImpBenDao extends BaseDaoHandler {
 		if (doVincolo(appoggio)!=null)
 			throw new IllegalArgumentException(Messages.UNIQUE_CONSTRAINT_VIOLATION.format("Associazione Impositore/Servizio/Data Validita"));
 // fine mod        
-		
 		return saveAssociazione(associazione, callableStatement);    	
     }
 
-    
 	private int saveAssociazione(AssocImpBen associazione, CallableStatement callableStatement) throws Exception
 	{
 		associazione.save(callableStatement);
 		callableStatement.execute();
-
 		return callableStatement.getInt(16);
 		
 	}
-	
+
 	public int doDelete(AssocImpBen associazione) throws DaoException {
 		int code = 0;
 		CallableStatement callableStatement = null;
@@ -541,24 +495,19 @@ public class AssocImpBenDao extends BaseDaoHandler {
 		//fine LP PG21XX04 Leak
 		Vector<String> risultato = new Vector<String>();
 		try	{
-			
 			callableStatement = prepareCall(Routines.PYTSESP_DDL_2.routine());
 			callableStatement.setString(1, codSocieta);
 			callableStatement.setString(2, codUtente);
 			callableStatement.setString(3, chiaveEnte);
 			callableStatement.setString(4, "");
-			
 			//callableStatement = prepareCall(Routines.TMG_TIPOLOGIA_SERVIZIO_GET_DDL.routine());
 			//callableStatement.setString(1, codSocieta == null ? "" : codSocieta);
-
-			if (callableStatement.execute()) 
-			{
+			if (callableStatement.execute()) {
 				//inizio LP PG21XX04 Leak
 				//ResultSet data = callableStatement.getResultSet();
 				data = callableStatement.getResultSet();
 				//fine LP PG21XX04 Leak
-				while (data.next())
-				{
+				while (data.next()) {
 					risultato.add(data.getString("TSE_CTSECTSE"));
 				}
 			}
@@ -587,17 +536,15 @@ public class AssocImpBenDao extends BaseDaoHandler {
 			}
 			//fine LP PG21XX04 Leak
 		}
-		
 		return risultato;
-
 	}
 	
 // fine mod	
 	
-	private void closeConnection(CallableStatement callableStatement)
-	{
-		if (callableStatement != null)
-			DAOHelper.closeIgnoringException(callableStatement);
-	}
+//	private void closeConnection(CallableStatement callableStatement)
+//	{
+//		if (callableStatement != null)
+//			DAOHelper.closeIgnoringException(callableStatement);
+//	}
 
 }

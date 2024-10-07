@@ -1,12 +1,12 @@
 package com.seda.payer.core.dao;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 
-import com.seda.data.dao.DAOHelper;
 import com.seda.data.helper.HelperException;
 import com.seda.payer.commons.bean.TypeRequest;
 import com.seda.payer.core.bean.TipologiaStrutturaRicettiva;
@@ -130,6 +130,10 @@ public class TipologiaStrutturaRicettivaDao extends BaseDaoHandler {
 				throw new DaoException(55,"esiste già una tipologia Struttura per i parametri selezionati");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, 55, "Esiste già una tipologia Struttura per i parametri selezionati");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {

@@ -1,5 +1,6 @@
 package com.seda.payer.core.dao;
 
+import java.lang.reflect.UndeclaredThrowableException;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -17,6 +18,10 @@ import com.seda.payer.core.handler.rest.RestBaseDaoHandler;
 import com.seda.payer.core.messages.Messages;
 
 public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
+
+	//inizio LP 20240909 - PGNTBOLDER-1
+	CallableStatement callableStatementDetail = null;
+	//fin LP 20240909 - PGNTBOLDER-1
 
 	public ConfigurazioneImpostaSoggiornoDao(Connection connection, String schema) {
 		super(connection, schema);
@@ -36,12 +41,29 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 
 	public ConfigurazioneImpostaSoggiorno doDetail(String codiceBelfiore) throws DaoException
 	{
+	//inizio LP 20240909 - PGNTBOLDER-1
+		return	doDetailTail(true, true, codiceBelfiore);
+	}
+
+	public ConfigurazioneImpostaSoggiorno doDetailBatch(boolean bUpdateFlagAutocommit, boolean bCloseStat, String codiceBelfiore) throws DaoException
+	{
+		return	doDetailTail(bUpdateFlagAutocommit, bCloseStat, codiceBelfiore);
+	}
+
+	private ConfigurazioneImpostaSoggiorno doDetailTail(boolean bUpdateFlagAutocommit, boolean bCloseStat, String codiceBelfiore) throws DaoException
+	{
+	//fine LP 20240909 - PGNTBOLDER-1
 		CallableStatement callableStatement = null;
 		ResultSet data = null;
 		try	{
-			callableStatement = prepareCall(Routines.SRG_DODETAIL.routine());
+			//inizio LP 20240909 - PGNTBOLDER-1
+			//callableStatement = prepareCall(Routines.SRG_DODETAIL.routine());
+			if(callableStatementDetail == null) {
+				callableStatementDetail = prepareCall(bUpdateFlagAutocommit, Routines.SRG_DODETAIL.routine());
+			}
+			callableStatement = callableStatementDetail;
+			//fine LP 20240909 - PGNTBOLDER-1
 			callableStatement.setString(1, codiceBelfiore);
-			
 			if (callableStatement.execute()) {
 				data = callableStatement.getResultSet();
 				if (data.next())
@@ -54,8 +76,7 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			//if (data != null)
@@ -67,33 +88,37 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 					e.printStackTrace();
 				}
 			}
-			if (callableStatement != null) {
-				try {
-					callableStatement.close();
-				} catch (SQLException e) {
-					e.printStackTrace();
+			//inizio LP 20240909 - PGNTBOLDER-1
+			if(bCloseStat) {
+			//fine LP 20240909 - PGNTBOLDER-1
+				if (callableStatement != null) {
+					try {
+						callableStatement.close();
+					} catch (SQLException e) {
+						e.printStackTrace();
+					}
 				}
+			//inizio LP 20240909 - PGNTBOLDER-1
+				callableStatement = null;
+				callableStatementDetail = null;
 			}
+			//fine LP 20240909 - PGNTBOLDER-1
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	public void doRowSets(String descComune) throws DaoException {
 		rowSets(0, 0,descComune);
 	}
 
 	public void doRowSets(int rowsPerPage, int pageNumber,String descComune) throws DaoException {
-		
-			if (rowsPerPage <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
-
-			if (pageNumber <= 0)
-				throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
- 
-			rowSets(rowsPerPage, pageNumber,descComune);
-
+		if (rowsPerPage <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("rowsPerPage"));
+		if (pageNumber <= 0)
+			throw new IllegalArgumentException(Messages.INVALID_PARAMETER.format("pageNumber"));
+		rowSets(rowsPerPage, pageNumber,descComune);
 	}
-	
+
 	public void rowSets(int rowsPerPage, int pageNumber,String descComune) throws DaoException {
 		//inizio LP PG21XX04 Leak
 		CallableStatement callableStatement = null;
@@ -146,17 +171,14 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 		try	{
 			callableStatement = prepareCall(Routines.SRG_DOUPDATE.routine());
 			configImposta.update(callableStatement);
-			
 			callableStatement.execute();
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			if (callableStatement != null) {
@@ -169,26 +191,27 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-	
+
 	public void doSave(ConfigurazioneImpostaSoggiorno configImposta) throws DaoException {
 		CallableStatement callableStatement = null;
 		try	{
 			callableStatement = prepareCall(Routines.SRG_DOINSERT.routine());
 			configImposta.save(callableStatement);
-			
 			callableStatement.execute();
-			
 		} catch (SQLException x) {
 			if(x.getErrorCode()== -803){
 				throw new DaoException(x.getErrorCode(),"esiste già una anagrafica per i parametri selezionati");
 			}
 			throw new DaoException(x);
+		//inizio LP 20240811 - PGNTCORE-24
+		} catch (UndeclaredThrowableException x) {
+			DaoException.makeIfDuplicateKeyError(x, "Esiste già una anagrafica per i parametri selezionati");
+		//fine LP 20240811 - PGNTCORE-24
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+  		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			if (callableStatement != null) {
@@ -241,50 +264,41 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 		}
 		//fine LP PG21XX04 Leak
 	}
-	
+
 	public ResponseData doSaveHost(ConfigurazioneImpostaSoggiorno configImposta, String codUtente) throws DaoException {
 		CallableStatement callableStatement = null;
 		try	{
-			
 			if(configImposta != null) {
 				System.out.println("DATA-IN-CODUTEN: " + codUtente);
 				System.out.println("DATA-IN-CODENTE: " + configImposta.getCodiceEnteGestionaleEntrate());
 				System.out.println("DATA-IN-CODIMSE: " + configImposta.getImpostaServizioGestionaleEntrate());
 				System.out.println("DATA-IN-CODTRIB: " + configImposta.getCodiceTributoGestionaleEntrate());
 			}
-			
 			callableStatement = prepareCall(Routines.IS_IMPSOGG_DOSAVE.routine());
 			callableStatement.setString(1, codUtente);
 			callableStatement.setString(2, configImposta.getCodiceEnteGestionaleEntrate());
 			callableStatement.setString(3, configImposta.getImpostaServizioGestionaleEntrate());
 			callableStatement.setString(4, configImposta.getCodiceTributoGestionaleEntrate());
-			
 			//parametri di output
 			callableStatement.registerOutParameter(5, Types.VARCHAR);
 			callableStatement.registerOutParameter(6, Types.VARCHAR);
-			
 			callableStatement.execute();
-			
 			ResponseData res = new ResponseData();
 			res.setRetCode(callableStatement.getString(5));
 			res.setRetMessage(callableStatement.getString(6));
-			
 			/****TEST****/
 			/*ResponseData res = new ResponseData();
 			res.setRetCode("OK");
 			res.setRetMessage("");
 			res.setInfo1("COD_TEST");*/
-			
 			return res;
-			
 		} catch (SQLException x) {
 			throw new DaoException(x);
 		} catch (IllegalArgumentException x) {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			if (callableStatement != null) {
@@ -300,8 +314,7 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 	
 	public void doListEnteBelfiore(String codBelf) throws DaoException {
 		CallableStatement callableStatement = null;
-		try	
-		{
+		try {
 			callableStatement = prepareCall(Routines.ENT_DOLIST_BELF.routine());				
 			callableStatement.setString(1, codBelf);
 			if (callableStatement.execute()) 
@@ -347,8 +360,7 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			throw new DaoException(x);
 		} catch (HelperException x) {
 			throw new DaoException(x);
-		}
-		finally {
+		} finally {
 			//inizio LP PG21XX04 Leak
 			//closeConnection(callableStatement);
 			//if (data != null)
@@ -370,5 +382,4 @@ public class ConfigurazioneImpostaSoggiornoDao extends RestBaseDaoHandler {
 			//fine LP PG21XX04 Leak
 		}
 	}
-
 }
